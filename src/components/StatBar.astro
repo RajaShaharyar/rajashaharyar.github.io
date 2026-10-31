@@ -1,0 +1,54 @@
+---
+/**
+ * Homepage section 2a: the six headline figures, number first, then label.
+ * Values come from site.json → stats. A currency code ("PKR") is set smaller
+ * so long figures fit two-up on phones.
+ */
+import { site } from '../lib/site';
+
+function splitValue(value: string) {
+  const m = value.match(/^([A-Z]{2,4})\s+(.+)$/);
+  return m ? { prefix: m[1], main: m[2] } : { prefix: '', main: value };
+}
+---
+
+<ul class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3">
+  {
+    site.stats.map((stat) => {
+      const { prefix, main } = splitValue(stat.value);
+      return (
+        <li class="flex flex-col gap-2 bg-bg px-3 py-4 min-[360px]:px-4 sm:p-6 md:p-8">
+          <p class="stat-value">
+            {prefix && (
+              <>
+                <span class="stat-prefix">{prefix}</span>{' '}
+              </>
+            )}
+            {main}
+          </p>
+          <p class="text-sm leading-snug text-fg-muted sm:text-base">{stat.label}</p>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .stat-value {
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: clamp(1.75rem, 1.05rem + 4vw, 4.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--color-fg);
+  }
+  .stat-prefix {
+    font-size: 0.42em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    vertical-align: 0.95em;
+    color: var(--color-accent);
+  }
+</style>

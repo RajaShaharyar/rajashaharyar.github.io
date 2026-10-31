@@ -1,0 +1,16 @@
+---
+interface Props {
+  id: string;
+  heading: string;
+  intro?: string;
+  /** Visually hide the heading but keep it for screen readers and the outline */
+  hidden?: boolean;
+}
+
+const { id, heading, intro, hidden = false } = Astro.props;
+---
+
+<div class:list={['max-w-3xl', hidden && 'sr-only']}>
+  <h2 id={id} class="text-display-md">{heading}</h2>
+  {intro && <p class="lead mt-4">{intro}</p>}
+</div>

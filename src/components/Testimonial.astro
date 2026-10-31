@@ -1,0 +1,22 @@
+---
+/** Homepage section 9: one quote. The section only renders once site.json has a testimonial. */
+import type { Testimonial } from '../lib/site';
+
+interface Props {
+  testimonial: Testimonial;
+}
+
+const { testimonial: t } = Astro.props;
+const attribution = [t.role, t.company].filter(Boolean).join(', ');
+---
+
+<figure class="flex h-full flex-col gap-6 rounded-card border border-line bg-surface p-6 md:p-8">
+  <span class="font-display text-5xl leading-none text-accent" aria-hidden="true">“</span>
+  <blockquote class="-mt-4 text-lg leading-relaxed">
+    <p>{t.quote}</p>
+  </blockquote>
+  <figcaption class="mt-auto">
+    <span class="block font-semibold">{t.name}</span>
+    {attribution && <span class="block text-sm text-fg-muted">{attribution}</span>}
+  </figcaption>
+</figure>

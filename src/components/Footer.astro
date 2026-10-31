@@ -4,13 +4,17 @@
  * the three venture links.
  */
 import { site } from '../lib/site';
+import { publicFileExists } from '../lib/public-files';
 import Todo from './Todo.astro';
 
 const { contact, cv } = site;
 const year = new Date().getFullYear();
+// The download link goes live automatically once public/cv.pdf exists.
+const hasCvPdf = publicFileExists(cv.pdfHref);
+const footerVentures = site.ventures.filter((v) => v.footer);
 ---
 
-<footer class="mt-24 border-t border-line bg-surface">
+<footer class="mt-20 border-t border-line bg-surface md:mt-24">
   <div class="wrap grid gap-12 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
     <div>
       <p class="font-display text-2xl font-bold tracking-tight">
@@ -44,7 +48,7 @@ const year = new Date().getFullYear();
         </li>
         <li>
           {
-            cv.pdfHref ? (
+            hasCvPdf ? (
               <a href={cv.pdfHref} class="footer-link" download>
                 <span class="footer-key">CV</span>
                 <span>Download PDF</span>
@@ -66,7 +70,7 @@ const year = new Date().getFullYear();
       <h2 class="footer-heading">Ventures</h2>
       <ul class="footer-list">
         {
-          site.ventures.map((v) => (
+          footerVentures.map((v) => (
             <li>
               <a href={v.href} class="footer-link">
                 <span>{v.name}</span>

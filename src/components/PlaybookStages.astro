@@ -1,0 +1,68 @@
+---
+/**
+ * Homepage section 3: Idea → Fit → Scale. Each card: the question it answers
+ * and one proof line linking to the venture page.
+ * TODO (Phase 5): deep-link each proof to the matching stage section on the venture page.
+ */
+import ArrowLink from './ArrowLink.astro';
+
+interface Stage {
+  id: string;
+  name: string;
+  question: string;
+  proof: string;
+  links: { label: string; href: string }[];
+}
+
+interface Props {
+  stages: Stage[];
+}
+
+const { stages } = Astro.props;
+---
+
+<ol class="stages grid gap-4 lg:grid-cols-3 lg:gap-8">
+  {
+    stages.map((stage, i) => (
+      <li class="stage flex flex-col rounded-card border border-line bg-surface p-6 md:p-8" id={`stage-${stage.id}`}>
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <h3 class="text-lg font-semibold tracking-tight">{stage.name}</h3>
+        </div>
+        <p class="mt-5 font-display text-2xl leading-tight font-semibold tracking-tight md:text-[1.75rem]">
+          {stage.question}
+        </p>
+        <div class="min-h-8 flex-1" aria-hidden="true" />
+        <div class="border-t border-line pt-5">
+          <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">Proof</p>
+          <p class="mt-2 text-fg-muted">{stage.proof}</p>
+          <p class="mt-1 flex flex-wrap gap-x-5">
+            {stage.links.map((link) => (
+              <ArrowLink href={link.href}>{link.label}</ArrowLink>
+            ))}
+          </p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  /* Arrow between stages on wide screens: Idea → Fit → Scale */
+  @media (width >= 64rem) {
+    .stage {
+      position: relative;
+    }
+    .stage:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      top: 2.1rem;
+      right: -1.6rem;
+      color: var(--color-accent);
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+  }
+</style>

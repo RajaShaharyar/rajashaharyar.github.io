@@ -1,12 +1,11 @@
 {
-  "_rules": "Site-wide details. Contact details come from the CV. Never add date of birth, gender or home address. Any value starting with TODO is rendered as a visible placeholder; 'toConfirm' lists facts to settle before Phase 2 uses them.",
+  "_rules": "Site-wide details. Contact details come from the CV. Never add date of birth, gender or home address. Any value starting with TODO is rendered as a visible placeholder; 'toConfirm' lists facts still to settle (stats are shown on the site regardless).",
 
   "name": "Raja Shaharyar Ali",
   "shortName": "Raja Shaharyar",
   "title": "Manager, Product & Growth",
   "company": "Evamp & Saanga",
   "tagline": "Product and growth lead who takes products from first customer to scale, in fintech, SaaS and consumer.",
-  "taglineStatus": "Draft positioning line from the blueprint. The final hero headline is chosen in Phase 2.",
   "description": "Raja Shaharyar Ali is a product and growth lead in Islamabad who takes products from first customer to scale across fintech, SaaS and consumer.",
   "url": "https://rajashaharyar.github.io",
   "locale": "en-GB",
@@ -47,7 +46,8 @@
 
   "cv": {
     "pageHref": "/cv/",
-    "pdfHref": "",
+    "pdfHref": "/cv.pdf",
+    "_note": "The 'Download CV' button (home hero) and the footer download link appear automatically once public/cv.pdf exists.",
     "todo": "TODO: web CV PDF without date of birth, gender or home address (Phase 3)"
   },
 
@@ -93,23 +93,64 @@
   ],
 
   "ventures": [
-    { "name": "AsaanBill", "href": "/ventures/asaanbill/", "external": "https://evampsaanga.com/asaan-bill/" },
-    { "name": "Tapit", "href": "/ventures/tapit/", "external": "https://www.thetapitcard.com/" },
-    { "name": "Ladenza Clothing", "href": "/ventures/ladenza/", "external": "", "todo": "TODO: Ladenza Clothing website or Instagram link" }
+    {
+      "id": "asaanbill",
+      "name": "AsaanBill",
+      "href": "/ventures/asaanbill/",
+      "external": "https://evampsaanga.com/asaan-bill/",
+      "footer": true,
+      "meta": "Fintech · Evamp & Saanga · 2024–present",
+      "badge": "Scale",
+      "metric": { "value": "$1.8M+", "label": "monthly volume" },
+      "line": "Invoicing and payment collection for Pakistani businesses, from 0→1 to Raast P2M.",
+      "image": { "src": "recognition/mou-asaanbill-najoomi.webp", "fit": "contain" }
+    },
+    {
+      "id": "tapit",
+      "name": "Tapit",
+      "role": "Co-Founder & Head of Growth",
+      "href": "/ventures/tapit/",
+      "external": "https://www.thetapitcard.com/",
+      "footer": true,
+      "meta": "Co-Founder & Head of Growth · 2022–present",
+      "badge": "Product-Market Fit",
+      "metric": { "value": "3,000+", "label": "customers" },
+      "line": "From competition stages to customers nationwide.",
+      "image": { "src": "recognition/k2prenuer-youngest-startup.webp", "fit": "cover", "position": "50% 50%" }
+    },
+    {
+      "id": "ladenza",
+      "name": "Ladenza Clothing",
+      "href": "/ventures/ladenza/",
+      "external": "",
+      "todo": "TODO: Ladenza Clothing website or Instagram link",
+      "footer": true,
+      "meta": "Consumer",
+      "line": "Case study coming soon."
+    },
+    {
+      "id": "earlier-roles",
+      "name": "Earlier roles",
+      "href": "/ventures/earlier-roles/",
+      "external": "",
+      "footer": false,
+      "meta": "SonicEngine AI · HOMS Inc.",
+      "line": "Product and business development roles before AsaanBill."
+    }
   ],
 
   "stats": [
     {
       "id": "sales",
       "value": "PKR 25 Cr+",
-      "label": "in sales",
+      "label": "in sales generated",
       "source": "CV (About me)",
       "toConfirm": "Which ventures and which period this covers."
     },
     {
       "id": "monthly-volume",
       "value": "$1.8M+",
-      "label": "monthly transaction volume on AsaanBill",
+      "label": "monthly transaction volume, AsaanBill",
       "source": "CV (Evamp & Saanga)",
       "toConfirm": "Confirm it is AsaanBill, what it measures, and clearance from Evamp & Saanga to publish it."
     },
@@ -128,15 +169,39 @@
     {
       "id": "team",
       "value": "25+",
-      "label": "team led",
+      "label": "cross-functional team led",
       "source": "CV (Evamp & Saanga)"
     },
     {
       "id": "competitions",
       "value": "5",
-      "label": "competitions won",
-      "source": "Blueprint: the 4 wins on the CV plus the ICSTSI win (see recognition.json)",
-      "toConfirm": "Confirm the ICSTSI win counts towards this total."
+      "label": "startup competitions won",
+      "source": "Zindigi Prize, AIESEC Sparkathon, Startup Pitching League '24, PGDC, ICSTSI",
+      "recognitionIds": ["win-zindigi-prize-2023", "win-aiesec-sparkathon-2023", "win-startup-pitching-league-2024", "win-pgdc-2023-fyp", "win-icstsi"]
     }
-  ]
+  ],
+
+  "offers": [
+    {
+      "id": "fit-sprint",
+      "title": "Fit Sprint",
+      "stage": "Product-Idea Fit",
+      "summary": "For founders before or just after launch: ideal customer, interviews, MVP scope and a plan for the first 50 customers."
+    },
+    {
+      "id": "sales-gtm-engine",
+      "title": "Sales & GTM Engine",
+      "stage": "Product-Market Fit",
+      "summary": "For products that sell, but not repeatably: funnel, CRM, outbound and a partnership channel."
+    },
+    {
+      "id": "payments-fintech-launch",
+      "title": "Payments & Fintech Launch",
+      "stage": "Scale",
+      "summary": "For fintechs and businesses adding digital collections: Raast P2M, payment journeys, onboarding and refunds."
+    }
+  ],
+
+  "_testimonialsHowTo": "Add objects like { \"quote\": \"...\", \"name\": \"...\", \"role\": \"...\", \"company\": \"...\" }. The homepage Testimonials section appears as soon as there is at least one.",
+  "testimonials": []
 }

@@ -13,13 +13,16 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 | `npm run build`   | Build the static site into `dist/`            |
 | `npm run preview` | Serve the built site locally                  |
 | `npm run check`   | Strict TypeScript and Astro diagnostics       |
+| `npm run images`  | Convert listed photos from `_source/` into `public/images/` (see below) |
 
 ## Where things live
 
 ```
 src/
   content/
-    site.json          name, title, contact details, nav, headline stats
+    site.json          name, title, contact, nav, headline stats, venture cards, offers, testimonials
+    home.json          homepage copy, section by section
+    images.json        every published photo: size (prevents layout shift), alt text, caption
     recognition.json   the Recognition log (one object per row; "shownOn" decides which pages list it)
     cv.json            all 14 CV sections (feeds /cv, the PDF, Education, Skills & tools)
     ventures/*.mdx     one file per venture, rendered by pages/ventures/[slug].astro
@@ -37,6 +40,19 @@ public/images/         ventures/, recognition/, speaking/, about/, education/
 - `toConfirm` fields list facts to settle before a page relies on them.
 - Contact details live only in `site.json`; the CV and footer read them from there.
 - No date of birth, gender, nationality or home address anywhere in the site or the CV PDF.
+
+## Images
+
+Photos are never copied by hand. Add the original file name and its clean output path to the list in
+`scripts/images.mjs`, run `npm run images`, then fill in `alt` and `caption` for the new entry in
+`src/content/images.json`. The script finds the file by exact name under `_source/`, applies EXIF rotation,
+resizes to max 1600px wide, writes WebP, strips all metadata (EXIF, GPS, ICC, XMP) and verifies it.
+A typo in an image path fails the build. Everything except the hero image is lazy-loaded.
+
+## CV download
+
+Drop the sanitised PDF at `public/cv.pdf` (no date of birth, gender or home address). The homepage
+"Download CV" button and the footer link appear automatically on the next build.
 
 ## Contact form
 

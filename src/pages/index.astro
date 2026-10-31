@@ -1,34 +1,127 @@
 ---
 /**
- * Phase 1 placeholder hero: name, title, one line.
- * Phase 2 replaces this with the full ten-section homepage.
+ * Homepage: the blueprint's ten sections, in order.
+ * Copy: src/content/home.json · numbers, ventures, offers, testimonials: site.json
+ * Photos and alt text: images.json · Recognition carousel: recognition.json
  */
 import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import StatBar from '../components/StatBar.astro';
+import NameStrip from '../components/NameStrip.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PlaybookStages from '../components/PlaybookStages.astro';
+import VentureCard from '../components/VentureCard.astro';
+import HardWins from '../components/HardWins.astro';
+import RecognitionCarousel from '../components/RecognitionCarousel.astro';
+import SpeakingStrip from '../components/SpeakingStrip.astro';
+import OfferCard from '../components/OfferCard.astro';
+import Testimonial from '../components/Testimonial.astro';
+import CTA from '../components/CTA.astro';
+import ArrowLink from '../components/ArrowLink.astro';
+import home from '../content/home.json';
 import { site } from '../lib/site';
+
+const { proof, playbook, ventures, hardWins, recognition, speaking, help, testimonials, finalCta } = home;
+const sectionY = 'py-16 md:py-24';
 ---
 
 <Base>
-  <section class="wrap relative pt-16 pb-20 md:pt-28 md:pb-32">
-    <p class="eyebrow">{site.title} · {site.company}</p>
-    <h1 class="mt-6 max-w-5xl text-display-xl">
-      {site.name}<span class="text-accent" aria-hidden="true">.</span>
-    </h1>
-    <p class="lead mt-8 max-w-2xl">{site.tagline}</p>
+  <!-- 1. Hero -->
+  <Hero />
 
-    <div class="mt-10 flex flex-wrap gap-3">
-      <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>
-      <a href={site.cv.pageHref} class="btn btn-secondary">View CV</a>
+  <!-- 2. Proof bar: numbers, then names -->
+  <section class="wrap pb-16 md:pb-24" aria-labelledby="proof-heading">
+    <SectionHeader id="proof-heading" heading={proof.heading} hidden />
+    <StatBar />
+    <div class="mt-10 md:mt-12">
+      <NameStrip title={proof.nameStripTitle} names={proof.names} />
     </div>
+  </section>
 
-    <div class="mt-20 flex max-w-2xl items-start gap-4 border-t border-line pt-6" role="note">
-      <span
-        class="mt-0.5 inline-flex shrink-0 items-center rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-ink"
-      >
-        Coming soon
-      </span>
-      <p class="text-fg-muted">
-        The full homepage, with proof numbers, the Idea → Scale playbook and the ventures.
-      </p>
+  <!-- 3. The playbook -->
+  <section id="playbook" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="playbook-heading">
+    <SectionHeader id="playbook-heading" heading={playbook.heading} intro={playbook.intro} />
+    <div class="mt-10 md:mt-12">
+      <PlaybookStages stages={playbook.stages} />
     </div>
+  </section>
+
+  <!-- 4. Ventures ("See the work" scrolls here) -->
+  <section id="ventures" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="ventures-heading">
+    <SectionHeader id="ventures-heading" heading={ventures.heading} intro={ventures.intro} />
+    <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 md:gap-6">
+      {
+        site.ventures.map((v) => (
+          <li>
+            <VentureCard venture={v} linkLabel={ventures.cardLink} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 5. Hard wins -->
+  <section id="hard-wins" class:list={['border-y border-line bg-surface/40', sectionY]} aria-labelledby="hard-wins-heading">
+    <div class="wrap">
+      <SectionHeader id="hard-wins-heading" heading={hardWins.heading} intro={hardWins.intro} />
+      <div class="mt-10 md:mt-12">
+        <HardWins items={hardWins.items} />
+      </div>
+      <ArrowLink href={hardWins.link.href} class="mt-8">{hardWins.link.label}</ArrowLink>
+    </div>
+  </section>
+
+  <!-- 6. Recognition strip -->
+  <section id="recognition" class:list={['wrap', sectionY]} aria-labelledby="recognition-heading">
+    <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
+    <div class="mt-8 md:mt-10">
+      <RecognitionCarousel label={recognition.carouselLabel} />
+    </div>
+    <ArrowLink href={recognition.link.href} class="mt-6">{recognition.link.label}</ArrowLink>
+  </section>
+
+  <!-- 7. Speaking and ecosystem -->
+  <section id="speaking" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="speaking-heading">
+    <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
+    <div class="mt-10 md:mt-12">
+      <SpeakingStrip images={speaking.images} />
+    </div>
+    <ArrowLink href={speaking.link.href} class="mt-8">{speaking.link.label}</ArrowLink>
+  </section>
+
+  <!-- 8. How I can help -->
+  <section id="help" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="help-heading">
+    <SectionHeader id="help-heading" heading={help.heading} />
+    <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6">
+      {
+        site.offers.map((offer, i) => (
+          <li>
+            <OfferCard offer={offer} index={i} />
+          </li>
+        ))
+      }
+    </ul>
+    <ArrowLink href={help.link.href} class="mt-8">{help.link.label}</ArrowLink>
+  </section>
+
+  <!-- 9. Testimonials: hidden until site.json has at least one quote -->
+  {
+    site.testimonials.length > 0 && (
+      <section id="testimonials" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="testimonials-heading">
+        <SectionHeader id="testimonials-heading" heading={testimonials.heading} />
+        <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6">
+          {site.testimonials.map((t) => (
+            <li>
+              <Testimonial testimonial={t} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- 10. Final call to action (the footer follows) -->
+  <section class="wrap pt-8 pb-4 md:pt-12" aria-labelledby="cta-heading">
+    <CTA heading={finalCta.heading} />
   </section>
 </Base>

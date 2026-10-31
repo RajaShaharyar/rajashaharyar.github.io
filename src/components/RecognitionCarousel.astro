@@ -1,0 +1,293 @@
+---
+/**
+ * Homepage section 6: photo carousel of the Recognition-log items shown on
+ * "Competitions & awards" that have a photo in public/images.
+ *
+ * Built on native scroll-snap, so it swipes/scrolls without JavaScript.
+ * With JavaScript: previous/next buttons, arrow keys (and Home/End) on the
+ * focused track, and autoplay ONLY when the visitor doesn't prefer reduced
+ * motion. Autoplay pauses on hover, when off-screen or the tab is hidden, has
+ * a pause/play button, and stops for good on any manual navigation or keyboard focus.
+ */
+import Media from './Media.astro';
+import { getImage, hasImage } from '../lib/images';
+import { shownOn } from '../lib/recognition';
+
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+
+const RESULT = /^(Winner|Top 3|1st prize),\s*/;
+
+const slides = shownOn('competitions-awards')
+  .flatMap((r) => {
+    const ev = r.evidence.find((e) => hasImage(e.file));
+    if (!ev?.file) return [];
+    // A photo the log marks "to confirm" is captioned with what it shows, not with the award.
+    const photoConfirmed = !(ev.note ?? '').toLowerCase().startsWith('to confirm');
+    const m = r.item.match(RESULT);
+    const rest = m ? r.item.slice(m[0].length) : r.item;
+    return [
+      {
+        id: r.id,
+        image: ev.file,
+        badge: m ? m[1] : 'Award',
+        caption: photoConfirmed ? rest.charAt(0).toUpperCase() + rest.slice(1) : getImage(ev.file).caption,
+        date: photoConfirmed && r.dateISO ? r.date : null,
+        dateISO: r.dateISO,
+        photoConfirmed,
+      },
+    ];
+  })
+  // Confirmed photos first; the sort is stable, so the log's newest-first order holds.
+  .sort((a, b) => Number(b.photoConfirmed) - Number(a.photoConfirmed));
+
+const trackId = 'recognition-track';
+---
+
+<div class="carousel" data-carousel role="region" aria-roledescription="carousel" aria-label={label}>
+  <div class="carousel-controls mb-5 flex items-center justify-end gap-2">
+    <button type="button" class="carousel-btn" data-carousel-play hidden>
+      <svg class="icon-pause" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+        <rect x="3.5" y="2.5" width="3" height="11" rx="1"></rect>
+        <rect x="9.5" y="2.5" width="3" height="11" rx="1"></rect>
+      </svg>
+      <svg class="icon-play" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+        <path d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.2-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7Z"></path>
+      </svg>
+      <span class="sr-only" data-carousel-play-label>Pause slide show</span>
+    </button>
+    <button type="button" class="carousel-btn" data-carousel-prev aria-controls={trackId}>
+      <span aria-hidden="true">←</span><span class="sr-only">Previous slide</span>
+    </button>
+    <button type="button" class="carousel-btn" data-carousel-next aria-controls={trackId}>
+      <span aria-hidden="true">→</span><span class="sr-only">Next slide</span>
+    </button>
+  </div>
+
+  <div
+    id={trackId}
+    class="carousel-track"
+    data-carousel-track
+    tabindex="0"
+    aria-label={`${label}: ${slides.length} slides. Use the arrow keys to move.`}
+  >
+    {
+      slides.map((s, i) => (
+        <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
+          <figure class="flex h-full flex-col">
+            <Media image={s.image} fit="contain" class="aspect-[4/5] rounded-card border border-line" />
+            <figcaption class="mt-4 flex flex-col gap-2">
+              <span class="badge">{s.badge}</span>
+              <span class="leading-snug font-semibold">{s.caption}</span>
+              {s.date && s.dateISO && (
+                <time class="text-sm text-fg-subtle" datetime={s.dateISO}>
+                  {s.date}
+                </time>
+              )}
+            </figcaption>
+          </figure>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .carousel-track {
+    position: relative; /* slides' offsetLeft is measured from here */
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 82%;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.75rem;
+    border-radius: var(--radius-card);
+  }
+  @media (width >= 40rem) {
+    .carousel-track {
+      grid-auto-columns: calc((100% - 1rem) / 2);
+    }
+  }
+  @media (width >= 64rem) {
+    .carousel-track {
+      grid-auto-columns: calc((100% - 2 * 1.5rem) / 3);
+      gap: 1.5rem;
+    }
+  }
+  .carousel-slide {
+    scroll-snap-align: start;
+  }
+
+  /* With JS the buttons replace the scrollbar; without JS, keep the scrollbar
+     and hide the buttons that wouldn't work. */
+  :global(html.js) .carousel-track {
+    scrollbar-width: none;
+  }
+  :global(html.js) .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+  :global(html:not(.js)) .carousel-controls {
+    display: none;
+  }
+
+  .carousel-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    color: var(--color-fg);
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition:
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+  .carousel-btn:hover {
+    border-color: var(--color-fg);
+    background-color: var(--color-raised);
+  }
+  .carousel-btn[hidden] {
+    display: none;
+  }
+  .carousel-btn svg {
+    fill: currentColor;
+  }
+  .carousel-btn .icon-play,
+  .carousel-btn[data-paused] .icon-pause {
+    display: none;
+  }
+  .carousel-btn[data-paused] .icon-play {
+    display: block;
+  }
+</style>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const INTERVAL = 6000;
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
+    const play = root.querySelector<HTMLButtonElement>('[data-carousel-play]');
+    const playLabel = root.querySelector<HTMLElement>('[data-carousel-play-label]');
+    if (!track || !prev || !next || !play) continue;
+
+    const slides = Array.from(track.children) as HTMLElement[];
+    let autoplay = !reduceMotion.matches;
+    let hovering = false;
+    let onScreen = false;
+    let timer = 0;
+
+    const nearest = () => {
+      let best = 0;
+      let bestDistance = Infinity;
+      slides.forEach((slide, i) => {
+        const d = Math.abs(slide.offsetLeft - track.scrollLeft);
+        if (d < bestDistance) {
+          bestDistance = d;
+          best = i;
+        }
+      });
+      return best;
+    };
+    const atStart = () => track.scrollLeft <= 4;
+    const atEnd = () => track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+
+    const goTo = (index: number) => {
+      const i = Math.max(0, Math.min(slides.length - 1, index));
+      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    };
+    // Wraps around at either end.
+    const step = (dir: 1 | -1) => {
+      if (dir === 1 && atEnd()) goTo(0);
+      else if (dir === -1 && atStart()) goTo(slides.length - 1);
+      else goTo(nearest() + dir);
+    };
+
+    const render = () => {
+      // The pause/play control exists only when autoplay is allowed at all.
+      play.hidden = reduceMotion.matches;
+      play.toggleAttribute('data-paused', !autoplay);
+      if (playLabel) playLabel.textContent = autoplay ? 'Pause slide show' : 'Play slide show';
+    };
+    const sync = () => {
+      window.clearInterval(timer);
+      timer = 0;
+      if (autoplay && !reduceMotion.matches && !hovering && onScreen && !document.hidden) {
+        timer = window.setInterval(() => step(1), INTERVAL);
+      }
+      render();
+    };
+    const stop = () => {
+      autoplay = false;
+      sync();
+    };
+
+    prev.addEventListener('click', () => {
+      stop();
+      step(-1);
+    });
+    next.addEventListener('click', () => {
+      stop();
+      step(1);
+    });
+    play.addEventListener('click', () => {
+      autoplay = !autoplay;
+      sync();
+    });
+
+    track.addEventListener('keydown', (e) => {
+      const keys: Record<string, () => void> = {
+        ArrowRight: () => step(1),
+        ArrowLeft: () => step(-1),
+        Home: () => goTo(0),
+        End: () => goTo(slides.length - 1),
+      };
+      const action = keys[e.key];
+      if (!action) return;
+      e.preventDefault();
+      stop();
+      action();
+    });
+
+    // Keyboard focus anywhere except the play button stops rotation for good.
+    root.addEventListener('focusin', (e) => {
+      if (!play.contains(e.target as Node)) stop();
+    });
+    // Swiping or scrolling the track by hand stops it too.
+    for (const type of ['pointerdown', 'wheel', 'touchstart'] as const) {
+      track.addEventListener(type, stop, { passive: true });
+    }
+    root.addEventListener('pointerenter', () => {
+      hovering = true;
+      sync();
+    });
+    root.addEventListener('pointerleave', () => {
+      hovering = false;
+      sync();
+    });
+
+    new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0.5 },
+    ).observe(track);
+    document.addEventListener('visibilitychange', sync);
+    reduceMotion.addEventListener('change', () => {
+      if (reduceMotion.matches) autoplay = false;
+      sync();
+    });
+
+    sync();
+  }
+</script>

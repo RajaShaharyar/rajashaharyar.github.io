@@ -1,0 +1,56 @@
+---
+/**
+ * Image from public/images, sized from src/content/images.json so the frame
+ * reserves its space before the image loads (no layout shift).
+ * - Lazy by default; pass `eager` for the one above-the-fold image (hero).
+ * - fit="contain" shows the whole image (posters with text) over a blurred
+ *   copy of itself; the copy reuses the same file, so it costs no extra request.
+ * - Override the frame shape with an aspect-* class, e.g. class="aspect-[4/5]".
+ */
+import { getImage } from '../lib/images';
+
+interface Props {
+  /** Path under public/images, e.g. "speaking/talk-numl-session.webp" */
+  image: string;
+  /** Defaults to the alt text in images.json */
+  alt?: string;
+  fit?: 'cover' | 'contain';
+  /** CSS object-position for fit="cover", e.g. "62% 45%" */
+  position?: string;
+  eager?: boolean;
+  class?: string;
+}
+
+const { image, alt, fit = 'cover', position, eager = false, class: className } = Astro.props;
+const img = getImage(image);
+const loading = eager ? 'eager' : 'lazy';
+---
+
+<div class:list={['media', className]} style={`--media-ratio: ${img.width} / ${img.height}`}>
+  {
+    fit === 'contain' && (
+      <img
+        class="media-backdrop"
+        src={img.src}
+        alt=""
+        aria-hidden="true"
+        width={img.width}
+        height={img.height}
+        loading={loading}
+        decoding="async"
+      />
+    )
+  }
+  <img
+    class="media-img"
+    data-fit={fit}
+    src={img.src}
+    alt={alt ?? img.alt}
+    width={img.width}
+    height={img.height}
+    loading={loading}
+    decoding={eager ? 'auto' : 'async'}
+    fetchpriority={eager ? 'high' : undefined}
+    style={position ? `object-position: ${position}` : undefined}
+  />
+</div>

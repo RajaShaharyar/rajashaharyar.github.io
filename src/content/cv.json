@@ -97,7 +97,7 @@
         "roles": [
           {
             "title": "Co-Founder & Head of Growth",
-            "start": "TODO: start month (CV reads 10/01/2022)",
+            "start": "2022-01",
             "end": null,
             "bullets": [
               "Led growth and brand-building initiatives.",
@@ -109,10 +109,8 @@
             ]
           }
         ],
-        "toConfirm": [
-          "Start date: the CV's DD/MM/YYYY format reads 10/01/2022 as 10 January 2022; the blueprint reads it as October 2022.",
-          "One title for Tapit everywhere: Co-Founder & Head of Growth (CV), Founder (event banners) or CEO (CreativeMornings)."
-        ]
+        "_note": "Start date is 10 January 2022 (the CV uses day-first dates). Title decided: Co-Founder & Head of Growth, used everywhere.",
+        "toConfirm": []
       },
       {
         "id": "homs-inc",
@@ -173,13 +171,14 @@
         "finalYearProject": {
           "title": "TODO: final-year project title",
           "description": "TODO: one-line description",
-          "award": "1st position, Best Final Year Project Award (May 2023)",
+          "award": "1st prize, final-year project (ideation stage), Pakistan Game Developers Conference 2023, Air University",
+          "awardDate": "2023-05-09",
           "recognitionId": "win-pgdc-2023-fyp"
         },
         "grade": "TODO: CGPA (optional; only if you want it shown)"
       }
     ],
-    "toConfirm": ["FYP award: the CV lists Air University as the awarding body; the photo says Pakistan Game Developers Conference 2023."]
+    "toConfirm": []
   },
 
   "programmes": {
@@ -234,7 +233,7 @@
       { "date": "2023-09", "title": "Winner, AIESEC Sparkathon 2023", "by": "AIESEC Pakistan", "source": "CV", "recognitionId": "win-aiesec-sparkathon-2023" },
       { "date": "2023", "title": "Top 3, LMKT Startup Showdown 2023 (KP edition)", "by": "LMKT", "source": "Folder", "recognitionId": "top3-lmkt-startup-showdown-2023" },
       { "date": "2023-06", "title": "Winner, Zindigi Prize Islamabad Regionals", "by": "JS Bank", "source": "CV", "recognitionId": "win-zindigi-prize-2023" },
-      { "date": "2023-05", "title": "1st position, Best Final Year Project Award", "by": "Air University", "source": "CV", "recognitionId": "win-pgdc-2023-fyp" },
+      { "date": "2023-05-09", "title": "1st prize, final-year project (ideation stage)", "by": "Pakistan Game Developers Conference 2023, Air University", "source": "CV", "recognitionId": "win-pgdc-2023-fyp" },
       { "date": "TODO: date", "title": "Winner, ICSTSI start-up competition", "by": "TODO: organiser", "source": "Folder", "recognitionId": "win-icstsi" }
     ]
   },

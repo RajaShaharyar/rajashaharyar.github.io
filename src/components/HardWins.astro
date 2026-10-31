@@ -1,0 +1,35 @@
+---
+/** Homepage section 5: the regulated-fintech gates. */
+interface Props {
+  items: { title: string; text: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+  {
+    items.map((item, i) => (
+      <li class="relative flex flex-col gap-3 bg-surface p-6 md:p-7">
+        <span class="gate-bar" aria-hidden="true" />
+        <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <h3 class="text-xl font-semibold tracking-tight md:text-2xl">{item.title}</h3>
+        <p class="text-fg-muted">{item.text}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .gate-bar {
+    position: absolute;
+    top: 0;
+    left: 1.5rem;
+    width: 2.5rem;
+    height: 3px;
+    background-color: var(--color-accent);
+    border-radius: 0 0 2px 2px;
+  }
+</style>

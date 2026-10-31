@@ -1,0 +1,24 @@
+---
+/** Homepage section 7: four speaking photos with captions from images.json. */
+import Media from './Media.astro';
+import { getImage } from '../lib/images';
+
+interface Props {
+  images: string[];
+}
+
+const { images } = Astro.props;
+---
+
+<ul class="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+  {
+    images.map((key) => (
+      <li>
+        <figure>
+          <Media image={key} fit="contain" class="aspect-square rounded-card border border-line" />
+          <figcaption class="mt-3 text-sm leading-snug text-fg-muted">{getImage(key).caption}</figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>

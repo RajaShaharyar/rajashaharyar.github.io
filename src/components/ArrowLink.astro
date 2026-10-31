@@ -1,0 +1,15 @@
+---
+/** "Label →" link. The arrow is decorative; pass extra screen-reader context via `srContext`. */
+interface Props {
+  href: string;
+  /** Hidden text appended to the label, e.g. the card name */
+  srContext?: string;
+  class?: string;
+}
+
+const { href, srContext, class: className } = Astro.props;
+---
+
+<a href={href} class:list={['arrow-link', className]}
+  ><slot />{srContext && <span class="sr-only">: {srContext}</span>}<span class="arrow" aria-hidden="true">→</span></a
+>

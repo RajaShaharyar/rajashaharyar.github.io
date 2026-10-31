@@ -7,6 +7,42 @@ export interface NavLink {
   children?: NavLink[];
 }
 
+export interface Venture {
+  id: string;
+  name: string;
+  role?: string;
+  href: string;
+  external: string;
+  footer: boolean;
+  meta: string;
+  badge?: string;
+  metric?: { value: string; label: string };
+  line: string;
+  image?: { src: string; fit: 'cover' | 'contain'; position?: string };
+}
+
+export interface Stat {
+  id: string;
+  value: string;
+  label: string;
+  source: string;
+  toConfirm?: string;
+}
+
+export interface Offer {
+  id: string;
+  title: string;
+  stage: string;
+  summary: string;
+}
+
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role?: string;
+  company?: string;
+}
+
 export interface Site {
   name: string;
   shortName: string;
@@ -29,12 +65,14 @@ export interface Site {
   cv: { pageHref: string; pdfHref: string; todo: string };
   cta: { label: string; href: string };
   nav: NavLink[];
-  ventures: { name: string; href: string; external: string }[];
-  stats: { id: string; value: string; label: string; source: string; toConfirm?: string }[];
+  ventures: Venture[];
+  stats: Stat[];
+  offers: Offer[];
+  testimonials: Testimonial[];
 }
 
 /** site.json, type-checked against the Site interface at build time. */
-export const site: Site = siteJson;
+export const site: Site = siteJson as Site;
 
 /** Normalise a path to the trailing-slash form GitHub Pages serves. */
 export function withSlash(path: string): string {

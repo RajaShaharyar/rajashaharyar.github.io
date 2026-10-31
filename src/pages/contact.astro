@@ -1,0 +1,286 @@
+---
+/**
+ * Contact: reason picker (Hiring / Growth help / Speaking / Other), email,
+ * WhatsApp, LinkedIn and a booking link.
+ *
+ * ── FORMSPREE ────────────────────────────────────────────────────────────
+ * The form posts to Formspree as soon as `contact.form.formspreeId` in
+ * src/content/site.json is filled in. Until then it falls back to mailto:
+ * it opens the visitor's email app with the message ready to send.
+ * ─────────────────────────────────────────────────────────────────────────
+ *
+ * Pre-select a reason from a link: /contact/?reason=speaking
+ */
+import Base from '../layouts/Base.astro';
+import Todo from '../components/Todo.astro';
+import { site } from '../lib/site';
+
+const { contact } = site;
+const formspreeId = contact.form.formspreeId.trim();
+const mode = formspreeId ? 'formspree' : 'mailto';
+const action = formspreeId ? `https://formspree.io/f/${formspreeId}` : `mailto:${contact.email}`;
+
+const reasons = [
+  { value: 'hiring', label: 'Hiring', hint: 'A full-time role' },
+  { value: 'growth-help', label: 'Growth help', hint: 'Project, advisory or fractional' },
+  { value: 'speaking', label: 'Speaking', hint: 'Talks, panels or workshops' },
+  { value: 'other', label: 'Other', hint: 'Anything else' },
+];
+
+const title = "Let's talk";
+const description = 'Hiring, growth help or a speaking invitation: get in touch with Raja Shaharyar Ali by email, WhatsApp or LinkedIn.';
+---
+
+<Base title="Contact" description={description} hideDock>
+  <section class="wrap py-16 md:py-24">
+    <p class="eyebrow">Contact</p>
+    <h1 class="mt-4 text-display-lg">{title}</h1>
+    <p class="lead mt-6 max-w-2xl">
+      Tell me what you're working on. Pick a reason so your message reaches the right conversation.
+    </p>
+
+    <div class="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-20">
+      <!-- Form -->
+      <form
+        class="contact-form"
+        action={action}
+        method="post"
+        enctype={mode === 'mailto' ? 'text/plain' : undefined}
+        data-contact-form
+        data-mode={mode}
+        data-email={contact.email}
+      >
+        <fieldset>
+          <legend class="field-label">What's this about?</legend>
+          <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {
+              reasons.map((r, i) => (
+                <label class="reason">
+                  <input type="radio" name="reason" value={r.label} data-reason={r.value} required={i === 0} />
+                  <span class="flex flex-col">
+                    <span class="font-semibold">{r.label}</span>
+                    <span class="text-sm text-fg-muted">{r.hint}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2">
+          <div>
+            <label for="cf-name" class="field-label">Your name</label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" required class="field" />
+          </div>
+          <div>
+            <label for="cf-email" class="field-label">Your email</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required class="field" />
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <label for="cf-message" class="field-label">Message</label>
+          <textarea id="cf-message" name="message" rows="6" required class="field resize-y"></textarea>
+        </div>
+
+        {mode === 'formspree' && <input type="hidden" name="_subject" value={`New message via ${site.url}`} />}
+
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <button type="submit" class="btn btn-primary sm:w-auto">Send message</button>
+          <p class="text-sm text-fg-muted">
+            {
+              mode === 'mailto'
+                ? 'This opens your email app with the message ready to send.'
+                : 'Sent securely via Formspree.'
+            }
+          </p>
+        </div>
+        <p class="mt-4 text-sm text-fg-muted" role="status" aria-live="polite" data-form-status></p>
+      </form>
+
+      <!-- Direct channels -->
+      <aside aria-labelledby="direct-heading">
+        <h2 id="direct-heading" class="text-display-md">Or reach me directly</h2>
+        <ul class="mt-6 flex flex-col gap-3">
+          <li>
+            <a href={`mailto:${contact.email}`} class="channel">
+              <span class="channel-key">Email</span>
+              <span class="channel-value break-all">{contact.email}</span>
+            </a>
+          </li>
+          <li>
+            <a href={contact.whatsapp.href} class="channel">
+              <span class="channel-key">WhatsApp</span>
+              <span class="channel-value">{contact.whatsapp.display}</span>
+            </a>
+          </li>
+          <li>
+            <a href={contact.linkedin.href} class="channel">
+              <span class="channel-key">LinkedIn</span>
+              <span class="channel-value">{site.name}</span>
+            </a>
+          </li>
+          <li>
+            {
+              contact.booking.href ? (
+                <a href={contact.booking.href} class="channel">
+                  <span class="channel-key">Book a call</span>
+                  <span class="channel-value">Pick a time</span>
+                </a>
+              ) : (
+                <div class="channel">
+                  <span class="channel-key">Book a call</span>
+                  <span class="channel-value">
+                    <Todo text={contact.booking.todo} />
+                  </span>
+                </div>
+              )
+            }
+          </li>
+        </ul>
+        <p class="mt-6 text-fg-muted">Based in {site.location.display}.</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .field-label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .field {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+    min-height: 2.875rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-control);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font: inherit;
+    transition: border-color 0.15s;
+  }
+  .field:hover {
+    border-color: var(--color-fg-subtle);
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+    border-color: var(--color-accent);
+  }
+
+  .reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-control);
+    background-color: var(--color-surface);
+    cursor: pointer;
+    transition:
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+  .reason:hover {
+    border-color: var(--color-fg-subtle);
+  }
+  .reason:has(input:checked) {
+    border-color: var(--color-accent);
+    background-color: var(--color-raised);
+  }
+  .reason input {
+    appearance: none;
+    flex-shrink: 0;
+    display: grid;
+    place-content: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.25rem;
+    border: 1.5px solid var(--color-line-strong);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .reason input::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--color-accent-ink);
+    transform: scale(0);
+    transition: transform 0.12s var(--ease-out-quart);
+  }
+  .reason input:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .reason input:checked::before {
+    transform: scale(1);
+  }
+
+  .channel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  a.channel:hover {
+    border-color: var(--color-accent);
+  }
+  .channel-key {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .channel-value {
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-form-status]');
+
+  if (form) {
+    // Pre-select a reason from ?reason=hiring|growth-help|speaking|other
+    const wanted = new URLSearchParams(window.location.search).get('reason');
+    if (wanted) {
+      const radio = form.querySelector<HTMLInputElement>(`input[data-reason="${CSS.escape(wanted)}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    // mailto fallback: build a clean email instead of posting form data.
+    if (form.dataset.mode === 'mailto') {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+
+        const data = new FormData(form);
+        const reason = String(data.get('reason') ?? 'Other');
+        const name = String(data.get('name') ?? '').trim();
+        const email = String(data.get('email') ?? '').trim();
+        const message = String(data.get('message') ?? '').trim();
+
+        const subject = `${reason}: message from ${name}`;
+        const body = `${message}\n\n${name}\n${email}`;
+        const to = form.dataset.email ?? '';
+        window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        if (status) {
+          status.textContent = `Your email app should open with the message ready. If it doesn't, email ${to} directly.`;
+        }
+      });
+    }
+  }
+</script>

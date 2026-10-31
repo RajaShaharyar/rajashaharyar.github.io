@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import StubPage from '../components/StubPage.astro';
+
+const title = 'CV';
+const purpose = 'The full CV on one page, plus a PDF download.';
+---
+
+<Base title={title} description={purpose} ogType="profile">
+  <StubPage eyebrow="CV" title={title} purpose={purpose} phase="Phase 3 · About and CV" />
+</Base>

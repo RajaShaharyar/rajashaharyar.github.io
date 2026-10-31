@@ -1,0 +1,162 @@
+---
+/**
+ * Base layout for every page: SEO basics (title template, description,
+ * canonical, Open Graph, Twitter card, Person JSON-LD), nav, footer and the
+ * mobile-docked "Let's talk" button.
+ */
+import '@fontsource-variable/inter';
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site, withSlash } from '../lib/site';
+
+interface Props {
+  /** Page title; rendered as "Title — Raja Shaharyar Ali". Omit on the home page. */
+  title?: string;
+  description?: string;
+  ogType?: 'website' | 'profile';
+  /** Hide the mobile-docked "Let's talk" button (e.g. on /contact). */
+  hideDock?: boolean;
+  /** For the 404 page: no canonical, not indexed. */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  ogType = 'website',
+  hideDock = false,
+  noindex = false,
+} = Astro.props;
+
+// Title template
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.title}`;
+const siteUrl = Astro.site ?? new URL(site.url);
+const canonical = new URL(withSlash(Astro.url.pathname), siteUrl).href;
+const ogLocale = site.locale.replace('-', '_');
+
+// TODO (Phase 6): share image per page (og:image / twitter:image).
+
+// Person structured data (stub; Phase 6 extends it)
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: new URL('/', siteUrl).href,
+  jobTitle: site.title,
+  worksFor: { '@type': 'Organization', name: site.company },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.location.city,
+    addressCountry: site.location.countryCode,
+  },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Air University, Islamabad' },
+  sameAs: [site.contact.linkedin.href],
+};
+const personJson = JSON.stringify(personLd).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang={site.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="author" content={site.name} />
+    <meta name="theme-color" content="#0b0c0e" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <script is:inline type="application/ld+json" set:html={personJson} />
+  </head>
+  <body class:list={['flex min-h-dvh flex-col', !hideDock && 'has-dock']}>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Nav />
+    <main id="main" class="flex-1" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    {
+      !hideDock && (
+        <div class="dock" data-dock>
+          <a href={site.cta.href} class="btn btn-primary w-full">
+            {site.cta.label}
+          </a>
+        </div>
+      )
+    }
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-control);
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    top: 0.75rem;
+  }
+  main:focus {
+    outline: none;
+  }
+
+  /* "Let's talk" docks to the bottom of the screen on small screens. */
+  .dock {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 60;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    background-color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    border-top: 1px solid var(--color-line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  body.has-dock {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+
+  @media (width < 64rem) {
+    html.nav-open {
+      overflow: hidden;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .dock {
+      display: none;
+    }
+    body.has-dock {
+      padding-bottom: 0;
+    }
+  }
+</style>

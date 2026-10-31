@@ -1,0 +1,47 @@
+import siteJson from '../content/site.json';
+
+export interface NavLink {
+  label: string;
+  href: string;
+  description?: string;
+  children?: NavLink[];
+}
+
+export interface Site {
+  name: string;
+  shortName: string;
+  title: string;
+  company: string;
+  tagline: string;
+  description: string;
+  url: string;
+  locale: string;
+  location: { display: string; city: string; countryCode: string };
+  contact: {
+    email: string;
+    phone: { display: string; href: string };
+    whatsapp: { display: string; href: string };
+    linkedin: { display: string; href: string };
+    digitalCard: { display: string; href: string };
+    booking: { href: string; todo: string };
+    form: { formspreeId: string };
+  };
+  cv: { pageHref: string; pdfHref: string; todo: string };
+  cta: { label: string; href: string };
+  nav: NavLink[];
+  ventures: { name: string; href: string; external: string }[];
+  stats: { id: string; value: string; label: string; source: string; toConfirm?: string }[];
+}
+
+/** site.json, type-checked against the Site interface at build time. */
+export const site: Site = siteJson;
+
+/** Normalise a path to the trailing-slash form GitHub Pages serves. */
+export function withSlash(path: string): string {
+  return path.endsWith('/') ? path : `${path}/`;
+}
+
+/** Strip the leading "TODO:" from a placeholder string for display. */
+export function todoText(value: string): string {
+  return value.replace(/^TODO:\s*/, '');
+}

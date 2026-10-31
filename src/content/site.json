@@ -1,0 +1,142 @@
+{
+  "_rules": "Site-wide details. Contact details come from the CV. Never add date of birth, gender or home address. Any value starting with TODO is rendered as a visible placeholder; 'toConfirm' lists facts to settle before Phase 2 uses them.",
+
+  "name": "Raja Shaharyar Ali",
+  "shortName": "Raja Shaharyar",
+  "title": "Manager, Product & Growth",
+  "company": "Evamp & Saanga",
+  "tagline": "Product and growth lead who takes products from first customer to scale, in fintech, SaaS and consumer.",
+  "taglineStatus": "Draft positioning line from the blueprint. The final hero headline is chosen in Phase 2.",
+  "description": "Raja Shaharyar Ali is a product and growth lead in Islamabad who takes products from first customer to scale across fintech, SaaS and consumer.",
+  "url": "https://rajashaharyar.github.io",
+  "locale": "en-GB",
+  "location": {
+    "display": "Islamabad, Pakistan",
+    "city": "Islamabad",
+    "countryCode": "PK"
+  },
+
+  "contact": {
+    "email": "rajasali2002@gmail.com",
+    "phone": {
+      "display": "+92 343 5958017",
+      "href": "tel:+923435958017"
+    },
+    "whatsapp": {
+      "display": "+92 343 5958017",
+      "href": "https://wa.me/923435958017"
+    },
+    "linkedin": {
+      "display": "linkedin.com/in/raja-shaharyar-8418971b9",
+      "href": "https://www.linkedin.com/in/raja-shaharyar-8418971b9",
+      "toConfirm": "Which LinkedIn URL is current: the CV links /in/raja-shaharyar-8418971b9, search shows /in/rajashaharyar."
+    },
+    "digitalCard": {
+      "display": "thetapitcard.com/rajashaharyar",
+      "href": "https://www.thetapitcard.com/rajashaharyar"
+    },
+    "booking": {
+      "href": "",
+      "todo": "TODO: booking link (e.g. Calendly or Cal.com)"
+    },
+    "form": {
+      "_howTo": "FORMSPREE: paste the form ID (the part after formspree.io/f/) into formspreeId and rebuild. Empty = the contact form falls back to opening the visitor's email app (mailto).",
+      "formspreeId": ""
+    }
+  },
+
+  "cv": {
+    "pageHref": "/cv/",
+    "pdfHref": "",
+    "todo": "TODO: web CV PDF without date of birth, gender or home address (Phase 3)"
+  },
+
+  "cta": {
+    "label": "Let's talk",
+    "href": "/contact/"
+  },
+
+  "nav": [
+    { "label": "Home", "href": "/" },
+    {
+      "label": "Ventures",
+      "href": "/ventures/",
+      "children": [
+        { "label": "AsaanBill", "href": "/ventures/asaanbill/", "description": "Regulated fintech, from 0→1 to scale" },
+        { "label": "Tapit", "href": "/ventures/tapit/", "description": "Founder story: from idea to 3,000+ customers" },
+        { "label": "Ladenza Clothing", "href": "/ventures/ladenza/", "description": "Consumer selling and acquisition" },
+        { "label": "Earlier roles", "href": "/ventures/earlier-roles/", "description": "SonicEngine AI and HOMS Inc." }
+      ]
+    },
+    { "label": "Work With Me", "href": "/work-with-me/" },
+    {
+      "label": "Recognition",
+      "href": "/recognition/",
+      "children": [
+        { "label": "Competitions & awards", "href": "/recognition/competitions-awards/", "description": "Wins, a top-3 finish and awards, with photos" },
+        { "label": "Programmes & incubation", "href": "/recognition/programmes/", "description": "NIC Peshawar, K2prenuer, Founder Institute" },
+        { "label": "Partnerships & MOUs", "href": "/recognition/partnerships/", "description": "MOU signings and partnership counts" },
+        { "label": "Speaking & events", "href": "/recognition/speaking-events/", "description": "Guest talks, the podcast, events and media" }
+      ]
+    },
+    {
+      "label": "About",
+      "href": "/about/",
+      "children": [
+        { "label": "My story", "href": "/about/", "description": "The story, career timeline and 2024 in review" },
+        { "label": "Education", "href": "/about/education/", "description": "Degree, courses and the final-year project prize" },
+        { "label": "Skills & tools", "href": "/about/skills/", "description": "The grouped toolkit and how I work" },
+        { "label": "Beyond work", "href": "/about/beyond-work/", "description": "NGO Mustahiq and the K2 base camp trek" }
+      ]
+    },
+    { "label": "CV", "href": "/cv/" }
+  ],
+
+  "ventures": [
+    { "name": "AsaanBill", "href": "/ventures/asaanbill/", "external": "https://evampsaanga.com/asaan-bill/" },
+    { "name": "Tapit", "href": "/ventures/tapit/", "external": "https://www.thetapitcard.com/" },
+    { "name": "Ladenza Clothing", "href": "/ventures/ladenza/", "external": "", "todo": "TODO: Ladenza Clothing website or Instagram link" }
+  ],
+
+  "stats": [
+    {
+      "id": "sales",
+      "value": "PKR 25 Cr+",
+      "label": "in sales",
+      "source": "CV (About me)",
+      "toConfirm": "Which ventures and which period this covers."
+    },
+    {
+      "id": "monthly-volume",
+      "value": "$1.8M+",
+      "label": "monthly transaction volume on AsaanBill",
+      "source": "CV (Evamp & Saanga)",
+      "toConfirm": "Confirm it is AsaanBill, what it measures, and clearance from Evamp & Saanga to publish it."
+    },
+    {
+      "id": "tapit-customers",
+      "value": "3,000+",
+      "label": "Tapit customers in 2 years",
+      "source": "CV (TapitCard)"
+    },
+    {
+      "id": "erp-partnerships",
+      "value": "15+",
+      "label": "ERP partnerships",
+      "source": "CV (Evamp & Saanga)"
+    },
+    {
+      "id": "team",
+      "value": "25+",
+      "label": "team led",
+      "source": "CV (Evamp & Saanga)"
+    },
+    {
+      "id": "competitions",
+      "value": "5",
+      "label": "competitions won",
+      "source": "Blueprint: the 4 wins on the CV plus the ICSTSI win (see recognition.json)",
+      "toConfirm": "Confirm the ICSTSI win counts towards this total."
+    }
+  ]
+}

@@ -1,0 +1,527 @@
+---
+/**
+ * Main navigation, exactly as the blueprint orders it:
+ * Home · Ventures ▾ · Work With Me · Recognition ▾ · About ▾ · CV · [Let's talk]
+ *
+ * Desktop (>= 1024px): menus open on mouse hover and on keyboard focus;
+ *   the chevron button toggles on click/tap; Escape closes.
+ * Mobile: "Menu" opens a panel; each menu becomes an accordion; the
+ *   "Let's talk" button docks to the bottom of the screen (see Base.astro).
+ * Without JavaScript: desktop menus still open on hover/focus, and the
+ *   mobile panel shows every link expanded.
+ */
+import { site, withSlash } from '../lib/site';
+
+const path = withSlash(Astro.url.pathname);
+const isCurrent = (href: string) => withSlash(href) === path;
+const inSection = (href: string) => href !== '/' && path.startsWith(withSlash(href));
+const menuId = (label: string) => `menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+// The right-most dropdown opens leftwards so it never runs off-screen.
+const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
+---
+
+<header class="site-header" data-site-header>
+  <div class="wrap header-inner">
+    <a href="/" class="wordmark" aria-label={`${site.name}, home`}>
+      {site.shortName}<span class="wordmark-dot" aria-hidden="true">.</span>
+    </a>
+
+    <button
+      type="button"
+      class="menu-button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-nav-toggle
+    >
+      <span data-nav-toggle-label>Menu</span>
+      <svg class="menu-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path class="bar bar-top" d="M4 8h16"></path>
+        <path class="bar bar-bottom" d="M4 16h16"></path>
+      </svg>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main" data-nav>
+      <ul class="nav-list">
+        {
+          site.nav.map((item, index) =>
+            item.children ? (
+              <li
+                class="nav-item has-menu"
+                data-menu
+                data-section-active={inSection(item.href) || undefined}
+                data-align-end={index === lastMenuIndex || undefined}
+              >
+                <div class="nav-row">
+                  <a
+                    href={item.href}
+                    class="nav-link"
+                    aria-current={isCurrent(item.href) ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </a>
+                  <button
+                    type="button"
+                    class="menu-toggle"
+                    aria-expanded="false"
+                    aria-controls={menuId(item.label)}
+                    data-menu-toggle
+                  >
+                    <span class="sr-only">{item.label} pages</span>
+                    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                      <path d="M4 6l4 4 4-4" />
+                    </svg>
+                  </button>
+                </div>
+                <div id={menuId(item.label)} class="submenu" data-submenu>
+                  <ul class="submenu-list">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class="submenu-link"
+                          aria-current={isCurrent(child.href) ? 'page' : undefined}
+                        >
+                          <span class="submenu-label">{child.label}</span>
+                          {child.description && <span class="submenu-desc">{child.description}</span>}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ) : (
+              <li class="nav-item">
+                <a
+                  href={item.href}
+                  class="nav-link"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <a
+      href={site.cta.href}
+      class="btn btn-primary header-cta"
+      aria-current={isCurrent(site.cta.href) ? 'page' : undefined}
+    >
+      {site.cta.label}
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--color-line);
+  }
+  /* Blur lives on a pseudo-element so the header does not become the
+     containing block for the fixed-position mobile panel. */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4rem;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1875rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .wordmark-dot {
+    color: var(--color-accent);
+  }
+
+  /* ---------- Mobile-first: menu button + panel ---------- */
+  .menu-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .menu-icon {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .menu-icon .bar {
+    transform-origin: 12px 12px;
+    transition: transform 0.25s var(--ease-out-quart);
+  }
+  .menu-button[aria-expanded='true'] .bar-top {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .menu-button[aria-expanded='true'] .bar-bottom {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  /* Without JS the menu button can't work, so hide it and show the list. */
+  :global(html:not(.js)) .menu-button {
+    display: none;
+  }
+  :global(html:not(.js)) .header-inner {
+    flex-wrap: wrap;
+  }
+  :global(html:not(.js)) .site-nav {
+    flex-basis: 100%;
+    padding-bottom: 1rem;
+  }
+
+  /* With JS, the panel is a full-height sheet under the header. */
+  :global(html.js) .site-nav {
+    position: fixed;
+    top: 4rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background-color: var(--color-bg);
+    padding: 0.5rem 1rem calc(7rem + env(safe-area-inset-bottom));
+  }
+  :global(html.js) .site-nav:not([data-open]) {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-item {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-height: 3.25rem;
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .nav-link[aria-current='page'] {
+    color: var(--color-accent);
+  }
+
+  .menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    color: var(--color-fg-muted);
+    cursor: pointer;
+  }
+  .menu-toggle:hover {
+    color: var(--color-fg);
+    background-color: var(--color-raised);
+  }
+  .menu-toggle svg {
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    transition: transform 0.2s var(--ease-out-quart);
+  }
+  .has-menu[data-open] .menu-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  /* Mobile accordion */
+  :global(html.js) .submenu {
+    display: none;
+  }
+  :global(html.js) .has-menu[data-open] .submenu {
+    display: block;
+  }
+  .submenu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0 0 0.75rem;
+  }
+  .submenu-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radius-control);
+    text-decoration: none;
+    transition: background-color 0.15s;
+  }
+  .submenu-link:hover {
+    background-color: var(--color-raised);
+  }
+  .submenu-label {
+    font-weight: 600;
+  }
+  .submenu-link[aria-current='page'] .submenu-label {
+    color: var(--color-accent);
+  }
+  .submenu-desc {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--color-fg-muted);
+  }
+
+  /* On phones "Let's talk" docks to the bottom instead (Base.astro). */
+  .header-cta {
+    display: none;
+  }
+
+  /* ---------- Desktop: horizontal bar + dropdowns ---------- */
+  @media (width >= 64rem) {
+    .header-inner {
+      min-height: 4.5rem;
+    }
+    .menu-button,
+    :global(html:not(.js)) .menu-button {
+      display: none;
+    }
+    .header-cta {
+      display: inline-flex;
+    }
+
+    .site-nav,
+    :global(html.js) .site-nav,
+    :global(html.js) .site-nav:not([data-open]),
+    :global(html:not(.js)) .site-nav {
+      display: block;
+      position: static;
+      flex-basis: auto;
+      overflow: visible;
+      padding: 0;
+      background: none;
+      margin-left: auto;
+    }
+
+    .nav-list {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .nav-item {
+      position: relative;
+      border-bottom: 0;
+    }
+    .nav-link {
+      min-height: 2.75rem;
+      padding: 0 0.75rem;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--color-fg-muted);
+      border-radius: 999px;
+      transition: color 0.15s;
+    }
+    .nav-link:hover,
+    .has-menu[data-open] .nav-link {
+      color: var(--color-fg);
+    }
+    .nav-link[aria-current='page'],
+    .has-menu[data-section-active] .nav-link {
+      color: var(--color-fg);
+      text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.5em;
+    }
+    .has-menu .nav-link {
+      padding-right: 0.125rem;
+    }
+    .menu-toggle {
+      width: 1.75rem;
+      height: 2.75rem;
+      margin-right: 0.25rem;
+    }
+    .menu-toggle:hover {
+      background: none;
+    }
+
+    /* Dropdown panel. padding-top bridges the gap so moving the mouse from
+       the label into the panel never closes it. */
+    .submenu,
+    :global(html.js) .submenu {
+      display: block;
+      position: absolute;
+      top: 100%;
+      left: -0.5rem;
+      width: 20rem;
+      padding-top: 0.625rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-4px);
+      transition:
+        opacity 0.16s var(--ease-out-quart),
+        transform 0.16s var(--ease-out-quart),
+        visibility 0s linear 0.16s;
+    }
+    .has-menu[data-align-end] .submenu {
+      left: auto;
+      right: -0.5rem;
+    }
+    .has-menu[data-open] .submenu,
+    :global(html.js) .has-menu[data-open] .submenu,
+    :global(html:not(.js)) .has-menu:hover .submenu,
+    :global(html:not(.js)) .has-menu:focus-within .submenu {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 0.16s var(--ease-out-quart),
+        transform 0.16s var(--ease-out-quart),
+        visibility 0s;
+    }
+    .submenu-list {
+      padding: 0.5rem;
+      background-color: var(--color-raised);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      box-shadow: 0 24px 48px -12px rgb(0 0 0 / 0.6);
+    }
+  }
+</style>
+
+<script>
+  const desktop = window.matchMedia('(width >= 64rem)');
+  const navToggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const navToggleLabel = document.querySelector<HTMLElement>('[data-nav-toggle-label]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const menus = Array.from(document.querySelectorAll<HTMLLIElement>('[data-menu]'));
+  const closeTimers = new WeakMap<HTMLLIElement, number>();
+
+  function toggleOf(menu: HTMLLIElement) {
+    return menu.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  }
+
+  function setMenu(menu: HTMLLIElement, open: boolean) {
+    window.clearTimeout(closeTimers.get(menu));
+    menu.toggleAttribute('data-open', open);
+    toggleOf(menu)?.setAttribute('aria-expanded', String(open));
+  }
+
+  function closeOtherMenus(except?: HTMLLIElement) {
+    for (const m of menus) if (m !== except) setMenu(m, false);
+  }
+
+  function setPanel(open: boolean) {
+    if (!nav || !navToggle) return;
+    nav.toggleAttribute('data-open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
+    if (navToggleLabel) navToggleLabel.textContent = open ? 'Close' : 'Menu';
+    document.documentElement.classList.toggle('nav-open', open);
+    // Opening on a phone: expand the section you are in.
+    if (open) for (const m of menus) setMenu(m, m.hasAttribute('data-section-active'));
+  }
+
+  navToggle?.addEventListener('click', () => {
+    setPanel(navToggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  for (const menu of menus) {
+    const button = toggleOf(menu);
+
+    // Click/tap on the chevron toggles (desktop and mobile accordion).
+    button?.addEventListener('click', () => {
+      const willOpen = !menu.hasAttribute('data-open');
+      if (desktop.matches) closeOtherMenus(menu);
+      setMenu(menu, willOpen);
+    });
+
+    // Desktop hover: mouse only, so touch taps on large tablets don't
+    // open-then-immediately-toggle-closed.
+    menu.addEventListener('pointerenter', (e) => {
+      if (!desktop.matches || e.pointerType !== 'mouse') return;
+      closeOtherMenus(menu);
+      setMenu(menu, true);
+    });
+    menu.addEventListener('pointerleave', (e) => {
+      if (!desktop.matches || e.pointerType !== 'mouse') return;
+      if (menu.contains(document.activeElement) && document.activeElement?.matches(':focus-visible')) return;
+      closeTimers.set(menu, window.setTimeout(() => setMenu(menu, false), 120));
+    });
+
+    // Desktop keyboard: open when focus arrives by keyboard, close when it leaves.
+    menu.addEventListener('focusin', (e) => {
+      if (!desktop.matches || menu.hasAttribute('data-dismissed')) return;
+      const target = e.target as HTMLElement;
+      if (target.matches(':focus-visible')) {
+        closeOtherMenus(menu);
+        setMenu(menu, true);
+      }
+    });
+    menu.addEventListener('focusout', (e) => {
+      const next = e.relatedTarget as Node | null;
+      if (next && menu.contains(next)) return;
+      menu.removeAttribute('data-dismissed');
+      if (desktop.matches) setMenu(menu, false);
+    });
+  }
+
+  // Escape closes the open dropdown (focus returns to its button) or the panel.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = menus.find((m) => m.hasAttribute('data-open'));
+    if (desktop.matches && open) {
+      open.setAttribute('data-dismissed', '');
+      setMenu(open, false);
+      toggleOf(open)?.focus();
+      return;
+    }
+    if (nav?.hasAttribute('data-open')) {
+      setPanel(false);
+      navToggle?.focus();
+    }
+  });
+
+  // Click outside closes desktop dropdowns.
+  document.addEventListener('click', (e) => {
+    if (!desktop.matches) return;
+    const target = e.target as Node;
+    for (const m of menus) if (!m.contains(target)) setMenu(m, false);
+  });
+
+  // Crossing the breakpoint resets everything.
+  desktop.addEventListener('change', () => {
+    setPanel(false);
+    closeOtherMenus();
+  });
+</script>

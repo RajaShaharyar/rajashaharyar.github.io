@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import StubPage from '../../components/StubPage.astro';
+
+const title = 'My story';
+const purpose = 'The person behind the numbers: the story, a career timeline and 2024 in review.';
+---
+
+<Base title={title} description={purpose} ogType="profile">
+  <StubPage eyebrow="About" title={title} purpose={purpose} phase="Phase 3 · About and CV" />
+</Base>

@@ -1,0 +1,27 @@
+---
+/**
+ * The four Recognition sub-pages, generated from the Recognition menu in
+ * site.json. Phase 4 swaps the stub for RecognitionLayout, listing the
+ * recognition.json items whose `shownOn` includes this category.
+ */
+import type { InferGetStaticPropsType } from 'astro';
+import Base from '../../layouts/Base.astro';
+import StubPage from '../../components/StubPage.astro';
+import { site } from '../../lib/site';
+
+export function getStaticPaths() {
+  const menu = site.nav.find((item) => item.href === '/recognition/');
+  return (menu?.children ?? []).map((page) => ({
+    params: { category: page.href.split('/').filter(Boolean).at(-1) },
+    props: { title: page.label, purpose: page.description ?? '' },
+  }));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { title, purpose } = Astro.props;
+---
+
+<Base title={title} description={purpose}>
+  <StubPage eyebrow="Recognition" title={title} purpose={`${purpose}.`} phase="Phase 4 · Recognition" />
+</Base>

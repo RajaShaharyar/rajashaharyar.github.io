@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import StubPage from '../../components/StubPage.astro';
+
+const title = 'Ventures';
+const purpose = 'Four ventures, each with the stage it reached and one headline metric.';
+---
+
+<Base title={title} description={purpose}>
+  <StubPage eyebrow="Ventures" title={title} purpose={purpose} phase="Phase 5 · Ventures" />
+</Base>

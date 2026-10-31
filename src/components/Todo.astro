@@ -1,0 +1,21 @@
+---
+/**
+ * Visible placeholder for content that is still to collect.
+ * Usage: <Todo>Booking link</Todo>  or  <Todo text="TODO: booking link" />
+ * Never replace a TODO with a guess; replace it with the confirmed fact.
+ */
+import { todoText } from '../lib/site';
+
+interface Props {
+  text?: string;
+  class?: string;
+}
+
+const { text, class: className } = Astro.props;
+---
+
+<span class:list={['todo', className]}>
+  <span class="todo-tag" aria-hidden="true">TODO</span>
+  <span class="sr-only">To do:</span>
+  {text ? todoText(text) : <slot />}
+</span>

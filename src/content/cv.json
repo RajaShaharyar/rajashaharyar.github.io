@@ -1,0 +1,314 @@
+{
+  "_rules": "Every CV section, in the blueprint's order (1-14). Feeds /cv, the PDF, Education and Skills & tools. Filled from the CV PDF; anything missing is a TODO. NEVER add date of birth, gender, nationality or home address. Dates are YYYY-MM; end: null means current.",
+
+  "header": {
+    "section": 1,
+    "title": "Header",
+    "name": "Raja Shaharyar Ali",
+    "headline": "Manager, Product & Growth, Evamp & Saanga",
+    "location": "Islamabad, Pakistan",
+    "website": "https://rajashaharyar.github.io",
+    "contactFrom": "site.json → contact (email, whatsapp, linkedin). One source, so the CV and the footer never disagree.",
+    "pdf": "TODO: web CV PDF without date of birth, gender or home address (Phase 3)"
+  },
+
+  "summary": {
+    "section": 2,
+    "title": "Summary",
+    "cvText": "5+ years in Marketing, Sales and Product Management across Fintech and SaaS businesses. Generated over PKR 25 Cr in sales and scaled a fintech product to $200K+ in ARR. Launched and grew an AdTech startup from scratch. Strong at GTM strategy, closing deals, and turning products into revenue. Working towards becoming the go-to deal closer in any room.",
+    "text": "TODO: tighten the CV text to three lines: years, sectors, headline proof, and what he's looking for next",
+    "toConfirm": [
+      "$200K+ ARR: confirm it is AsaanBill and what it measures.",
+      "'Launched and grew an AdTech startup': which venture this is."
+    ]
+  },
+
+  "keyNumbers": {
+    "section": 3,
+    "title": "Key numbers",
+    "from": "site.json → stats (the six proof-bar figures). One source for the CV, the home proof bar and the PDF."
+  },
+
+  "experience": {
+    "section": 4,
+    "title": "Experience",
+    "todo": "TODO: trim to 3-5 result-first bullets per role (Phase 3). Bullets below are as written on the CV.",
+    "items": [
+      {
+        "id": "evamp-saanga",
+        "company": "Evamp & Saanga",
+        "location": "Islamabad, Pakistan",
+        "href": "/ventures/asaanbill/",
+        "roles": [
+          {
+            "title": "Manager, Product & Growth",
+            "start": "2025-10",
+            "end": null,
+            "bullets": [
+              "Led end-to-end management of fintech product AsaanBill.",
+              "Designed and executed the go-to-market strategy for RAAST P2M expansion.",
+              "Established scalable sales funnels and optimised customer acquisition and retention.",
+              "Expanded into the restaurant industry through 15+ ERP partnerships.",
+              "Scaled the product to $1.8M+ in monthly transaction volume.",
+              "Drove product execution and feature delivery across cross-functional teams.",
+              "Managed a cross-functional team of 25+ across sales, technology and operations."
+            ]
+          },
+          {
+            "title": "Product Owner (Growth)",
+            "start": "2024-11",
+            "end": "2025-10",
+            "bullets": [
+              "Led the 0→1 launch of AsaanBill from product to market fit.",
+              "Onboarded the first 50 business customers.",
+              "Secured 6 strategic partnerships to scale in KLI.",
+              "Managed product feedback and feature prioritisation.",
+              "Defined ICPs and executed brand campaigns."
+            ]
+          }
+        ],
+        "toConfirm": ["What KLI stands for in '6 strategic partnerships to scale in KLI'."]
+      },
+      {
+        "id": "sonicengine-ai",
+        "company": "SonicEngine AI",
+        "location": "Islamabad, Pakistan",
+        "href": "/ventures/earlier-roles/",
+        "roles": [
+          {
+            "title": "Product Owner",
+            "start": "2024-03",
+            "end": "2024-11",
+            "bullets": [
+              "Managed product for a SaaS platform.",
+              "Built GTM strategy and multi-channel sales funnels.",
+              "Drove partnerships with studios and indie developers.",
+              "Worked on in-app economy, tokenomics and user experience."
+            ]
+          }
+        ],
+        "toConfirm": []
+      },
+      {
+        "id": "tapitcard",
+        "company": "TapitCard (Pvt) Ltd",
+        "location": "Islamabad, Pakistan",
+        "href": "/ventures/tapit/",
+        "roles": [
+          {
+            "title": "Co-Founder & Head of Growth",
+            "start": "TODO: start month (CV reads 10/01/2022)",
+            "end": null,
+            "bullets": [
+              "Led growth and brand-building initiatives.",
+              "Scaled to 3,000+ customers nationwide in 2 years.",
+              "Raised PKR 1M+ in grants across multiple forums.",
+              "Managed product development and the sales funnel.",
+              "Awarded Entrepreneur of the Year 2024.",
+              "Grew the digital platform organically to 40K followers."
+            ]
+          }
+        ],
+        "toConfirm": [
+          "Start date: the CV's DD/MM/YYYY format reads 10/01/2022 as 10 January 2022; the blueprint reads it as October 2022.",
+          "One title for Tapit everywhere: Co-Founder & Head of Growth (CV), Founder (event banners) or CEO (CreativeMornings)."
+        ]
+      },
+      {
+        "id": "homs-inc",
+        "company": "HOMS Inc.",
+        "location": "Islamabad, Pakistan",
+        "href": "/ventures/earlier-roles/",
+        "roles": [
+          {
+            "title": "Business Development Executive",
+            "start": "2023-07",
+            "end": "2023-09",
+            "bullets": [
+              "Created marketing campaigns.",
+              "Ran outreach to real-estate brokers.",
+              "Handled analytics.",
+              "Expanded the product into hostels, acquired beta users for the app and used customer retention to increase sales."
+            ]
+          }
+        ],
+        "toConfirm": []
+      }
+    ]
+  },
+
+  "otherVentures": {
+    "section": 5,
+    "title": "Other ventures",
+    "items": [
+      {
+        "name": "Ladenza Clothing",
+        "role": "TODO: role",
+        "dates": "TODO: dates",
+        "summary": "TODO: what it is, channels, numbers",
+        "href": "/ventures/ladenza/"
+      },
+      {
+        "name": "NGO Mustahiq",
+        "role": "TODO: role",
+        "dates": "TODO: dates",
+        "summary": "Launched the NGO's first project in F-8, Islamabad (2024).",
+        "source": "2024 Unwrapped (recognition.json → mustahiq-first-project)",
+        "href": "/about/beyond-work/"
+      }
+    ]
+  },
+
+  "education": {
+    "section": 6,
+    "title": "Education",
+    "items": [
+      {
+        "degree": "BS Computer Game Development",
+        "institution": "Air University",
+        "location": "Islamabad, Pakistan",
+        "start": "2020-09",
+        "end": "2024-06",
+        "website": "https://www.au.edu.pk/",
+        "finalYearProject": {
+          "title": "TODO: final-year project title",
+          "description": "TODO: one-line description",
+          "award": "1st position, Best Final Year Project Award (May 2023)",
+          "recognitionId": "win-pgdc-2023-fyp"
+        },
+        "grade": "TODO: CGPA (optional; only if you want it shown)"
+      }
+    ],
+    "toConfirm": ["FYP award: the CV lists Air University as the awarding body; the photo says Pakistan Game Developers Conference 2023."]
+  },
+
+  "programmes": {
+    "section": 7,
+    "title": "Programmes and certifications",
+    "items": [
+      {
+        "name": "Startup Incubation, Cohort-11",
+        "provider": "National Incubation Center Peshawar",
+        "start": "2023-03",
+        "end": "2024-02",
+        "website": "https://nicpeshawar.pk/",
+        "certificate": "TODO: certificate or link",
+        "recognitionIds": ["programme-nic-peshawar-incubation", "programme-nic-peshawar-graduation"]
+      },
+      {
+        "name": "Sustainable Innovation",
+        "provider": "National University of Sciences and Technology (NUST)",
+        "start": "2023-05",
+        "end": "2024-02",
+        "website": "https://nust.edu.pk/",
+        "certificate": "TODO: certificate or link"
+      },
+      {
+        "name": "Founder Institute Core (online)",
+        "provider": "Founder Institute",
+        "start": "2023-03",
+        "end": "2023-08",
+        "website": "https://fi.co/",
+        "certificate": "TODO: certificate or link",
+        "recognitionIds": ["programme-founder-institute-core"]
+      },
+      {
+        "name": "K2prenuer",
+        "provider": "TODO: organiser",
+        "start": "TODO: dates (2024)",
+        "end": null,
+        "note": "Selected: top 10 of 3,000+ applicants, youngest startup.",
+        "recognitionIds": ["programme-k2prenuer"]
+      }
+    ]
+  },
+
+  "honours": {
+    "section": 8,
+    "title": "Honours and awards",
+    "_note": "Newest first. 'source: CV' items are on the CV PDF; the rest come from the folder via recognition.json.",
+    "items": [
+      { "date": "2024", "title": "Entrepreneur of the Year 2024", "by": "TODO: awarding body", "source": "CV", "recognitionId": "award-entrepreneur-of-the-year-2024" },
+      { "date": "2024", "title": "Major Contributor Award", "by": "Air University", "source": "Folder", "recognitionId": "award-major-contributor" },
+      { "date": "2024-01", "title": "Winner, Startup Pitching League", "by": "National Incubation Center Peshawar", "source": "CV", "recognitionId": "win-startup-pitching-league-2024" },
+      { "date": "2023-09", "title": "Winner, AIESEC Sparkathon 2023", "by": "AIESEC Pakistan", "source": "CV", "recognitionId": "win-aiesec-sparkathon-2023" },
+      { "date": "2023", "title": "Top 3, LMKT Startup Showdown 2023 (KP edition)", "by": "LMKT", "source": "Folder", "recognitionId": "top3-lmkt-startup-showdown-2023" },
+      { "date": "2023-06", "title": "Winner, Zindigi Prize Islamabad Regionals", "by": "JS Bank", "source": "CV", "recognitionId": "win-zindigi-prize-2023" },
+      { "date": "2023-05", "title": "1st position, Best Final Year Project Award", "by": "Air University", "source": "CV", "recognitionId": "win-pgdc-2023-fyp" },
+      { "date": "TODO: date", "title": "Winner, ICSTSI start-up competition", "by": "TODO: organiser", "source": "Folder", "recognitionId": "win-icstsi" }
+    ]
+  },
+
+  "speaking": {
+    "section": 9,
+    "title": "Speaking",
+    "from": "recognition.json → items whose shownOn includes 'speaking-events'",
+    "todo": "TODO: one line per talk and the podcast, generated from the recognition log (Phase 3)"
+  },
+
+  "partnerships": {
+    "section": 10,
+    "title": "Partnerships",
+    "counts": [
+      { "value": "6", "label": "strategic partnerships (AsaanBill)", "source": "CV" },
+      { "value": "15+", "label": "ERP partnerships into restaurants (AsaanBill)", "source": "CV" }
+    ],
+    "mous": ["mou-asaanbill-najoomi", "mou-asaanbill-tuitionist", "mou-tapitcard-encoder-bytes", "mou-humancare-mustahiq"],
+    "_note": "mous lists recognition.json ids."
+  },
+
+  "skills": {
+    "section": 11,
+    "title": "Skills and tools",
+    "_note": "All skills are from the CV, grouped as the blueprint suggests. No percentage bars.",
+    "groups": [
+      {
+        "name": "Sales",
+        "items": ["HubSpot CRM", "Salesforce", "Apollo.io", "LinkedIn Sales Navigator", "Jeeva AI", "Lead generation", "Lead enrichment", "Automation"]
+      },
+      {
+        "name": "Marketing",
+        "items": ["Meta Suite", "Performance marketing", "Social media", "Adobe Illustrator"]
+      },
+      {
+        "name": "Product and ops",
+        "items": ["Product management", "Scrum Master", "Notion", "RevOps", "Pipeline management", "Microsoft Excel", "QuickBooks", "Microsoft 365", "Lovable AI"]
+      }
+    ],
+    "howIWork": "TODO: short 'how I work' list (e.g. ICP definition, funnel design, partnership deals)"
+  },
+
+  "languages": {
+    "section": 12,
+    "title": "Languages",
+    "items": [],
+    "todo": "TODO: languages and level"
+  },
+
+  "leadership": {
+    "section": 13,
+    "title": "Leadership and volunteering",
+    "items": [
+      {
+        "title": "NGO Mustahiq",
+        "role": "TODO: role",
+        "date": "2024",
+        "note": "Launched the first project in F-8, Islamabad; MOU with Human Care Foundation at NICAT.",
+        "recognitionIds": ["mustahiq-first-project", "mou-humancare-mustahiq"]
+      },
+      {
+        "title": "AirTech'24, Air University",
+        "role": "Director Marketing",
+        "date": "2024-03",
+        "recognitionIds": ["event-airtech-24"]
+      }
+    ]
+  },
+
+  "references": {
+    "section": 14,
+    "title": "References",
+    "items": [],
+    "todo": "TODO: two or three named referees, or 'Available on request'"
+  }
+}

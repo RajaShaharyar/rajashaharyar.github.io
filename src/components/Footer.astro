@@ -1,0 +1,120 @@
+---
+/**
+ * Footer on every page (blueprint): email, WhatsApp, LinkedIn, CV PDF and
+ * the three venture links.
+ */
+import { site } from '../lib/site';
+import Todo from './Todo.astro';
+
+const { contact, cv } = site;
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-line bg-surface">
+  <div class="wrap grid gap-12 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
+    <div>
+      <p class="font-display text-2xl font-bold tracking-tight">
+        {site.name}<span class="text-accent" aria-hidden="true">.</span>
+      </p>
+      <p class="mt-2 text-fg-muted">{site.title}, {site.company}</p>
+      <p class="text-fg-muted">{site.location.display}</p>
+      <a href={site.cta.href} class="link mt-6 inline-block font-semibold">{site.cta.label} →</a>
+    </div>
+
+    <div>
+      <h2 class="footer-heading">Get in touch</h2>
+      <ul class="footer-list">
+        <li>
+          <a href={`mailto:${contact.email}`} class="footer-link">
+            <span class="footer-key">Email</span>
+            <span class="break-all">{contact.email}</span>
+          </a>
+        </li>
+        <li>
+          <a href={contact.whatsapp.href} class="footer-link">
+            <span class="footer-key">WhatsApp</span>
+            <span>{contact.whatsapp.display}</span>
+          </a>
+        </li>
+        <li>
+          <a href={contact.linkedin.href} class="footer-link">
+            <span class="footer-key">LinkedIn</span>
+            <span>{site.name}</span>
+          </a>
+        </li>
+        <li>
+          {
+            cv.pdfHref ? (
+              <a href={cv.pdfHref} class="footer-link" download>
+                <span class="footer-key">CV</span>
+                <span>Download PDF</span>
+              </a>
+            ) : (
+              <a href={cv.pageHref} class="footer-link">
+                <span class="footer-key">CV</span>
+                <span>
+                  Download PDF <Todo class="ml-1">coming soon</Todo>
+                </span>
+              </a>
+            )
+          }
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer-heading">Ventures</h2>
+      <ul class="footer-list">
+        {
+          site.ventures.map((v) => (
+            <li>
+              <a href={v.href} class="footer-link">
+                <span>{v.name}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap border-t border-line py-6 text-sm text-fg-subtle">
+    <p>© {year} {site.name}. Based in {site.location.display}.</p>
+  </div>
+</footer>
+
+<style>
+  .footer-heading {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .footer-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .footer-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    color: var(--color-fg);
+    transition: color 0.15s;
+  }
+  .footer-link:hover {
+    color: var(--color-accent);
+  }
+  .footer-key {
+    min-width: 5.5rem;
+    font-size: 0.875rem;
+    color: var(--color-fg-muted);
+  }
+</style>

@@ -20,16 +20,18 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 ```
 src/
   content/
-    site.json          name, title, contact, nav, headline stats, venture cards, offers, testimonials
-    home.json          homepage copy, section by section
+    site.json          name, title, contact, nav, headline stats, venture cards (+ venture facts), offers, testimonials
+    home.json          homepage copy, section by section (carousel order: recognition.slides)
+    about.json         copy for the four About pages; points into cv.json by id for CV facts
     images.json        every published photo: size (prevents layout shift), alt text, caption
     recognition.json   the Recognition log (one object per row; "shownOn" decides which pages list it)
-    cv.json            all 14 CV sections (feeds /cv, the PDF, Education, Skills & tools)
+    cv.json            all 14 CV sections: the one source for roles, degree, programmes, skills, languages
     ventures/*.mdx     one file per venture, rendered by pages/ventures/[slug].astro
   content.config.ts    schemas: the build fails if recognition.json or a venture file is malformed
+  lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
-  layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), nav, footer
-  components/          Nav, Footer, StubPage, Todo
+  layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
+  components/          Nav, Footer, homepage sections, AboutHeader, Timeline, Gallery (photo grid + lightbox)
   pages/               one file per route in the blueprint's URL table
 public/images/         ventures/, recognition/, speaking/, about/, education/
 ```
@@ -53,6 +55,15 @@ iPhone HEIC files are decoded with `heic-convert` first (sharp can't read HEVC),
 (`{ pdf, page }`) extracts that page's one embedded JPEG byte-for-byte with `pdf-lib`; that's how the
 "2024 in review" photos come out of *2024 Unwrapped.pdf* without the slide's text and stickers.
 A typo in an image path fails the build. Everything except the hero image is lazy-loaded.
+
+## About pages
+
+- **My story** timeline: entries in `about.json → story.timeline.items`, oldest first. Dressup and Gameotivity
+  join it automatically, in date order, once their start dates in `cv.json → experience` are filled in (`YYYY-MM`).
+- **Education** reads the degree and programmes from `cv.json`; a programme's "what it covered" and certificate
+  link appear only once they are filled in there. The closing line is flagged `draft: true` for Raja to revise.
+- Every photo group is a `Gallery`: a lazy-loaded grid whose photos open in an accessible lightbox
+  (Enter or click opens, ←/→ step, Tab stays inside, Escape closes, focus returns to the photo).
 
 ## CV download
 

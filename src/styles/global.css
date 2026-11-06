@@ -259,6 +259,19 @@
   }
 
   /* Text links inside content */
+  /* A line set apart from the text around it (My story, Education) */
+  .pull-line {
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1.25rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    text-wrap: balance;
+  }
+
   .link {
     color: var(--color-fg);
     text-decoration: underline;

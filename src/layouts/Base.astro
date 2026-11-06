@@ -7,6 +7,9 @@
 import '@fontsource-variable/inter';
 import '@fontsource-variable/bricolage-grotesque/opsz.css';
 import '../styles/global.css';
+// The two latin font files, preloaded so text renders in its final font sooner (less layout shift on swap).
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import bricolageLatin from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site, withSlash } from '../lib/site';
@@ -62,6 +65,8 @@ const personJson = JSON.stringify(personLd).replace(/</g, '\\u003c');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>

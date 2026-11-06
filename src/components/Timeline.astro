@@ -1,0 +1,111 @@
+---
+/**
+ * Vertical career timeline, oldest first (My story). One line per entry:
+ * date, then what happened. The rail and dots are decorative; the order of
+ * the list carries the meaning. The newest entry's dot is filled.
+ */
+import type { TimelineEntry } from '../lib/about';
+
+interface Props {
+  items: TimelineEntry[];
+  label?: string;
+}
+
+const { items, label } = Astro.props;
+---
+
+<ol class="timeline" aria-label={label}>
+  {
+    items.map((item, i) => (
+      <li class="timeline-item" data-latest={i === items.length - 1 || undefined}>
+        <span class="timeline-dot" aria-hidden="true" />
+        {item.dateISO ? (
+          <time class="timeline-date" datetime={item.dateISO}>
+            {item.date}
+          </time>
+        ) : (
+          <span class="timeline-date">{item.date}</span>
+        )}
+        <p class="timeline-text">{item.text}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .timeline {
+    --rail-x: 0.4375rem; /* centre of the rail */
+    position: relative;
+    max-width: 52rem;
+  }
+  /* The rail */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.75rem;
+    left: calc(var(--rail-x) - 1px);
+    width: 2px;
+    border-radius: 2px;
+    background-color: var(--color-line);
+  }
+  .timeline-item {
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    padding: 0 0 1.75rem 2.25rem;
+  }
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+  .timeline-dot {
+    position: absolute;
+    top: 0.3rem;
+    left: calc(var(--rail-x) - 0.4375rem);
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--color-accent);
+    border-radius: 999px;
+    background-color: var(--color-bg);
+  }
+  .timeline-item[data-latest] .timeline-dot {
+    background-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgb(190 242 100 / 0.18);
+  }
+  .timeline-date {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline-text {
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--color-fg);
+  }
+
+  /* Wider screens: dates in their own column, left of the rail */
+  @media (width >= 48rem) {
+    .timeline {
+      --date-col: 8.5rem;
+      --rail-x: calc(var(--date-col) + 1.5rem);
+    }
+    .timeline-item {
+      grid-template-columns: var(--date-col) 1fr;
+      column-gap: 3rem;
+      align-items: baseline;
+      padding-left: 0;
+      padding-bottom: 1.5rem;
+    }
+    .timeline-date {
+      text-align: right;
+    }
+    .timeline-dot {
+      top: 0.35rem;
+    }
+    .timeline-text {
+      font-size: 1.125rem;
+    }
+  }
+</style>

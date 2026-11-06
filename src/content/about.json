@@ -1,0 +1,153 @@
+{
+  "_rules": "Copy for the four About pages, first person, as Raja would say it. CV facts (roles, the degree, programmes, skills, languages) live in cv.json and are referenced here by id, so these pages, the CV page (Phase 4) and the PDF never disagree. Photos are keys of images.json; captions come from there unless an item gives its own. draft: true marks wording Raja should revise (it is published as is). Missing data is a TODO and is hidden on the site.",
+
+  "story": {
+    "title": "My story",
+    "description": "How Raja Shaharyar Ali went from a game-development degree to co-founding TapitCard and driving product and growth for AsaanBill, with a career timeline and 2024 in review.",
+    "paragraphs": [
+      "I studied Computer Game Development at Air University and started selling before I graduated. During COVID I ran Ladenza Clothing, an online thrift store that sold branded clothes through hostel dorms and reached PKR 1 Cr in sales.",
+      "In January 2022 I co-founded TapitCard, a digital contact card. I pre-sold the prototype before it was built, then grew it to 3,000+ customers, mostly through B2B sales to corporates. Along the way TapitCard won startup competitions, went through NIC Peshawar's incubator and was picked for K2prenuer.",
+      "Since November 2024 I've driven product and growth for AsaanBill at Evamp & Saanga: from the 0→1 launch on 1Bill to Raast approval, 15+ ERP partnerships and $1.8M+ in monthly transaction volume. I've also worked on growth and product for HOMS, Dressup, Gameotivity and SonicEngine AI."
+    ],
+    "closing": "I'm working towards becoming the go-to deal closer in any room.",
+
+    "timeline": {
+      "heading": "Career timeline",
+      "_order": "Oldest first, as listed. dateISO (YYYY-MM or YYYY) is used only to place the automatic entries below; null keeps an entry where it is.",
+      "items": [
+        { "date": "During COVID", "dateISO": null, "text": "Started Ladenza Clothing, an online thrift store" },
+        { "date": "Sep 2020", "dateISO": "2020-09", "text": "Started BS Computer Game Development, Air University" },
+        { "date": "Jan 2022", "dateISO": "2022-01", "text": "Co-founded TapitCard" },
+        { "date": "Mar 2023", "dateISO": "2023-03", "text": "Joined NIC Peshawar Cohort-11 and Founder Institute Core" },
+        { "date": "May 2023", "dateISO": "2023-05", "text": "1st prize at PGDC 2023 for MetaBite" },
+        { "date": "Jun 2023", "dateISO": "2023-06", "text": "Won the Zindigi Prize Islamabad Regionals" },
+        { "date": "Jul 2023", "dateISO": "2023-07", "text": "Growth Consultant at HOMS" },
+        { "date": "Jan 2024", "dateISO": "2024-01", "text": "Won the Startup Pitching League at NIC Peshawar" },
+        { "date": "Mar 2024", "dateISO": "2024-03", "text": "Product Owner at SonicEngine AI" },
+        { "date": "Apr 2024", "dateISO": "2024-04", "text": "Opened TapitCard's office at AUBIC" },
+        { "date": "Jun 2024", "dateISO": "2024-06", "text": "Graduated from Air University" },
+        { "date": "2024", "dateISO": "2024", "text": "Selected for K2prenuer; launched Mustahiq's first project" },
+        { "date": "Nov 2024", "dateISO": "2024-11", "text": "Joined Evamp & Saanga; launched AsaanBill on 1Bill" },
+        { "date": "Oct 2025", "dateISO": "2025-10", "text": "Manager, Product & Growth" },
+        { "date": "Jun 2026", "dateISO": "2026-06", "text": "AsaanBill's Raast approval" }
+      ],
+      "fromExperience": [
+        { "experienceId": "dressup", "text": "Product Consultant at Dressup" },
+        { "experienceId": "gameotivity", "text": "Product Owner at Gameotivity" }
+      ],
+      "_fromExperienceNote": "Each joins the timeline automatically, in date order, once its start date in cv.json → experience is filled in as YYYY-MM. Until then it is left off."
+    },
+
+    "review": {
+      "heading": "2024 in review",
+      "label": "2024 in review photos",
+      "_note": "The 11 photos from 2024 Unwrapped (pages 2-12), in page order. Captions are in images.json.",
+      "images": [
+        "about/2024-ntu-startupcup.webp",
+        "about/2024-airtech.webp",
+        "about/2024-numl-talk.webp",
+        "about/2024-major-contributor-award.webp",
+        "about/2024-tapitcard-office.webp",
+        "about/2024-mustahiq-first-project.webp",
+        "about/2024-degree.webp",
+        "about/2024-k2prenuer-selected.webp",
+        "about/2024-k2-trek.webp",
+        "about/2024-asaanbill-start.webp",
+        "about/2024-k2prenuer-premiere.webp"
+      ]
+    },
+
+    "links": {
+      "next": { "label": "Education", "href": "/about/education/" },
+      "cta": { "label": "Let's talk", "href": "/contact/" }
+    }
+  },
+
+  "education": {
+    "title": "Education",
+    "intro": "A game-development degree, then founder training on the job.",
+    "description": "A game-development degree from Air University, then founder training on the job: Founder Institute, NIC Peshawar and NUST.",
+    "degree": {
+      "cvId": "bs-computer-game-development",
+      "_cvIdNote": "Degree, institution, city and dates come from cv.json → education.",
+      "fypLabel": "Final-year project",
+      "fyp": "MetaBite, a 3D food-ordering experience. 1st prize at the ideation stage of the Pakistan Game Developers Conference 2023 (9 May 2023); presented at NTU StartupCup, Faisalabad.",
+      "label": "Degree photos",
+      "images": [
+        "education/air-university-convocation.webp",
+        "about/2024-degree.webp",
+        "recognition/pgdc-2023-fyp-first-prize.webp",
+        "about/2024-ntu-startupcup.webp"
+      ]
+    },
+    "programmes": {
+      "heading": "Courses and programmes",
+      "coveredLabel": "What it covered",
+      "certificateLabel": "View certificate",
+      "cvIds": ["founder-institute-core", "nic-peshawar-incubation", "nust-sustainable-innovation"],
+      "_cvIdsNote": "Shown as cards in date order. Provider, programme, dates and photo come from cv.json → programmes; 'covered' and 'certificate' appear only once filled in there."
+    },
+    "campus": {
+      "heading": "On campus",
+      "label": "On-campus photos",
+      "items": [
+        { "text": "Director Marketing, AirTech'24", "image": "about/2024-airtech.webp" },
+        {
+          "text": "Major Contributor Award from the Registrar",
+          "image": "about/2024-major-contributor-award.webp",
+          "_note": "Uses the 2024 Unwrapped photo of the award plaque. The Registrar office photo (recognition/award-air-university-registrar.webp) shows the Startup Pitching League 2024 trophy instead, so it isn't captioned as this award."
+        },
+        { "text": "Recognised by the VC for TapitCard's Zindigi Prize win", "image": "recognition/zindigi-win-air-university-vc.webp" },
+        { "text": "TapitCard's office at Air University's incubation centre (AUBIC), April 2024", "image": "about/2024-tapitcard-office.webp" }
+      ]
+    },
+    "closing": {
+      "text": "Game development taught me to build things people come back to: the question behind every venture since.",
+      "draft": true
+    }
+  },
+
+  "skills": {
+    "title": "Skills & tools",
+    "description": "How Raja Shaharyar Ali works, with proof for each principle, plus his sales, marketing and product toolkit and languages.",
+    "howIWork": {
+      "heading": "How I work",
+      "proofLabel": "Proof",
+      "items": [
+        { "principle": "Start with the ideal customer.", "proof": "Defined AsaanBill's ideal customer profiles before launch." },
+        { "principle": "Pilot before scaling.", "proof": "Piloted HOMS in 3 hostels and pre-sold Tapit's prototype before building it." },
+        { "principle": "Grow through partners.", "proof": "15+ ERP partnerships and 6 strategic partnerships across Karachi, Lahore and Islamabad." },
+        { "principle": "Build the funnel before the campaign.", "proof": "Built go-to-market funnels at AsaanBill and SonicEngine AI." }
+      ]
+    },
+    "toolkit": {
+      "heading": "Toolkit",
+      "_from": "cv.json → skills.groups (chips only: no percentage bars or ratings)"
+    },
+    "languages": {
+      "heading": "Languages",
+      "_from": "cv.json → languages"
+    }
+  },
+
+  "beyondWork": {
+    "title": "Beyond work",
+    "description": "Raja Shaharyar Ali outside his day job: founding the NGO Mustahiq, and trekking to K2 with the K2prenuer cohort.",
+    "sections": [
+      {
+        "id": "mustahiq",
+        "heading": "Mustahiq (NGO)",
+        "text": "Founder & Operations Head. Mustahiq's first project, in F-8 Islamabad, provides a livelihood. It has since signed an MOU with Human Care Foundation at NICAT.",
+        "label": "Mustahiq photos",
+        "images": ["about/2024-mustahiq-first-project.webp", "recognition/mou-humancare-mustahiq.webp"]
+      },
+      {
+        "id": "k2",
+        "heading": "K2",
+        "text": "TapitCard joined K2prenuer as its youngest startup, in the top 10 of 3,000+ applicants. Then I trekked to K2, the world's second-highest mountain, with the cohort.",
+        "label": "K2 photos",
+        "images": ["about/2024-k2-trek.webp", "recognition/k2prenuer-youngest-startup.webp"]
+      }
+    ]
+  }
+}

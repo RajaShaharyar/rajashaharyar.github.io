@@ -85,7 +85,7 @@ export function withSlash(path: string): string {
 
 /** True for a value that is still missing: empty, or a "TODO:" placeholder. Such fields are hidden on the site. */
 export function isTodo(value: unknown): boolean {
-  return value == null || (typeof value === 'string' && (value.trim() === '' || /^TODO/.test(value.trim())));
+  return value == null || (typeof value === 'string' && (value.trim() === '' || value.trim().startsWith('TODO')));
 }
 
 /** The value if it is filled in, otherwise undefined (so the field can be hidden). */

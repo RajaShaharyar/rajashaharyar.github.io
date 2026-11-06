@@ -1,0 +1,330 @@
+---
+/**
+ * Photo grid with an accessible lightbox.
+ *
+ * - Without JavaScript every photo is a plain link to the full-size file.
+ * - With JavaScript a click, tap or Enter opens a modal <dialog> showing the
+ *   whole photo and its caption. Focus moves to Close; Tab stays inside the
+ *   dialog; Escape, Close or a click outside the photo closes it and focus
+ *   returns to the photo that opened it. ←/→ (and the Previous/Next buttons)
+ *   step through the set, wrapping at either end.
+ * - Thumbnails are lazy-loaded and sized from images.json (no layout shift);
+ *   the lightbox reuses the same file, so opening it costs no extra download.
+ */
+import Media from './Media.astro';
+import { getImage } from '../lib/images';
+
+interface Item {
+  /** Key in images.json, e.g. "about/2024-degree.webp" */
+  image: string;
+  /** Overrides the caption in images.json */
+  caption?: string;
+}
+
+interface Props {
+  /** Accessible name for the set, e.g. "2024 in review photos" */
+  label: string;
+  items: Item[];
+  /** Grid columns, e.g. "grid-cols-2 lg:grid-cols-4" */
+  columns?: string;
+  /** Thumbnail frame, e.g. "aspect-[4/3]" */
+  aspect?: string;
+  /** Show captions under the thumbnails (they always show in the lightbox) */
+  captions?: boolean;
+}
+
+const { label, items, columns = 'grid-cols-2 lg:grid-cols-3', aspect = 'aspect-[4/3]', captions = true } = Astro.props;
+
+const photos = items.map((item) => {
+  const img = getImage(item.image);
+  return { key: item.image, src: img.src, alt: img.alt, width: img.width, height: img.height, caption: item.caption ?? img.caption };
+});
+const id = `gallery-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+const single = photos.length === 1;
+---
+
+<div class="gallery" data-gallery>
+  <ul class:list={['grid gap-x-4 gap-y-6 md:gap-x-6', columns]} aria-label={label}>
+    {
+      photos.map((p, i) => (
+        <li>
+          <figure>
+            <a
+              href={p.src}
+              class="gallery-link"
+              data-gallery-item={i}
+              data-src={p.src}
+              data-alt={p.alt}
+              data-caption={p.caption}
+              data-width={p.width}
+              data-height={p.height}
+            >
+              <Media image={p.key} fit="contain" class={`${aspect} rounded-card border border-line`} />
+              <span class="gallery-zoom" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="14" height="14">
+                  <path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" />
+                </svg>
+              </span>
+              <span class="sr-only"> (open larger)</span>
+            </a>
+            {captions && <figcaption class="mt-3 text-sm leading-snug text-fg-muted">{p.caption}</figcaption>}
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+
+  <dialog class="lightbox" aria-labelledby={`${id}-caption`} data-lightbox>
+    <div class="lightbox-panel" data-lb-dismiss>
+      <div class="lightbox-bar">
+        <p class="lightbox-count" data-lb-count hidden={single}></p>
+        <button type="button" class="lb-btn lb-close" data-lb-close autofocus>
+          Close <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+      <figure class="lightbox-figure" data-lb-dismiss>
+        <img class="lightbox-img" data-lb-img alt="" decoding="async" />
+        <figcaption id={`${id}-caption`} class="lightbox-caption" data-lb-caption></figcaption>
+      </figure>
+      <div class="lightbox-nav" hidden={single}>
+        <button type="button" class="lb-btn" data-lb-prev>
+          <span aria-hidden="true">←</span> Previous<span class="sr-only"> photo</span>
+        </button>
+        <button type="button" class="lb-btn" data-lb-next>
+          Next<span class="sr-only"> photo</span> <span aria-hidden="true">→</span>
+        </button>
+      </div>
+      <p class="sr-only" aria-live="polite" data-lb-status></p>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .gallery-link {
+    position: relative;
+    display: block;
+    border-radius: var(--radius-card);
+    cursor: zoom-in;
+  }
+  .gallery-link :global(.media) {
+    transition: border-color 0.2s var(--ease-out-quart);
+  }
+  .gallery-link:hover :global(.media) {
+    border-color: var(--color-line-strong);
+  }
+  .gallery-zoom {
+    position: absolute;
+    right: 0.625rem;
+    bottom: 0.625rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background-color: rgb(11 12 14 / 0.72);
+    color: var(--color-fg);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .gallery-zoom svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .gallery-link:hover .gallery-zoom,
+  .gallery-link:focus-visible .gallery-zoom {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .gallery-zoom {
+      opacity: 1;
+    }
+  }
+
+  /* Lightbox: a full-screen modal dialog */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-fg);
+  }
+  .lightbox::backdrop {
+    background-color: rgb(5 6 7 / 0.94);
+  }
+  :global(html:has(dialog.lightbox[open])) {
+    overflow: hidden;
+  }
+  .lightbox-panel {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    height: 100%;
+    padding: 0.75rem 1rem 1rem;
+  }
+  @media (width >= 40rem) {
+    .lightbox-panel {
+      padding: 1rem 1.5rem 1.5rem;
+    }
+  }
+  .lightbox-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  .lightbox-count {
+    margin-right: auto;
+    font-size: 0.875rem;
+    color: var(--color-fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .lightbox-figure {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.875rem;
+  }
+  .lightbox-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 12rem);
+    min-height: 0;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    background-color: var(--color-surface);
+  }
+  .lightbox-caption {
+    max-width: 42rem;
+    text-align: center;
+    color: var(--color-fg);
+    line-height: 1.45;
+  }
+  .lightbox-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .lightbox-nav[hidden],
+  .lightbox-count[hidden] {
+    display: none;
+  }
+  .lb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.125rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    color: var(--color-fg);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition:
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+  .lb-btn:hover {
+    border-color: var(--color-fg);
+    background-color: var(--color-raised);
+  }
+</style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-gallery-item]'));
+    const dialog = root.querySelector<HTMLDialogElement>('[data-lightbox]');
+    const img = root.querySelector<HTMLImageElement>('[data-lb-img]');
+    const caption = root.querySelector<HTMLElement>('[data-lb-caption]');
+    const count = root.querySelector<HTMLElement>('[data-lb-count]');
+    const status = root.querySelector<HTMLElement>('[data-lb-status]');
+    const close = root.querySelector<HTMLButtonElement>('[data-lb-close]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-lb-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-lb-next]');
+    if (!dialog || typeof dialog.showModal !== 'function' || !img || !caption || !count || !status || !close || !prev || !next) {
+      continue; // no <dialog> support: the links still open the full-size photo
+    }
+
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (i: number, announce: boolean) => {
+      index = (i + links.length) % links.length;
+      const d = links[index].dataset;
+      img.src = d.src ?? '';
+      img.alt = d.alt ?? '';
+      img.width = Number(d.width);
+      img.height = Number(d.height);
+      caption.textContent = d.caption ?? '';
+      count.textContent = `${index + 1} of ${links.length}`;
+      if (announce) status.textContent = `${d.caption ?? ''} (${index + 1} of ${links.length})`;
+    };
+
+    links.forEach((link, i) => {
+      link.setAttribute('aria-haspopup', 'dialog');
+      link.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return; // let "open in new tab" work
+        e.preventDefault();
+        opener = link;
+        status.textContent = '';
+        show(i, false);
+        dialog.showModal();
+        close.focus();
+      });
+    });
+
+    close.addEventListener('click', () => dialog.close());
+    prev.addEventListener('click', () => show(index - 1, true));
+    next.addEventListener('click', () => show(index + 1, true));
+
+    dialog.addEventListener('keydown', (e) => {
+      // Keep Tab inside the dialog: wrap from the last control to the first and back.
+      if (e.key === 'Tab') {
+        const controls = Array.from(dialog.querySelectorAll<HTMLButtonElement>('button')).filter((b) => !b.closest('[hidden]'));
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (links.length < 2) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        show(index - 1, true);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        show(index + 1, true);
+      }
+    });
+
+    // A click on the dark area around the photo closes it.
+    dialog.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target === dialog || target.hasAttribute('data-lb-dismiss')) dialog.close();
+    });
+
+    // Escape fires "cancel" then "close"; either way focus goes back to the photo.
+    dialog.addEventListener('close', () => {
+      opener?.focus();
+      opener = null;
+    });
+  }
+</script>

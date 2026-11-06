@@ -36,8 +36,10 @@ public/images/         ventures/, recognition/, speaking/, about/, education/
 
 ## Content rules
 
-- **Never invent numbers, names or dates.** Missing content is a string starting with `TODO:` and renders as a visible dashed placeholder.
-- `toConfirm` fields list facts to settle before a page relies on them.
+- **Never invent numbers, names or dates.** Missing content is a string starting with `TODO:`. It stays in the data
+  and the field is **hidden** on the live site: no "TODO" text is ever published (`isTodo()` / `filled()` in
+  `src/lib/site.ts`; the `<Todo>` component renders only in `npm run dev`).
+- `toConfirm` fields list facts to settle before a page relies on them. Raja's answers of 6 Nov 2026 are applied.
 - Contact details live only in `site.json`; the CV and footer read them from there.
 - No date of birth, gender, nationality or home address anywhere in the site or the CV PDF.
 
@@ -47,6 +49,9 @@ Photos are never copied by hand. Add the original file name and its clean output
 `scripts/images.mjs`, run `npm run images`, then fill in `alt` and `caption` for the new entry in
 `src/content/images.json`. The script finds the file by exact name under `_source/`, applies EXIF rotation,
 resizes to max 1600px wide, writes WebP, strips all metadata (EXIF, GPS, ICC, XMP) and verifies it.
+iPhone HEIC files are decoded with `heic-convert` first (sharp can't read HEVC), and a PDF page source
+(`{ pdf, page }`) extracts that page's one embedded JPEG byte-for-byte with `pdf-lib`; that's how the
+"2024 in review" photos come out of *2024 Unwrapped.pdf* without the slide's text and stickers.
 A typo in an image path fails the build. Everything except the hero image is lazy-loaded.
 
 ## CV download

@@ -75,7 +75,7 @@ const sectionY = 'py-16 md:py-24';
   <section id="recognition" class:list={['wrap', sectionY]} aria-labelledby="recognition-heading">
     <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
     <div class="mt-8 md:mt-10">
-      <RecognitionCarousel label={recognition.carouselLabel} />
+      <RecognitionCarousel label={recognition.carouselLabel} order={recognition.slides} />
     </div>
     <ArrowLink href={recognition.link.href} class="mt-6">{recognition.link.label}</ArrowLink>
   </section>

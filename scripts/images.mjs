@@ -5,15 +5,23 @@
  *
  * - Finds each file by its EXACT original name anywhere under _source/
  *   (names keep their typos; the asset map in the blueprint lists them all).
+ * - Three kinds of source:
+ *     JPEG/PNG     read directly by sharp
+ *     HEIC/HEIF    iPhone photos (HEVC), which sharp's bundled libvips can't
+ *                  decode: heic-convert decodes them to a lossless PNG first
+ *     PDF page     { pdf, page }: the ONE embedded JPEG on that page is
+ *                  extracted byte-for-byte (never a screenshot of the slide)
  * - Applies EXIF orientation, resizes to max 1600px wide, encodes WebP and
  *   strips ALL metadata (EXIF, GPS, ICC, XMP). Each output is re-read to prove it.
  * - Records width/height in src/content/images.json so every <img> can reserve
- *   its space (no layout shift). Alt text and captions in that file are kept.
+ *   its space (no layout shift). Alt text and captions in that file are kept;
+ *   new entries get the caption given below (or a TODO to fill in by hand).
  *
- * _source/ is never committed; this script only reads from it.
- * Add later phases' images to the list below.
+ * _source/ is never committed and never written to; this script only reads from it.
  */
 import sharp from 'sharp';
+import heicConvert from 'heic-convert';
+import { PDFDict, PDFDocument, PDFName, PDFRawStream } from 'pdf-lib';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
@@ -22,7 +30,12 @@ const OUT_DIR = 'public/images';
 const MANIFEST = 'src/content/images.json';
 const MAX_WIDTH = 1600;
 
-/** [exact original file name, output path under public/images (no extension)] */
+const UNWRAPPED = '2024 Unwrapped.pdf';
+
+/**
+ * [source, output path under public/images (no extension), caption for a new entry]
+ * source is an exact file name, or { pdf: exact file name, page: 1-based page number }.
+ */
 const IMAGES = [
   // Phase 2: homepage
   ['Invited as guest speaker at NUML University.jpeg', 'speaking/talk-numl-session'],
@@ -39,6 +52,26 @@ const IMAGES = [
   ['Invited as guest speaker at NUST EME.jpeg', 'speaking/talk-nust-eme'],
   ['Invited as guest speaker at HITEC University Taxila.jpeg', 'speaking/talk-hitec-hibis-2025'],
   ['Invited to a Podcast.jpeg', 'speaking/podcast-asaanbill'],
+
+  // Phase 3: About menu
+  ['IMG_5304.HEIC', 'education/air-university-convocation'],
+  ['Graduate of NIC Peshawar.jpeg', 'recognition/nic-peshawar-graduation-2024'],
+  ['Recieving recognition from Registrar.jpeg', 'recognition/award-air-university-registrar'],
+  ['Recieving recognition from VC.jpeg', 'recognition/zindigi-win-air-university-vc'],
+  ['MOU with Human Care Foundation at NICAT.jpeg', 'recognition/mou-humancare-mustahiq'],
+
+  // Phase 3: "2024 in review", one photo per slide of 2024 Unwrapped (pages 2-12)
+  [{ pdf: UNWRAPPED, page: 2 }, 'about/2024-ntu-startupcup', 'Represented MetaBite at NTU StartupCup, Faisalabad'],
+  [{ pdf: UNWRAPPED, page: 3 }, 'about/2024-airtech', "Organised AirTech'24 as Director Marketing, Air University"],
+  [{ pdf: UNWRAPPED, page: 4 }, 'about/2024-numl-talk', 'Guest speaker on entrepreneurship at NUML, Islamabad'],
+  [{ pdf: UNWRAPPED, page: 5 }, 'about/2024-major-contributor-award', 'Major Contributor Award from the Registrar, Air University'],
+  [{ pdf: UNWRAPPED, page: 6 }, 'about/2024-tapitcard-office', "Opened TapitCard's office at AUBIC, Islamabad (April 2024)"],
+  [{ pdf: UNWRAPPED, page: 7 }, 'about/2024-mustahiq-first-project', "Mustahiq's first project in F-8 Islamabad: providing a livelihood"],
+  [{ pdf: UNWRAPPED, page: 8 }, 'about/2024-degree', 'Completed BS Computer Game Development, Air University'],
+  [{ pdf: UNWRAPPED, page: 9 }, 'about/2024-k2prenuer-selected', 'Selected for K2prenuer: top 10 of 3,000+ applicants'],
+  [{ pdf: UNWRAPPED, page: 10 }, 'about/2024-k2-trek', "Trekked to K2, the world's second-highest mountain, with K2prenuer"],
+  [{ pdf: UNWRAPPED, page: 11 }, 'about/2024-asaanbill-start', 'Started working on AsaanBill (November 2024)'],
+  [{ pdf: UNWRAPPED, page: 12 }, 'about/2024-k2prenuer-premiere', 'K2prenuer premiere on the big screen'],
 ];
 
 function walk(dir) {
@@ -57,23 +90,77 @@ const allFiles = walk(SOURCE_DIR);
 const manifest = existsSync(MANIFEST) ? JSON.parse(readFileSync(MANIFEST, 'utf8')) : {};
 let failed = false;
 
-for (const [sourceName, outBase] of IMAGES) {
-  const matches = allFiles.filter((p) => p.split(/[\\/]/).pop() === sourceName);
+/** Exactly one file with this exact name under _source/, or null. */
+function findSource(name) {
+  const matches = allFiles.filter((p) => p.split(/[\\/]/).pop() === name);
   if (matches.length !== 1) {
-    console.error(`✗ ${matches.length} matches for "${sourceName}" (need exactly 1)`);
+    console.error(`✗ ${matches.length} matches for "${name}" (need exactly 1)`);
     failed = true;
-    continue;
+    return null;
   }
+  return matches[0];
+}
+
+/** Image XObjects drawn on a page, including those nested in form XObjects. */
+function pageImages(doc, resources, seen = new Set()) {
+  const xobjects = resources?.lookupMaybe(PDFName.of('XObject'), PDFDict);
+  if (!xobjects) return [];
+  return xobjects.entries().flatMap(([, ref]) => {
+    const obj = doc.context.lookup(ref);
+    if (!(obj instanceof PDFRawStream) || seen.has(obj)) return [];
+    seen.add(obj);
+    const subtype = obj.dict.get(PDFName.of('Subtype'));
+    if (subtype === PDFName.of('Image')) return [obj];
+    if (subtype === PDFName.of('Form')) return pageImages(doc, obj.dict.lookupMaybe(PDFName.of('Resources'), PDFDict), seen);
+    return [];
+  });
+}
+
+const pdfCache = new Map();
+/** The single embedded JPEG on a PDF page, as the original bytes. */
+async function extractPdfJpeg(path, page) {
+  if (!pdfCache.has(path)) pdfCache.set(path, await PDFDocument.load(readFileSync(path), { updateMetadata: false }));
+  const doc = pdfCache.get(path);
+  const pdfPage = doc.getPages()[page - 1];
+  if (!pdfPage) throw new Error(`page ${page} does not exist`);
+  const images = pageImages(doc, pdfPage.node.Resources());
+  const jpegs = images.filter((img) => String(img.dict.get(PDFName.of('Filter'))) === '/DCTDecode');
+  if (images.length !== 1 || jpegs.length !== 1) {
+    throw new Error(`page ${page} has ${images.length} images (${jpegs.length} JPEG); expected exactly one JPEG`);
+  }
+  return Buffer.from(jpegs[0].contents); // DCTDecode streams are complete JPEG files
+}
+
+for (const [source, outBase, newCaption] of IMAGES) {
+  const isPdf = typeof source === 'object';
+  const sourceName = isPdf ? source.pdf : source;
+  const sourceLabel = isPdf ? `${source.pdf}, page ${source.page}` : source;
+  const path = findSource(sourceName);
+  if (!path) continue;
 
   const key = `${outBase}.webp`;
   const outPath = join(OUT_DIR, key);
   mkdirSync(dirname(outPath), { recursive: true });
 
-  await sharp(matches[0], { failOn: 'none' })
-    .rotate() // bake in EXIF orientation before the metadata is dropped
-    .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-    .webp({ quality: 78, effort: 6 })
-    .toFile(outPath); // sharp writes no metadata unless asked to
+  try {
+    let input = path;
+    if (isPdf) {
+      input = await extractPdfJpeg(path, source.page);
+    } else if (/\.hei[cf]$/i.test(sourceName)) {
+      // heic-convert applies the HEIC's rotation while decoding; PNG keeps it lossless.
+      input = await heicConvert({ buffer: readFileSync(path), format: 'PNG' });
+    }
+
+    await sharp(input, { failOn: 'none' })
+      .rotate() // bake in EXIF orientation before the metadata is dropped (no-op when there is none)
+      .resize({ width: MAX_WIDTH, withoutEnlargement: true })
+      .webp({ quality: 78, effort: 6 })
+      .toFile(outPath); // sharp writes no metadata unless asked to
+  } catch (error) {
+    console.error(`✗ ${key} from "${sourceLabel}": ${error.message}`);
+    failed = true;
+    continue;
+  }
 
   const meta = await sharp(outPath).metadata();
   const leaked = ['exif', 'icc', 'iptc', 'xmp'].filter((k) => meta[k]);
@@ -87,8 +174,8 @@ for (const [sourceName, outBase] of IMAGES) {
     width: meta.width,
     height: meta.height,
     alt: manifest[key]?.alt ?? 'TODO: alt text',
-    caption: manifest[key]?.caption ?? 'TODO: caption',
-    source: sourceName,
+    caption: manifest[key]?.caption ?? newCaption ?? 'TODO: caption',
+    source: sourceLabel,
   };
   console.log(`✓ ${key}  ${meta.width}×${meta.height}  ${kb} KB  (no metadata)`);
 }

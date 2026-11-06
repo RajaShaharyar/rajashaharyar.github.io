@@ -1,6 +1,8 @@
 ---
 /**
- * Visible placeholder for content that is still to collect.
+ * Placeholder for content that is still to collect. Shown ONLY in `npm run dev`;
+ * production builds render nothing, so no "TODO" text reaches the live site.
+ * Prefer hiding the whole field at the call site when its data starts with "TODO:".
  * Usage: <Todo>Booking link</Todo>  or  <Todo text="TODO: booking link" />
  * Never replace a TODO with a guess; replace it with the confirmed fact.
  */
@@ -12,10 +14,15 @@ interface Props {
 }
 
 const { text, class: className } = Astro.props;
+const show = import.meta.env.DEV;
 ---
 
-<span class:list={['todo', className]}>
-  <span class="todo-tag" aria-hidden="true">TODO</span>
-  <span class="sr-only">To do:</span>
-  {text ? todoText(text) : <slot />}
-</span>
+{
+  show && (
+    <span class:list={['todo', className]}>
+      <span class="todo-tag" aria-hidden="true">TODO</span>
+      <span class="sr-only">To do:</span>
+      {text ? todoText(text) : <slot />}
+    </span>
+  )
+}

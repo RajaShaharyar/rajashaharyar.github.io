@@ -54,6 +54,9 @@ const recognition = defineCollection({
         note: z.string().optional(),
       }),
     ),
+    note: z.string().optional(),
+    /** Missing facts, each starting with "TODO:". Kept in the data, never shown on the site. */
+    todo: z.array(z.string().startsWith('TODO:')).optional(),
     toConfirm: z.array(z.string()),
   }),
 });

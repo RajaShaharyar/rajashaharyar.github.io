@@ -7,21 +7,22 @@
     "shownOn": ["speaking-events"],
     "venture": "Tapit",
     "evidence": [
-      { "source": "Invited as guest speaker at HITEC University Taxila.jpeg", "file": "speaking/talk-hitec-hibis-2025.webp" }
+      {
+        "source": "Invited as guest speaker at HITEC University Taxila.jpeg",
+        "file": "speaking/talk-hitec-hibis-2025.webp"
+      }
     ],
     "toConfirm": []
   },
   {
     "id": "podcast-asaanbill",
-    "date": "Dec (year to confirm)",
-    "dateISO": null,
+    "date": "Dec 2024",
+    "dateISO": "2024-12",
     "item": "Hosted Evamp & Saanga's first podcast, on AsaanBill",
     "shownOn": ["speaking-events", "asaanbill"],
     "venture": "AsaanBill",
-    "evidence": [
-      { "source": "Invited to a Podcast.jpeg", "file": "speaking/podcast-asaanbill.webp" }
-    ],
-    "toConfirm": ["Year of the podcast."]
+    "evidence": [{ "source": "Invited to a Podcast.jpeg", "file": "speaking/podcast-asaanbill.webp" }],
+    "toConfirm": []
   },
   {
     "id": "milestone-asaanbill-start",
@@ -30,22 +31,18 @@
     "item": "Started building AsaanBill at Evamp & Saanga",
     "shownOn": ["my-story"],
     "venture": "AsaanBill",
-    "evidence": [
-      { "source": "2024 Unwrapped.pdf", "file": null, "note": "Extract the 'Started working on AsaanBill' team photo." }
-    ],
+    "evidence": [{ "source": "2024 Unwrapped.pdf, page 11", "file": "about/2024-asaanbill-start.webp" }],
     "toConfirm": []
   },
   {
     "id": "award-entrepreneur-of-the-year-2024",
     "date": "2024",
     "dateISO": "2024",
-    "item": "Entrepreneur of the Year 2024",
+    "item": "Entrepreneur of the Year 2024, received from Nayatel's CEO",
     "shownOn": ["competitions-awards"],
     "venture": "Tapit",
-    "evidence": [
-      { "source": "Recieving Award from CEO Nayatel.jpeg", "file": "recognition/award-nayatel-ceo.webp", "note": "To confirm: possibly this photo." }
-    ],
-    "toConfirm": ["Who gave the award, and whether the Nayatel CEO photo is this award."]
+    "evidence": [{ "source": "Recieving Award from CEO Nayatel.jpeg", "file": "recognition/award-nayatel-ceo.webp" }],
+    "toConfirm": []
   },
   {
     "id": "programme-k2prenuer",
@@ -57,33 +54,50 @@
     "venture": "Tapit",
     "evidence": [
       { "source": "K2.png", "file": "recognition/k2prenuer-youngest-startup.webp" },
-      { "source": "Went to K2 Mountain with top 10 entreprenuers from pakistan.jpeg", "file": null, "note": "Duplicate of K2.png at lower resolution; not used." },
-      { "source": "Featured in Centraurus Cinepax via K2prenuer.jpeg", "file": "speaking/k2prenuer-premiere.webp" }
+      { "source": "2024 Unwrapped.pdf, page 9", "file": "about/2024-k2prenuer-selected.webp" },
+      { "source": "2024 Unwrapped.pdf, page 10", "file": "about/2024-k2-trek.webp" },
+      { "source": "2024 Unwrapped.pdf, page 12", "file": "about/2024-k2prenuer-premiere.webp" },
+      {
+        "source": "Featured in Centraurus Cinepax via K2prenuer.jpeg",
+        "file": "speaking/k2prenuer-premiere.webp",
+        "note": "Converted in Phase 5."
+      },
+      {
+        "source": "Went to K2 Mountain with top 10 entreprenuers from pakistan.jpeg",
+        "file": null,
+        "note": "Duplicate of K2.png at lower resolution; not used."
+      }
     ],
-    "toConfirm": ["Premiere venue: the file name says Centaurus Cinepax, 2024 Unwrapped says Packages Mall Lahore."]
+    "note": "Premiere venue not settled (the file name and 2024 Unwrapped disagree), so the premiere is shown without a venue.",
+    "toConfirm": []
   },
   {
     "id": "award-major-contributor",
     "date": "2024",
     "dateISO": "2024",
-    "item": "Major Contributor Award, Air University (by the Registrar)",
+    "item": "Major Contributor Award, Air University, presented by the Registrar",
     "shownOn": ["competitions-awards", "education"],
     "venture": null,
     "evidence": [
-      { "source": "Recieving recognition from Registrar.jpeg", "file": "recognition/award-air-university-registrar.webp" }
+      { "source": "2024 Unwrapped.pdf, page 5", "file": "about/2024-major-contributor-award.webp" },
+      {
+        "source": "Recieving recognition from Registrar.jpeg",
+        "file": "recognition/award-air-university-registrar.webp",
+        "note": "Raja says this is the Major Contributor Award, but the trophy in the photo reads 'Startup Pitching League 2024 Winner'. The site uses the 2024 Unwrapped photo (the award plaque, same Registrar) for this award instead."
+      }
     ],
-    "toConfirm": ["Whether the Registrar photo is the Major Contributor Award."]
+    "toConfirm": [
+      "Which occasion the Registrar office photo shows: it has the Startup Pitching League 2024 trophy, not the Major Contributor plaque."
+    ]
   },
   {
     "id": "mustahiq-first-project",
     "date": "2024",
     "dateISO": "2024",
-    "item": "Launched the first project of NGO Mustahiq, F-8 Islamabad",
+    "item": "Launched the first project of NGO Mustahiq, F-8 Islamabad, providing a livelihood",
     "shownOn": ["beyond-work"],
     "venture": "Mustahiq (NGO)",
-    "evidence": [
-      { "source": "2024 Unwrapped.pdf", "file": null, "note": "Extract the Mustahiq slide photo." }
-    ],
+    "evidence": [{ "source": "2024 Unwrapped.pdf, page 7", "file": "about/2024-mustahiq-first-project.webp" }],
     "toConfirm": []
   },
   {
@@ -92,11 +106,9 @@
     "dateISO": "2024",
     "item": "Represented MetaBite at NTU StartupCup, Faisalabad",
     "shownOn": ["speaking-events"],
-    "venture": "MetaBite",
-    "evidence": [
-      { "source": "2024 Unwrapped.pdf", "file": null, "note": "Extract the NTU StartupCup slide photo." }
-    ],
-    "toConfirm": ["Confirm the venture is MetaBite."]
+    "venture": "MetaBite (final-year project)",
+    "evidence": [{ "source": "2024 Unwrapped.pdf, page 2", "file": "about/2024-ntu-startupcup.webp" }],
+    "toConfirm": []
   },
   {
     "id": "education-bs-graduation",
@@ -106,7 +118,8 @@
     "shownOn": ["education"],
     "venture": null,
     "evidence": [
-      { "source": "IMG_5304.HEIC", "file": "education/air-university-convocation.webp", "note": "Convert from HEIC." }
+      { "source": "IMG_5304.HEIC", "file": "education/air-university-convocation.webp", "note": "Converted from HEIC." },
+      { "source": "2024 Unwrapped.pdf, page 8", "file": "about/2024-degree.webp" }
     ],
     "toConfirm": []
   },
@@ -114,12 +127,10 @@
     "id": "milestone-tapit-office",
     "date": "Apr 2024",
     "dateISO": "2024-04",
-    "item": "Opened TapitCard's office at Air University's incubation centre",
+    "item": "Opened TapitCard's office at Air University's incubation centre (AUBIC), Islamabad",
     "shownOn": ["my-story", "tapit"],
     "venture": "Tapit",
-    "evidence": [
-      { "source": "2024 Unwrapped.pdf", "file": null, "note": "Extract the office-opening slide photo." }
-    ],
+    "evidence": [{ "source": "2024 Unwrapped.pdf, page 6", "file": "about/2024-tapitcard-office.webp" }],
     "toConfirm": []
   },
   {
@@ -129,9 +140,7 @@
     "item": "Organised AirTech'24 as Director Marketing",
     "shownOn": ["speaking-events", "education"],
     "venture": null,
-    "evidence": [
-      { "source": "2024 Unwrapped.pdf", "file": null, "note": "Extract the AirTech'24 slide photo." }
-    ],
+    "evidence": [{ "source": "2024 Unwrapped.pdf, page 3", "file": "about/2024-airtech.webp" }],
     "toConfirm": []
   },
   {
@@ -143,7 +152,12 @@
     "venture": "Tapit",
     "evidence": [
       { "source": "Invited as guest speaker at NUML Banner.jpeg", "file": "speaking/talk-numl-poster-2024.webp" },
-      { "source": "Invited as guest speaker at NUML University.jpeg", "file": "speaking/talk-numl-session.webp" }
+      { "source": "Invited as guest speaker at NUML University.jpeg", "file": "speaking/talk-numl-session.webp" },
+      {
+        "source": "2024 Unwrapped.pdf, page 4",
+        "file": "about/2024-numl-talk.webp",
+        "note": "Same photo as talk-numl-session (the home hero)."
+      }
     ],
     "toConfirm": []
   },
@@ -154,9 +168,7 @@
     "item": "Graduated NIC Peshawar Cohort-11",
     "shownOn": ["programmes", "education"],
     "venture": "Tapit",
-    "evidence": [
-      { "source": "Graduate of NIC Peshawar.jpeg", "file": "recognition/nic-peshawar-graduation-2024.webp" }
-    ],
+    "evidence": [{ "source": "Graduate of NIC Peshawar.jpeg", "file": "recognition/nic-peshawar-graduation-2024.webp" }],
     "toConfirm": []
   },
   {
@@ -167,7 +179,10 @@
     "shownOn": ["competitions-awards"],
     "venture": "Tapit",
     "evidence": [
-      { "source": "Won Startup Pitching League _24 at NIC Peshawar.jpeg", "file": "recognition/startup-pitching-league-2024.webp" }
+      {
+        "source": "Won Startup Pitching League _24 at NIC Peshawar.jpeg",
+        "file": "recognition/startup-pitching-league-2024.webp"
+      }
     ],
     "toConfirm": []
   },
@@ -204,7 +219,10 @@
     "shownOn": ["competitions-awards"],
     "venture": "Tapit",
     "evidence": [
-      { "source": "Won Zinidigi Prize Islamabad Regionals 2023 at Hitec Taxila.jpeg", "file": "recognition/zindigi-prize-2023.webp" },
+      {
+        "source": "Won Zinidigi Prize Islamabad Regionals 2023 at Hitec Taxila.jpeg",
+        "file": "recognition/zindigi-prize-2023.webp"
+      },
       { "source": "NIC Peshawar recognizing our win.jpeg", "file": "recognition/zindigi-win-nic-post.webp" },
       { "source": "Recieving recognition from VC.jpeg", "file": "recognition/zindigi-win-air-university-vc.webp" }
     ],
@@ -216,9 +234,12 @@
     "dateISO": "2023-05-09",
     "item": "1st prize, final-year project (ideation stage), Pakistan Game Developers Conference 2023, Air University",
     "shownOn": ["competitions-awards", "education"],
-    "venture": null,
+    "venture": "MetaBite (final-year project)",
     "evidence": [
-      { "source": "Won 1st Prize in best FYP Idea at PGDC 2023.jpeg", "file": "recognition/pgdc-2023-fyp-first-prize.webp" }
+      {
+        "source": "Won 1st Prize in best FYP Idea at PGDC 2023.jpeg",
+        "file": "recognition/pgdc-2023-fyp-first-prize.webp"
+      }
     ],
     "toConfirm": []
   },
@@ -242,7 +263,7 @@
     "shownOn": ["programmes", "education"],
     "venture": "Tapit",
     "evidence": [],
-    "toConfirm": ["Confirm this belongs to Tapit."]
+    "toConfirm": []
   },
   {
     "id": "win-icstsi",
@@ -252,25 +273,29 @@
     "shownOn": ["competitions-awards"],
     "venture": "Tapit",
     "evidence": [
-      { "source": "Won ICSTSI Business plan competition.jpeg", "file": "recognition/icstsi-competition-win.webp" }
+      {
+        "source": "Won ICSTSI Business plan competition.jpeg",
+        "file": "recognition/icstsi-competition-win.webp",
+        "note": "The certificate reads: 'Organized by Islamabad Chamber of Small Traders & Small Industries, in collaboration with International Islamic University & Comsats University Islamabad', and carries a 'Business Expo May 2023' logo. Not yet confirmed by Raja, so the organiser and date stay TODO."
+      }
     ],
-    "toConfirm": ["Date, and confirm this belongs to Tapit."]
+    "todo": ["TODO: date", "TODO: organiser"],
+    "toConfirm": []
   },
   {
     "id": "mou-asaanbill-najoomi",
-    "date": "Undated",
+    "date": "2025–26",
     "dateISO": null,
     "item": "MOU, AsaanBill × Najoomi Technologies, ITCN Asia Lahore",
     "shownOn": ["partnerships", "asaanbill"],
     "venture": "AsaanBill",
-    "evidence": [
-      { "source": "IMG_1432.JPG", "file": "recognition/mou-asaanbill-najoomi.webp" }
-    ],
-    "toConfirm": ["Date."]
+    "evidence": [{ "source": "IMG_1432.JPG", "file": "recognition/mou-asaanbill-najoomi.webp" }],
+    "todo": ["TODO: exact date (Raja: 2025–26)"],
+    "toConfirm": []
   },
   {
     "id": "mou-asaanbill-tuitionist",
-    "date": "Undated",
+    "date": "2025–26",
     "dateISO": null,
     "item": "MOU, AsaanBill × The Tuitionist, NIC Islamabad",
     "shownOn": ["partnerships", "asaanbill"],
@@ -278,23 +303,28 @@
     "evidence": [
       { "source": "MOU with the Tutionist at NIC Islamabad.jpeg", "file": "recognition/mou-asaanbill-tuitionist.webp" }
     ],
-    "toConfirm": ["Date."]
+    "todo": ["TODO: exact date (Raja: 2025–26)"],
+    "toConfirm": []
   },
   {
     "id": "mou-tapitcard-encoder-bytes",
-    "date": "Undated",
+    "date": "2025–26",
     "dateISO": null,
     "item": "MOU, TapitCard × Encoder Bytes, KP Investor Summit",
     "shownOn": ["partnerships", "tapit"],
     "venture": "Tapit",
     "evidence": [
-      { "source": "MOU with Encorder bytes at KP Investor Summit.jpeg", "file": "recognition/mou-tapitcard-encoder-bytes.webp" }
+      {
+        "source": "MOU with Encorder bytes at KP Investor Summit.jpeg",
+        "file": "recognition/mou-tapitcard-encoder-bytes.webp"
+      }
     ],
-    "toConfirm": ["Date."]
+    "todo": ["TODO: exact date (Raja: 2025–26)"],
+    "toConfirm": []
   },
   {
     "id": "mou-humancare-mustahiq",
-    "date": "Undated",
+    "date": "2025–26",
     "dateISO": null,
     "item": "MOU, Human Care Foundation × Mustahiq, NICAT",
     "shownOn": ["partnerships", "beyond-work"],
@@ -302,24 +332,25 @@
     "evidence": [
       { "source": "MOU with Human Care Foundation at NICAT.jpeg", "file": "recognition/mou-humancare-mustahiq.webp" }
     ],
-    "toConfirm": ["Date."]
+    "todo": ["TODO: exact date (Raja: 2025–26)"],
+    "toConfirm": []
   },
   {
     "id": "event-us-delegation",
-    "date": "Undated",
-    "dateISO": null,
+    "date": "2024",
+    "dateISO": "2024",
     "item": "Represented startups of Pakistan to a US delegation",
     "shownOn": ["speaking-events"],
     "venture": null,
     "evidence": [
       { "source": "Represented Startups of Pakistan to US Delegation.jpeg", "file": "speaking/us-delegation.webp" }
     ],
-    "toConfirm": ["Date, and which venture (if any) this belongs to."]
+    "toConfirm": []
   },
   {
     "id": "talk-air-university-nust-eme",
-    "date": "Undated",
-    "dateISO": null,
+    "date": "2024",
+    "dateISO": "2024",
     "item": "Guest speaker, Air University Islamabad and NUST EME",
     "shownOn": ["speaking-events"],
     "venture": null,
@@ -327,6 +358,6 @@
       { "source": "Invited as guest speaker at Air University ISB.jpeg", "file": "speaking/talk-air-university.webp" },
       { "source": "Invited as guest speaker at NUST EME.jpeg", "file": "speaking/talk-nust-eme.webp" }
     ],
-    "toConfirm": ["Dates of both talks."]
+    "toConfirm": []
   }
 ]

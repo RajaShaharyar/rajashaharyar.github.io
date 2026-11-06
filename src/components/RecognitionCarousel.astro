@@ -1,7 +1,8 @@
 ---
 /**
  * Homepage section 6: photo carousel of the Recognition-log items shown on
- * "Competitions & awards" that have a photo in public/images.
+ * "Competitions & awards" that have a photo in public/images, in the order
+ * listed in home.json → recognition.slides (any others follow in log order).
  *
  * Built on native scroll-snap, so it swipes/scrolls without JavaScript.
  * With JavaScript: previous/next buttons, arrow keys (and Home/End) on the
@@ -11,38 +12,43 @@
  */
 import Media from './Media.astro';
 import { getImage, hasImage } from '../lib/images';
-import { shownOn } from '../lib/recognition';
+import { getRecognition, shownOn } from '../lib/recognition';
 
 interface Props {
   label: string;
+  /** recognition.json ids, in slide order */
+  order: string[];
 }
 
-const { label } = Astro.props;
+const { label, order } = Astro.props;
 
 const RESULT = /^(Winner|Top 3|1st prize),\s*/;
 
-const slides = shownOn('competitions-awards')
-  .flatMap((r) => {
-    const ev = r.evidence.find((e) => hasImage(e.file));
-    if (!ev?.file) return [];
-    // A photo the log marks "to confirm" is captioned with what it shows, not with the award.
-    const photoConfirmed = !(ev.note ?? '').toLowerCase().startsWith('to confirm');
-    const m = r.item.match(RESULT);
-    const rest = m ? r.item.slice(m[0].length) : r.item;
-    return [
-      {
-        id: r.id,
-        image: ev.file,
-        badge: m ? m[1] : 'Award',
-        caption: photoConfirmed ? rest.charAt(0).toUpperCase() + rest.slice(1) : getImage(ev.file).caption,
-        date: photoConfirmed && r.dateISO ? r.date : null,
-        dateISO: r.dateISO,
-        photoConfirmed,
-      },
-    ];
-  })
-  // Confirmed photos first; the sort is stable, so the log's newest-first order holds.
-  .sort((a, b) => Number(b.photoConfirmed) - Number(a.photoConfirmed));
+order.forEach(getRecognition); // a typo in home.json fails the build
+const listed = shownOn('competitions-awards');
+const ordered = [
+  ...order.flatMap((id) => listed.filter((r) => r.id === id)),
+  ...listed.filter((r) => !order.includes(r.id)),
+];
+
+const slides = ordered.flatMap((r) => {
+  const ev = r.evidence.find((e) => hasImage(e.file));
+  if (!ev?.file) return [];
+  // A photo the log marks "to confirm" is captioned with what it shows, not with the award.
+  const photoConfirmed = !(ev.note ?? '').toLowerCase().startsWith('to confirm');
+  const m = r.item.match(RESULT);
+  const rest = m ? r.item.slice(m[0].length) : r.item;
+  return [
+    {
+      id: r.id,
+      image: ev.file,
+      badge: m ? m[1] : 'Award',
+      caption: photoConfirmed ? rest.charAt(0).toUpperCase() + rest.slice(1) : getImage(ev.file).caption,
+      date: photoConfirmed && r.dateISO ? r.date : null,
+      dateISO: r.dateISO,
+    },
+  ];
+});
 
 const trackId = 'recognition-track';
 ---

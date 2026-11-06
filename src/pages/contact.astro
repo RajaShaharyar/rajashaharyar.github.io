@@ -12,7 +12,6 @@
  * Pre-select a reason from a link: /contact/?reason=speaking
  */
 import Base from '../layouts/Base.astro';
-import Todo from '../components/Todo.astro';
 import { site } from '../lib/site';
 
 const { contact } = site;
@@ -120,23 +119,17 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
               <span class="channel-value">{site.name}</span>
             </a>
           </li>
-          <li>
-            {
-              contact.booking.href ? (
+          {
+            /* Hidden until site.json → contact.booking.href is filled in */
+            contact.booking.href && (
+              <li>
                 <a href={contact.booking.href} class="channel">
                   <span class="channel-key">Book a call</span>
                   <span class="channel-value">Pick a time</span>
                 </a>
-              ) : (
-                <div class="channel">
-                  <span class="channel-key">Book a call</span>
-                  <span class="channel-value">
-                    <Todo text={contact.booking.todo} />
-                  </span>
-                </div>
-              )
-            }
-          </li>
+              </li>
+            )
+          }
         </ul>
         <p class="mt-6 text-fg-muted">Based in {site.location.display}.</p>
       </aside>

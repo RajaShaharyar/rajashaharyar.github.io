@@ -1,10 +1,101 @@
 {
+  "about/2024-airtech.webp": {
+    "width": 1280,
+    "height": 1016,
+    "alt": "Raja Shaharyar Ali speaking at the lectern at the AirTech'24 closing ceremony, Air University",
+    "caption": "Organised AirTech'24 as Director Marketing, Air University",
+    "source": "2024 Unwrapped.pdf, page 3"
+  },
+  "about/2024-asaanbill-start.webp": {
+    "width": 1600,
+    "height": 900,
+    "alt": "Raja Shaharyar Ali with three colleagues as work on AsaanBill began, November 2024",
+    "caption": "Started working on AsaanBill (November 2024)",
+    "source": "2024 Unwrapped.pdf, page 11"
+  },
+  "about/2024-degree.webp": {
+    "width": 1600,
+    "height": 1316,
+    "alt": "Holding up an Air University degree folder outside the university building",
+    "caption": "Completed BS Computer Game Development, Air University",
+    "source": "2024 Unwrapped.pdf, page 8"
+  },
+  "about/2024-k2-trek.webp": {
+    "width": 1600,
+    "height": 1112,
+    "alt": "Holding the TapitCard flag with a fellow trekker on the trek to K2, with snow-capped peaks behind",
+    "caption": "Trekked to K2, the world's second-highest mountain, with K2prenuer",
+    "source": "2024 Unwrapped.pdf, page 10"
+  },
+  "about/2024-k2prenuer-premiere.webp": {
+    "width": 1600,
+    "height": 1200,
+    "alt": "The K2prenuer cohort and guests lined up in front of the backdrop at the premiere",
+    "caption": "K2prenuer premiere on the big screen",
+    "source": "2024 Unwrapped.pdf, page 12"
+  },
+  "about/2024-k2prenuer-selected.webp": {
+    "width": 1280,
+    "height": 720,
+    "alt": "Raja Shaharyar Ali on K2prenuer, with an image of K2 behind him",
+    "caption": "Selected for K2prenuer: top 10 of 3,000+ applicants",
+    "source": "2024 Unwrapped.pdf, page 9"
+  },
+  "about/2024-major-contributor-award.webp": {
+    "width": 1280,
+    "height": 906,
+    "alt": "Raja Shaharyar Ali receiving the Major Contributor Award plaque from Air University's Registrar on stage",
+    "caption": "Major Contributor Award from the Registrar, Air University",
+    "source": "2024 Unwrapped.pdf, page 5"
+  },
+  "about/2024-mustahiq-first-project.webp": {
+    "width": 1242,
+    "height": 904,
+    "alt": "A fruit stall in F-8, Islamabad, carrying Mustahiq's logo: the NGO's first project, which provides a livelihood",
+    "caption": "Mustahiq's first project in F-8 Islamabad: providing a livelihood",
+    "source": "2024 Unwrapped.pdf, page 7"
+  },
+  "about/2024-ntu-startupcup.webp": {
+    "width": 1600,
+    "height": 1200,
+    "alt": "The MetaBite team holding an Air University flag at their stand at NTU StartupCup, Faisalabad",
+    "caption": "Represented MetaBite at NTU StartupCup, Faisalabad",
+    "source": "2024 Unwrapped.pdf, page 2"
+  },
+  "about/2024-numl-talk.webp": {
+    "width": 1280,
+    "height": 854,
+    "alt": "Raja Shaharyar Ali speaking to a room on entrepreneurship at NUML, Islamabad",
+    "caption": "Guest speaker on entrepreneurship at NUML, Islamabad",
+    "source": "2024 Unwrapped.pdf, page 4"
+  },
+  "about/2024-tapitcard-office.webp": {
+    "width": 1600,
+    "height": 1200,
+    "alt": "The TapitCard team in their new office at AUBIC, Islamabad, under the TapitCard logo",
+    "caption": "Opened TapitCard's office at AUBIC, Islamabad (April 2024)",
+    "source": "2024 Unwrapped.pdf, page 6"
+  },
+  "education/air-university-convocation.webp": {
+    "width": 1600,
+    "height": 1224,
+    "alt": "Graduates in caps and gowns on the steps at the Air University convocation, Islamabad",
+    "caption": "Convocation, BS Computer Game Development, Air University",
+    "source": "IMG_5304.HEIC"
+  },
   "recognition/aiesec-sparkathon-2023.webp": {
     "width": 1280,
     "height": 1706,
     "alt": "Team Tapit on stage holding their certificate as winners of AIESEC Sparkathon 2023",
     "caption": "Winner, AIESEC Sparkathon 2023, TMUC Islamabad",
     "source": "Won AIESEC Sparkaton 2023 at TMUC ISB.jpeg"
+  },
+  "recognition/award-air-university-registrar.webp": {
+    "width": 1280,
+    "height": 1888,
+    "alt": "Raja Shaharyar Ali and Air University's Registrar holding the Startup Pitching League 2024 winner's trophy in the Registrar's office",
+    "caption": "With Air University's Registrar and the Startup Pitching League 2024 winner's trophy",
+    "source": "Recieving recognition from Registrar.jpeg"
   },
   "recognition/award-nayatel-ceo.webp": {
     "width": 720,
@@ -41,6 +132,20 @@
     "caption": "MOU, AsaanBill × Najoomi Technologies, ITCN Asia Lahore",
     "source": "IMG_1432.JPG"
   },
+  "recognition/mou-humancare-mustahiq.webp": {
+    "width": 1600,
+    "height": 1200,
+    "alt": "Raja Shaharyar Ali exchanging the signed MOU with a representative of Human Care Foundation, under a screen reading MOU Signing, Human Care Foundation and Mustahiq",
+    "caption": "MOU, Human Care Foundation × Mustahiq, NICAT",
+    "source": "MOU with Human Care Foundation at NICAT.jpeg"
+  },
+  "recognition/nic-peshawar-graduation-2024.webp": {
+    "width": 800,
+    "height": 1062,
+    "alt": "Raja Shaharyar Ali holding a trophy and TapitCard's graduation certificate in an Instagram-style frame at NIC Peshawar's 2024 graduation ceremony",
+    "caption": "Graduated NIC Peshawar Cohort-11 with TapitCard, February 2024",
+    "source": "Graduate of NIC Peshawar.jpeg"
+  },
   "recognition/pgdc-2023-fyp-first-prize.webp": {
     "width": 800,
     "height": 1000,
@@ -61,6 +166,13 @@
     "alt": "Team Tapit with the Rs 100,000 cheque as winners of the Zindigi Prize Islamabad Regionals",
     "caption": "Winner, Zindigi Prize Islamabad Regionals (JS Bank), Rs 100,000",
     "source": "Won Zinidigi Prize Islamabad Regionals 2023 at Hitec Taxila.jpeg"
+  },
+  "recognition/zindigi-win-air-university-vc.webp": {
+    "width": 800,
+    "height": 545,
+    "alt": "The TapitCard team with Air University's Vice-Chancellor and the Rs 100,000 Zindigi Prize cheque, under a banner reading 'Air University's startup, TapitCard won Zindigi Prize Islamabad Regionals'",
+    "caption": "Recognised by Air University's VC for TapitCard's Zindigi Prize win",
+    "source": "Recieving recognition from VC.jpeg"
   },
   "speaking/podcast-asaanbill.webp": {
     "width": 1290,

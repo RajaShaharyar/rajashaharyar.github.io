@@ -15,6 +15,8 @@ export interface RecognitionItem {
   shownOnNote?: string;
   venture: string | null;
   evidence: Evidence[];
+  note?: string;
+  todo?: string[];
   toConfirm: string[];
 }
 
@@ -24,4 +26,11 @@ export const recognition: RecognitionItem[] = log;
 /** Items listed on a given page, per the log's "Shown on" column. */
 export function shownOn(page: string): RecognitionItem[] {
   return recognition.filter((r) => r.shownOn.includes(page));
+}
+
+/** Look up one log item by id; fails the build on a typo. */
+export function getRecognition(id: string): RecognitionItem {
+  const item = recognition.find((r) => r.id === id);
+  if (!item) throw new Error(`Recognition item "${id}" is not in src/content/recognition.json.`);
+  return item;
 }

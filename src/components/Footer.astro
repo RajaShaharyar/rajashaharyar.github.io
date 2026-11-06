@@ -5,11 +5,10 @@
  */
 import { site } from '../lib/site';
 import { publicFileExists } from '../lib/public-files';
-import Todo from './Todo.astro';
 
 const { contact, cv } = site;
 const year = new Date().getFullYear();
-// The download link goes live automatically once public/cv.pdf exists.
+// The CV download row appears automatically once public/cv.pdf exists (hidden until then).
 const hasCvPdf = publicFileExists(cv.pdfHref);
 const footerVentures = site.ventures.filter((v) => v.footer);
 ---
@@ -46,23 +45,16 @@ const footerVentures = site.ventures.filter((v) => v.footer);
             <span>{site.name}</span>
           </a>
         </li>
-        <li>
-          {
-            hasCvPdf ? (
+        {
+          hasCvPdf && (
+            <li>
               <a href={cv.pdfHref} class="footer-link" download>
                 <span class="footer-key">CV</span>
                 <span>Download PDF</span>
               </a>
-            ) : (
-              <a href={cv.pageHref} class="footer-link">
-                <span class="footer-key">CV</span>
-                <span>
-                  Download PDF <Todo class="ml-1">coming soon</Todo>
-                </span>
-              </a>
-            )
-          }
-        </li>
+            </li>
+          )
+        }
       </ul>
     </div>
 

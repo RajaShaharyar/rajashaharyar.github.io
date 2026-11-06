@@ -1,6 +1,5 @@
 {
   "_rules": "Homepage copy, section by section (blueprint 'Homepage blueprint'). Edit wording here, not in the components. Stats, venture cards, offers and testimonials live in site.json; image alt text and captions in images.json.",
-
   "hero": {
     "eyebrow": "Product & Growth · Fintech · SaaS",
     "headline": "I turn early products into revenue.",
@@ -12,7 +11,6 @@
     "secondary": { "label": "See the work", "href": "#ventures" },
     "cvButton": { "label": "Download CV", "_note": "Shown only once public/cv.pdf exists." }
   },
-
   "proof": {
     "heading": "Proof in numbers",
     "nameStripTitle": "Built at, backed by and recognised by",
@@ -28,7 +26,6 @@
       "NUST"
     ]
   },
-
   "playbook": {
     "heading": "How I grow products",
     "intro": "The same three stages, every time.",
@@ -37,8 +34,11 @@
         "id": "product-idea-fit",
         "name": "Product-Idea Fit",
         "question": "Is the problem worth solving, and for whom?",
-        "proof": "Led AsaanBill's 0→1 launch and defined its ideal customers.",
-        "links": [{ "label": "AsaanBill", "href": "/ventures/asaanbill/" }]
+        "proof": "Led AsaanBill's 0→1 launch and pre-sold Tapit on a prototype.",
+        "links": [
+          { "label": "AsaanBill", "href": "/ventures/asaanbill/" },
+          { "label": "Tapit", "href": "/ventures/tapit/" }
+        ]
       },
       {
         "id": "product-market-fit",
@@ -59,44 +59,44 @@
       }
     ]
   },
-
-  "ventures": {
-    "heading": "Ventures",
-    "intro": "Three markets, one method.",
-    "cardLink": "Read the journey"
-  },
-
+  "ventures": { "heading": "Ventures", "intro": "Three markets, one method.", "cardLink": "Read the journey" },
   "hardWins": {
     "heading": "Things that aren't easy",
-    "intro": "Regulated fintech is slow, gated and unforgiving. These were the gates.",
+    "intro": "Payments in Pakistan are regulated, gated and slow to open. These are the gates AsaanBill got through.",
     "items": [
       {
-        "title": "EMI licence",
-        "text": "The State Bank licenses e-money institutions in three stages, with Rs 200M initial capital for a new entity."
+        "title": "1Bill aggregator approval",
+        "text": "Through 1LINK, November 2024. Merchants' bills become payable in banking apps and at bank branches."
       },
       {
-        "title": "SBP settlement & reporting",
-        "text": "Regular reporting to the regulator, with customer funds held in trust."
+        "title": "Raast approval",
+        "text": "Through the State Bank, June 2026. Raast onboarding runs from application and integration through a pilot before going live."
       },
+      { "title": "Three ways to get paid", "text": "PSID-based payments, QR payments and Request to Pay." },
       {
-        "title": "Card approval",
-        "text": "Getting a payment card approved for launch."
-      },
-      {
-        "title": "Raast P2M",
-        "text": "The State Bank required banks and e-money institutions to integrate Raast P2M by 31 March 2025."
+        "title": "SBP-reviewed onboarding",
+        "text": "Every merchant integration passes a State Bank review before it goes live."
       }
     ],
     "link": { "label": "See the AsaanBill story", "href": "/ventures/asaanbill/" }
   },
-
   "recognition": {
     "heading": "Recognition",
     "line": "5 competitions won · Top 3, LMKT Startup Showdown 2023 · K2prenuer, top 10 of 3,000+ applicants",
     "carouselLabel": "Competition wins and awards",
+    "_slidesNote": "Carousel order: recognition.json ids. Only items shown on Competitions & awards that have a photo appear; each uses the first evidence photo in the log.",
+    "slides": [
+      "win-zindigi-prize-2023",
+      "win-aiesec-sparkathon-2023",
+      "win-startup-pitching-league-2024",
+      "top3-lmkt-startup-showdown-2023",
+      "win-pgdc-2023-fyp",
+      "win-icstsi",
+      "award-entrepreneur-of-the-year-2024",
+      "award-major-contributor"
+    ],
     "link": { "label": "All recognition", "href": "/recognition/" }
   },
-
   "speaking": {
     "heading": "On stage",
     "line": "Invited to speak at Air University, NUST EME, NUML and HITEC University, and host of the AsaanBill podcast.",
@@ -108,18 +108,10 @@
     ],
     "link": { "label": "Invite me to speak", "href": "/contact/?reason=speaking" }
   },
-
-  "help": {
-    "heading": "How I can help",
-    "link": { "label": "Work with me", "href": "/work-with-me/" }
-  },
-
+  "help": { "heading": "How I can help", "link": { "label": "Work with me", "href": "/work-with-me/" } },
   "testimonials": {
     "heading": "In their words",
     "_note": "Section is hidden until site.json has at least one testimonial."
   },
-
-  "finalCta": {
-    "heading": "Have a product that needs its next 1,000 customers?"
-  }
+  "finalCta": { "heading": "Have a product that needs its next 1,000 customers?" }
 }

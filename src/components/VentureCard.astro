@@ -17,7 +17,13 @@ const { venture: v, linkLabel } = Astro.props;
 <article class="venture-card flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface">
   {
     v.image && (
-      <Media image={v.image.src} fit={v.image.fit} position={v.image.position} class="aspect-video border-b border-line" />
+      <Media
+        image={v.image.src}
+        fit={v.image.fit}
+        position={v.image.position}
+        sizes="(min-width: 768px) 600px, 100vw"
+        class="aspect-video border-b border-line"
+      />
     )
   }
   <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">

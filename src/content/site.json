@@ -28,8 +28,8 @@
   "cv": {
     "pageHref": "/cv/",
     "pdfHref": "/cv.pdf",
-    "_note": "The 'Download CV' button (home hero) and the footer download link appear automatically once public/cv.pdf exists.",
-    "todo": "TODO: web CV PDF without date of birth, gender or home address (Phase 4)"
+    "downloadName": "Raja-Shaharyar-Ali-CV.pdf",
+    "_note": "Every Download CV link (home hero, footer, /cv header) points at pdfHref with this download name, and appears once public/cv.pdf exists. Regenerate it with npm run cv:pdf after editing cv.json."
   },
   "cta": { "label": "Let's talk", "href": "/contact/" },
   "nav": [

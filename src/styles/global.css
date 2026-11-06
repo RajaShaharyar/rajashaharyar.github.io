@@ -259,6 +259,19 @@
   }
 
   /* Text links inside content */
+  /* Skill chips (Skills & tools, CV): plain labels, no ratings */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.375rem 0.95rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    color: var(--color-fg);
+    background-color: var(--color-surface);
+  }
+
   /* A line set apart from the text around it (My story, Education) */
   .pull-line {
     border-left: 3px solid var(--color-accent);

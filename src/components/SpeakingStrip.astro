@@ -15,7 +15,7 @@ const { images } = Astro.props;
     images.map((key) => (
       <li>
         <figure>
-          <Media image={key} fit="contain" class="aspect-square rounded-card border border-line" />
+          <Media image={key} fit="contain" sizes="(min-width: 1024px) 300px, 50vw" class="aspect-square rounded-card border border-line" />
           <figcaption class="mt-3 text-sm leading-snug text-fg-muted">{getImage(key).caption}</figcaption>
         </figure>
       </li>

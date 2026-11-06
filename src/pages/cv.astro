@@ -1,11 +1,986 @@
 ---
+/**
+ * CV (/cv): the whole CV on one page, built from src/content/cv.json, with the
+ * six key numbers from site.json → stats and contact details from
+ * site.json → contact. The print stylesheet below IS the PDF:
+ * `npm run cv:pdf` prints this page to public/cv.pdf (A4, max 2 pages).
+ *
+ * - Sticky mini-menu of the 14 sections (a scrolling chip bar on phones).
+ * - Each experience role is a disclosure button (aria-expanded) that shows its
+ *   bullets and "See the full journey →". Without JavaScript every role is open;
+ *   when printing every role is open.
+ * - Missing data (a "TODO" in cv.json) is hidden, on screen and in print.
+ */
 import Base from '../layouts/Base.astro';
-import StubPage from '../components/StubPage.astro';
+import CvSection from '../components/CvSection.astro';
+import { site } from '../lib/site';
+import { cv, bulletText, programmeDates, roleDates } from '../lib/cv';
+import { formatRange } from '../lib/dates';
+import { publicFileExists } from '../lib/public-files';
 
-const title = 'CV';
-const purpose = 'The full CV on one page, plus a PDF download.';
+const { header, summary, experience, otherVentures, education, programmes, honours, speaking, partnerships, skills, languages, leadership, references } = cv;
+const { contact } = site;
+const hasPdf = publicFileExists(site.cv.pdfHref);
+
+const roles = experience.items.flatMap((item) =>
+  item.roles.map((role, i) => ({
+    id: `xp-${item.id}-${i + 1}`,
+    company: item.company,
+    href: item.href,
+    title: role.title,
+    dates: roleDates(role),
+    bullets: role.bullets.map(bulletText),
+  })),
+);
+const degree = education.items[0];
+
+const sections = [
+  { id: 'header', label: header.menuLabel ?? header.title },
+  { id: 'summary', label: summary.title },
+  { id: 'key-numbers', label: cv.keyNumbers.title },
+  { id: 'experience', label: experience.title },
+  { id: 'other-ventures', label: otherVentures.title },
+  { id: 'education', label: education.title },
+  { id: 'programmes', label: programmes.menuLabel ?? programmes.title },
+  { id: 'honours', label: honours.menuLabel ?? honours.title },
+  { id: 'speaking', label: speaking.title },
+  { id: 'partnerships', label: partnerships.title },
+  { id: 'skills', label: skills.menuLabel ?? skills.title },
+  { id: 'languages', label: languages.title },
+  { id: 'leadership', label: leadership.menuLabel ?? leadership.title },
+  { id: 'references', label: references.title },
+];
+
+const description = `${header.name}'s CV: ${header.headline}. Experience, key numbers, education, honours and skills, with a PDF download.`;
 ---
 
-<Base title={title} description={purpose} ogType="profile">
-  <StubPage eyebrow="CV" title={title} purpose={purpose} phase="Phase 4 · CV page and PDF" />
+<Base title="CV" description={description} ogType="profile">
+  <!-- 1. Header -->
+  <header id="header" class="cv-header wrap" aria-labelledby="cv-name" data-cv-section>
+    <p class="eyebrow cv-tagline">{header.tagline}</p>
+    <h1 id="cv-name" class="cv-name">{header.name}</h1>
+    <p class="cv-headline">{header.headline}</p>
+    <ul class="cv-contact">
+      <li>{header.location}</li>
+      <li>
+        <span class="cv-key">Email</span>{' '}
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+      </li>
+      <li>
+        <span class="cv-key">WhatsApp</span>{' '}
+        <a href={contact.whatsapp.href}>{contact.whatsapp.display}</a>
+      </li>
+      <li>
+        <span class="cv-key">LinkedIn</span>{' '}
+        <a href={contact.linkedin.href}>{contact.linkedin.display}</a>
+      </li>
+      <li>
+        <span class="cv-key">Website</span>{' '}
+        <a href={header.website.href}>{header.website.display}</a>
+      </li>
+    </ul>
+    {
+      hasPdf && (
+        <a href={site.cv.pdfHref} download={site.cv.downloadName} class="btn btn-primary cv-download">
+          {header.downloadLabel}
+        </a>
+      )
+    }
+  </header>
+
+  <div class="wrap cv-layout">
+    <nav class="cv-menu" aria-label="CV sections" data-cv-menu>
+      <ol class="cv-menu-list">
+        {
+          sections.map((s) => (
+            <li>
+              <a href={`#${s.id}`} class="cv-menu-link" data-cv-link={s.id}>
+                {s.label}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="cv-body">
+      <!-- 2. Summary -->
+      <CvSection id="summary" title={summary.title}>
+        <p class="cv-summary">{summary.text}</p>
+      </CvSection>
+
+      <!-- 3. Key numbers (site.json → stats, the homepage figures) -->
+      <CvSection id="key-numbers" title={cv.keyNumbers.title}>
+        <ul class="cv-numbers">
+          {
+            site.stats.map((stat) => (
+              <li>
+                <span class="cv-number">{stat.value}</span> <span class="cv-number-label">{stat.label}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 4. Experience -->
+      <CvSection id="experience" title={experience.title}>
+        <ol class="xp-list">
+          {
+            roles.map((role, i) => (
+              <li class="xp" data-xp>
+                <h3 class="xp-heading">
+                  <button
+                    type="button"
+                    class="xp-toggle"
+                    aria-expanded="true"
+                    aria-controls={role.id}
+                    data-xp-toggle
+                    data-xp-initial={i === 0 ? 'open' : 'closed'}
+                  >
+                    <span class="xp-title">{role.title}</span>{' '}
+                    <span class="xp-meta">
+                      <span class="xp-company">{role.company}</span>
+                      {role.dates && (
+                        <>
+                          <span class="xp-dot" aria-hidden="true">
+                            {' · '}
+                          </span>
+                          <span class="sr-only">, </span>
+                          <span class="xp-dates">{role.dates}</span>
+                        </>
+                      )}
+                    </span>
+                    <svg class="xp-chevron" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                      <path d="M4 6l4 4 4-4" />
+                    </svg>
+                  </button>
+                </h3>
+                <div id={role.id} class="xp-panel" data-xp-panel>
+                  <ul class="xp-bullets">
+                    {role.bullets.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                  <a href={role.href} class="arrow-link journey-link">
+                    {experience.linkLabel}
+                    <span class="sr-only">: {role.company}</span>
+                    <span class="arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </a>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </CvSection>
+
+      <!-- 5. Other ventures -->
+      <CvSection id="other-ventures" title={otherVentures.title}>
+        <ul class="cv-rows">
+          {
+            otherVentures.items.map((v) => (
+              <li class="cv-row cv-row-stack">
+                <p>
+                  <a href={v.href} class="cv-strong cv-inline-link">
+                    {v.name}
+                  </a>
+                  <span class="cv-muted">
+                    {' · '}
+                    {v.role}
+                    {v.when && ` · ${v.when}`}
+                  </span>
+                </p>
+                <p class="cv-text">{v.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 6. Education -->
+      <CvSection id="education" title={education.title}>
+        <div class="cv-row">
+          <p class="cv-row-main">
+            <span class="cv-strong">{degree.degree}</span>
+            <span class="cv-muted">
+              {' · '}
+              {degree.institution}, {degree.city}
+            </span>
+          </p>
+          <p class="cv-row-date">{formatRange(degree.start, degree.end, 'short')}</p>
+        </div>
+        <p class="cv-text mt-2">
+          <span class="cv-label">Final-year project:</span>{' '}
+          {degree.finalYearProject.cvLine}
+        </p>
+      </CvSection>
+
+      <!-- 7. Programmes and certifications -->
+      <CvSection id="programmes" title={programmes.title}>
+        <ul class="cv-rows">
+          {
+            programmes.items.map((p) => (
+              <li class="cv-row">
+                <p class="cv-row-main">{p.cvLabel}</p>
+                {programmeDates(p) && <p class="cv-row-date">{programmeDates(p)}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 8. Honours and awards -->
+      <CvSection id="honours" title={honours.title}>
+        <ul class="cv-rows">
+          {
+            honours.items.map((h) => (
+              <li class="cv-row">
+                <p class="cv-row-main">{h.title}</p>
+                {h.date && <p class="cv-row-date">{h.date}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 9. Speaking (one line in the PDF) -->
+      <CvSection id="speaking" title={speaking.title} pdfLine={speaking.pdfLine}>
+        <ul class="cv-rows">
+          {
+            speaking.items.map((s) => (
+              <li class="cv-row">
+                <p class="cv-row-main">{s.text}</p>
+                {s.date && <p class="cv-row-date">{s.date}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 10. Partnerships (one line in the PDF) -->
+      <CvSection id="partnerships" title={partnerships.title} pdfLine={partnerships.pdfLine}>
+        <ul class="cv-bullets">
+          <li>
+            <span class="cv-label">{partnerships.mousLabel}:</span>{' '}
+            {partnerships.mous.map((m) => m.text).join(', ')}
+          </li>
+          {
+            partnerships.counts.map((c) => (
+              <li>
+                {c.value} {c.label}
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 11. Skills and tools (same data as /about/skills) -->
+      <CvSection id="skills" title={skills.title}>
+        <div class="cv-skills">
+          {
+            skills.groups.map((group) => (
+              <div class="cv-skill-group">
+                <h3 class="cv-h3">{group.name}</h3>
+                <ul class="cv-chips">
+                  {group.items.map((tool) => (
+                    <li class="chip">{tool}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </CvSection>
+
+      <!-- 12. Languages -->
+      <CvSection id="languages" title={languages.title}>
+        <p class="cv-text">{languages.items.map((l) => `${l.name} (${l.level.toLowerCase()})`).join(', ')}</p>
+      </CvSection>
+
+      <!-- 13. Leadership and volunteering (one line in the PDF) -->
+      <CvSection id="leadership" title={leadership.title} pdfLine={leadership.pdfLine}>
+        <ul class="cv-rows">
+          {
+            leadership.items.map((l) => (
+              <li class="cv-row">
+                <p class="cv-row-main">{l.text}</p>
+                {l.date && <p class="cv-row-date">{l.date}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </CvSection>
+
+      <!-- 14. References (web only; the PDF holds sections 1-13) -->
+      <CvSection id="references" title={references.title} screenOnly>
+        <p class="cv-text">{references.text}</p>
+      </CvSection>
+    </div>
+  </div>
 </Base>
+
+<style is:global>
+  /* ---------- Screen ---------- */
+  .print-only {
+    display: none;
+  }
+  html:has(.cv-menu) {
+    scroll-padding-top: 8.25rem; /* site header + chip bar */
+  }
+  @media (width >= 64rem) {
+    html:has(.cv-menu) {
+      scroll-padding-top: 6rem;
+    }
+  }
+
+  .cv-header {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  @media (width >= 48rem) {
+    .cv-header {
+      padding-top: 4rem;
+      padding-bottom: 3.5rem;
+    }
+  }
+  .cv-name {
+    margin-top: 1rem;
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+  }
+  .cv-headline {
+    margin-top: 1rem;
+    font-size: var(--text-lead);
+    color: var(--color-fg);
+  }
+  .cv-contact {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    color: var(--color-fg-muted);
+  }
+  .cv-contact a {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line-strong);
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+  .cv-contact a:hover {
+    text-decoration-color: var(--color-accent);
+  }
+  .cv-key {
+    margin-right: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .cv-download {
+    margin-top: 1.75rem;
+  }
+
+  .cv-layout {
+    padding-bottom: 1rem;
+  }
+  @media (width >= 64rem) {
+    .cv-layout {
+      display: grid;
+      grid-template-columns: 13rem minmax(0, 1fr);
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  /* Mini-menu: a sticky chip bar under the site header on phones and tablets… */
+  .cv-menu {
+    position: sticky;
+    top: 4.0625rem;
+    z-index: 40;
+    margin-inline: -1rem;
+    padding: 0.625rem 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-block: 1px solid var(--color-line);
+    background-color: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    backdrop-filter: blur(14px);
+  }
+  .cv-menu::-webkit-scrollbar {
+    display: none;
+  }
+  @media (width >= 40rem) {
+    .cv-menu {
+      margin-inline: -1.5rem;
+      padding-inline: 1.5rem;
+    }
+  }
+  .cv-menu-list {
+    display: flex;
+    gap: 0.5rem;
+    width: max-content;
+  }
+  .cv-menu-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    transition:
+      color 0.15s,
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+  .cv-menu-link:hover {
+    color: var(--color-fg);
+    border-color: var(--color-line-strong);
+  }
+  .cv-menu-link[aria-current='true'] {
+    color: var(--color-accent-ink);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+  }
+
+  /* …and a sticky side list on wide screens */
+  @media (width >= 64rem) {
+    .cv-menu {
+      top: 6rem;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      border: 0;
+      background: none;
+      backdrop-filter: none;
+    }
+    .cv-menu-list {
+      flex-direction: column;
+      gap: 0.125rem;
+      width: auto;
+      border-left: 1px solid var(--color-line);
+    }
+    .cv-menu-link {
+      min-height: 2.125rem;
+      margin-left: -1px;
+      padding: 0 0 0 1rem;
+      border: 0;
+      border-left: 2px solid transparent;
+      border-radius: 0;
+    }
+    .cv-menu-link[aria-current='true'] {
+      color: var(--color-fg);
+      border-left-color: var(--color-accent);
+      background: none;
+    }
+  }
+
+  .cv-section {
+    padding-top: 2.75rem;
+  }
+  @media (width >= 64rem) {
+    .cv-section:first-child {
+      padding-top: 0.5rem;
+    }
+  }
+  .cv-h2 {
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+    font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+    letter-spacing: -0.015em;
+  }
+  .cv-h3 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .cv-summary {
+    max-width: var(--container-prose);
+    font-size: var(--text-lead);
+    line-height: 1.55;
+  }
+  .cv-text {
+    max-width: var(--container-prose);
+    color: var(--color-fg-muted);
+  }
+  .cv-strong {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .cv-muted {
+    color: var(--color-fg-muted);
+  }
+  .cv-label {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .cv-inline-link {
+    text-decoration: underline;
+    text-decoration-color: var(--color-line-strong);
+    text-underline-offset: 0.2em;
+  }
+  .cv-inline-link:hover {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .cv-numbers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1.5rem;
+  }
+  @media (width >= 48rem) {
+    .cv-numbers {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .cv-numbers li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .cv-number {
+    font-family: var(--font-display);
+    font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-number-label {
+    font-size: 0.9375rem;
+    color: var(--color-fg-muted);
+  }
+
+  /* Experience: one disclosure per role */
+  .xp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .xp {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .xp-heading {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+  }
+  .xp-toggle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 1rem;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-card);
+    text-align: left;
+    cursor: pointer;
+  }
+  @media (width >= 40rem) {
+    .xp-toggle {
+      padding: 1.125rem 1.5rem;
+    }
+  }
+  .xp-title {
+    grid-column: 1;
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-fg);
+  }
+  .xp-meta {
+    grid-column: 1;
+    margin-top: 0.125rem;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--color-fg-muted);
+  }
+  .xp-company {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .xp-chevron {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    fill: none;
+    stroke: var(--color-fg-muted);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s var(--ease-out-quart);
+  }
+  .xp-toggle[aria-expanded='true'] .xp-chevron {
+    transform: rotate(180deg);
+  }
+  .xp-toggle:hover .xp-chevron {
+    stroke: var(--color-fg);
+  }
+  .xp-panel {
+    padding: 0 1.25rem 1.25rem;
+  }
+  .xp-panel[data-collapsed] {
+    display: none;
+  }
+  @media (width >= 40rem) {
+    .xp-panel {
+      padding: 0 1.5rem 1.375rem;
+    }
+  }
+  .xp-bullets,
+  .cv-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 46rem;
+    padding-left: 1.125rem;
+    list-style: disc;
+    color: var(--color-fg-muted);
+  }
+  .xp-bullets li::marker,
+  .cv-bullets li::marker {
+    color: var(--color-accent);
+  }
+  .journey-link {
+    margin-top: 1rem;
+  }
+
+  /* Rows: text on the left, date on the right */
+  .cv-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .cv-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.125rem 1.5rem;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .cv-rows .cv-row:first-child {
+    padding-top: 0;
+  }
+  .cv-row-stack {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cv-row-main {
+    flex: 1 1 100%;
+    color: var(--color-fg);
+  }
+  @media (width >= 40rem) {
+    .cv-row-main {
+      flex-basis: 18rem;
+    }
+  }
+  .cv-row-date {
+    flex: none;
+    font-size: 0.9375rem;
+    color: var(--color-fg-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-skills {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (width >= 48rem) {
+    .cv-skills {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .cv-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  /* ---------- Print: this is the PDF ---------- */
+  @page {
+    size: A4;
+    margin: 11mm 14mm 11mm;
+  }
+  @media print {
+    html,
+    body {
+      background: #fff !important;
+    }
+    html:has(.cv-menu) {
+      scroll-padding-top: 0;
+    }
+    body {
+      padding: 0 !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+      font-size: 10pt;
+      line-height: 1.3;
+    }
+    body * {
+      color: #000 !important;
+      background: none !important;
+      box-shadow: none !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+      letter-spacing: normal !important;
+    }
+    /* Not on paper: site chrome, menus, buttons, links to other pages */
+    .site-header,
+    body > footer,
+    .dock,
+    .skip-link,
+    .cv-menu,
+    .cv-download,
+    .journey-link,
+    .xp-chevron,
+    .screen-only {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+    .wrap {
+      max-width: none !important;
+      padding: 0 !important;
+    }
+    .cv-layout {
+      display: block !important;
+      padding: 0 !important;
+    }
+    a {
+      text-decoration: none !important;
+    }
+
+    /* 1. Header */
+    .cv-header {
+      padding: 0 0 2pt !important;
+    }
+    .cv-tagline {
+      font-size: 10pt !important;
+      font-weight: 400 !important;
+      text-transform: none !important;
+    }
+    .cv-name {
+      margin-top: 1pt !important;
+      font-size: 20pt !important;
+      font-weight: 700 !important;
+      line-height: 1.15 !important;
+    }
+    .cv-headline {
+      margin-top: 1pt !important;
+      font-size: 11pt !important;
+      font-weight: 700 !important;
+    }
+    .cv-contact {
+      margin-top: 3pt !important;
+      gap: 0 10pt !important;
+      font-size: 10pt;
+    }
+    .cv-contact a {
+      text-decoration: none !important;
+    }
+    .cv-key {
+      margin-right: 0 !important;
+      font-size: 10pt !important;
+      font-weight: 400 !important;
+      text-transform: none !important;
+    }
+    .cv-key::after {
+      content: ':';
+    }
+
+    /* Sections */
+    .cv-section {
+      padding-top: 7pt !important;
+    }
+    .cv-h2 {
+      margin: 0 0 3pt !important;
+      padding: 0 0 1.5pt !important;
+      border-bottom: 0.75pt solid #000 !important;
+      font-size: 10.5pt !important;
+      font-weight: 700 !important;
+      line-height: 1.2 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em !important;
+      break-after: avoid;
+    }
+    .cv-summary,
+    .cv-text {
+      max-width: none !important;
+      font-size: 10pt !important;
+      line-height: 1.3 !important;
+    }
+    .mt-2 {
+      margin-top: 2pt !important;
+    }
+
+    /* 3. Key numbers: two columns, number then label */
+    .cv-numbers {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 1pt 12pt !important;
+    }
+    .cv-numbers li {
+      display: block !important;
+      break-inside: avoid;
+    }
+    .cv-number {
+      font-size: 10pt !important;
+      font-weight: 700 !important;
+      line-height: 1.3 !important;
+    }
+    .cv-number-label {
+      font-size: 10pt !important;
+    }
+
+    /* 4. Experience: every role open, no card chrome */
+    .xp-list {
+      gap: 4pt !important;
+    }
+    .xp {
+      border: 0 !important;
+      border-radius: 0 !important;
+      break-inside: avoid;
+    }
+    .xp-toggle {
+      display: flex !important;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10pt;
+      padding: 0 !important;
+    }
+    .xp-title {
+      font-size: 10pt !important;
+      font-weight: 700 !important;
+    }
+    .xp-meta {
+      margin: 0 !important;
+      font-size: 10pt !important;
+      text-align: right;
+    }
+    .xp-company {
+      font-weight: 700;
+    }
+    .xp-panel,
+    .xp-panel[data-collapsed] {
+      display: block !important;
+      padding: 1pt 0 0 !important;
+    }
+    .xp-bullets,
+    .cv-bullets {
+      gap: 0 !important;
+      max-width: none !important;
+      padding-left: 11pt !important;
+    }
+    .xp-bullets li::marker,
+    .cv-bullets li::marker {
+      color: #000 !important;
+    }
+    .xp-bullets li,
+    .cv-bullets li {
+      font-size: 10pt;
+      line-height: 1.3;
+      break-inside: avoid;
+    }
+
+    /* Rows */
+    .cv-row {
+      padding: 0 !important;
+      border: 0 !important;
+      gap: 0 10pt !important;
+      break-inside: avoid;
+    }
+    .cv-row-stack {
+      flex-direction: row !important;
+      flex-wrap: wrap;
+      justify-content: flex-start !important;
+      gap: 0 4pt !important;
+    }
+    .cv-rows {
+      gap: 1pt;
+    }
+    .cv-row-main,
+    .cv-row-date {
+      font-size: 10pt !important;
+    }
+
+    /* 11. Skills: one line per group */
+    .cv-skills {
+      display: block !important;
+    }
+    .cv-skill-group {
+      break-inside: avoid;
+    }
+    .cv-skill-group > * {
+      display: inline !important;
+    }
+    .cv-h3 {
+      font-size: 10pt !important;
+      font-weight: 700 !important;
+    }
+    .cv-h3::after {
+      content: ': ';
+    }
+    .cv-chips li {
+      display: inline !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      font-size: 10pt !important;
+    }
+    .cv-chips li + li::before {
+      content: ', ';
+    }
+  }
+</style>
+
+<script>
+  // Experience disclosures: start with only the first role open (no-JS: all open).
+  for (const toggle of document.querySelectorAll<HTMLButtonElement>('[data-xp-toggle]')) {
+    const panel = document.getElementById(toggle.getAttribute('aria-controls') ?? '');
+    if (!panel) continue;
+    const set = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      // A data attribute, not [hidden]: Tailwind's base layer makes [hidden] display:none !important,
+      // which no print rule could undo, and every role must print open.
+      panel.toggleAttribute('data-collapsed', !open);
+    };
+    set(toggle.dataset.xpInitial === 'open');
+    toggle.addEventListener('click', () => set(toggle.getAttribute('aria-expanded') !== 'true'));
+  }
+
+  // Mini-menu: highlight the section being read; on phones keep that chip in view.
+  const menu = document.querySelector<HTMLElement>('[data-cv-menu]');
+  const links = new Map(
+    Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-cv-link]')).map((a) => [a.dataset.cvLink, a]),
+  );
+  let current = '';
+  const activate = (id: string) => {
+    if (id === current) return;
+    current = id;
+    for (const [key, link] of links) {
+      if (key === id) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    }
+    const link = links.get(id);
+    if (menu && link && menu.scrollWidth > menu.clientWidth) {
+      const left = link.offsetLeft - (menu.clientWidth - link.offsetWidth) / 2;
+      menu.scrollTo({ left, behavior: 'auto' });
+    }
+  };
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible[0]) activate(visible[0].target.id);
+    },
+    { rootMargin: '-25% 0px -65% 0px' },
+  );
+  document.querySelectorAll('[data-cv-section]').forEach((s) => observer.observe(s));
+</script>

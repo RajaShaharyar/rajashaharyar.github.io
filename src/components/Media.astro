@@ -2,9 +2,12 @@
 /**
  * Image from public/images, sized from src/content/images.json so the frame
  * reserves its space before the image loads (no layout shift).
+ * - Responsive: srcset lists the 480 / 960 / full-size copies; pass `sizes`
+ *   (the slot's rendered width) so small slots never fetch the full file.
  * - Lazy by default; pass `eager` for the one above-the-fold image (hero).
  * - fit="contain" shows the whole image (posters with text) over a blurred
- *   copy of itself; the copy reuses the same file, so it costs no extra request.
+ *   copy of itself; the copy uses the same srcset and sizes, so the browser
+ *   picks the same file and it costs no extra request.
  * - Override the frame shape with an aspect-* class, e.g. class="aspect-[4/5]".
  */
 import { getImage } from '../lib/images';
@@ -17,11 +20,13 @@ interface Props {
   fit?: 'cover' | 'contain';
   /** CSS object-position for fit="cover", e.g. "62% 45%" */
   position?: string;
+  /** The slot's rendered width, e.g. "(min-width: 1024px) 400px, 50vw" */
+  sizes?: string;
   eager?: boolean;
   class?: string;
 }
 
-const { image, alt, fit = 'cover', position, eager = false, class: className } = Astro.props;
+const { image, alt, fit = 'cover', position, sizes = '(min-width: 1024px) 50vw, 100vw', eager = false, class: className } = Astro.props;
 const img = getImage(image);
 const loading = eager ? 'eager' : 'lazy';
 ---
@@ -32,6 +37,8 @@ const loading = eager ? 'eager' : 'lazy';
       <img
         class="media-backdrop"
         src={img.src}
+        srcset={img.srcset}
+        sizes={sizes}
         alt=""
         aria-hidden="true"
         width={img.width}
@@ -45,6 +52,8 @@ const loading = eager ? 'eager' : 'lazy';
     class="media-img"
     data-fit={fit}
     src={img.src}
+    srcset={img.srcset}
+    sizes={sizes}
     alt={alt ?? img.alt}
     width={img.width}
     height={img.height}

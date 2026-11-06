@@ -66,7 +66,8 @@ export interface Site {
     booking: { href: string; todo: string };
     form: { formspreeId: string };
   };
-  cv: { pageHref: string; pdfHref: string; todo: string };
+  /** The CV: web page, PDF and the file name a download is saved as */
+  cv: { pageHref: string; pdfHref: string; downloadName: string };
   cta: { label: string; href: string };
   nav: NavLink[];
   ventures: Venture[];

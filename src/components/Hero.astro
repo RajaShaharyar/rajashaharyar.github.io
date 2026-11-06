@@ -21,7 +21,7 @@ const showCv = publicFileExists(site.cv.pdfHref);
         <a href={hero.secondary.href} class="btn btn-secondary">{hero.secondary.label}</a>
         {
           showCv && (
-            <a href={site.cv.pdfHref} class="btn btn-secondary" download>
+            <a href={site.cv.pdfHref} class="btn btn-secondary" download={site.cv.downloadName}>
               {hero.cvButton.label}
             </a>
           )
@@ -37,6 +37,7 @@ const showCv = publicFileExists(site.cv.pdfHref);
         image={hero.image}
         eager
         position={hero.imagePosition}
+        sizes="(min-width: 1024px) 760px, 100vw"
         class="aspect-[3/2] rounded-card sm:aspect-[16/10] lg:aspect-[4/5]"
       />
     </div>

@@ -31,35 +31,69 @@ interface Props {
   aspect?: string;
   /** Show captions under the thumbnails (they always show in the lightbox) */
   captions?: boolean;
+  /** Rendered width of one thumbnail, for srcset, e.g. "(min-width: 1024px) 300px, 50vw" */
+  sizes?: string;
+  /**
+   * "grid" (default): equal thumbnails. "strip": the first photo large and the
+   * rest as small thumbnails below it (cards with several photos).
+   */
+  layout?: 'grid' | 'strip';
 }
 
-const { label, items, columns = 'grid-cols-2 lg:grid-cols-3', aspect = 'aspect-[4/3]', captions = true } = Astro.props;
+const {
+  label,
+  items,
+  columns = 'grid-cols-2 lg:grid-cols-3',
+  aspect = 'aspect-[4/3]',
+  captions = true,
+  sizes = '(min-width: 1024px) 300px, 50vw',
+  layout = 'grid',
+} = Astro.props;
 
 const photos = items.map((item) => {
   const img = getImage(item.image);
-  return { key: item.image, src: img.src, alt: img.alt, width: img.width, height: img.height, caption: item.caption ?? img.caption };
+  return {
+    key: item.image,
+    src: img.src,
+    srcset: img.srcset,
+    alt: img.alt,
+    width: img.width,
+    height: img.height,
+    caption: item.caption ?? img.caption,
+    credit: img.credit,
+  };
 });
 const id = `gallery-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 const single = photos.length === 1;
+const strip = layout === 'strip' && photos.length > 1;
+// In a strip the first photo spans the card; the others sit three to a row.
+const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:gap-x-6', columns];
 ---
 
 <div class="gallery" data-gallery>
-  <ul class:list={['grid gap-x-4 gap-y-6 md:gap-x-6', columns]} aria-label={label}>
+  <ul class:list={listClass} aria-label={label}>
     {
       photos.map((p, i) => (
-        <li>
+        <li class:list={[strip && i === 0 && 'col-span-3']}>
           <figure>
             <a
               href={p.src}
               class="gallery-link"
               data-gallery-item={i}
               data-src={p.src}
+              data-srcset={p.srcset}
               data-alt={p.alt}
               data-caption={p.caption}
+              data-credit={p.credit}
               data-width={p.width}
               data-height={p.height}
             >
-              <Media image={p.key} fit="contain" class={`${aspect} rounded-card border border-line`} />
+              <Media
+                image={p.key}
+                fit="contain"
+                sizes={strip && i > 0 ? '(min-width: 1024px) 140px, 33vw' : sizes}
+                class={`${strip && i > 0 ? 'aspect-square' : aspect} rounded-card border border-line`}
+              />
               <span class="gallery-zoom" aria-hidden="true">
                 <svg viewBox="0 0 16 16" width="14" height="14">
                   <path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9" />
@@ -67,7 +101,12 @@ const single = photos.length === 1;
               </span>
               <span class="sr-only"> (open larger)</span>
             </a>
-            {captions && <figcaption class="mt-3 text-sm leading-snug text-fg-muted">{p.caption}</figcaption>}
+            {captions && !strip && (
+              <figcaption class="mt-3 text-sm leading-snug text-fg-muted">
+                {p.caption}
+                {p.credit && <span class="photo-credit">{p.credit}</span>}
+              </figcaption>
+            )}
           </figure>
         </li>
       ))
@@ -83,8 +122,11 @@ const single = photos.length === 1;
         </button>
       </div>
       <figure class="lightbox-figure" data-lb-dismiss>
-        <img class="lightbox-img" data-lb-img alt="" decoding="async" />
-        <figcaption id={`${id}-caption`} class="lightbox-caption" data-lb-caption></figcaption>
+        <img class="lightbox-img" data-lb-img alt="" sizes="(min-width: 1024px) 80vw, 100vw" decoding="async" />
+        <figcaption class="lightbox-caption">
+          <span id={`${id}-caption`} data-lb-caption></span>
+          <span class="photo-credit" data-lb-credit></span>
+        </figcaption>
       </figure>
       <div class="lightbox-nav" hidden={single}>
         <button type="button" class="lb-btn" data-lb-prev>
@@ -212,6 +254,15 @@ const single = photos.length === 1;
     color: var(--color-fg);
     line-height: 1.45;
   }
+  .photo-credit {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--color-fg-subtle);
+  }
+  .photo-credit[hidden] {
+    display: none;
+  }
   .lightbox-nav {
     display: flex;
     justify-content: center;
@@ -249,12 +300,13 @@ const single = photos.length === 1;
     const dialog = root.querySelector<HTMLDialogElement>('[data-lightbox]');
     const img = root.querySelector<HTMLImageElement>('[data-lb-img]');
     const caption = root.querySelector<HTMLElement>('[data-lb-caption]');
+    const credit = root.querySelector<HTMLElement>('[data-lb-credit]');
     const count = root.querySelector<HTMLElement>('[data-lb-count]');
     const status = root.querySelector<HTMLElement>('[data-lb-status]');
     const close = root.querySelector<HTMLButtonElement>('[data-lb-close]');
     const prev = root.querySelector<HTMLButtonElement>('[data-lb-prev]');
     const next = root.querySelector<HTMLButtonElement>('[data-lb-next]');
-    if (!dialog || typeof dialog.showModal !== 'function' || !img || !caption || !count || !status || !close || !prev || !next) {
+    if (!dialog || typeof dialog.showModal !== 'function' || !img || !caption || !credit || !count || !status || !close || !prev || !next) {
       continue; // no <dialog> support: the links still open the full-size photo
     }
 
@@ -264,13 +316,16 @@ const single = photos.length === 1;
     const show = (i: number, announce: boolean) => {
       index = (i + links.length) % links.length;
       const d = links[index].dataset;
+      img.srcset = d.srcset ?? '';
       img.src = d.src ?? '';
       img.alt = d.alt ?? '';
       img.width = Number(d.width);
       img.height = Number(d.height);
       caption.textContent = d.caption ?? '';
+      credit.textContent = d.credit ?? '';
+      credit.hidden = !d.credit;
       count.textContent = `${index + 1} of ${links.length}`;
-      if (announce) status.textContent = `${d.caption ?? ''} (${index + 1} of ${links.length})`;
+      if (announce) status.textContent = `${d.caption ?? ''}${d.credit ? `. ${d.credit}` : ''} (${index + 1} of ${links.length})`;
     };
 
     links.forEach((link, i) => {

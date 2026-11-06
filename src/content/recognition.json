@@ -78,17 +78,8 @@
     "item": "Major Contributor Award, Air University, presented by the Registrar",
     "shownOn": ["competitions-awards", "education"],
     "venture": null,
-    "evidence": [
-      { "source": "2024 Unwrapped.pdf, page 5", "file": "about/2024-major-contributor-award.webp" },
-      {
-        "source": "Recieving recognition from Registrar.jpeg",
-        "file": "recognition/award-air-university-registrar.webp",
-        "note": "Raja says this is the Major Contributor Award, but the trophy in the photo reads 'Startup Pitching League 2024 Winner'. The site uses the 2024 Unwrapped photo (the award plaque, same Registrar) for this award instead."
-      }
-    ],
-    "toConfirm": [
-      "Which occasion the Registrar office photo shows: it has the Startup Pitching League 2024 trophy, not the Major Contributor plaque."
-    ]
+    "evidence": [{ "source": "2024 Unwrapped.pdf, page 5", "file": "about/2024-major-contributor-award.webp" }],
+    "toConfirm": []
   },
   {
     "id": "mustahiq-first-project",
@@ -182,6 +173,11 @@
       {
         "source": "Won Startup Pitching League _24 at NIC Peshawar.jpeg",
         "file": "recognition/startup-pitching-league-2024.webp"
+      },
+      {
+        "source": "Recieving recognition from Registrar.jpeg",
+        "file": "recognition/award-air-university-registrar.webp",
+        "note": "With Air University's Registrar and the Startup Pitching League 2024 trophy."
       }
     ],
     "toConfirm": []
@@ -244,6 +240,19 @@
     "toConfirm": []
   },
   {
+    "id": "win-icstsi",
+    "date": "May 2023",
+    "dateISO": "2023-05",
+    "item": "Winner, ICSTSI start-up competition",
+    "shownOn": ["competitions-awards"],
+    "venture": "Tapit",
+    "evidence": [
+      { "source": "Won ICSTSI Business plan competition.jpeg", "file": "recognition/icstsi-competition-win.webp" }
+    ],
+    "toConfirm": [],
+    "note": "Business Expo 2023. Organiser: Islamabad Chamber of Small Traders & Small Industries, with International Islamic University and COMSATS University Islamabad (from the certificate)."
+  },
+  {
     "id": "programme-nic-peshawar-incubation",
     "date": "Mar 2023",
     "dateISO": "2023-03",
@@ -263,23 +272,6 @@
     "shownOn": ["programmes", "education"],
     "venture": "Tapit",
     "evidence": [],
-    "toConfirm": []
-  },
-  {
-    "id": "win-icstsi",
-    "date": "Undated",
-    "dateISO": null,
-    "item": "Winner, ICSTSI start-up competition",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [
-      {
-        "source": "Won ICSTSI Business plan competition.jpeg",
-        "file": "recognition/icstsi-competition-win.webp",
-        "note": "The certificate reads: 'Organized by Islamabad Chamber of Small Traders & Small Industries, in collaboration with International Islamic University & Comsats University Islamabad', and carries a 'Business Expo May 2023' logo. Not yet confirmed by Raja, so the organiser and date stay TODO."
-      }
-    ],
-    "todo": ["TODO: date", "TODO: organiser"],
     "toConfirm": []
   },
   {

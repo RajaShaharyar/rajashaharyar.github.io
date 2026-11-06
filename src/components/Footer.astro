@@ -48,7 +48,7 @@ const footerVentures = site.ventures.filter((v) => v.footer);
         {
           hasCvPdf && (
             <li>
-              <a href={cv.pdfHref} class="footer-link" download>
+              <a href={cv.pdfHref} class="footer-link" download={cv.downloadName}>
                 <span class="footer-key">CV</span>
                 <span>Download PDF</span>
               </a>

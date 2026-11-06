@@ -5,11 +5,12 @@
     "headline": "I turn early products into revenue.",
     "subline": "5+ years across fintech and SaaS. PKR 25 Cr+ in sales closed. Took AsaanBill from launch to $1.8M+ in monthly transaction volume.",
     "roleLine": "Manager, Product & Growth at Evamp & Saanga",
-    "image": "speaking/talk-numl-session.webp",
-    "imagePosition": "62% 45%",
+    "image": "about/2024-airtech.webp",
+    "imagePosition": "22% 35%",
     "primary": { "label": "Let's talk", "href": "/contact/" },
     "secondary": { "label": "See the work", "href": "#ventures" },
-    "cvButton": { "label": "Download CV", "_note": "Shown only once public/cv.pdf exists." }
+    "cvButton": { "label": "Download CV", "_note": "Shown only once public/cv.pdf exists." },
+    "_imageNote": "Interim until a headshot exists: Raja at the podium, AirTech'24 closing ceremony (no watermark). The NUML photo carries the photographer's credit, so it isn't used here."
   },
   "proof": {
     "heading": "Proof in numbers",

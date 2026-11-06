@@ -65,10 +65,20 @@ A typo in an image path fails the build. Everything except the hero image is laz
 - Every photo group is a `Gallery`: a lazy-loaded grid whose photos open in an accessible lightbox
   (Enter or click opens, ←/→ step, Tab stays inside, Escape closes, focus returns to the photo).
 
-## CV download
+## CV page and PDF
 
-Drop the sanitised PDF at `public/cv.pdf` (no date of birth, gender or home address). The homepage
-"Download CV" button and the footer link appear automatically on the next build.
+`/cv` is built from `src/content/cv.json` (key numbers from `site.json → stats`, contact details from
+`site.json → contact`). Its print stylesheet is the PDF layout.
+
+**After editing cv.json (or the stats or contact details), run `npm run cv:pdf` and commit `public/cv.pdf`.**
+The script builds the site, serves it locally, prints `/cv/` to A4 in Playwright's Chromium and saves
+`public/cv.pdf`. It fails if the PDF is longer than 2 pages, sets the PDF title and author, and reads the
+text back to check it is selectable, in section order and free of personal details.
+First time on a new machine: `npx playwright install chromium`.
+
+The "Download CV" links (homepage hero, footer, `/cv` header) appear whenever `public/cv.pdf` exists and
+save as `Raja-Shaharyar-Ali-CV.pdf` (`site.json → cv.downloadName`). The PDF never holds a photo, date of
+birth, gender, nationality or home address.
 
 ## Contact form
 

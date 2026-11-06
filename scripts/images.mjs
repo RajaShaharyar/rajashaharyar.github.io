@@ -13,6 +13,9 @@
  *                  extracted byte-for-byte (never a screenshot of the slide)
  * - Applies EXIF orientation, resizes to max 1600px wide, encodes WebP and
  *   strips ALL metadata (EXIF, GPS, ICC, XMP). Each output is re-read to prove it.
+ * - Also writes 480 and 960 px wide copies (<name>-480.webp, <name>-960.webp) for
+ *   srcset, so small slots never download the full file. The unsuffixed file stays
+ *   the largest version (max 1600 px), so existing references keep working.
  * - Records width/height in src/content/images.json so every <img> can reserve
  *   its space (no layout shift). Alt text and captions in that file are kept;
  *   new entries get the caption given below (or a TODO to fill in by hand).
@@ -29,6 +32,9 @@ const SOURCE_DIR = '_source';
 const OUT_DIR = 'public/images';
 const MANIFEST = 'src/content/images.json';
 const MAX_WIDTH = 1600;
+/** Smaller copies for srcset, written as <name>-480.webp and <name>-960.webp (only when narrower than the original). */
+const VARIANT_WIDTHS = [480, 960];
+const WEBP = { quality: 78, effort: 6 };
 
 const UNWRAPPED = '2024 Unwrapped.pdf';
 
@@ -116,6 +122,26 @@ function pageImages(doc, resources, seen = new Set()) {
   });
 }
 
+/** One WebP at the given max width. sharp writes no metadata unless asked to. */
+async function encode(input, width, outPath) {
+  await sharp(input, { failOn: 'none' })
+    .rotate() // bake in EXIF orientation before the metadata is dropped (no-op when there is none)
+    .resize({ width, withoutEnlargement: true })
+    .webp(WEBP)
+    .toFile(outPath);
+}
+
+/** Re-read an output and fail if any metadata survived. */
+async function verify(outPath, label) {
+  const meta = await sharp(outPath).metadata();
+  const leaked = ['exif', 'icc', 'iptc', 'xmp'].filter((k) => meta[k]);
+  if (leaked.length) {
+    console.error(`✗ ${label} still has metadata: ${leaked.join(', ')}`);
+    failed = true;
+  }
+  return meta;
+}
+
 const pdfCache = new Map();
 /** The single embedded JPEG on a PDF page, as the original bytes. */
 async function extractPdfJpeg(path, page) {
@@ -142,6 +168,8 @@ for (const [source, outBase, newCaption] of IMAGES) {
   const outPath = join(OUT_DIR, key);
   mkdirSync(dirname(outPath), { recursive: true });
 
+  let meta;
+  let widths;
   try {
     let input = path;
     if (isPdf) {
@@ -151,33 +179,34 @@ for (const [source, outBase, newCaption] of IMAGES) {
       input = await heicConvert({ buffer: readFileSync(path), format: 'PNG' });
     }
 
-    await sharp(input, { failOn: 'none' })
-      .rotate() // bake in EXIF orientation before the metadata is dropped (no-op when there is none)
-      .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-      .webp({ quality: 78, effort: 6 })
-      .toFile(outPath); // sharp writes no metadata unless asked to
+    // Largest version first (keeps the plain file name), then the smaller srcset copies.
+    await encode(input, MAX_WIDTH, outPath);
+    meta = await verify(outPath, key);
+    widths = [meta.width];
+    for (const w of VARIANT_WIDTHS.filter((w) => w < meta.width)) {
+      const variant = join(OUT_DIR, `${outBase}-${w}.webp`);
+      await encode(input, w, variant);
+      await verify(variant, `${outBase}-${w}.webp`);
+      widths.unshift(w);
+    }
+    widths.sort((a, b) => a - b);
   } catch (error) {
     console.error(`✗ ${key} from "${sourceLabel}": ${error.message}`);
     failed = true;
     continue;
   }
 
-  const meta = await sharp(outPath).metadata();
-  const leaked = ['exif', 'icc', 'iptc', 'xmp'].filter((k) => meta[k]);
-  if (leaked.length) {
-    console.error(`✗ ${key} still has metadata: ${leaked.join(', ')}`);
-    failed = true;
-  }
-
   const kb = Math.round(statSync(outPath).size / 1024);
   manifest[key] = {
+    ...manifest[key],
     width: meta.width,
     height: meta.height,
+    widths,
     alt: manifest[key]?.alt ?? 'TODO: alt text',
     caption: manifest[key]?.caption ?? newCaption ?? 'TODO: caption',
     source: sourceLabel,
   };
-  console.log(`✓ ${key}  ${meta.width}×${meta.height}  ${kb} KB  (no metadata)`);
+  console.log(`✓ ${key}  ${meta.width}×${meta.height}  ${kb} KB  widths ${widths.join('/')}  (no metadata)`);
 }
 
 const sorted = Object.fromEntries(Object.entries(manifest).sort(([a], [b]) => a.localeCompare(b)));

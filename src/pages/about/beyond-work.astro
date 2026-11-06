@@ -34,7 +34,7 @@ const { beyondWork: page } = about;
             <p class="lead mt-5 max-w-prose">{section.text}</p>
           </div>
           <div class="lg:col-span-7">
-            <Gallery label={section.label} items={section.images.map((image) => ({ image }))} columns="grid-cols-1 sm:grid-cols-2" />
+            <Gallery label={section.label} items={section.images.map((image) => ({ image }))} columns="grid-cols-1 sm:grid-cols-2" sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw" />
           </div>
         </div>
       </section>

@@ -58,6 +58,7 @@ const sectionY = 'py-16 md:py-24';
           label={page.degree.label}
           items={page.degree.images.map((image) => ({ image }))}
           columns="grid-cols-2 lg:grid-cols-4"
+          sizes="(min-width: 1024px) 260px, 45vw"
         />
       </div>
     </article>
@@ -92,7 +93,7 @@ const sectionY = 'py-16 md:py-24';
             </div>
             {p.image && (
               <div class="programme-photo">
-                <Gallery label={`${p.provider} photo`} items={[{ image: p.image }]} columns="grid-cols-1" aspect="aspect-[4/5]" />
+                <Gallery label={`${p.provider} photo`} items={[{ image: p.image }]} columns="grid-cols-1" aspect="aspect-[4/5]" sizes="(min-width: 640px) 180px, 90vw" />
               </div>
             )}
           </li>
@@ -109,6 +110,7 @@ const sectionY = 'py-16 md:py-24';
         label={page.campus.label}
         items={page.campus.items.map((item) => ({ image: item.image, caption: item.text }))}
         columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+        sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
       />
     </div>
   </section>

@@ -84,7 +84,12 @@ const trackId = 'recognition-track';
       slides.map((s, i) => (
         <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
           <figure class="flex h-full flex-col">
-            <Media image={s.image} fit="contain" class="aspect-[4/5] rounded-card border border-line" />
+            <Media
+              image={s.image}
+              fit="contain"
+              sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 85vw"
+              class="aspect-[4/5] rounded-card border border-line"
+            />
             <figcaption class="mt-4 flex flex-col gap-2">
               <span class="badge">{s.badge}</span>
               <span class="leading-snug font-semibold">{s.caption}</span>

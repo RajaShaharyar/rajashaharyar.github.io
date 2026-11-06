@@ -1,0 +1,176 @@
+---
+/**
+ * One Recognition-log item as a card: photo strip (opens in the lightbox),
+ * result badge, title, a meta line (organiser · venue · date, or role · date
+ * for talks and events), the facts that are known (prize, selection, purpose,
+ * what it gave), the venture link and any source link.
+ * Fields that are still "TODO: …" in recognition.json are left out.
+ */
+import Gallery from './Gallery.astro';
+import ArrowLink from './ArrowLink.astro';
+import { getImage } from '../lib/images';
+import { photosOf, type RecognitionItem } from '../lib/recognition';
+import { filled } from '../lib/site';
+
+interface Props {
+  item: RecognitionItem;
+  /** "talk": the venue is the heading and the talk title sits under it */
+  variant?: 'default' | 'talk';
+}
+
+const { item, variant = 'default' } = Astro.props;
+const isTalk = variant === 'talk';
+const isRole = isTalk || item.badge === 'Event';
+
+const heading = isTalk ? (filled(item.venue) ?? item.title) : item.title;
+const subheading = isTalk ? filled(item.title) : filled(item.subtitle);
+const meta = (isRole ? [filled(item.role), item.date] : [filled(item.organiser), filled(item.venue), item.date]).filter(Boolean);
+const facts = [
+  { label: 'Prize', value: filled(item.prize) },
+  { label: 'Selection', value: filled(item.selectivity) },
+  { label: 'Purpose', value: filled(item.purpose) },
+  { label: 'What it gave', value: filled(item.gave) },
+].filter((f) => f.value);
+const lines = [filled(item.summary), filled(item.detail), filled(item.recognisedBy)].filter(Boolean);
+
+const photos = photosOf(item);
+const credits = [...new Set(photos.map((p) => getImage(p.file).credit).filter(Boolean))];
+const links = item.links ?? [];
+---
+
+<article id={item.id} class="rcard">
+  {
+    photos.length > 0 && (
+      <Gallery
+        label={`${heading} photos`}
+        items={photos.map((p) => ({ image: p.file, caption: p.caption }))}
+        layout="strip"
+        columns="grid-cols-1"
+        captions={false}
+        sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, 100vw"
+      />
+    )
+  }
+  <div class="rcard-body">
+    {item.badge && <p class="badge w-fit">{item.badge}</p>}
+    <h3 class="rcard-title">{heading}</h3>
+    {subheading && <p class="rcard-sub">{subheading}</p>}
+    {
+      meta.length > 0 && (
+        <p class="rcard-meta">
+          {meta.map((m, i) => (
+            <>
+              {i > 0 && ' · '}
+              <span class:list={[m === item.date && 'whitespace-nowrap']}>{m}</span>
+            </>
+          ))}
+        </p>
+      )
+    }
+    {
+      facts.length > 0 && (
+        <dl class="rcard-facts">
+          {facts.map((f) => (
+            <div>
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+    {lines.map((line) => <p class="rcard-line">{line}</p>)}
+    {credits.map((c) => <p class="rcard-credit">{c}</p>)}
+    {
+      (item.venture || links.length > 0) && (
+        <p class="rcard-links">
+          {item.venture && <ArrowLink href={item.venture.href}>{item.venture.name}</ArrowLink>}
+          {links.map((l) => (
+            <a href={l.href} class="arrow-link" target="_blank" rel="noopener">
+              {l.label}
+              <span class="sr-only"> (opens in a new tab)</span>
+              <span class="arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          ))}
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .rcard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    scroll-margin-top: 6rem;
+  }
+  @media (width >= 48rem) {
+    .rcard {
+      padding: 1.25rem;
+    }
+  }
+  .rcard-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 0.25rem 0.25rem;
+  }
+  .rcard-title {
+    margin-top: 0.25rem;
+    font-size: 1.375rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .rcard-sub {
+    color: var(--color-fg);
+  }
+  .rcard-meta {
+    font-size: 0.9375rem;
+    color: var(--color-fg-muted);
+  }
+  .rcard-facts {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+  }
+  .rcard-facts div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
+  }
+  .rcard-facts dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+    line-height: 1.6;
+  }
+  .rcard-facts dd {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .rcard-line {
+    color: var(--color-fg-muted);
+  }
+  .rcard-credit {
+    font-size: 0.8125rem;
+    color: var(--color-fg-subtle);
+  }
+  .rcard-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+</style>

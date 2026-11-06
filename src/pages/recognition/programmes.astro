@@ -1,0 +1,31 @@
+---
+/**
+ * Recognition ▾ Programmes & incubation: one card per programme (dates, how
+ * selective and what it gave, only where known, and photos), plus TapitCard's
+ * office at AUBIC (badge "Office", not counted as a programme).
+ */
+import Base from '../../layouts/Base.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import RecognitionCard from '../../components/RecognitionCard.astro';
+import { shownOn } from '../../lib/recognition';
+import { recognitionCopy, recognitionMenuEntry } from '../../lib/recognition-pages';
+
+const page = recognitionMenuEntry('/recognition/programmes/');
+const items = shownOn('programmes', ['Programme', 'Office']);
+---
+
+<Base title={page.label} description={recognitionCopy.programmes.description}>
+  <SubPageHeader section="/recognition/" overviewLabel="Overview" title={page.label} intro={`${page.description}.`} />
+
+  <section class="wrap pt-10 pb-4 md:pt-14" aria-label="Programmes">
+    <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+      {
+        items.map((item) => (
+          <li>
+            <RecognitionCard item={item} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

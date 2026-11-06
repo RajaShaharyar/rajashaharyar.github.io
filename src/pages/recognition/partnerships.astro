@@ -1,0 +1,47 @@
+---
+/**
+ * Recognition ▾ Partnerships & MOUs: counters (the partnership counts from
+ * cv.json, the MOU count computed from recognition.json), then one card per MOU.
+ */
+import Base from '../../layouts/Base.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Counter from '../../components/Counter.astro';
+import RecognitionCard from '../../components/RecognitionCard.astro';
+import { countBadge, shownOn } from '../../lib/recognition';
+import { cv } from '../../lib/cv';
+import { recognitionCopy, recognitionMenuEntry } from '../../lib/recognition-pages';
+
+const page = recognitionMenuEntry('/recognition/partnerships/');
+const { partnerships: copy } = recognitionCopy;
+const mous = shownOn('partnerships', ['MOU']);
+const mouCount = countBadge('MOU');
+// Strategic partnerships first, then ERP (cv.json keeps the CV's own order), then the MOU count.
+const counts = [...cv.partnerships.counts].sort(
+  (a, b) => Number(b.label.startsWith('strategic')) - Number(a.label.startsWith('strategic')),
+);
+const counters = [...counts, { value: String(mouCount), label: mouCount === 1 ? copy.mouCounter.one : copy.mouCounter.other }];
+---
+
+<Base title={page.label} description={copy.description}>
+  <SubPageHeader section="/recognition/" overviewLabel="Overview" title={page.label} intro={`${page.description}.`} />
+
+  <section class="wrap pt-10 md:pt-14" aria-label={copy.countersLabel}>
+    <ul class="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-3">
+      {counters.map((c) => <Counter value={c.value} label={c.label} />)}
+    </ul>
+  </section>
+
+  <section class="wrap pt-14 pb-4 md:pt-20" aria-labelledby="mous-heading">
+    <SectionHeader id="mous-heading" heading={copy.heading} />
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6">
+      {
+        mous.map((item) => (
+          <li>
+            <RecognitionCard item={item} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>

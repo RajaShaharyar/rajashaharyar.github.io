@@ -24,7 +24,9 @@ src/
     home.json          homepage copy, section by section (carousel order: recognition.slides)
     about.json         copy for the four About pages; points into cv.json by id for CV facts
     images.json        every published photo: size (prevents layout shift), alt text, caption
-    recognition.json   the Recognition log (one object per row; "shownOn" decides which pages list it)
+    recognition.json   the Recognition log: one item per win, award, programme, MOU, talk… (badge, title,
+                       organiser, venue, date, prize, venture, photos; "shownOn" decides which pages list it)
+    recognition-pages.json  copy for /recognition and its four sub-pages (counter labels, headings, topics)
     cv.json            all 14 CV sections: the one source for roles, degree, programmes, skills, languages
     ventures/*.mdx     one file per venture, rendered by pages/ventures/[slug].astro
   content.config.ts    schemas: the build fails if recognition.json or a venture file is malformed
@@ -51,6 +53,8 @@ Photos are never copied by hand. Add the original file name and its clean output
 `scripts/images.mjs`, run `npm run images`, then fill in `alt` and `caption` for the new entry in
 `src/content/images.json`. The script finds the file by exact name under `_source/`, applies EXIF rotation,
 resizes to max 1600px wide, writes WebP, strips all metadata (EXIF, GPS, ICC, XMP) and verifies it.
+It also writes 480 and 960 px copies (`name-480.webp`, `name-960.webp`) that `Media` serves through
+`srcset`/`sizes`; the plain file name stays the largest version.
 iPhone HEIC files are decoded with `heic-convert` first (sharp can't read HEVC), and a PDF page source
 (`{ pdf, page }`) extracts that page's one embedded JPEG byte-for-byte with `pdf-lib`; that's how the
 "2024 in review" photos come out of *2024 Unwrapped.pdf* without the slide's text and stickers.
@@ -64,6 +68,13 @@ A typo in an image path fails the build. Everything except the hero image is laz
   link appear only once they are filled in there. The closing line is flagged `draft: true` for Raja to revise.
 - Every photo group is a `Gallery`: a lazy-loaded grid whose photos open in an accessible lightbox
   (Enter or click opens, ←/→ step, Tab stays inside, Escape closes, focus returns to the photo).
+
+## Recognition pages
+
+`/recognition` and its four sub-pages are built from `recognition.json` only. Counters are computed from each
+item's `badge` (Winner, Top 3, Award, Programme, MOU, Talk…), so adding an item updates them; `order` sets the
+card order within a section and `highlight` puts an item on the overview. Unknown fields stay `TODO: …` and are
+hidden. Every photo opens in the same accessible lightbox as the About pages.
 
 ## CV page and PDF
 

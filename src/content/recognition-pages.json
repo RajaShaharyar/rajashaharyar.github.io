@@ -1,0 +1,63 @@
+{
+  "_rules": "Copy for /recognition and its four sub-pages. The items themselves (cards, counters, photos) all come from recognition.json; counters are computed from its badges, never typed here. Sub-page intros reuse the Recognition menu descriptions in site.json.",
+
+  "overview": {
+    "title": "Recognition",
+    "intro": "Competitions won, programmes joined, partnerships signed and stages shared.",
+    "description": "Raja Shaharyar Ali's recognition: 5 competitions won, a top-3 finish, awards, incubation programmes, MOUs and talks, with photos.",
+    "countersLabel": "Recognition in numbers",
+    "counters": [
+      { "badge": "Winner", "one": "competition won", "other": "competitions won" },
+      { "badge": "Top 3", "one": "top-3 finish", "other": "top-3 finishes" },
+      { "badge": "Award", "one": "award", "other": "awards" },
+      { "badge": "Programme", "one": "programme", "other": "programmes" },
+      { "badge": "MOU", "one": "MOU", "other": "MOUs" },
+      { "badge": "Talk", "one": "talk", "other": "talks" }
+    ],
+    "highlightsHeading": "Highlights",
+    "pagesHeading": "Explore",
+    "pages": [
+      { "href": "/recognition/competitions-awards/", "image": "recognition/zindigi-prize-2023.webp" },
+      { "href": "/recognition/programmes/", "image": "recognition/nic-peshawar-graduation-2024.webp" },
+      { "href": "/recognition/partnerships/", "image": "recognition/mou-asaanbill-tuitionist.webp" },
+      { "href": "/recognition/speaking-events/", "image": "speaking/talk-hitec-hibis-2025.webp" }
+    ],
+    "_pagesNote": "Each link's label and one line come from the Recognition menu in site.json."
+  },
+
+  "competitions": {
+    "description": "Raja Shaharyar Ali's competition wins, top-3 finish and awards, with photos: Zindigi Prize, Startup Pitching League, AIESEC Sparkathon, ICSTSI, PGDC, LMKT Startup Showdown.",
+    "sections": [
+      { "id": "wins", "heading": "Wins", "badges": ["Winner"] },
+      { "id": "top-3", "heading": "Top 3", "badges": ["Top 3"] },
+      { "id": "awards", "heading": "Awards", "badges": ["Award"] }
+    ]
+  },
+
+  "programmes": {
+    "description": "Incubation and founder programmes: NIC Peshawar Cohort-11, K2prenuer and Founder Institute, plus TapitCard's office at Air University's incubation centre.",
+    "selectivityLabel": "Selection",
+    "gaveLabel": "What it gave"
+  },
+
+  "partnerships": {
+    "description": "AsaanBill, TapitCard and Mustahiq MOUs, plus 15+ ERP partnerships and 6 strategic partnerships across Karachi, Lahore and Islamabad.",
+    "countersLabel": "Partnerships in numbers",
+    "mouCounter": { "one": "MOU signed", "other": "MOUs signed" },
+    "heading": "MOUs",
+    "purposeLabel": "Purpose"
+  },
+
+  "speaking": {
+    "description": "Talks at HITEC University, NUML, Air University and NUST EME, the AsaanBill podcast, events organised, delegations and media.",
+    "topicsHeading": "I speak on",
+    "topics": ["Pitching", "Early sales and go-to-market", "Digital payments in Pakistan", "Entrepreneurship"],
+    "sections": [
+      { "id": "talks", "heading": "Talks", "badges": ["Talk"] },
+      { "id": "events", "heading": "Events organised", "badges": ["Event"] },
+      { "id": "represented", "heading": "Represented", "badges": ["Represented"] },
+      { "id": "media", "heading": "Media", "badges": ["Media"] }
+    ],
+    "invite": { "label": "Invite me to speak", "href": "/contact/?reason=speaking" }
+  }
+}

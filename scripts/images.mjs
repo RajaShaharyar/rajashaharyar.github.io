@@ -78,6 +78,16 @@ const IMAGES = [
   [{ pdf: UNWRAPPED, page: 10 }, 'about/2024-k2-trek', "Trekked to K2, the world's second-highest mountain, with K2prenuer"],
   [{ pdf: UNWRAPPED, page: 11 }, 'about/2024-asaanbill-start', 'Started working on AsaanBill (November 2024)'],
   [{ pdf: UNWRAPPED, page: 12 }, 'about/2024-k2prenuer-premiere', 'K2prenuer premiere on the big screen'],
+
+  // Phase 5: Recognition menu. 'Featured in Centraurus Cinepax via K2prenuer.jpeg' is skipped: it is the same
+  // photo as 2024 Unwrapped page 12 (about/2024-k2prenuer-premiere). 'Went to K2 Mountain…' duplicates K2.png.
+  ['Invited as guest speaker at NUML Banner.jpeg', 'speaking/talk-numl-poster-2024', "Zindigi Prize NUML chapter: 'Do's and don'ts in pitching', 7 March 2024"],
+  ['LMKT Startup Showdown at ITCN Asia Karachi.jpeg', 'recognition/lmkt-showdown-stage', 'On stage at LMKT Startup Showdown, ITCN Asia Karachi'],
+  ['MOU with Encorder bytes at KP Investor Summit.jpeg', 'recognition/mou-tapitcard-encoder-bytes', 'MOU signing, TapitCard × Encoder Bytes, KP Investor Summit'],
+  ['MOU with the Tutionist at NIC Islamabad.jpeg', 'recognition/mou-asaanbill-tuitionist', 'MOU signing, AsaanBill × The Tuitionist, NIC Islamabad'],
+  ['NIC Peshawar recognizing our win.jpeg', 'recognition/zindigi-win-nic-post', "NIC Peshawar's post on TapitCard's Zindigi Prize win"],
+  ['Represented Startups of Pakistan to US Delegation.jpeg', 'speaking/us-delegation', 'With the US delegation, representing Pakistani startups'],
+  ['Secured Incubation in NIC Peshawar.jpeg', 'recognition/nic-peshawar-cohort-11', 'TapitCard joins NIC Peshawar Cohort-11'],
 ];
 
 function walk(dir) {

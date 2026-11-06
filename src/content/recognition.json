@@ -1,355 +1,473 @@
 [
   {
-    "id": "talk-hitec-hibis-2025",
-    "date": "7 Jan 2025",
-    "dateISO": "2025-01-07",
-    "item": "Guest speaker, HI-BIS Introductory Seminar, HITEC University Taxila",
-    "shownOn": ["speaking-events"],
-    "venture": "Tapit",
-    "evidence": [
-      {
-        "source": "Invited as guest speaker at HITEC University Taxila.jpeg",
-        "file": "speaking/talk-hitec-hibis-2025.webp"
-      }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "podcast-asaanbill",
-    "date": "Dec 2024",
-    "dateISO": "2024-12",
-    "item": "Hosted Evamp & Saanga's first podcast, on AsaanBill",
-    "shownOn": ["speaking-events", "asaanbill"],
-    "venture": "AsaanBill",
-    "evidence": [{ "source": "Invited to a Podcast.jpeg", "file": "speaking/podcast-asaanbill.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "milestone-asaanbill-start",
-    "date": "Nov 2024",
-    "dateISO": "2024-11",
-    "item": "Started building AsaanBill at Evamp & Saanga",
-    "shownOn": ["my-story"],
-    "venture": "AsaanBill",
-    "evidence": [{ "source": "2024 Unwrapped.pdf, page 11", "file": "about/2024-asaanbill-start.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "award-entrepreneur-of-the-year-2024",
-    "date": "2024",
-    "dateISO": "2024",
-    "item": "Entrepreneur of the Year 2024, received from Nayatel's CEO",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [{ "source": "Recieving Award from CEO Nayatel.jpeg", "file": "recognition/award-nayatel-ceo.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "programme-k2prenuer",
-    "date": "2024",
-    "dateISO": "2024",
-    "item": "Selected for K2prenuer: top 10 of 3,000+ applicants, youngest startup; K2 base camp trek; film premiere",
-    "shownOn": ["programmes", "speaking-events", "beyond-work"],
-    "shownOnNote": "Programme on Programmes & incubation; film premiere on Speaking & events; base camp trek on Beyond work.",
-    "venture": "Tapit",
-    "evidence": [
-      { "source": "K2.png", "file": "recognition/k2prenuer-youngest-startup.webp" },
-      { "source": "2024 Unwrapped.pdf, page 9", "file": "about/2024-k2prenuer-selected.webp" },
-      { "source": "2024 Unwrapped.pdf, page 10", "file": "about/2024-k2-trek.webp" },
-      { "source": "2024 Unwrapped.pdf, page 12", "file": "about/2024-k2prenuer-premiere.webp" },
-      {
-        "source": "Featured in Centraurus Cinepax via K2prenuer.jpeg",
-        "file": "speaking/k2prenuer-premiere.webp",
-        "note": "Converted in Phase 5."
-      },
-      {
-        "source": "Went to K2 Mountain with top 10 entreprenuers from pakistan.jpeg",
-        "file": null,
-        "note": "Duplicate of K2.png at lower resolution; not used."
-      }
-    ],
-    "note": "Premiere venue not settled (the file name and 2024 Unwrapped disagree), so the premiere is shown without a venue.",
-    "toConfirm": []
-  },
-  {
-    "id": "award-major-contributor",
-    "date": "2024",
-    "dateISO": "2024",
-    "item": "Major Contributor Award, Air University, presented by the Registrar",
-    "shownOn": ["competitions-awards", "education"],
-    "venture": null,
-    "evidence": [{ "source": "2024 Unwrapped.pdf, page 5", "file": "about/2024-major-contributor-award.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "mustahiq-first-project",
-    "date": "2024",
-    "dateISO": "2024",
-    "item": "Launched the first project of NGO Mustahiq, F-8 Islamabad, providing a livelihood",
-    "shownOn": ["beyond-work"],
-    "venture": "Mustahiq (NGO)",
-    "evidence": [{ "source": "2024 Unwrapped.pdf, page 7", "file": "about/2024-mustahiq-first-project.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "event-ntu-startupcup",
-    "date": "2024",
-    "dateISO": "2024",
-    "item": "Represented MetaBite at NTU StartupCup, Faisalabad",
-    "shownOn": ["speaking-events"],
-    "venture": "MetaBite (final-year project)",
-    "evidence": [{ "source": "2024 Unwrapped.pdf, page 2", "file": "about/2024-ntu-startupcup.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "education-bs-graduation",
-    "date": "Jun 2024",
-    "dateISO": "2024-06",
-    "item": "BS Computer Game Development, Air University",
-    "shownOn": ["education"],
-    "venture": null,
-    "evidence": [
-      { "source": "IMG_5304.HEIC", "file": "education/air-university-convocation.webp", "note": "Converted from HEIC." },
-      { "source": "2024 Unwrapped.pdf, page 8", "file": "about/2024-degree.webp" }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "milestone-tapit-office",
-    "date": "Apr 2024",
-    "dateISO": "2024-04",
-    "item": "Opened TapitCard's office at Air University's incubation centre (AUBIC), Islamabad",
-    "shownOn": ["my-story", "tapit"],
-    "venture": "Tapit",
-    "evidence": [{ "source": "2024 Unwrapped.pdf, page 6", "file": "about/2024-tapitcard-office.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "event-airtech-24",
-    "date": "Mar 2024",
-    "dateISO": "2024-03",
-    "item": "Organised AirTech'24 as Director Marketing",
-    "shownOn": ["speaking-events", "education"],
-    "venture": null,
-    "evidence": [{ "source": "2024 Unwrapped.pdf, page 3", "file": "about/2024-airtech.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "talk-numl-zindigi-2024",
-    "date": "7 Mar 2024",
-    "dateISO": "2024-03-07",
-    "item": "Speaker, pitching session, Zindigi Prize NUML chapter",
-    "shownOn": ["speaking-events"],
-    "venture": "Tapit",
-    "evidence": [
-      { "source": "Invited as guest speaker at NUML Banner.jpeg", "file": "speaking/talk-numl-poster-2024.webp" },
-      { "source": "Invited as guest speaker at NUML University.jpeg", "file": "speaking/talk-numl-session.webp" },
-      {
-        "source": "2024 Unwrapped.pdf, page 4",
-        "file": "about/2024-numl-talk.webp",
-        "note": "Same photo as talk-numl-session (the home hero)."
-      }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "programme-nic-peshawar-graduation",
-    "date": "Feb 2024",
-    "dateISO": "2024-02",
-    "item": "Graduated NIC Peshawar Cohort-11",
-    "shownOn": ["programmes", "education"],
-    "venture": "Tapit",
-    "evidence": [{ "source": "Graduate of NIC Peshawar.jpeg", "file": "recognition/nic-peshawar-graduation-2024.webp" }],
-    "toConfirm": []
-  },
-  {
-    "id": "win-startup-pitching-league-2024",
-    "date": "Jan 2024",
-    "dateISO": "2024-01",
-    "item": "Winner, Startup Pitching League, NIC Peshawar",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [
-      {
-        "source": "Won Startup Pitching League _24 at NIC Peshawar.jpeg",
-        "file": "recognition/startup-pitching-league-2024.webp"
-      },
-      {
-        "source": "Recieving recognition from Registrar.jpeg",
-        "file": "recognition/award-air-university-registrar.webp",
-        "note": "With Air University's Registrar and the Startup Pitching League 2024 trophy."
-      }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "win-aiesec-sparkathon-2023",
-    "date": "Sep 2023",
-    "dateISO": "2023-09",
-    "item": "Winner, AIESEC Sparkathon 2023, TMUC Islamabad",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [
-      { "source": "Won AIESEC Sparkaton 2023 at TMUC ISB.jpeg", "file": "recognition/aiesec-sparkathon-2023.webp" }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "top3-lmkt-startup-showdown-2023",
-    "date": "2023",
-    "dateISO": "2023",
-    "item": "Top 3, LMKT Startup Showdown 2023 (KP edition), ITCN Asia Karachi",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [
-      { "source": "Top 3 in LMKT Startup Showdown 2023.jpeg", "file": "recognition/lmkt-showdown-top3-2023.webp" },
-      { "source": "LMKT Startup Showdown at ITCN Asia Karachi.jpeg", "file": "recognition/lmkt-showdown-stage.webp" }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "win-zindigi-prize-2023",
-    "date": "Jun 2023",
-    "dateISO": "2023-06",
-    "item": "Winner, Zindigi Prize Islamabad Regionals (JS Bank), Rs 100,000",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [
-      {
-        "source": "Won Zinidigi Prize Islamabad Regionals 2023 at Hitec Taxila.jpeg",
-        "file": "recognition/zindigi-prize-2023.webp"
-      },
-      { "source": "NIC Peshawar recognizing our win.jpeg", "file": "recognition/zindigi-win-nic-post.webp" },
-      { "source": "Recieving recognition from VC.jpeg", "file": "recognition/zindigi-win-air-university-vc.webp" }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "win-pgdc-2023-fyp",
-    "date": "9 May 2023",
-    "dateISO": "2023-05-09",
-    "item": "1st prize, final-year project (ideation stage), Pakistan Game Developers Conference 2023, Air University",
-    "shownOn": ["competitions-awards", "education"],
-    "venture": "MetaBite (final-year project)",
-    "evidence": [
-      {
-        "source": "Won 1st Prize in best FYP Idea at PGDC 2023.jpeg",
-        "file": "recognition/pgdc-2023-fyp-first-prize.webp"
-      }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "win-icstsi",
-    "date": "May 2023",
-    "dateISO": "2023-05",
-    "item": "Winner, ICSTSI start-up competition",
-    "shownOn": ["competitions-awards"],
-    "venture": "Tapit",
-    "evidence": [
-      { "source": "Won ICSTSI Business plan competition.jpeg", "file": "recognition/icstsi-competition-win.webp" }
-    ],
-    "toConfirm": [],
-    "note": "Business Expo 2023. Organiser: Islamabad Chamber of Small Traders & Small Industries, with International Islamic University and COMSATS University Islamabad (from the certificate)."
-  },
-  {
-    "id": "programme-nic-peshawar-incubation",
-    "date": "Mar 2023",
-    "dateISO": "2023-03",
-    "item": "Secured incubation, NIC Peshawar Cohort-11",
-    "shownOn": ["programmes"],
-    "venture": "Tapit",
-    "evidence": [
-      { "source": "Secured Incubation in NIC Peshawar.jpeg", "file": "recognition/nic-peshawar-cohort-11.webp" }
-    ],
-    "toConfirm": []
-  },
-  {
-    "id": "programme-founder-institute-core",
-    "date": "Mar–Aug 2023",
-    "dateISO": "2023-03",
-    "item": "Founder Institute Core",
-    "shownOn": ["programmes", "education"],
-    "venture": "Tapit",
-    "evidence": [],
-    "toConfirm": []
-  },
-  {
     "id": "mou-asaanbill-najoomi",
+    "category": "partnership",
+    "badge": "MOU",
+    "title": "AsaanBill × Najoomi Technologies",
+    "venue": "ITCN Asia, Lahore",
     "date": "2025–26",
     "dateISO": null,
-    "item": "MOU, AsaanBill × Najoomi Technologies, ITCN Asia Lahore",
+    "purpose": "AI chatbot-based digital payments",
+    "venture": { "name": "AsaanBill", "href": "/ventures/asaanbill/" },
+    "photos": [{ "file": "recognition/mou-asaanbill-najoomi.webp", "source": "IMG_1432.JPG" }],
     "shownOn": ["partnerships", "asaanbill"],
-    "venture": "AsaanBill",
-    "evidence": [{ "source": "IMG_1432.JPG", "file": "recognition/mou-asaanbill-najoomi.webp" }],
+    "order": 1,
     "todo": ["TODO: exact date (Raja: 2025–26)"],
     "toConfirm": []
   },
   {
     "id": "mou-asaanbill-tuitionist",
+    "category": "partnership",
+    "badge": "MOU",
+    "title": "AsaanBill × The Tuitionist",
+    "venue": "NIC Islamabad",
     "date": "2025–26",
     "dateISO": null,
-    "item": "MOU, AsaanBill × The Tuitionist, NIC Islamabad",
+    "purpose": "AsaanBill's entry into education payments",
+    "venture": { "name": "AsaanBill", "href": "/ventures/asaanbill/" },
+    "photos": [{ "file": "recognition/mou-asaanbill-tuitionist.webp", "source": "MOU with the Tutionist at NIC Islamabad.jpeg" }],
     "shownOn": ["partnerships", "asaanbill"],
-    "venture": "AsaanBill",
-    "evidence": [
-      { "source": "MOU with the Tutionist at NIC Islamabad.jpeg", "file": "recognition/mou-asaanbill-tuitionist.webp" }
-    ],
+    "order": 2,
     "todo": ["TODO: exact date (Raja: 2025–26)"],
     "toConfirm": []
   },
   {
     "id": "mou-tapitcard-encoder-bytes",
+    "category": "partnership",
+    "badge": "MOU",
+    "title": "TapitCard × Encoder Bytes",
+    "venue": "KP Investor Summit",
     "date": "2025–26",
     "dateISO": null,
-    "item": "MOU, TapitCard × Encoder Bytes, KP Investor Summit",
+    "purpose": "TODO: purpose of the MOU",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "recognition/mou-tapitcard-encoder-bytes.webp", "source": "MOU with Encorder bytes at KP Investor Summit.jpeg" }],
     "shownOn": ["partnerships", "tapit"],
-    "venture": "Tapit",
-    "evidence": [
-      {
-        "source": "MOU with Encorder bytes at KP Investor Summit.jpeg",
-        "file": "recognition/mou-tapitcard-encoder-bytes.webp"
-      }
-    ],
+    "order": 3,
     "todo": ["TODO: exact date (Raja: 2025–26)"],
     "toConfirm": []
   },
   {
     "id": "mou-humancare-mustahiq",
+    "category": "partnership",
+    "badge": "MOU",
+    "title": "Mustahiq × Human Care Foundation",
+    "venue": "NICAT",
     "date": "2025–26",
     "dateISO": null,
-    "item": "MOU, Human Care Foundation × Mustahiq, NICAT",
+    "purpose": "TODO: purpose of the MOU",
+    "venture": { "name": "Mustahiq (NGO)", "href": "/about/beyond-work/" },
+    "photos": [{ "file": "recognition/mou-humancare-mustahiq.webp", "source": "MOU with Human Care Foundation at NICAT.jpeg" }],
     "shownOn": ["partnerships", "beyond-work"],
-    "venture": "Mustahiq (NGO)",
-    "evidence": [
-      { "source": "MOU with Human Care Foundation at NICAT.jpeg", "file": "recognition/mou-humancare-mustahiq.webp" }
-    ],
+    "order": 4,
     "todo": ["TODO: exact date (Raja: 2025–26)"],
     "toConfirm": []
   },
   {
-    "id": "event-us-delegation",
-    "date": "2024",
-    "dateISO": "2024",
-    "item": "Represented startups of Pakistan to a US delegation",
+    "id": "talk-hitec-hibis-2025",
+    "category": "talk",
+    "badge": "Talk",
+    "title": "HI-BIS Introductory Seminar",
+    "venue": "HITEC University Taxila",
+    "role": "Guest speaker",
+    "date": "7 Jan 2025",
+    "dateISO": "2025-01-07",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "speaking/talk-hitec-hibis-2025.webp", "source": "Invited as guest speaker at HITEC University Taxila.jpeg" }],
     "shownOn": ["speaking-events"],
-    "venture": null,
-    "evidence": [
-      { "source": "Represented Startups of Pakistan to US Delegation.jpeg", "file": "speaking/us-delegation.webp" }
-    ],
+    "order": 1,
     "toConfirm": []
   },
   {
-    "id": "talk-air-university-nust-eme",
+    "id": "podcast-asaanbill",
+    "category": "talk",
+    "badge": "Talk",
+    "title": "\"Changing the landscape of receiving payments\"",
+    "venue": "AsaanBill podcast",
+    "role": "Host",
+    "detail": "Evamp & Saanga's first podcast",
+    "date": "Dec 2024",
+    "dateISO": "2024-12",
+    "venture": { "name": "AsaanBill", "href": "/ventures/asaanbill/" },
+    "photos": [{ "file": "speaking/podcast-asaanbill.webp", "source": "Invited to a Podcast.jpeg" }],
+    "shownOn": ["speaking-events", "asaanbill"],
+    "order": 2,
+    "note": "The podcast counts as a talk.",
+    "toConfirm": []
+  },
+  {
+    "id": "milestone-asaanbill-start",
+    "category": "milestone",
+    "badge": null,
+    "title": "Started building AsaanBill at Evamp & Saanga",
+    "date": "Nov 2024",
+    "dateISO": "2024-11",
+    "venture": { "name": "AsaanBill", "href": "/ventures/asaanbill/" },
+    "photos": [{ "file": "about/2024-asaanbill-start.webp", "source": "2024 Unwrapped.pdf, page 11" }],
+    "shownOn": ["my-story"],
+    "toConfirm": []
+  },
+  {
+    "id": "award-entrepreneur-of-the-year-2024",
+    "category": "award",
+    "badge": "Award",
+    "title": "Entrepreneur of the Year 2024",
+    "organiser": "TODO: awarding body",
+    "detail": "Received from Nayatel's CEO",
     "date": "2024",
     "dateISO": "2024",
-    "item": "Guest speaker, Air University Islamabad and NUST EME",
-    "shownOn": ["speaking-events"],
-    "venture": null,
-    "evidence": [
-      { "source": "Invited as guest speaker at Air University ISB.jpeg", "file": "speaking/talk-air-university.webp" },
-      { "source": "Invited as guest speaker at NUST EME.jpeg", "file": "speaking/talk-nust-eme.webp" }
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "recognition/award-nayatel-ceo.webp", "source": "Recieving Award from CEO Nayatel.jpeg" }],
+    "shownOn": ["competitions-awards"],
+    "order": 1,
+    "toConfirm": []
+  },
+  {
+    "id": "programme-k2prenuer",
+    "category": "programme",
+    "badge": "Programme",
+    "title": "K2prenuer",
+    "organiser": "TODO: organiser",
+    "date": "2024",
+    "dateISO": "2024",
+    "selectivity": "Top 10 of 3,000+ applicants; youngest startup",
+    "summary": "TapitCard was selected as the youngest startup, in the top 10 of 3,000+ applicants; the cohort trekked to K2 and premiered on the big screen.",
+    "gave": "TODO: what it gave (mentoring, exposure, funding)",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [
+      { "file": "recognition/k2prenuer-youngest-startup.webp", "source": "K2.png" },
+      { "file": "about/2024-k2prenuer-selected.webp", "source": "2024 Unwrapped.pdf, page 9" },
+      { "file": "about/2024-k2-trek.webp", "source": "2024 Unwrapped.pdf, page 10" }
     ],
+    "shownOn": ["programmes", "beyond-work"],
+    "order": 2,
+    "highlight": { "order": 2, "line": "Top 10 of 3,000+ applicants" },
+    "note": "'Went to K2 Mountain with top 10 entreprenuers from pakistan.jpeg' duplicates K2.png at a lower resolution and is not used.",
+    "toConfirm": []
+  },
+  {
+    "id": "media-k2prenuer-premiere",
+    "category": "media",
+    "badge": "Media",
+    "title": "K2prenuer film premiere",
+    "venue": "TODO: venue (not settled: the file name and 2024 Unwrapped disagree)",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "about/2024-k2prenuer-premiere.webp", "source": "2024 Unwrapped.pdf, page 12" }],
+    "shownOn": ["speaking-events"],
+    "order": 1,
+    "note": "'Featured in Centraurus Cinepax via K2prenuer.jpeg' is the same photo as 2024 Unwrapped page 12, so it is not converted separately.",
+    "toConfirm": []
+  },
+  {
+    "id": "award-major-contributor",
+    "category": "award",
+    "badge": "Award",
+    "title": "Major Contributor Award",
+    "organiser": "Air University, presented by the Registrar",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": null,
+    "photos": [{ "file": "about/2024-major-contributor-award.webp", "source": "2024 Unwrapped.pdf, page 5" }],
+    "shownOn": ["competitions-awards", "education"],
+    "order": 2,
+    "toConfirm": []
+  },
+  {
+    "id": "mustahiq-first-project",
+    "category": "milestone",
+    "badge": null,
+    "title": "Launched the first project of NGO Mustahiq, F-8 Islamabad, providing a livelihood",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": { "name": "Mustahiq (NGO)", "href": "/about/beyond-work/" },
+    "photos": [{ "file": "about/2024-mustahiq-first-project.webp", "source": "2024 Unwrapped.pdf, page 7" }],
+    "shownOn": ["beyond-work"],
+    "toConfirm": []
+  },
+  {
+    "id": "event-us-delegation",
+    "category": "represented",
+    "badge": "Represented",
+    "title": "US delegation",
+    "summary": "Represented Pakistani startups",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": null,
+    "photos": [{ "file": "speaking/us-delegation.webp", "source": "Represented Startups of Pakistan to US Delegation.jpeg" }],
+    "shownOn": ["speaking-events"],
+    "order": 1,
+    "toConfirm": []
+  },
+  {
+    "id": "event-ntu-startupcup",
+    "category": "represented",
+    "badge": "Represented",
+    "title": "NTU StartupCup, Faisalabad",
+    "summary": "Represented MetaBite",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": { "name": "MetaBite (final-year project)", "href": "/about/education/" },
+    "photos": [{ "file": "about/2024-ntu-startupcup.webp", "source": "2024 Unwrapped.pdf, page 2" }],
+    "shownOn": ["speaking-events"],
+    "order": 2,
+    "toConfirm": []
+  },
+  {
+    "id": "talk-air-university-2024",
+    "category": "talk",
+    "badge": "Talk",
+    "title": "TODO: talk title",
+    "venue": "Air University Islamabad",
+    "role": "Guest speaker",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": null,
+    "photos": [{ "file": "speaking/talk-air-university.webp", "source": "Invited as guest speaker at Air University ISB.jpeg" }],
+    "shownOn": ["speaking-events"],
+    "order": 4,
+    "toConfirm": []
+  },
+  {
+    "id": "talk-nust-eme-2024",
+    "category": "talk",
+    "badge": "Talk",
+    "title": "TODO: talk title",
+    "venue": "NUST EME",
+    "role": "Guest speaker",
+    "date": "2024",
+    "dateISO": "2024",
+    "venture": null,
+    "photos": [{ "file": "speaking/talk-nust-eme.webp", "source": "Invited as guest speaker at NUST EME.jpeg" }],
+    "shownOn": ["speaking-events"],
+    "order": 5,
+    "toConfirm": []
+  },
+  {
+    "id": "education-bs-graduation",
+    "category": "education",
+    "badge": null,
+    "title": "BS Computer Game Development, Air University",
+    "date": "Jun 2024",
+    "dateISO": "2024-06",
+    "venture": null,
+    "photos": [
+      { "file": "education/air-university-convocation.webp", "source": "IMG_5304.HEIC" },
+      { "file": "about/2024-degree.webp", "source": "2024 Unwrapped.pdf, page 8" }
+    ],
+    "shownOn": ["education"],
+    "toConfirm": []
+  },
+  {
+    "id": "office-aubic",
+    "category": "office",
+    "badge": "Office",
+    "title": "Air University Business Incubation Center (AUBIC)",
+    "summary": "TapitCard's office from April 2024",
+    "date": "Apr 2024",
+    "dateISO": "2024-04",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "about/2024-tapitcard-office.webp", "source": "2024 Unwrapped.pdf, page 6" }],
+    "shownOn": ["programmes", "my-story", "tapit"],
+    "order": 4,
+    "note": "Badge 'Office', not counted as a programme.",
+    "toConfirm": []
+  },
+  {
+    "id": "event-airtech-24",
+    "category": "event",
+    "badge": "Event",
+    "title": "AirTech'24, Air University's technical olympiad",
+    "role": "Director Marketing",
+    "detail": "Closing ceremony 3 Mar 2024",
+    "date": "Mar 2024",
+    "dateISO": "2024-03",
+    "venture": null,
+    "photos": [{ "file": "about/2024-airtech.webp", "source": "2024 Unwrapped.pdf, page 3" }],
+    "shownOn": ["speaking-events", "education"],
+    "order": 1,
+    "toConfirm": []
+  },
+  {
+    "id": "talk-numl-zindigi-2024",
+    "category": "talk",
+    "badge": "Talk",
+    "title": "Zindigi Prize NUML chapter, \"Do's and don'ts in pitching\"",
+    "venue": "NUML Islamabad",
+    "role": "Speaker",
+    "date": "7 Mar 2024",
+    "dateISO": "2024-03-07",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [
+      { "file": "speaking/talk-numl-poster-2024.webp", "source": "Invited as guest speaker at NUML Banner.jpeg" },
+      { "file": "speaking/talk-numl-session.webp", "source": "Invited as guest speaker at NUML University.jpeg" }
+    ],
+    "shownOn": ["speaking-events"],
+    "order": 3,
+    "note": "about/2024-numl-talk.webp (2024 Unwrapped page 4) is the same photo as talk-numl-session; both carry the credit 'Photo: Squarefold Productions'.",
+    "toConfirm": []
+  },
+  {
+    "id": "programme-nic-peshawar",
+    "category": "programme",
+    "badge": "Programme",
+    "title": "NIC Peshawar Startup Incubation, Cohort-11",
+    "organiser": "National Incubation Center Peshawar",
+    "date": "Mar 2023 – Feb 2024",
+    "dateISO": "2023-03",
+    "summary": "TapitCard secured a place in Cohort-11 and graduated in February 2024.",
+    "gave": "TODO: what it gave (mentoring, office, grants)",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [
+      { "file": "recognition/nic-peshawar-cohort-11.webp", "source": "Secured Incubation in NIC Peshawar.jpeg" },
+      { "file": "recognition/nic-peshawar-graduation-2024.webp", "source": "Graduate of NIC Peshawar.jpeg" }
+    ],
+    "shownOn": ["programmes", "education"],
+    "order": 1,
+    "note": "One item for the log's two NIC Peshawar rows (incubation secured Mar 2023, graduated Feb 2024), so it counts once.",
+    "toConfirm": []
+  },
+  {
+    "id": "win-startup-pitching-league-2024",
+    "category": "competition",
+    "badge": "Winner",
+    "title": "Startup Pitching League 2024",
+    "organiser": "NIC Peshawar",
+    "date": "Jan 2024",
+    "dateISO": "2024-01",
+    "recognisedBy": "With Air University's Registrar",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [
+      { "file": "recognition/startup-pitching-league-2024.webp", "source": "Won Startup Pitching League _24 at NIC Peshawar.jpeg" },
+      { "file": "recognition/award-air-university-registrar.webp", "source": "Recieving recognition from Registrar.jpeg" }
+    ],
+    "shownOn": ["competitions-awards"],
+    "order": 2,
+    "highlight": { "order": 3, "line": "Winner" },
+    "toConfirm": []
+  },
+  {
+    "id": "win-aiesec-sparkathon-2023",
+    "category": "competition",
+    "badge": "Winner",
+    "title": "AIESEC Sparkathon 2023",
+    "organiser": "AIESEC",
+    "venue": "TMUC Islamabad",
+    "date": "Sep 2023",
+    "dateISO": "2023-09",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "recognition/aiesec-sparkathon-2023.webp", "source": "Won AIESEC Sparkaton 2023 at TMUC ISB.jpeg" }],
+    "shownOn": ["competitions-awards"],
+    "order": 3,
+    "toConfirm": []
+  },
+  {
+    "id": "press-propakistani-zindigi-2023",
+    "category": "media",
+    "badge": "Media",
+    "title": "In the press: ProPakistani",
+    "subtitle": "\"TapitCard crowned winner at Zindigi Prize Islamabad Regionals\"",
+    "date": "15 Jul 2023",
+    "dateISO": "2023-07-15",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [],
+    "links": [
+      { "label": "Read on ProPakistani", "href": "https://propakistani.pk/2023/07/15/zindigi-prizes-roaring-success-at-islamabad-regionals-tapitcard-crowned-winner/" }
+    ],
+    "shownOn": ["speaking-events"],
+    "order": 2,
+    "toConfirm": []
+  },
+  {
+    "id": "top3-lmkt-startup-showdown-2023",
+    "category": "competition",
+    "badge": "Top 3",
+    "title": "LMKT Startup Showdown 2023, KP edition",
+    "organiser": "LMKT",
+    "venue": "ITCN Asia Karachi",
+    "date": "2023",
+    "dateISO": "2023",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [
+      { "file": "recognition/lmkt-showdown-top3-2023.webp", "source": "Top 3 in LMKT Startup Showdown 2023.jpeg" },
+      { "file": "recognition/lmkt-showdown-stage.webp", "source": "LMKT Startup Showdown at ITCN Asia Karachi.jpeg" }
+    ],
+    "shownOn": ["competitions-awards"],
+    "order": 1,
+    "toConfirm": []
+  },
+  {
+    "id": "win-zindigi-prize-2023",
+    "category": "competition",
+    "badge": "Winner",
+    "title": "Zindigi Prize Islamabad Regionals",
+    "organiser": "Zindigi, JS Bank",
+    "venue": "HITEC University",
+    "date": "Jun 2023",
+    "dateISO": "2023-06",
+    "prize": "Rs 100,000",
+    "detail": "94 startups presented",
+    "recognisedBy": "Recognised by NIC Peshawar and by Air University's Vice-Chancellor",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [
+      { "file": "recognition/zindigi-prize-2023.webp", "source": "Won Zinidigi Prize Islamabad Regionals 2023 at Hitec Taxila.jpeg" },
+      { "file": "recognition/zindigi-win-nic-post.webp", "source": "NIC Peshawar recognizing our win.jpeg" },
+      { "file": "recognition/zindigi-win-air-university-vc.webp", "source": "Recieving recognition from VC.jpeg" }
+    ],
+    "links": [
+      { "label": "Source: ProPakistani", "href": "https://propakistani.pk/2023/07/15/zindigi-prizes-roaring-success-at-islamabad-regionals-tapitcard-crowned-winner/" }
+    ],
+    "shownOn": ["competitions-awards"],
+    "order": 1,
+    "highlight": { "order": 1, "line": "Winner, Rs 100,000" },
+    "toConfirm": []
+  },
+  {
+    "id": "win-pgdc-2023-fyp",
+    "category": "competition",
+    "badge": "Winner",
+    "subtitle": "1st prize, final-year project (ideation stage)",
+    "title": "Pakistan Game Developers Conference 2023",
+    "organiser": "Air University",
+    "date": "9 May 2023",
+    "dateISO": "2023-05-09",
+    "prize": "Rs 10,000",
+    "venture": { "name": "MetaBite (final-year project)", "href": "/about/education/" },
+    "photos": [{ "file": "recognition/pgdc-2023-fyp-first-prize.webp", "source": "Won 1st Prize in best FYP Idea at PGDC 2023.jpeg" }],
+    "shownOn": ["competitions-awards", "education"],
+    "order": 5,
+    "note": "Counted as a win: the 1st prize is the Winner badge.",
+    "toConfirm": []
+  },
+  {
+    "id": "win-icstsi",
+    "category": "competition",
+    "badge": "Winner",
+    "title": "ICSTSI start-up competition",
+    "organiser": "Islamabad Chamber of Small Traders & Small Industries, with International Islamic University and COMSATS University Islamabad",
+    "detail": "Business Expo 2023",
+    "date": "May 2023",
+    "dateISO": "2023-05",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [{ "file": "recognition/icstsi-competition-win.webp", "source": "Won ICSTSI Business plan competition.jpeg" }],
+    "shownOn": ["competitions-awards"],
+    "order": 4,
+    "toConfirm": []
+  },
+  {
+    "id": "programme-founder-institute-core",
+    "category": "programme",
+    "badge": "Programme",
+    "title": "Founder Institute",
+    "subtitle": "Core programme, online",
+    "date": "Mar – Aug 2023",
+    "dateISO": "2023-03",
+    "gave": "TODO: what it gave",
+    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "photos": [],
+    "shownOn": ["programmes", "education"],
+    "order": 3,
     "toConfirm": []
   }
 ]

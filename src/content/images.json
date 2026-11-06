@@ -202,6 +202,18 @@
       1600
     ]
   },
+  "recognition/lmkt-showdown-stage.webp": {
+    "width": 1600,
+    "height": 900,
+    "widths": [
+      480,
+      960,
+      1600
+    ],
+    "alt": "Collage of founders pitching on stage at LMKT Startup Showdown, ITCN Asia Karachi",
+    "caption": "On stage at LMKT Startup Showdown, ITCN Asia Karachi",
+    "source": "LMKT Startup Showdown at ITCN Asia Karachi.jpeg"
+  },
   "recognition/lmkt-showdown-top3-2023.webp": {
     "width": 800,
     "height": 797,
@@ -225,6 +237,18 @@
       1600
     ]
   },
+  "recognition/mou-asaanbill-tuitionist.webp": {
+    "width": 1200,
+    "height": 682,
+    "widths": [
+      480,
+      960,
+      1200
+    ],
+    "alt": "MOU ceremony between AsaanBill and The Tuitionist at the National Incubation Center Islamabad",
+    "caption": "MOU signing, AsaanBill × The Tuitionist, NIC Islamabad",
+    "source": "MOU with the Tutionist at NIC Islamabad.jpeg"
+  },
   "recognition/mou-humancare-mustahiq.webp": {
     "width": 1600,
     "height": 1200,
@@ -236,6 +260,29 @@
       960,
       1600
     ]
+  },
+  "recognition/mou-tapitcard-encoder-bytes.webp": {
+    "width": 1600,
+    "height": 1200,
+    "widths": [
+      480,
+      960,
+      1600
+    ],
+    "alt": "Representatives of TapitCard and Encoder Bytes signing an MOU at the KP Investor Summit",
+    "caption": "MOU signing, TapitCard × Encoder Bytes, KP Investor Summit",
+    "source": "MOU with Encorder bytes at KP Investor Summit.jpeg"
+  },
+  "recognition/nic-peshawar-cohort-11.webp": {
+    "width": 720,
+    "height": 915,
+    "widths": [
+      480,
+      720
+    ],
+    "alt": "Post announcing that Air University's startup TapitCard secured a place in NIC Peshawar Cohort-11",
+    "caption": "TapitCard joins NIC Peshawar Cohort-11",
+    "source": "Secured Incubation in NIC Peshawar.jpeg"
   },
   "recognition/nic-peshawar-graduation-2024.webp": {
     "width": 800,
@@ -293,6 +340,17 @@
       800
     ]
   },
+  "recognition/zindigi-win-nic-post.webp": {
+    "width": 800,
+    "height": 898,
+    "widths": [
+      480,
+      800
+    ],
+    "alt": "NIC Peshawar's post showing the TapitCard team with the Rs 100,000 Zindigi Prize cheque",
+    "caption": "NIC Peshawar's post on TapitCard's Zindigi Prize win",
+    "source": "NIC Peshawar recognizing our win.jpeg"
+  },
   "speaking/podcast-asaanbill.webp": {
     "width": 1290,
     "height": 1287,
@@ -329,6 +387,17 @@
       1080
     ]
   },
+  "speaking/talk-numl-poster-2024.webp": {
+    "width": 913,
+    "height": 1280,
+    "widths": [
+      480,
+      913
+    ],
+    "alt": "Poster for the Zindigi Prize NUML chapter session 'Do's and don'ts in pitching' on 7 March 2024, with Raja Shaharyar as a speaker",
+    "caption": "Zindigi Prize NUML chapter: 'Do's and don'ts in pitching', 7 March 2024",
+    "source": "Invited as guest speaker at NUML Banner.jpeg"
+  },
   "speaking/talk-numl-session.webp": {
     "width": 1280,
     "height": 854,
@@ -353,5 +422,17 @@
       960,
       1280
     ]
+  },
+  "speaking/us-delegation.webp": {
+    "width": 1600,
+    "height": 1066,
+    "widths": [
+      480,
+      960,
+      1600
+    ],
+    "alt": "Group photo with the US delegation, representing Pakistani startups",
+    "caption": "With the US delegation, representing Pakistani startups",
+    "source": "Represented Startups of Pakistan to US Delegation.jpeg"
   }
 }

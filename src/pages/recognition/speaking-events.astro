@@ -1,0 +1,53 @@
+---
+/**
+ * Recognition ▾ Speaking & events: "I speak on" topics, then talks (newest
+ * first; the podcast counts as a talk), events organised, delegations
+ * represented and media.
+ */
+import Base from '../../layouts/Base.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import RecognitionCard from '../../components/RecognitionCard.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import { shownOn, type Badge } from '../../lib/recognition';
+import { recognitionCopy, recognitionMenuEntry } from '../../lib/recognition-pages';
+
+const page = recognitionMenuEntry('/recognition/speaking-events/');
+const { speaking: copy } = recognitionCopy;
+const sections = copy.sections.map((s) => ({ ...s, items: shownOn('speaking-events', s.badges as Badge[]) }));
+---
+
+<Base title={page.label} description={copy.description}>
+  <SubPageHeader section="/recognition/" overviewLabel="Overview" title={page.label} intro={`${page.description}.`} />
+
+  <section class="wrap pt-10 md:pt-14" aria-labelledby="topics-heading">
+    <h2 id="topics-heading" class="text-xl font-semibold tracking-tight">{copy.topicsHeading}</h2>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {copy.topics.map((t) => <li class="chip">{t}</li>)}
+    </ul>
+    <ArrowLink href={copy.invite.href} class="mt-6">{copy.invite.label}</ArrowLink>
+  </section>
+
+  {
+    sections.map((s, i) => (
+      <section
+        id={s.id}
+        class:list={[
+          'wrap',
+          i === 0 ? 'pt-14 md:pt-20' : 'border-t border-line pt-14 md:pt-20',
+          i === sections.length - 1 ? 'pb-4' : 'pb-14 md:pb-20',
+        ]}
+        aria-labelledby={`${s.id}-heading`}
+      >
+        <SectionHeader id={`${s.id}-heading`} heading={s.heading} />
+        <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+          {s.items.map((item) => (
+            <li>
+              <RecognitionCard item={item} variant={s.id === 'talks' ? 'talk' : 'default'} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Base>

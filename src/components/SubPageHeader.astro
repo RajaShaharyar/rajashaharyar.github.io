@@ -1,0 +1,70 @@
+---
+/**
+ * Top of a page inside a menu (About, Recognition): a row of tabs for the
+ * pages in that menu (handy on phones, where the main menu is folded away),
+ * the eyebrow, the H1 and an optional intro line.
+ */
+import { site, withSlash } from '../lib/site';
+
+interface Props {
+  /** The menu's own href in site.json → nav, e.g. "/about/" */
+  section: string;
+  title: string;
+  intro?: string;
+  /** Add a first tab for the menu's overview page (when it isn't one of the menu's children) */
+  overviewLabel?: string;
+}
+
+const { section, title, intro, overviewLabel } = Astro.props;
+const menu = site.nav.find((item) => item.href === section);
+const children = menu?.children ?? [];
+const pages = overviewLabel && !children.some((c) => withSlash(c.href) === withSlash(section)) ? [{ label: overviewLabel, href: section }, ...children] : children;
+const path = withSlash(Astro.url.pathname);
+---
+
+<header class="wrap pt-8 md:pt-12">
+  <nav aria-label={`${menu?.label ?? ''} pages`}>
+    <ul class="flex flex-wrap gap-2">
+      {
+        pages.map((page) => (
+          <li>
+            <a href={page.href} class="sub-tab" aria-current={withSlash(page.href) === path ? 'page' : undefined}>
+              {page.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <p class="eyebrow mt-10 md:mt-14">{menu?.label}</p>
+  <h1 class="mt-4 max-w-4xl text-display-lg">{title}</h1>
+  {intro && <p class="lead mt-6 max-w-prose">{intro}</p>}
+</header>
+
+<style>
+  .sub-tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    transition:
+      color 0.15s,
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+  .sub-tab:hover {
+    color: var(--color-fg);
+    border-color: var(--color-line-strong);
+  }
+  .sub-tab[aria-current='page'] {
+    color: var(--color-fg);
+    border-color: var(--color-fg);
+    background-color: var(--color-raised);
+  }
+</style>

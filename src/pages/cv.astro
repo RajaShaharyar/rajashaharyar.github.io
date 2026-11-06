@@ -17,6 +17,15 @@ import { site } from '../lib/site';
 import { cv, bulletText, programmeDates, roleDates } from '../lib/cv';
 import { formatRange } from '../lib/dates';
 import { publicFileExists } from '../lib/public-files';
+import { assertRecognitionIds } from '../lib/recognition';
+
+// Every recognition id cv.json points at must exist in recognition.json (fails the build otherwise).
+assertRecognitionIds(
+  JSON.stringify(cv)
+    .match(/"recognitionIds?":(\[[^\]]*\]|"[^"]*")/g)!
+    .flatMap((m) => JSON.parse(`[${m.slice(m.indexOf(':') + 1).replace(/^\[|\]$/g, '')}]`) as string[]),
+  'src/content/cv.json',
+);
 
 const { header, summary, experience, otherVentures, education, programmes, honours, speaking, partnerships, skills, languages, leadership, references } = cv;
 const { contact } = site;

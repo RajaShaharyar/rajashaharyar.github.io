@@ -1,10 +1,6 @@
 ---
-/**
- * Top of every About page: a small local nav between the four About pages
- * (handy on phones, where the main menu is folded away), the eyebrow, the H1
- * and an optional intro line.
- */
-import { site, withSlash } from '../lib/site';
+/** Top of every About page: About tabs, eyebrow, H1 and optional intro (see SubPageHeader). */
+import SubPageHeader from './SubPageHeader.astro';
 
 interface Props {
   title: string;
@@ -12,53 +8,6 @@ interface Props {
 }
 
 const { title, intro } = Astro.props;
-const pages = site.nav.find((item) => item.href === '/about/')?.children ?? [];
-const path = withSlash(Astro.url.pathname);
 ---
 
-<header class="wrap pt-8 md:pt-12">
-  <nav aria-label="About pages">
-    <ul class="flex flex-wrap gap-2">
-      {
-        pages.map((page) => (
-          <li>
-            <a href={page.href} class="about-tab" aria-current={withSlash(page.href) === path ? 'page' : undefined}>
-              {page.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-  <p class="eyebrow mt-10 md:mt-14">About</p>
-  <h1 class="mt-4 max-w-4xl text-display-lg">{title}</h1>
-  {intro && <p class="lead mt-6 max-w-prose">{intro}</p>}
-</header>
-
-<style>
-  .about-tab {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.75rem;
-    padding: 0 1rem;
-    border: 1px solid var(--color-line);
-    border-radius: 999px;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--color-fg-muted);
-    text-decoration: none;
-    transition:
-      color 0.15s,
-      border-color 0.15s,
-      background-color 0.15s;
-  }
-  .about-tab:hover {
-    color: var(--color-fg);
-    border-color: var(--color-line-strong);
-  }
-  .about-tab[aria-current='page'] {
-    color: var(--color-fg);
-    border-color: var(--color-fg);
-    background-color: var(--color-raised);
-  }
-</style>
+<SubPageHeader section="/about/" title={title} intro={intro} />

@@ -1,11 +1,114 @@
 ---
+/**
+ * Recognition overview (/recognition): counters computed from the log's
+ * badges, the three highlight cards and links to the four sub-pages.
+ * Items: recognition.json · copy: recognition-pages.json · menu lines: site.json
+ */
 import Base from '../../layouts/Base.astro';
-import StubPage from '../../components/StubPage.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Counter from '../../components/Counter.astro';
+import Media from '../../components/Media.astro';
+import { highlights, photosOf } from '../../lib/recognition';
+import { badgeCounter, pageFor, recognitionCopy, recognitionMenuEntry } from '../../lib/recognition-pages';
 
-const title = 'Recognition';
-const purpose = 'Counters, the latest highlights and links to every kind of proof: awards, programmes, partnerships and talks.';
+const { overview } = recognitionCopy;
+const counters = overview.counters.map((c) => badgeCounter(c.badge));
+const cards = highlights().map((item) => ({ ...item, photo: photosOf(item)[0], href: `${pageFor(item.badge)}#${item.id}` }));
+const pages = overview.pages.map((p) => ({ ...recognitionMenuEntry(p.href), image: p.image }));
+const sectionY = 'py-16 md:py-20';
 ---
 
-<Base title={title} description={purpose}>
-  <StubPage eyebrow="Recognition" title={title} purpose={purpose} phase="Phase 5 · Recognition" />
+<Base title={overview.title} description={overview.description}>
+  <SubPageHeader section="/recognition/" overviewLabel="Overview" title={overview.title} intro={overview.intro} />
+
+  <!-- Counters -->
+  <section class="wrap pt-10 md:pt-14" aria-label={overview.countersLabel}>
+    <ul class="counter-grid grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3 lg:grid-cols-6">
+      {counters.map((c) => <Counter value={c.value} label={c.label} />)}
+    </ul>
+  </section>
+
+  <!-- Highlights -->
+  <section class:list={['wrap', sectionY]} aria-labelledby="highlights-heading">
+    <SectionHeader id="highlights-heading" heading={overview.highlightsHeading} />
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-3 md:gap-6">
+      {
+        cards.map((c) => (
+          <li class="highlight">
+            {c.photo && <Media image={c.photo.file} fit="contain" sizes="(min-width: 768px) 380px, 100vw" class="aspect-[4/3] border-b border-line" />}
+            <div class="flex flex-1 flex-col gap-2 p-5 md:p-6">
+              {c.badge && <p class="badge w-fit">{c.badge}</p>}
+              <h3 class="mt-1 text-2xl leading-tight">
+                <a href={c.href} class="highlight-link">
+                  {c.title}
+                </a>
+              </h3>
+              <p class="text-fg-muted">{c.highlight.line}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- The four sub-pages -->
+  <section class="wrap border-t border-line pt-16 pb-4 md:pt-20" aria-labelledby="pages-heading">
+    <SectionHeader id="pages-heading" heading={overview.pagesHeading} />
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6">
+      {
+        pages.map((p) => (
+          <li class="page-link-card">
+            <Media image={p.image} fit="contain" sizes="(min-width: 768px) 600px, 100vw" class="aspect-[16/9] border-b border-line" />
+            <div class="flex flex-col gap-2 p-6 md:p-8">
+              <h3 class="text-display-md">
+                <a href={p.href} class="highlight-link">
+                  {p.label}
+                </a>
+              </h3>
+              <p class="text-fg-muted">{p.description}.</p>
+              <span class="arrow-link mt-2 w-fit" aria-hidden="true">
+                Open <span class="arrow">→</span>
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </Base>
+
+<style>
+  .highlight,
+  .page-link-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    transition: border-color 0.2s var(--ease-out-quart);
+  }
+  .highlight:hover,
+  .page-link-card:hover {
+    border-color: var(--color-line-strong);
+  }
+  /* The heading link covers the whole card */
+  .highlight-link {
+    text-decoration: none;
+  }
+  .highlight-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+  }
+  .highlight-link:focus-visible {
+    outline: none;
+  }
+  .highlight-link:focus-visible::after {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+</style>

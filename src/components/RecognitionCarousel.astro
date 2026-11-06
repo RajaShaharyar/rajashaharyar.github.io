@@ -11,8 +11,7 @@
  * a pause/play button, and stops for good on any manual navigation or keyboard focus.
  */
 import Media from './Media.astro';
-import { getImage, hasImage } from '../lib/images';
-import { getRecognition, shownOn } from '../lib/recognition';
+import { getRecognition, photosOf, shownOn } from '../lib/recognition';
 
 interface Props {
   label: string;
@@ -22,32 +21,18 @@ interface Props {
 
 const { label, order } = Astro.props;
 
-const RESULT = /^(Winner|Top 3|1st prize),\s*/;
-
 order.forEach(getRecognition); // a typo in home.json fails the build
-const listed = shownOn('competitions-awards');
+const listed = shownOn('competitions-awards', ['Winner', 'Top 3', 'Award']);
 const ordered = [
   ...order.flatMap((id) => listed.filter((r) => r.id === id)),
   ...listed.filter((r) => !order.includes(r.id)),
 ];
 
+// Each slide: the item's first photo, its badge, its title and date.
 const slides = ordered.flatMap((r) => {
-  const ev = r.evidence.find((e) => hasImage(e.file));
-  if (!ev?.file) return [];
-  // A photo the log marks "to confirm" is captioned with what it shows, not with the award.
-  const photoConfirmed = !(ev.note ?? '').toLowerCase().startsWith('to confirm');
-  const m = r.item.match(RESULT);
-  const rest = m ? r.item.slice(m[0].length) : r.item;
-  return [
-    {
-      id: r.id,
-      image: ev.file,
-      badge: m ? m[1] : 'Award',
-      caption: photoConfirmed ? rest.charAt(0).toUpperCase() + rest.slice(1) : getImage(ev.file).caption,
-      date: photoConfirmed && r.dateISO ? r.date : null,
-      dateISO: r.dateISO,
-    },
-  ];
+  const photo = photosOf(r)[0];
+  if (!photo || !r.badge) return [];
+  return [{ id: r.id, image: photo.file, badge: r.badge, caption: r.title, date: r.date, dateISO: r.dateISO }];
 });
 
 const trackId = 'recognition-track';

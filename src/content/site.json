@@ -212,5 +212,10 @@
   ],
   "_testimonialsHowTo": "Add objects like { \"quote\": \"...\", \"name\": \"...\", \"role\": \"...\", \"company\": \"...\" }. The homepage Testimonials section appears as soon as there is at least one.",
   "testimonials": [],
-  "_offersNote": "home: true = shown in the homepage \"How I can help\" (with its summary); all offers show on /work-with-me (for whom, what they get, proof)."
+  "_offersNote": "home: true = shown in the homepage \"How I can help\" (with its summary); all offers show on /work-with-me (for whom, what they get, proof).",
+  "analytics": {
+    "_howTo": "Optional, cookie-free analytics, off while provider is \"\". provider: \"goatcounter\" (id = your GoatCounter code, e.g. \"raja\" for raja.goatcounter.com), \"cloudflare\" (id = the Web Analytics token) or \"plausible\" (id = the site domain, rajashaharyar.github.io). GA4 is left out: it needs a cookie banner.",
+    "provider": "",
+    "id": ""
+  }
 }

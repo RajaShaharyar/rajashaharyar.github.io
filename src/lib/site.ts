@@ -75,6 +75,8 @@ export interface Site {
   stats: Stat[];
   offers: Offer[];
   testimonials: Testimonial[];
+  /** Optional, cookie-free analytics; off while provider is "" */
+  analytics: { provider: '' | 'goatcounter' | 'cloudflare' | 'plausible'; id: string };
 }
 
 /** site.json, type-checked against the Site interface at build time. */

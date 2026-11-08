@@ -14,6 +14,22 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 | `npm run preview` | Serve the built site locally                  |
 | `npm run check`   | Strict TypeScript and Astro diagnostics       |
 | `npm run images`  | Convert listed photos from `_source/` into `public/images/` (see below) |
+| `npm run icons`   | Make `apple-touch-icon.png` and `favicon.ico` from `public/favicon.svg` |
+| `npm run cv:pdf`  | Build and print `/cv` to `public/cv.pdf` (max 2 pages); commit the PDF |
+| `npm run og`      | Build and render the 1200×630 share images into `public/og/` |
+| `npm run check:links` | After a build: internal links, anchors, alt text, JSON-LD, then external links |
+| `npm run check:a11y`  | After a build: axe on every page at 390px and 1280px (zero violations) |
+| `npx cspell "src/content/**/*"` | Spell-check the content (en-GB, project words in `cspell.json`) |
+
+## Launch checklist (when content changes)
+
+- A page title or description changed: rerun `npm run og` and commit `public/og/`.
+- `cv.json` (or the stats/contact details) changed: rerun `npm run cv:pdf` and commit `public/cv.pdf`.
+- Before pushing a bigger change: `npm run check`, `npm run build`, `npm run check:links`, `npm run check:a11y`.
+- `sitemap-index.xml` is generated on every build (`@astrojs/sitemap`); `/404`, `/contact/thanks/` and the old
+  `/ventures/earlier-roles` redirect are left out. `public/robots.txt` points to it.
+- Analytics are off. To switch on a cookie-free option, set `site.json → analytics.provider`
+  (`goatcounter`, `cloudflare` or `plausible`) and its `id`. GA4 is left out: it would need a cookie banner.
 
 ## Where things live
 

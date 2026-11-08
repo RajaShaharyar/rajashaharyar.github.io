@@ -13,6 +13,7 @@ import bricolageLatin from '@fontsource-variable/bricolage-grotesque/files/brico
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site, withSlash } from '../lib/site';
+import { publicFileExists } from '../lib/public-files';
 
 interface Props {
   /** Page title; rendered as "Title — Raja Shaharyar Ali". Omit on the home page. */
@@ -39,14 +40,21 @@ const siteUrl = Astro.site ?? new URL(site.url);
 const canonical = new URL(withSlash(Astro.url.pathname), siteUrl).href;
 const ogLocale = site.locale.replace('-', '_');
 
-// TODO (Phase 6): share image per page (og:image / twitter:image).
+// Share image per page (npm run og writes public/og/<slug>.png); falls back to the homepage card.
+const ogSlug = withSlash(Astro.url.pathname).split('/').filter(Boolean).join('-').replace(/\.html$/, '') || 'home';
+const ogPath = publicFileExists(`/og/${ogSlug}.png`) ? `/og/${ogSlug}.png` : '/og/home.png';
+const ogImage = new URL(ogPath, siteUrl).href;
+const ogAlt = `${title ?? site.title}: ${site.name}`;
 
-// Person structured data (stub; Phase 6 extends it)
+// Structured data: Person on every page, WebSite on the homepage.
+const homeUrl = new URL('/', siteUrl).href;
 const personLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': `${homeUrl}#person`,
   name: site.name,
-  url: new URL('/', siteUrl).href,
+  url: homeUrl,
+  image: new URL('/og/home.png', siteUrl).href,
   jobTitle: site.title,
   worksFor: { '@type': 'Organization', name: site.company },
   address: {
@@ -55,9 +63,23 @@ const personLd = {
     addressCountry: site.location.countryCode,
   },
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Air University, Islamabad' },
-  sameAs: [site.contact.linkedin.href],
+  knowsAbout: ['Product management', 'Growth', 'Go-to-market', 'Fintech', 'Digital payments', 'SaaS'],
+  sameAs: [site.contact.linkedin.href, site.contact.digitalCard.href],
 };
-const personJson = JSON.stringify(personLd).replace(/</g, '\\u003c');
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: homeUrl,
+  description: site.description,
+  inLanguage: site.locale,
+  author: { '@id': `${homeUrl}#person` },
+};
+const toJson = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
+const isHome = withSlash(Astro.url.pathname) === '/';
+
+// Optional, cookie-free analytics (site.json → analytics). Off while provider is "".
+const analytics = site.analytics;
 ---
 
 <!doctype html>
@@ -89,12 +111,32 @@ const personJson = JSON.stringify(personLd).replace(/</g, '\\u003c');
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocale} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt} />
     <!-- Twitter / X -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogAlt} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
 
-    <script is:inline type="application/ld+json" set:html={personJson} />
+    <script is:inline type="application/ld+json" set:html={toJson(personLd)} />
+    {isHome && <script is:inline type="application/ld+json" set:html={toJson(websiteLd)} />}
+
+    <!-- Analytics: cookie-free, off unless site.json → analytics.provider is set -->
+    {
+      analytics.provider === 'goatcounter' && analytics.id && (
+        <script is:inline async data-goatcounter={`https://${analytics.id}.goatcounter.com/count`} src="https://gc.zgo.at/count.js" />
+      )
+    }
+    {
+      analytics.provider === 'cloudflare' && analytics.id && (
+        <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: analytics.id })} />
+      )
+    }
+    {analytics.provider === 'plausible' && analytics.id && <script is:inline defer data-domain={analytics.id} src="https://plausible.io/js/script.js" />}
   </head>
   <body class:list={['flex min-h-dvh flex-col', !hideDock && 'has-dock']}>
     <a href="#main" class="skip-link">Skip to content</a>

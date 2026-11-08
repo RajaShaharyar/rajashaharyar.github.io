@@ -25,8 +25,9 @@ const web3formsKey = filled(contact.form.web3formsKey);
 const formspreeId = filled(contact.form.formspreeId);
 // Only switch to a provider when its key is really there.
 const mode = provider === 'web3forms' && web3formsKey ? 'web3forms' : provider === 'formspree' && formspreeId ? 'formspree' : 'mailto';
-const action =
-  mode === 'web3forms' ? 'https://api.web3forms.com/submit' : mode === 'formspree' ? `https://formspree.io/f/${formspreeId}` : `mailto:${contact.email}`;
+// Email-app mode has no form action: a mailto: action is an insecure form target, so the
+// script opens the email app instead (without JavaScript the button stays disabled).
+const action = mode === 'web3forms' ? 'https://api.web3forms.com/submit' : mode === 'formspree' ? `https://formspree.io/f/${formspreeId}` : undefined;
 const thanksUrl = new URL('/contact/thanks/', site.url).href;
 const serviceName = mode === 'web3forms' ? 'Web3Forms' : 'Formspree';
 
@@ -56,7 +57,6 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
           class="contact-form"
           action={action}
           method="post"
-          enctype={mode === 'mailto' ? 'text/plain' : undefined}
           data-contact-form
           data-mode={mode}
           data-email={contact.email}
@@ -139,8 +139,17 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
           }
 
           <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <button type="submit" class="btn btn-primary sm:w-auto" data-submit>Send message</button>
+            <button type="submit" class="btn btn-primary sm:w-auto" data-submit disabled={mode === 'mailto'}>Send message</button>
             {mode === 'mailto' && <p class="text-sm text-fg-muted">This opens your email app with the message ready to send.</p>}
+            {
+              mode === 'mailto' && (
+                <noscript>
+                  <p class="text-sm text-fg-muted">
+                    This form needs JavaScript. Email <a href={`mailto:${contact.email}`} class="link">{contact.email}</a> directly instead.
+                  </p>
+                </noscript>
+              )
+            }
           </div>
           {
             mode !== 'mailto' && (
@@ -398,6 +407,9 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
       const radio = form.querySelector<HTMLInputElement>(`input[data-reason="${CSS.escape(wanted)}"]`);
       if (radio) radio.checked = true;
     }
+    // Email-app mode ships the button disabled (it needs this script); switch it on.
+    if (mode === 'mailto' && submit) submit.disabled = false;
+
     // The page the visitor came from, if the browser tells us
     const pageField = form.querySelector<HTMLInputElement>('[data-page]');
     if (pageField) pageField.value = document.referrer;

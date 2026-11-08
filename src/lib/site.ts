@@ -64,7 +64,8 @@ export interface Site {
     linkedin: { display: string; href: string };
     digitalCard: { display: string; href: string };
     booking: { href: string; todo: string };
-    form: { formspreeId: string };
+    /** Contact form: "web3forms" or "formspree" sends from the page; "" opens the visitor's email app */
+    form: { provider: '' | 'web3forms' | 'formspree'; web3formsKey: string; formspreeId: string };
   };
   /** The CV: web page, PDF and the file name a download is saved as */
   cv: { pageHref: string; pdfHref: string; downloadName: string };

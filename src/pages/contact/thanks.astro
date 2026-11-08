@@ -1,0 +1,21 @@
+---
+/**
+ * /contact/thanks/: where Web3Forms sends visitors after a form post without
+ * JavaScript (the form's hidden "redirect" field). Not indexed and left out
+ * of the sitemap.
+ */
+import Base from '../../layouts/Base.astro';
+
+const description = 'Your message to Raja Shaharyar Ali has been sent. He will reply to the email address you gave in the contact form.';
+---
+
+<Base title="Message sent" description={description} noindex hideDock>
+  <section class="wrap py-24 md:py-32">
+    <p class="eyebrow">Contact</p>
+    <h1 class="mt-4 text-display-lg">Message sent</h1>
+    <p class="lead mt-6 max-w-xl">Thanks. Your message is on its way to Raja, and he'll reply to the email address you gave.</p>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="/" class="btn btn-primary">Back to the homepage</a>
+    </div>
+  </section>
+</Base>

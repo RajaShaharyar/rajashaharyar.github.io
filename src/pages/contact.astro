@@ -1,23 +1,34 @@
 ---
 /**
- * Contact: reason picker (Hiring / Growth help / Speaking / Other), email,
- * WhatsApp, LinkedIn and a booking link.
+ * Contact: reason picker (Hiring / Growth help / Speaking / Other), the form,
+ * and the direct channels (email, WhatsApp, LinkedIn, booking link).
  *
- * ── FORMSPREE ────────────────────────────────────────────────────────────
- * The form posts to Formspree as soon as `contact.form.formspreeId` in
- * src/content/site.json is filled in. Until then it falls back to mailto:
- * it opens the visitor's email app with the message ready to send.
+ * ── HOW THE FORM SENDS (site.json → contact.form) ────────────────────────
+ * provider "web3forms": posts to Web3Forms, which emails Raja at the address
+ *   the access key belongs to, with Reply-To set to the sender's email.
+ *   With JavaScript the form sends with fetch (JSON) and shows a confirmation
+ *   or an error with fallbacks; without JavaScript it posts normally and
+ *   Web3Forms redirects to /contact/thanks/.
+ * provider "formspree": the same, through Formspree.
+ * provider "" (default until a key is added): the form opens the visitor's
+ *   email app with the message ready to send (mailto).
  * ─────────────────────────────────────────────────────────────────────────
  *
- * Pre-select a reason from a link: /contact/?reason=speaking
+ * Pre-select a reason from a link: /contact/?reason=hiring|growth-help|speaking|other
  */
 import Base from '../layouts/Base.astro';
-import { site } from '../lib/site';
+import { site, filled } from '../lib/site';
 
 const { contact } = site;
-const formspreeId = contact.form.formspreeId.trim();
-const mode = formspreeId ? 'formspree' : 'mailto';
-const action = formspreeId ? `https://formspree.io/f/${formspreeId}` : `mailto:${contact.email}`;
+const { provider } = contact.form;
+const web3formsKey = filled(contact.form.web3formsKey);
+const formspreeId = filled(contact.form.formspreeId);
+// Only switch to a provider when its key is really there.
+const mode = provider === 'web3forms' && web3formsKey ? 'web3forms' : provider === 'formspree' && formspreeId ? 'formspree' : 'mailto';
+const action =
+  mode === 'web3forms' ? 'https://api.web3forms.com/submit' : mode === 'formspree' ? `https://formspree.io/f/${formspreeId}` : `mailto:${contact.email}`;
+const thanksUrl = new URL('/contact/thanks/', site.url).href;
+const serviceName = mode === 'web3forms' ? 'Web3Forms' : 'Formspree';
 
 const reasons = [
   { value: 'hiring', label: 'Hiring', hint: 'A full-time role' },
@@ -39,63 +50,116 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
     </p>
 
     <div class="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-20">
-      <!-- Form -->
-      <form
-        class="contact-form"
-        action={action}
-        method="post"
-        enctype={mode === 'mailto' ? 'text/plain' : undefined}
-        data-contact-form
-        data-mode={mode}
-        data-email={contact.email}
-      >
-        <fieldset>
-          <legend class="field-label">What's this about?</legend>
-          <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {
-              reasons.map((r, i) => (
-                <label class="reason">
-                  <input type="radio" name="reason" value={r.label} data-reason={r.value} required={i === 0} />
-                  <span class="flex flex-col">
-                    <span class="font-semibold">{r.label}</span>
-                    <span class="text-sm text-fg-muted">{r.hint}</span>
-                  </span>
+      <div>
+        <!-- Form -->
+        <form
+          class="contact-form"
+          action={action}
+          method="post"
+          enctype={mode === 'mailto' ? 'text/plain' : undefined}
+          data-contact-form
+          data-mode={mode}
+          data-email={contact.email}
+          data-whatsapp={contact.whatsapp.href}
+        >
+          <fieldset data-field="reason">
+            <legend class="field-label">What's this about?</legend>
+            <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {
+                reasons.map((r, i) => (
+                  <label class="reason">
+                    <input type="radio" name="reason" value={r.label} data-reason={r.value} required={i === 0} />
+                    <span class="flex flex-col">
+                      <span class="font-semibold">{r.label}</span>
+                      <span class="text-sm text-fg-muted">{r.hint}</span>
+                    </span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error" id="cf-reason-error" data-error-for="reason" hidden></p>
+          </fieldset>
+
+          <div class="mt-8 grid gap-6 sm:grid-cols-2">
+            <div data-field="name">
+              <label for="cf-name" class="field-label">Your name</label>
+              <input id="cf-name" name="name" type="text" autocomplete="name" required class="field" />
+              <p class="field-error" id="cf-name-error" data-error-for="name" hidden></p>
+            </div>
+            <div data-field="email">
+              <label for="cf-email" class="field-label">Your email</label>
+              <input id="cf-email" name="email" type="email" autocomplete="email" required class="field" />
+              <p class="field-error" id="cf-email-error" data-error-for="email" hidden></p>
+            </div>
+            <div data-field="phone">
+              <label for="cf-phone" class="field-label">Phone or WhatsApp <span class="field-optional">(optional)</span></label>
+              <input
+                id="cf-phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                class="field"
+                aria-describedby="cf-phone-hint"
+              />
+              <p class="field-hint" id="cf-phone-hint">Optional, if you'd rather talk on WhatsApp</p>
+            </div>
+            <div data-field="company">
+              <label for="cf-company" class="field-label">Company or organisation <span class="field-optional">(optional)</span></label>
+              <input id="cf-company" name="company" type="text" autocomplete="organization" class="field" />
+            </div>
+          </div>
+
+          <div class="mt-6" data-field="message">
+            <label for="cf-message" class="field-label">Message</label>
+            <textarea id="cf-message" name="message" rows="6" required class="field resize-y"></textarea>
+            <p class="field-error" id="cf-message-error" data-error-for="message" hidden></p>
+          </div>
+
+          {
+            mode === 'web3forms' && (
+              <>
+                <input type="hidden" name="access_key" value={web3formsKey} />
+                <input type="hidden" name="subject" value={`Website enquiry from ${new URL(site.url).host}`} data-subject />
+                <input type="hidden" name="from_name" value={new URL(site.url).host} />
+                <input type="hidden" name="page" value="" data-page />
+                <input type="hidden" name="redirect" value={thanksUrl} />
+              </>
+            )
+          }
+          {mode === 'formspree' && <input type="hidden" name="_subject" value={`Website enquiry from ${new URL(site.url).host}`} data-subject />}
+          {
+            mode !== 'mailto' && (
+              /* Honeypot: people never see or reach it; a bot that ticks it gets a fake success */
+              <div class="hp" aria-hidden="true">
+                <label>
+                  Leave this box unticked <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" data-botcheck />
                 </label>
-              ))
-            }
+              </div>
+            )
+          }
+
+          <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <button type="submit" class="btn btn-primary sm:w-auto" data-submit>Send message</button>
+            {mode === 'mailto' && <p class="text-sm text-fg-muted">This opens your email app with the message ready to send.</p>}
           </div>
-        </fieldset>
+          {
+            mode !== 'mailto' && (
+              <p class="mt-4 text-sm text-fg-muted">
+                Your message is emailed to Raja through {serviceName}. Your details aren't used for anything else.
+              </p>
+            )
+          }
+          <div class="form-alert mt-6" role="alert" data-form-error hidden></div>
+          <p class="mt-4 text-sm text-fg-muted" role="status" aria-live="polite" data-form-status></p>
+        </form>
 
-        <div class="mt-8 grid gap-6 sm:grid-cols-2">
-          <div>
-            <label for="cf-name" class="field-label">Your name</label>
-            <input id="cf-name" name="name" type="text" autocomplete="name" required class="field" />
-          </div>
-          <div>
-            <label for="cf-email" class="field-label">Your email</label>
-            <input id="cf-email" name="email" type="email" autocomplete="email" required class="field" />
-          </div>
+        <!-- Shown in place of the form once a message has been sent -->
+        <div class="form-done" tabindex="-1" data-form-done hidden>
+          <h2 class="text-display-md">Message sent</h2>
+          <p class="lead mt-4" data-done-text></p>
+          <button type="button" class="btn btn-secondary mt-8" data-send-another>Send another message</button>
         </div>
-
-        <div class="mt-6">
-          <label for="cf-message" class="field-label">Message</label>
-          <textarea id="cf-message" name="message" rows="6" required class="field resize-y"></textarea>
-        </div>
-
-        {mode === 'formspree' && <input type="hidden" name="_subject" value={`New message via ${site.url}`} />}
-
-        <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <button type="submit" class="btn btn-primary sm:w-auto">Send message</button>
-          <p class="text-sm text-fg-muted">
-            {
-              mode === 'mailto'
-                ? 'This opens your email app with the message ready to send.'
-                : 'Sent securely via Formspree.'
-            }
-          </p>
-        </div>
-        <p class="mt-4 text-sm text-fg-muted" role="status" aria-live="polite" data-form-status></p>
-      </form>
+      </div>
 
       <!-- Direct channels -->
       <aside aria-labelledby="direct-heading">
@@ -144,6 +208,10 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
     font-weight: 600;
     color: var(--color-fg);
   }
+  .field-optional {
+    font-weight: 400;
+    color: var(--color-fg-muted);
+  }
   .field {
     display: block;
     width: 100%;
@@ -164,6 +232,23 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
     outline: 2px solid var(--color-accent);
     outline-offset: 1px;
     border-color: var(--color-accent);
+  }
+  .field[aria-invalid='true'] {
+    border-color: #ff8f8f;
+  }
+  .field-hint {
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--color-fg-muted);
+  }
+  .field-error {
+    margin-top: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #ffb4b4;
+  }
+  .field-error[hidden] {
+    display: none;
   }
 
   .reason {
@@ -215,6 +300,57 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
     transform: scale(1);
   }
 
+  /* Honeypot: off-screen, out of the tab order and hidden from screen readers */
+  .hp {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  button[data-submit][disabled] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .form-alert {
+    padding: 1rem 1.125rem;
+    border: 1px solid #ff8f8f;
+    border-radius: var(--radius-control);
+    background-color: color-mix(in srgb, #ff8f8f 8%, var(--color-surface));
+    color: var(--color-fg);
+  }
+  .form-alert[hidden] {
+    display: none;
+  }
+  .form-alert :global(a) {
+    color: var(--color-fg);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .form-alert :global(ul) {
+    margin-top: 0.5rem;
+    padding-left: 1.125rem;
+    list-style: disc;
+  }
+
+  .form-done {
+    padding: 2rem 1.75rem;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .form-done[hidden] {
+    display: none;
+  }
+  .form-done:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
   .channel {
     display: flex;
     flex-direction: column;
@@ -243,37 +379,187 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
 
 <script>
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
-  const status = document.querySelector<HTMLElement>('[data-form-status]');
+  const done = document.querySelector<HTMLElement>('[data-form-done]');
 
-  if (form) {
+  if (form && done) {
+    const mode = form.dataset.mode ?? 'mailto';
+    const to = form.dataset.email ?? '';
+    const whatsapp = form.dataset.whatsapp ?? '';
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    const alertBox = form.querySelector<HTMLElement>('[data-form-error]');
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]');
+    const submitLabel = submit?.textContent ?? 'Send message';
+    const doneText = done.querySelector<HTMLElement>('[data-done-text]');
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
+
     // Pre-select a reason from ?reason=hiring|growth-help|speaking|other
     const wanted = new URLSearchParams(window.location.search).get('reason');
     if (wanted) {
       const radio = form.querySelector<HTMLInputElement>(`input[data-reason="${CSS.escape(wanted)}"]`);
       if (radio) radio.checked = true;
     }
+    // The page the visitor came from, if the browser tells us
+    const pageField = form.querySelector<HTMLInputElement>('[data-page]');
+    if (pageField) pageField.value = document.referrer;
 
-    // mailto fallback: build a clean email instead of posting form data.
-    if (form.dataset.mode === 'mailto') {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (!form.reportValidity()) return;
-
-        const data = new FormData(form);
-        const reason = String(data.get('reason') ?? 'Other');
-        const name = String(data.get('name') ?? '').trim();
-        const email = String(data.get('email') ?? '').trim();
-        const message = String(data.get('message') ?? '').trim();
-
-        const subject = `${reason}: message from ${name}`;
-        const body = `${message}\n\n${name}\n${email}`;
-        const to = form.dataset.email ?? '';
-        window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        if (status) {
-          status.textContent = `Your email app should open with the message ready. If it doesn't, email ${to} directly.`;
+    // Our own validation messages, next to each field
+    form.noValidate = true;
+    const rules: [string, (v: string) => string][] = [
+      ['reason', (v) => (v ? '' : 'Please pick what this is about.')],
+      ['name', (v) => (v.trim() ? '' : 'Please enter your name.')],
+      [
+        'email',
+        (v) =>
+          !v.trim() ? 'Please enter your email, so Raja can reply.' : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Please enter a valid email address, like name@example.com.',
+      ],
+      ['message', (v) => (v.trim() ? '' : 'Please write a message.')],
+    ];
+    const showError = (name: string, message: string) => {
+      const error = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+      const input = name === 'reason' ? form.querySelector<HTMLInputElement>('input[name="reason"]') : field(name);
+      if (error) {
+        error.textContent = message;
+        error.hidden = !message;
+      }
+      const targets = name === 'reason' ? Array.from(form.querySelectorAll<HTMLInputElement>('input[name="reason"]')) : input ? [input] : [];
+      for (const t of targets) {
+        if (message) {
+          t.setAttribute('aria-invalid', 'true');
+          t.setAttribute('aria-describedby', `cf-${name}-error`);
+        } else {
+          t.removeAttribute('aria-invalid');
+          if (name !== 'phone') t.removeAttribute('aria-describedby');
         }
+      }
+    };
+    const validate = () => {
+      const data = new FormData(form);
+      let firstBad: string | null = null;
+      for (const [name, rule] of rules) {
+        const message = rule(String(data.get(name) ?? ''));
+        showError(name, message);
+        if (message && !firstBad) firstBad = name;
+      }
+      if (firstBad) {
+        const el = firstBad === 'reason' ? form.querySelector<HTMLInputElement>('input[name="reason"]') : field(firstBad);
+        el?.focus();
+      }
+      return !firstBad;
+    };
+    // Clear a field's message as soon as it's fixed
+    form.addEventListener('input', (e) => {
+      const name = (e.target as HTMLInputElement).name;
+      const rule = rules.find(([n]) => n === name)?.[1];
+      if (rule && form.querySelector(`[data-error-for="${name}"]:not([hidden])`)) showError(name, rule(String(new FormData(form).get(name) ?? '')));
+    });
+
+    const values = () => {
+      const data = new FormData(form);
+      const get = (k: string) => String(data.get(k) ?? '').trim();
+      return { reason: get('reason') || 'Other', name: get('name'), email: get('email'), phone: get('phone'), company: get('company'), message: get('message') };
+    };
+    const mailtoHref = (v: ReturnType<typeof values>) => {
+      const subject = `Website enquiry: ${v.reason} from ${v.name}`;
+      const lines = [v.message, '', v.name, v.email, v.phone, v.company].filter((l, i) => i < 2 || l);
+      return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+    };
+
+    const setSending = (sending: boolean) => {
+      if (!submit) return;
+      submit.disabled = sending;
+      submit.textContent = sending ? 'Sending…' : submitLabel;
+    };
+    const showDone = (v: ReturnType<typeof values>) => {
+      if (doneText) doneText.textContent = `Thanks, ${v.name}. Your message is on its way to Raja, and he'll reply to ${v.email}.`;
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+    };
+    const showFailure = (v: ReturnType<typeof values>) => {
+      if (!alertBox) return;
+      alertBox.replaceChildren();
+      const p = document.createElement('p');
+      p.textContent = "Sorry, your message couldn't be sent just now. Everything you typed is still here. You can try again, or:";
+      const list = document.createElement('ul');
+      const mail = document.createElement('a');
+      mail.href = mailtoHref(v);
+      mail.textContent = 'Send it from your email app instead';
+      const wa = document.createElement('a');
+      wa.href = whatsapp;
+      wa.textContent = 'Message Raja on WhatsApp';
+      for (const a of [mail, wa]) {
+        const li = document.createElement('li');
+        li.append(a);
+        list.append(li);
+      }
+      alertBox.append(p, list);
+      alertBox.hidden = false;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (alertBox) alertBox.hidden = true;
+      if (!validate()) return;
+      const v = values();
+
+      if (mode === 'mailto') {
+        const href = mailtoHref(v);
+        window.location.href = href;
+        if (status) {
+          status.replaceChildren(`Your email app should open with the message ready. If it doesn't, `);
+          const a = document.createElement('a');
+          a.href = href;
+          a.textContent = `email ${to}`;
+          a.className = 'link';
+          status.append(a, '.');
+        }
+        return;
+      }
+
+      // Honeypot ticked: a bot. Pretend it worked and send nothing.
+      if (form.querySelector<HTMLInputElement>('[data-botcheck]')?.checked) {
+        showDone(v);
+        return;
+      }
+
+      const subject = `Website enquiry: ${v.reason} from ${v.name}`;
+      form.querySelector<HTMLInputElement>('[data-subject]')?.setAttribute('value', subject);
+      const payload: Record<string, string | boolean> = {};
+      new FormData(form).forEach((value, key) => {
+        if (key !== 'redirect' && key !== 'botcheck') payload[key] = String(value);
       });
-    }
+      if (mode === 'web3forms') {
+        payload.subject = subject;
+        payload.botcheck = false;
+      } else {
+        payload._subject = subject;
+      }
+
+      setSending(true);
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || (mode === 'web3forms' && result.success === false)) throw new Error(`HTTP ${response.status}`);
+        form.reset();
+        showDone(v);
+      } catch {
+        showFailure(v);
+      } finally {
+        setSending(false);
+      }
+    });
+
+    done.querySelector('[data-send-another]')?.addEventListener('click', () => {
+      form.reset();
+      for (const [name] of rules) showError(name, '');
+      if (status) status.textContent = '';
+      done.hidden = true;
+      form.hidden = false;
+      form.querySelector<HTMLInputElement>('input[name="reason"]')?.focus();
+    });
   }
 </script>

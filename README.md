@@ -105,8 +105,17 @@ birth, gender, nationality or home address.
 
 ## Contact form
 
-The form at `/contact/` uses a mailto fallback until a Formspree form ID is set:
-open `src/content/site.json` and fill in `contact.form.formspreeId` (the part after `formspree.io/f/`), then push.
+The form at `/contact/` emails Raja through **Web3Forms** (free, no account) once its access key is set:
+
+1. Get a key at web3forms.com for rajasali2002@gmail.com.
+2. Paste it into `src/content/site.json` → `contact.form.web3formsKey` and set `contact.form.provider` to `"web3forms"`.
+3. Rebuild and push.
+
+Messages arrive at the address the key belongs to, with Reply-To set to the sender's email. With JavaScript the
+form sends in the page and shows a confirmation (or an error with email-app and WhatsApp fallbacks); without it,
+the form posts normally and Web3Forms redirects to `/contact/thanks/`. Formspree also works: put the form ID in
+`contact.form.formspreeId` and set `provider` to `"formspree"`. Until a provider is set, the form opens the
+visitor's email app with the message ready (mailto).
 Links can preselect a reason, e.g. `/contact/?reason=speaking` (`hiring`, `growth-help`, `speaking`, `other`).
 
 ## Deployment

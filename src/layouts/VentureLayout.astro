@@ -18,6 +18,7 @@ import DataTable from '../components/DataTable.astro';
 import Counter from '../components/Counter.astro';
 import Gallery from '../components/Gallery.astro';
 import ArrowLink from '../components/ArrowLink.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
 import home from '../content/home.json';
 import { site, filled } from '../lib/site';
 import { getRecognition, photosOf } from '../lib/recognition';
@@ -71,6 +72,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 ---
 
 <Base title={data.title} description={data.summary}>
+  <ReadingProgress />
   <SubPageHeader section="/ventures/" overviewLabel="Overview" title={data.title} intro={card?.line} />
 
   <div class="wrap venture">
@@ -475,7 +477,21 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
   /* Blocks */
   .block {
     padding-top: 3.5rem;
-    scroll-margin-top: 6rem;
+    scroll-margin-top: 2.5rem; /* + the 3.5rem padding: the heading lands just below the header */
+  }
+  /* Blocks below the snapshot skip layout and paint until they come near the screen
+     (lighter first load; see .defer-render in global.css). */
+  .block:not(.snapshot) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40rem;
+  }
+  :global(html:has(:target)) .block:not(.snapshot) {
+    content-visibility: visible; /* an anchor jump renders everything, so it lands exactly */
+  }
+  @media print {
+    .block:not(.snapshot) {
+      content-visibility: visible;
+    }
   }
   @media (width >= 64rem) {
     .block {
@@ -520,7 +536,6 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background-color: var(--color-surface);
-    scroll-margin-top: 6rem;
   }
   @media (width >= 48rem) {
     .snapshot {
@@ -612,7 +627,6 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     margin-top: 2.5rem;
     padding: 1.5rem 0 0 1.5rem;
     border-left: 2px solid var(--color-line);
-    scroll-margin-top: 6rem;
   }
   .stage[data-reached] {
     border-left-color: var(--color-accent);

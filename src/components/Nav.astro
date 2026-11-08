@@ -73,6 +73,7 @@ const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
                   </button>
                 </div>
                 <div id={menuId(item.label)} class="submenu" data-submenu>
+                  <div class="submenu-inner">
                   <ul class="submenu-list">
                     {item.children.map((child) => (
                       <li>
@@ -87,6 +88,7 @@ const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
                       </li>
                     ))}
                   </ul>
+                  </div>
                 </div>
               </li>
             ) : (
@@ -264,12 +266,26 @@ const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
     transform: rotate(180deg);
   }
 
-  /* Mobile accordion */
+  /* Mobile accordion: the height animates smoothly (grid rows 0fr → 1fr). Closed
+     links are visibility: hidden, so they stay out of the Tab order. */
   :global(html.js) .submenu {
-    display: none;
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+      grid-template-rows 220ms var(--ease-out-quart),
+      visibility 0s linear 220ms;
   }
   :global(html.js) .has-menu[data-open] .submenu {
-    display: block;
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition:
+      grid-template-rows 220ms var(--ease-out-quart),
+      visibility 0s;
+  }
+  .submenu-inner {
+    min-height: 0;
+    overflow: hidden;
   }
   .submenu-list {
     display: flex;
@@ -397,6 +413,9 @@ const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
     .has-menu[data-align-end] .submenu {
       left: auto;
       right: -0.5rem;
+    }
+    .submenu-inner {
+      overflow: visible; /* keep the panel's shadow */
     }
     .has-menu[data-open] .submenu,
     :global(html.js) .has-menu[data-open] .submenu,

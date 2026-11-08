@@ -1,0 +1,61 @@
+---
+/**
+ * Thin accent bar at the very top of a venture page showing how far down the
+ * page the reader is. Decorative (aria-hidden), hidden without JavaScript and
+ * in print. A passive scroll listener schedules one requestAnimationFrame per
+ * frame; the bar only changes transform (scaleX) and has no transition, so it
+ * follows the scroll exactly.
+ */
+---
+
+<div class="reading-progress" aria-hidden="true">
+  <div class="reading-progress-bar" data-reading-progress></div>
+</div>
+
+<style>
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 70; /* above the sticky header */
+    height: 3px;
+    pointer-events: none;
+  }
+  .reading-progress-bar {
+    height: 100%;
+    background-color: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+  :global(html:not(.js)) .reading-progress {
+    display: none;
+  }
+  @media print {
+    .reading-progress {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-reading-progress]');
+  if (bar) {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const root = document.documentElement;
+      const max = root.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      bar.style.transform = `scaleX(${progress})`;
+    };
+    const schedule = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    schedule();
+  }
+</script>

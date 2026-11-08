@@ -202,6 +202,26 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
   .lightbox::backdrop {
     background-color: rgb(5 6 7 / 0.94);
   }
+  /* Fades in and out over 150 ms (instant with reduced motion: the global reset).
+     Browsers that can't animate a dialog's close just close it. */
+  .lightbox,
+  .lightbox::backdrop {
+    opacity: 0;
+    transition:
+      opacity 150ms ease-out,
+      overlay 150ms allow-discrete,
+      display 150ms allow-discrete;
+  }
+  .lightbox[open],
+  .lightbox[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .lightbox[open],
+    .lightbox[open]::backdrop {
+      opacity: 0;
+    }
+  }
   :global(html:has(dialog.lightbox[open])) {
     overflow: hidden;
   }

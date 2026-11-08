@@ -14,7 +14,7 @@ interface Props {
 const { venture: v, linkLabel } = Astro.props;
 ---
 
-<article class="venture-card flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface">
+<article class="venture-card lift-card flex h-full flex-col rounded-card border border-line bg-surface">
   {
     v.image && (
       <Media
@@ -22,7 +22,7 @@ const { venture: v, linkLabel } = Astro.props;
         fit={v.image.fit}
         position={v.image.position}
         sizes="(min-width: 768px) 600px, 100vw"
-        class="aspect-video border-b border-line"
+        class="card-media-top aspect-video border-b border-line"
       />
     )
   }
@@ -60,14 +60,7 @@ const { venture: v, linkLabel } = Astro.props;
 </article>
 
 <style>
-  .venture-card {
-    position: relative;
-    transition: border-color 0.2s var(--ease-out-quart);
-  }
-  .venture-card:hover {
-    border-color: var(--color-line-strong);
-  }
-  /* Stretch the link over the whole card */
+  /* Hover and focus lift: .lift-card in global.css. Stretch the link over the whole card */
   .card-link::after {
     content: '';
     position: absolute;

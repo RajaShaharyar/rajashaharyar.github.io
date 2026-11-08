@@ -147,6 +147,26 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
 - **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades.
 - **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
   into view. The HTML holds the final values and screen readers only hear those.
+- **Hover and focus**: cards that are one big link get `.lift-card` (lift 2px, a soft shadow that fades in,
+  the photo grows to at most 1.03 inside its frame; keyboard focus does the same plus the ring). Buttons
+  change shade; arrow links nudge their arrow 2px.
+- **Menus**: desktop dropdowns fade and slide 4px (160 ms, opening at once on keyboard focus); the mobile
+  accordion animates its height (grid rows 0fr → 1fr).
+- **Carousel**: slides glide over 300 ms; no autoplay with reduced motion.
+- **My story timeline**: the rail draws down as it enters view (`data-reveal-draw`), items follow with their dots.
+- **Reading progress**: a thin accent bar on the four venture pages (`ReadingProgress.astro`).
+- **Page transitions**: a 200 ms cross-fade with CSS cross-document view transitions
+  (`@view-transition`, end of `global.css`). There is no client-side router.
+- **Lightbox** fades in and out over 150 ms; anchor links scroll smoothly; every element with an `id` has
+  `scroll-margin-top`, so anchors land just below the header (venture blocks and `/cv` set their own).
+
+## Performance
+
+Sections below the fold use `content-visibility: auto` (`.defer-render`, and the venture blocks), so the
+browser skips their layout and paint until they come near the screen. That roughly halves the first-load
+work on the long pages. They always render for print, and any anchor jump (`:target`) renders the whole page
+so it lands exactly. Note for tooling: a full-page screenshot only paints what is on screen, so scripts that
+screenshot or audit whole pages first add `* { content-visibility: visible !important }` (as `check:a11y` does).
 
 ## Deployment
 

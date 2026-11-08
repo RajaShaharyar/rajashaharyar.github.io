@@ -10,6 +10,7 @@
 import Base from './Base.astro';
 import SubPageHeader from '../components/SubPageHeader.astro';
 import ArrowLink from '../components/ArrowLink.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
 import { bulletText, getExperience, roleDates } from '../lib/cv';
 import type { RolesPage } from '../lib/ventures';
 
@@ -33,6 +34,7 @@ const cards = data.roles.map((id, i) => {
 ---
 
 <Base title={data.title} description={data.summary}>
+  <ReadingProgress />
   <SubPageHeader section="/ventures/" overviewLabel="Overview" title={data.title} intro={data.intro} />
 
   <section class="wrap pt-10 md:pt-14" aria-label="Roles">
@@ -75,7 +77,6 @@ const cards = data.roles.map((id, i) => {
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background-color: var(--color-surface);
-    scroll-margin-top: 6rem;
   }
   @media (width >= 48rem) {
     .role {

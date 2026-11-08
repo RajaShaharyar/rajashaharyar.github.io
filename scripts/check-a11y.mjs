@@ -32,6 +32,9 @@ try {
     for (const path of pages) {
       const page = await context.newPage();
       await page.goto(`http://127.0.0.1:${PORT}${path}`, { waitUntil: 'networkidle' });
+      // Below-the-fold sections use content-visibility: auto, which skips rendering them while
+      // they are off screen. Render everything so axe can check contrast on the whole page.
+      await page.addStyleTag({ content: '*, ::before, ::after { content-visibility: visible !important; }' });
       await page.evaluate(async () => {
         for (let y = 0; y < document.documentElement.scrollHeight; y += 500) {
           window.scrollTo(0, y);

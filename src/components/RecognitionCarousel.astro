@@ -197,9 +197,39 @@ const trackId = 'recognition-track';
     const atStart = () => track.scrollLeft <= 4;
     const atEnd = () => track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
 
+    // Slides move over 300 ms with an ease (instantly with reduced motion). Snapping is
+    // paused while the track animates, then restored on a snap point.
+    const SLIDE_MS = 300;
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    let frame = 0;
+    const cancelSlide = () => {
+      if (!frame) return;
+      cancelAnimationFrame(frame);
+      frame = 0;
+      track.style.scrollSnapType = '';
+    };
     const goTo = (index: number) => {
       const i = Math.max(0, Math.min(slides.length - 1, index));
-      track.scrollTo({ left: slides[i].offsetLeft, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      const max = track.scrollWidth - track.clientWidth;
+      const to = Math.min(slides[i].offsetLeft, max);
+      cancelSlide();
+      const from = track.scrollLeft;
+      if (reduceMotion.matches || Math.abs(to - from) < 1) {
+        track.scrollLeft = to;
+        return;
+      }
+      track.style.scrollSnapType = 'none';
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / SLIDE_MS);
+        track.scrollLeft = from + (to - from) * ease(t);
+        if (t < 1) frame = requestAnimationFrame(tick);
+        else {
+          frame = 0;
+          track.style.scrollSnapType = '';
+        }
+      };
+      frame = requestAnimationFrame(tick);
     };
     // Wraps around at either end.
     const step = (dir: 1 | -1) => {
@@ -260,7 +290,14 @@ const trackId = 'recognition-track';
     });
     // Swiping or scrolling the track by hand stops it too.
     for (const type of ['pointerdown', 'wheel', 'touchstart'] as const) {
-      track.addEventListener(type, stop, { passive: true });
+      track.addEventListener(
+        type,
+        () => {
+          cancelSlide();
+          stop();
+        },
+        { passive: true },
+      );
     }
     root.addEventListener('pointerenter', () => {
       hovering = true;

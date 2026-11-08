@@ -39,7 +39,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 3. The playbook -->
-  <section id="playbook" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="playbook-heading">
+  <section id="playbook" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="playbook-heading">
     <SectionHeader id="playbook-heading" heading={playbook.heading} intro={playbook.intro} />
     <div class="mt-10 md:mt-12">
       <PlaybookStages stages={playbook.stages} />
@@ -47,7 +47,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 4. Ventures ("See the work" scrolls here) -->
-  <section id="ventures" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="ventures-heading">
+  <section id="ventures" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="ventures-heading">
     <SectionHeader id="ventures-heading" heading={ventures.heading} intro={ventures.intro} />
     <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
@@ -61,7 +61,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 5. Hard wins -->
-  <section id="hard-wins" class:list={['border-y border-line bg-surface/40', sectionY]} aria-labelledby="hard-wins-heading">
+  <section id="hard-wins" class:list={['border-y border-line bg-surface/40', sectionY, 'defer-render']} aria-labelledby="hard-wins-heading">
     <div class="wrap">
       <SectionHeader id="hard-wins-heading" heading={hardWins.heading} intro={hardWins.intro} />
       <div class="mt-10 md:mt-12">
@@ -72,7 +72,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 6. Recognition strip -->
-  <section id="recognition" class:list={['wrap', sectionY]} aria-labelledby="recognition-heading">
+  <section id="recognition" class:list={['wrap', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
     <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
     <div class="mt-8 md:mt-10" data-reveal>
       <RecognitionCarousel label={recognition.carouselLabel} order={recognition.slides} />
@@ -81,7 +81,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 7. Speaking and ecosystem -->
-  <section id="speaking" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="speaking-heading">
+  <section id="speaking" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="speaking-heading">
     <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
     <div class="mt-10 md:mt-12">
       <SpeakingStrip images={speaking.images} />
@@ -90,7 +90,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 8. How I can help -->
-  <section id="help" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="help-heading">
+  <section id="help" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="help-heading">
     <SectionHeader id="help-heading" heading={help.heading} />
     <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
       {
@@ -109,7 +109,7 @@ const sectionY = 'py-16 md:py-24';
   <!-- 9. Testimonials: hidden until site.json has at least one quote -->
   {
     site.testimonials.length > 0 && (
-      <section id="testimonials" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="testimonials-heading">
+      <section id="testimonials" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="testimonials-heading">
         <SectionHeader id="testimonials-heading" heading={testimonials.heading} />
         <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
           {site.testimonials.map((t) => (
@@ -123,7 +123,7 @@ const sectionY = 'py-16 md:py-24';
   }
 
   <!-- 10. Final call to action (the footer follows) -->
-  <section class="wrap pt-8 pb-4 md:pt-12" aria-labelledby="cta-heading">
+  <section class="wrap defer-render pt-8 pb-4 md:pt-12" aria-labelledby="cta-heading">
     <CTA heading={finalCta.heading} />
   </section>
 </Base>

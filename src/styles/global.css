@@ -79,8 +79,13 @@
     color-scheme: dark;
     background-color: var(--color-bg);
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 5.5rem;
     scroll-behavior: smooth; /* turned off under prefers-reduced-motion below */
+  }
+
+  /* Every anchor target lands below the sticky header (pages with a second sticky bar,
+     like /cv, set their own). */
+  [id] {
+    scroll-margin-top: 5.5rem;
   }
 
   body {
@@ -158,30 +163,35 @@
     line-height: 1.2;
     text-decoration: none;
     transition:
-      background-color 0.2s var(--ease-out-quart),
-      border-color 0.2s var(--ease-out-quart),
-      color 0.2s var(--ease-out-quart);
+      background-color 180ms var(--ease-out-quart),
+      border-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart);
   }
+  /* Hover and keyboard focus change the shade; nothing moves. */
   .btn-primary {
     background-color: var(--color-accent);
     color: var(--color-accent-ink);
   }
-  .btn-primary:hover {
+  .btn-primary:hover,
+  .btn-primary:focus-visible {
     background-color: var(--color-accent-strong);
   }
   .btn-secondary {
     border: 1px solid var(--color-line-strong);
     color: var(--color-fg);
   }
-  .btn-secondary:hover {
+  .btn-secondary:hover,
+  .btn-secondary:focus-visible {
     border-color: var(--color-fg);
+    background-color: var(--color-raised);
   }
   /* For use on an accent-coloured background */
   .btn-dark {
     background-color: var(--color-accent-ink);
     color: var(--color-fg);
   }
-  .btn-dark:hover {
+  .btn-dark:hover,
+  .btn-dark:focus-visible {
     background-color: var(--color-raised);
   }
 
@@ -202,12 +212,87 @@
     text-decoration-thickness: 2px;
   }
   .arrow-link .arrow {
+    display: inline-block; /* so it can move */
     color: var(--color-accent);
     text-decoration: none;
-    transition: transform 0.2s var(--ease-out-quart);
+    transition: transform 180ms var(--ease-out-quart);
   }
-  .arrow-link:hover .arrow {
-    transform: translateX(3px);
+  /* The arrow nudges 2px on hover or keyboard focus (and when its whole card is hovered). */
+  @media (prefers-reduced-motion: no-preference) {
+    .arrow-link:hover .arrow,
+    .arrow-link:focus-visible .arrow,
+    .lift-card:hover .arrow-link .arrow,
+    .lift-card:has(:focus-visible) .arrow-link .arrow {
+      transform: translateX(2px);
+    }
+  }
+
+  /* Cards that are one big link: lift 2px with a soft shadow on hover or keyboard focus
+     (the link draws the focus ring). The shadow sits on its own layer and only fades, so
+     only transform and opacity animate. These cards don't clip (the shadow lies outside
+     them); a photo on top rounds its own corners with .card-media-top. */
+  .lift-card {
+    position: relative;
+    isolation: isolate;
+    transition:
+      transform 180ms var(--ease-out-quart),
+      border-color 180ms var(--ease-out-quart);
+  }
+  .lift-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    box-shadow:
+      0 18px 36px -18px rgb(0 0 0 / 0.85),
+      0 4px 12px -4px rgb(0 0 0 / 0.45);
+    opacity: 0;
+    transition: opacity 180ms var(--ease-out-quart);
+    pointer-events: none;
+  }
+  .lift-card:hover,
+  .lift-card:has(:focus-visible) {
+    border-color: var(--color-line-strong);
+  }
+  .lift-card:hover::before,
+  .lift-card:has(:focus-visible)::before {
+    opacity: 1;
+  }
+  .lift-card .media-img {
+    transition: transform 300ms var(--ease-out-quart);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lift-card:hover,
+    .lift-card:has(:focus-visible) {
+      transform: translateY(-2px);
+    }
+    /* Photos grow slightly inside their own frame (which clips them), never past 1.03. */
+    .lift-card:hover .media-img,
+    .lift-card:has(:focus-visible) .media-img {
+      transform: scale(1.03);
+    }
+  }
+  /* Below-the-fold sections: the browser skips their layout and paint until they come
+     near the screen, which makes the first load much lighter. The size is only an estimate
+     for the scrollbar; once rendered, the real size is remembered (auto). Everything is still
+     in the page (find, anchors, screen readers, print). */
+  .defer-render {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--defer-size, 56rem);
+  }
+  /* Print, and any jump to an anchor (:target), render everything, so a link lands exactly. */
+  html:has(:target) .defer-render {
+    content-visibility: visible;
+  }
+  @media print {
+    .defer-render {
+      content-visibility: visible;
+    }
+  }
+  .card-media-top {
+    border-top-left-radius: calc(var(--radius-card) - 1px);
+    border-top-right-radius: calc(var(--radius-card) - 1px);
   }
 
   /* Stage / result badge */
@@ -312,7 +397,7 @@
    Unlayered on purpose: it must win over component and utility styles.
    ========================================================================== */
 @media (prefers-reduced-motion: no-preference) {
-  html.js .reveal-pending:not([data-reveal-stagger='inner'] > *),
+  html.js .reveal-pending:not([data-reveal-stagger='inner'] > *, [data-reveal-draw]),
   html.js [data-reveal-stagger='inner'] > .reveal-pending > * {
     opacity: 0;
     transform: translateY(14px);
@@ -345,4 +430,19 @@
     transform: none !important;
     animation: none !important;
   }
+}
+
+/* ==========================================================================
+   PAGE TRANSITIONS (Phase 11): a 200ms cross-fade between pages, using CSS
+   cross-document view transitions only (no client-side router). Browsers
+   without support just navigate. Off with reduced motion.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
 }

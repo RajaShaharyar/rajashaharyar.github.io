@@ -31,7 +31,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- Career timeline -->
-  <section id="timeline" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="timeline-heading">
+  <section id="timeline" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="timeline-heading">
     <SectionHeader id="timeline-heading" heading={story.timeline.heading} />
     <div class="mt-10 md:mt-12">
       <Timeline items={timeline} />
@@ -39,7 +39,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 2024 in review -->
-  <section id="review-2024" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="review-heading">
+  <section id="review-2024" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="review-heading">
     <SectionHeader id="review-heading" heading={story.review.heading} />
     <div class="mt-10 md:mt-12">
       <Gallery

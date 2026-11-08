@@ -35,8 +35,8 @@ const sectionY = 'py-16 md:py-20';
     <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-3 md:gap-6" data-reveal-stagger>
       {
         cards.map((c) => (
-          <li class="highlight">
-            {c.photo && <Media image={c.photo.file} fit="contain" sizes="(min-width: 768px) 380px, 100vw" class="aspect-[4/3] border-b border-line" />}
+          <li class="highlight lift-card">
+            {c.photo && <Media image={c.photo.file} fit="contain" sizes="(min-width: 768px) 380px, 100vw" class="card-media-top aspect-[4/3] border-b border-line" />}
             <div class="flex flex-1 flex-col gap-2 p-5 md:p-6">
               {c.badge && <p class="badge w-fit">{badgeText(c)}</p>}
               <h3 class="mt-1 text-2xl leading-tight">
@@ -58,8 +58,8 @@ const sectionY = 'py-16 md:py-20';
     <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         pages.map((p) => (
-          <li class="page-link-card">
-            <Media image={p.image} fit="contain" sizes="(min-width: 768px) 600px, 100vw" class="aspect-[16/9] border-b border-line" />
+          <li class="page-link-card lift-card">
+            <Media image={p.image} fit="contain" sizes="(min-width: 768px) 600px, 100vw" class="card-media-top aspect-[16/9] border-b border-line" />
             <div class="flex flex-col gap-2 p-6 md:p-8">
               <h3 class="text-display-md">
                 <a href={p.href} class="highlight-link">
@@ -84,16 +84,11 @@ const sectionY = 'py-16 md:py-20';
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background-color: var(--color-surface);
-    transition: border-color 0.2s var(--ease-out-quart);
   }
-  .highlight:hover,
-  .page-link-card:hover {
-    border-color: var(--color-line-strong);
-  }
+  /* Hover and focus lift: .lift-card in global.css. */
   /* The heading link covers the whole card */
   .highlight-link {
     text-decoration: none;

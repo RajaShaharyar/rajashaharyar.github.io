@@ -3,6 +3,10 @@
  * Vertical career timeline, oldest first (My story). One line per entry:
  * date, then what happened. The rail and dots are decorative; the order of
  * the list carries the meaning. The newest entry's dot is filled.
+ *
+ * Motion (Phases 10-11): items fade in one after another with their dots
+ * (data-reveal-stagger), and the rail draws down (scaleY 0 → 1) when the list
+ * scrolls into view (data-reveal-draw). Static with reduced motion or no JS.
  */
 import type { TimelineEntry } from '../lib/about';
 
@@ -14,7 +18,7 @@ interface Props {
 const { items, label } = Astro.props;
 ---
 
-<ol class="timeline" aria-label={label} data-reveal-stagger>
+<ol class="timeline" aria-label={label} data-reveal-stagger data-reveal-draw>
   {
     items.map((item, i) => (
       <li class="timeline-item" data-latest={i === items.length - 1 || undefined}>
@@ -48,6 +52,15 @@ const { items, label } = Astro.props;
     width: 2px;
     border-radius: 2px;
     background-color: var(--color-line);
+    transform-origin: top;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .timeline:global(.reveal-pending)::before {
+      transform: scaleY(0);
+    }
+    :global(html.js) .timeline:global(.is-revealing)::before {
+      transition: transform 1100ms var(--ease-reveal);
+    }
   }
   .timeline-item {
     position: relative;

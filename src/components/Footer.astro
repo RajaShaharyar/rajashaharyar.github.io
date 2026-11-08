@@ -13,7 +13,7 @@ const hasCvPdf = publicFileExists(cv.pdfHref);
 const footerVentures = site.ventures.filter((v) => v.footer);
 ---
 
-<footer class="mt-20 border-t border-line bg-surface md:mt-24">
+<footer class="defer-render mt-20 border-t border-line bg-surface md:mt-24" style="--defer-size: 30rem">
   <div class="wrap grid gap-12 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
     <div>
       <p class="font-display text-2xl font-bold tracking-tight">

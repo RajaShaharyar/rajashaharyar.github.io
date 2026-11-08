@@ -340,12 +340,13 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .print-only {
     display: none;
   }
-  html:has(.cv-menu) {
-    scroll-padding-top: 8.25rem; /* site header + chip bar */
+  /* Anchor targets land below the site header and the sticky chip bar. */
+  html:has(.cv-menu) [id] {
+    scroll-margin-top: 8.25rem;
   }
   @media (width >= 64rem) {
-    html:has(.cv-menu) {
-      scroll-padding-top: 6rem;
+    html:has(.cv-menu) [id] {
+      scroll-margin-top: 6rem;
     }
   }
 
@@ -734,8 +735,8 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     body {
       background: #fff !important;
     }
-    html:has(.cv-menu) {
-      scroll-padding-top: 0;
+    html:has(.cv-menu) [id] {
+      scroll-margin-top: 0;
     }
     body {
       padding: 0 !important;

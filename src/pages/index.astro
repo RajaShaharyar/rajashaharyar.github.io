@@ -33,7 +33,7 @@ const sectionY = 'py-16 md:py-24';
   <section class="wrap pb-16 md:pb-24" aria-labelledby="proof-heading">
     <SectionHeader id="proof-heading" heading={proof.heading} hidden />
     <StatBar />
-    <div class="mt-10 md:mt-12">
+    <div class="mt-10 md:mt-12" data-reveal>
       <NameStrip title={proof.nameStripTitle} names={proof.names} />
     </div>
   </section>
@@ -49,7 +49,7 @@ const sectionY = 'py-16 md:py-24';
   <!-- 4. Ventures ("See the work" scrolls here) -->
   <section id="ventures" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="ventures-heading">
     <SectionHeader id="ventures-heading" heading={ventures.heading} intro={ventures.intro} />
-    <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 md:gap-6">
+    <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         site.ventures.map((v) => (
           <li>
@@ -74,7 +74,7 @@ const sectionY = 'py-16 md:py-24';
   <!-- 6. Recognition strip -->
   <section id="recognition" class:list={['wrap', sectionY]} aria-labelledby="recognition-heading">
     <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
-    <div class="mt-8 md:mt-10">
+    <div class="mt-8 md:mt-10" data-reveal>
       <RecognitionCarousel label={recognition.carouselLabel} order={recognition.slides} />
     </div>
     <ArrowLink href={recognition.link.href} class="mt-6">{recognition.link.label}</ArrowLink>
@@ -92,7 +92,7 @@ const sectionY = 'py-16 md:py-24';
   <!-- 8. How I can help -->
   <section id="help" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="help-heading">
     <SectionHeader id="help-heading" heading={help.heading} />
-    <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6">
+    <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
       {
         site.offers
           .filter((offer) => offer.home)
@@ -111,7 +111,7 @@ const sectionY = 'py-16 md:py-24';
     site.testimonials.length > 0 && (
       <section id="testimonials" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="testimonials-heading">
         <SectionHeader id="testimonials-heading" heading={testimonials.heading} />
-        <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6">
+        <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
           {site.testimonials.map((t) => (
             <li>
               <Testimonial testimonial={t} />

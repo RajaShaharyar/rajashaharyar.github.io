@@ -93,7 +93,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 
     <div class="venture-body">
       <!-- Snapshot -->
-      <section id="snapshot" class="block snapshot" aria-labelledby="snapshot-heading" data-block>
+      <section id="snapshot" class="block snapshot" aria-labelledby="snapshot-heading" data-block data-reveal>
         <div class="snapshot-top">
           <h2 id="snapshot-heading" class="snapshot-title">Snapshot</h2>
           <p class="badge">Stage reached: {data.snapshot.stage}</p>
@@ -141,7 +141,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- The problem and the market -->
       {
         shown.has('problem') && (
-          <section id="problem" class="block" aria-labelledby="problem-heading" data-block>
+          <section id="problem" class="block" aria-labelledby="problem-heading" data-block data-reveal>
             <h2 id="problem-heading" class="block-title">
               The problem and the market
             </h2>
@@ -166,7 +166,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
           stageBlocks
             .filter((b) => shown.has(b.id))
             .map((b) => (
-              <section id={b.id} class="stage" data-reached={b.reached || undefined} aria-labelledby={`${b.id}-heading`} data-block>
+              <section id={b.id} class="stage" data-reached={b.reached || undefined} aria-labelledby={`${b.id}-heading`} data-block data-reveal>
                 <p class="stage-kicker">
                   <span class="stage-num" aria-hidden="true">
                     {b.number}
@@ -221,7 +221,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Payments and approvals spotlight (AsaanBill) -->
       {
         data.spotlight && (
-          <section id="approvals" class="block" aria-labelledby="approvals-heading" data-block>
+          <section id="approvals" class="block" aria-labelledby="approvals-heading" data-block data-reveal>
             <h2 id="approvals-heading" class="block-title">
               {data.spotlight.heading}
             </h2>
@@ -250,7 +250,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Customer journey -->
       {
         journey && (
-          <section id="journey" class="block" aria-labelledby="journey-heading" data-block>
+          <section id="journey" class="block" aria-labelledby="journey-heading" data-block data-reveal>
             <h2 id="journey-heading" class="block-title">
               {journey.heading}
             </h2>
@@ -264,7 +264,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Terms used on this page -->
       {
         data.glossary.length > 0 && (
-          <section id="terms" class="block terms" aria-labelledby="terms-heading" data-block>
+          <section id="terms" class="block terms" aria-labelledby="terms-heading" data-block data-reveal>
             <h2 id="terms-heading" class="terms-title">
               Terms used on this page
             </h2>
@@ -282,7 +282,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Limitations and solutions -->
       {
         data.limitations.length > 0 && (
-          <section id="limitations" class="block" aria-labelledby="limitations-heading" data-block>
+          <section id="limitations" class="block" aria-labelledby="limitations-heading" data-block data-reveal>
             <h2 id="limitations-heading" class="block-title">
               Limitations and solutions
             </h2>
@@ -306,7 +306,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Who did what -->
       {
         data.contributions.length > 0 && (
-          <section id="team" class="block" aria-labelledby="team-heading" data-block>
+          <section id="team" class="block" aria-labelledby="team-heading" data-block data-reveal>
             <h2 id="team-heading" class="block-title">
               Who did what
             </h2>
@@ -328,7 +328,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Results -->
       {
         data.results && (
-          <section id="results" class="block" aria-labelledby="results-heading" data-block>
+          <section id="results" class="block" aria-labelledby="results-heading" data-block data-reveal>
             <h2 id="results-heading" class="block-title">
               Results
             </h2>
@@ -345,7 +345,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- What I'd do differently -->
       {
         data.lessons.length > 0 && (
-          <section id="lessons" class="block" aria-labelledby="lessons-heading" data-block>
+          <section id="lessons" class="block" aria-labelledby="lessons-heading" data-block data-reveal>
             <h2 id="lessons-heading" class="block-title">
               What I'd do differently
             </h2>
@@ -361,7 +361,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       <!-- Evidence -->
       {
         shown.has('evidence') && (
-          <section id="evidence" class="block" aria-labelledby="evidence-heading" data-block>
+          <section id="evidence" class="block" aria-labelledby="evidence-heading" data-block data-reveal>
             <h2 id="evidence-heading" class="block-title">
               Evidence
             </h2>
@@ -395,7 +395,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       }
 
       <!-- Next venture and call to action -->
-      <section id="next" class="block next" aria-labelledby="next-heading" data-block>
+      <section id="next" class="block next" aria-labelledby="next-heading" data-block data-reveal>
         <h2 id="next-heading" class="next-kicker">{data.next ? 'Next venture' : 'Next'}</h2>
         <div class="next-row">
           {

@@ -39,7 +39,8 @@ try {
         }
         window.scrollTo(0, 0);
       });
-      await page.waitForTimeout(700);
+      // Long enough for the last scroll reveals (500 ms + up to 420 ms stagger) to finish.
+      await page.waitForTimeout(1300);
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
         .analyze();

@@ -27,14 +27,14 @@ const counters = [...counts, { value: String(mouCount), label: mouCount === 1 ? 
   <SubPageHeader section="/recognition/" overviewLabel="Overview" title={page.label} intro={`${page.description}.`} />
 
   <section class="wrap pt-10 md:pt-14" aria-label={copy.countersLabel}>
-    <ul class="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-3">
+    <ul class="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-3" data-reveal-stagger="inner">
       {counters.map((c) => <Counter value={c.value} label={c.label} />)}
     </ul>
   </section>
 
   <section class="wrap pt-14 pb-4 md:pt-20" aria-labelledby="mous-heading">
     <SectionHeader id="mous-heading" heading={copy.heading} />
-    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6">
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         mous.map((item) => (
           <li>

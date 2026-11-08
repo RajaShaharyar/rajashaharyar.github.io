@@ -25,7 +25,7 @@ const sectionY = 'py-16 md:py-20';
   <!-- Offers -->
   <section class="wrap pt-12 pb-16 md:pt-16 md:pb-20" aria-labelledby="offers-heading">
     <SectionHeader id="offers-heading" heading={copy.offersHeading} hidden />
-    <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+    <ul class="grid gap-4 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         site.offers.map((offer, i) => (
           <li id={offer.id}>
@@ -39,7 +39,7 @@ const sectionY = 'py-16 md:py-20';
   <!-- How we'd work -->
   <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="steps-heading">
     <SectionHeader id="steps-heading" heading={copy.steps.heading} />
-    <ol class="steps mt-8 md:mt-10">
+    <ol class="steps mt-8 md:mt-10" data-reveal-stagger>
       {
         copy.steps.items.map((step, i) => (
           <li class="step">

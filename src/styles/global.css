@@ -57,6 +57,7 @@
 
   /* Motion */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-reveal: cubic-bezier(0.2, 0.7, 0.2, 1); /* scroll reveal, hero intro */
 }
 
 /* Page container: 16px side gutter on phones, wider from tablet up */
@@ -296,4 +297,52 @@
     text-decoration-thickness: 2px;
   }
 
+}
+
+/* ==========================================================================
+   SCROLL REVEAL (Phase 10): "just a little".
+   Elements marked data-reveal, and the children of a data-reveal-stagger
+   container, fade in while rising 14px, once, as they scroll into view
+   (src/scripts/reveal.ts). Only targets that script finds off screen are
+   hidden (.reveal-pending), only with JavaScript (html.js) and only when
+   reduced motion is off; anything on screen at load is never hidden.
+   data-reveal-stagger="inner" fades each child's contents instead of the
+   child itself, for grids whose 1px dividers are the container's background.
+   Only opacity and transform change, so nothing moves the layout (CLS 0).
+   Unlayered on purpose: it must win over component and utility styles.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal-pending:not([data-reveal-stagger='inner'] > *),
+  html.js [data-reveal-stagger='inner'] > .reveal-pending > * {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  html.js .is-revealing:not([data-reveal-stagger='inner'] > *),
+  html.js [data-reveal-stagger='inner'] > .is-revealing > * {
+    transition:
+      opacity 500ms var(--ease-reveal),
+      transform 500ms var(--ease-reveal);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* Homepage hero text: one short fade-and-rise on load. The photo never fades. */
+  html.js .hero-intro {
+    animation: hero-intro 360ms var(--ease-reveal) both;
+  }
+}
+@keyframes hero-intro {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@media print {
+  [data-reveal],
+  [data-reveal-stagger] > *,
+  [data-reveal-stagger] > * > *,
+  .hero-intro {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }

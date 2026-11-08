@@ -40,7 +40,7 @@ const sections = copy.sections.map((s) => ({ ...s, items: shownOn('speaking-even
         aria-labelledby={`${s.id}-heading`}
       >
         <SectionHeader id={`${s.id}-heading`} heading={s.heading} />
-        <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+        <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6 lg:grid-cols-3" data-reveal-stagger>
           {s.items.map((item) => (
             <li>
               <RecognitionCard item={item} variant={s.id === 'talks' ? 'talk' : 'default'} />

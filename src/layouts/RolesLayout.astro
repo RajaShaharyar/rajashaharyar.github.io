@@ -36,7 +36,7 @@ const cards = data.roles.map((id, i) => {
   <SubPageHeader section="/ventures/" overviewLabel="Overview" title={data.title} intro={data.intro} />
 
   <section class="wrap pt-10 md:pt-14" aria-label="Roles">
-    <ul class="grid gap-4 md:grid-cols-3 md:gap-6">
+    <ul class="grid gap-4 md:grid-cols-3 md:gap-6" data-reveal-stagger>
       {
         cards.map((c) => (
           <li id={c.id} class:list={['role', c.featured && 'role-featured md:col-span-3']}>

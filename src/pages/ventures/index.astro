@@ -21,7 +21,7 @@ const description =
 
   <section class="wrap pt-10 md:pt-14" aria-labelledby="all-ventures-heading">
     <SectionHeader id="all-ventures-heading" heading="All ventures" hidden />
-    <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+    <ul class="grid gap-4 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         site.ventures.map((v) => (
           <li>

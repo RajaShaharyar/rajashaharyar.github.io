@@ -20,7 +20,7 @@ const items = shownOn('programmes', ['Programme', 'Office']);
 
   <section class="wrap pt-10 pb-4 md:pt-14" aria-labelledby="programmes-heading">
     <SectionHeader id="programmes-heading" heading="Programmes and the incubation office" hidden />
-    <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+    <ul class="grid gap-4 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         items.map((item) => (
           <li>

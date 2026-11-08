@@ -3,33 +3,54 @@
  * Homepage section 2a: the six headline figures, number first, then label.
  * Values come from site.json → stats. A currency code ("PKR") is set smaller
  * so long figures fit two-up on phones.
+ *
+ * Count-up (Phase 10): when the bar scrolls into view, the number part of each
+ * figure counts up once over 1.2 s, keeping its prefix and suffix ("PKR 25 Cr+",
+ * "$1.8M+" with one decimal, "3,000+" with the comma). The HTML always holds the
+ * final values; screen readers hear only the final text (the animated copy is
+ * aria-hidden). No count-up with reduced motion, and none if a figure is already
+ * fully on screen at load. A hidden copy of the final number holds each number's width,
+ * so the counting digits never move anything.
  */
 import { site } from '../lib/site';
 
 function splitValue(value: string) {
   const m = value.match(/^([A-Z]{2,4})\s+(.+)$/);
-  return m ? { prefix: m[1], main: m[2] } : { prefix: '', main: value };
+  return m ? { code: m[1], main: m[2] } : { code: '', main: value };
 }
+/** "$1.8M+" → { before: "$", number: "1.8", after: "M+" } */
+function splitNumber(main: string) {
+  const m = main.match(/^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/);
+  return m ? { before: m[1], number: m[2], after: m[3] } : { before: main, number: '', after: '' };
+}
+const stats = site.stats.map((stat) => {
+  const { code, main } = splitValue(stat.value);
+  const { before, number, after } = splitNumber(main);
+  return {
+    ...stat,
+    code,
+    before,
+    number,
+    after,
+    to: Number(number.replace(/,/g, '')),
+    decimals: number.includes('.') ? number.split('.')[1].length : 0,
+    grouping: number.includes(','),
+  };
+});
 ---
 
-<ul class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3">
+<ul class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3" data-reveal-stagger="inner" data-countup-bar>
   {
-    site.stats.map((stat) => {
-      const { prefix, main } = splitValue(stat.value);
-      return (
-        <li class="flex flex-col gap-2 bg-bg px-3 py-4 min-[360px]:px-4 sm:p-6 md:p-8">
-          <p class="stat-value">
-            {prefix && (
-              <>
-                <span class="stat-prefix">{prefix}</span>{' '}
-              </>
-            )}
-            {main}
-          </p>
-          <p class="text-sm leading-snug text-fg-muted sm:text-base">{stat.label}</p>
-        </li>
-      );
-    })
+    stats.map((stat) => (
+      <li class="flex flex-col gap-2 bg-bg px-3 py-4 min-[360px]:px-4 sm:p-6 md:p-8">
+        <p class="stat-value">
+          <span class="sr-only">{stat.value}</span>
+          {/* One line on purpose: line breaks here would render as spaces ("$ 1.8"). */}
+          <span aria-hidden="true">{stat.code && <><span class="stat-prefix">{stat.code}</span>{' '}</>}{stat.before}{stat.number && <span class="stat-number"><span class="stat-ghost">{stat.number}</span><span class="stat-live" data-countup data-to={stat.to} data-decimals={stat.decimals} data-grouping={stat.grouping ? 'true' : 'false'}>{stat.number}</span></span>}{stat.after}</span>
+        </p>
+        <p class="text-sm leading-snug text-fg-muted sm:text-base">{stat.label}</p>
+      </li>
+    ))
   }
 </ul>
 
@@ -51,4 +72,64 @@ function splitValue(value: string) {
     vertical-align: 0.95em;
     color: var(--color-accent);
   }
+  /* The ghost (final number, invisible) and the live digits share one grid cell. */
+  .stat-number {
+    display: inline-grid;
+  }
+  .stat-number > * {
+    grid-area: 1 / 1;
+  }
+  .stat-ghost {
+    visibility: hidden;
+  }
+  /* Fills the cell and right-aligns its digits, so its box never moves while counting. */
+  .stat-live {
+    text-align: right;
+  }
 </style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-countup-bar]');
+  const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  if (bar && motionOk && 'IntersectionObserver' in window) {
+    const format = (el: HTMLElement, n: number) =>
+      n.toLocaleString('en-GB', {
+        minimumFractionDigits: Number(el.dataset.decimals),
+        maximumFractionDigits: Number(el.dataset.decimals),
+        useGrouping: el.dataset.grouping === 'true',
+      });
+    // If any figure is already fully on screen at load, the bar keeps its final values and never
+    // counts. Otherwise every figure is set to zero (while off screen) and counts up once when the
+    // bar scrolls into view. Positions come from an IntersectionObserver: no forced layout.
+    const numbers = Array.from(bar.querySelectorAll<HTMLElement>('[data-countup]'));
+    const DURATION = 1200;
+    const run = () => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / DURATION);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out
+        for (const el of numbers) el.textContent = format(el, Number(el.dataset.to) * eased);
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const enter = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        enter.disconnect();
+        run();
+      },
+      { threshold: 0.2 },
+    );
+    const first = new IntersectionObserver(
+      (entries) => {
+        first.disconnect();
+        if (entries.some((e) => e.intersectionRatio > 0.99)) return; // already seen: no count-up
+        for (const el of numbers) el.textContent = format(el, 0);
+        enter.observe(bar);
+      },
+      { threshold: [0, 1] },
+    );
+    for (const el of numbers) first.observe(el);
+  }
+</script>

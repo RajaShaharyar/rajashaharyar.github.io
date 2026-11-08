@@ -24,7 +24,7 @@ const sectionY = 'py-16 md:py-20';
 
   <!-- Counters -->
   <section class="wrap pt-10 md:pt-14" aria-label={overview.countersLabel}>
-    <ul class="counter-grid grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3 lg:grid-cols-6">
+    <ul class="counter-grid grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3 lg:grid-cols-6" data-reveal-stagger="inner">
       {counters.map((c) => <Counter value={c.value} label={c.label} />)}
     </ul>
   </section>
@@ -32,7 +32,7 @@ const sectionY = 'py-16 md:py-20';
   <!-- Highlights -->
   <section class:list={['wrap', sectionY]} aria-labelledby="highlights-heading">
     <SectionHeader id="highlights-heading" heading={overview.highlightsHeading} />
-    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-3 md:gap-6">
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-3 md:gap-6" data-reveal-stagger>
       {
         cards.map((c) => (
           <li class="highlight">
@@ -55,7 +55,7 @@ const sectionY = 'py-16 md:py-20';
   <!-- The four sub-pages -->
   <section class="wrap border-t border-line pt-16 pb-4 md:pt-20" aria-labelledby="pages-heading">
     <SectionHeader id="pages-heading" heading={overview.pagesHeading} />
-    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6">
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         pages.map((p) => (
           <li class="page-link-card">

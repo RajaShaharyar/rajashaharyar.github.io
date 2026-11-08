@@ -22,7 +22,7 @@ const sectionY = 'py-16 md:py-24';
   <!-- How I work -->
   <section class="wrap pt-10 pb-16 md:pt-14 md:pb-24" aria-labelledby="how-heading">
     <SectionHeader id="how-heading" heading={page.howIWork.heading} />
-    <ol class="mt-10 grid gap-4 sm:grid-cols-2 md:mt-12 lg:gap-6">
+    <ol class="mt-10 grid gap-4 sm:grid-cols-2 md:mt-12 lg:gap-6" data-reveal-stagger>
       {
         page.howIWork.items.map((item, i) => (
           <li class="flex flex-col rounded-card border border-line bg-surface p-6 md:p-8">

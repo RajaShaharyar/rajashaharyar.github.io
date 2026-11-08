@@ -134,6 +134,20 @@ the form posts normally and Web3Forms redirects to `/contact/thanks/`. Formspree
 visitor's email app with the message ready (mailto).
 Links can preselect a reason, e.g. `/contact/?reason=speaking` (`hiring`, `growth-help`, `speaking`, `other`).
 
+## Motion
+
+Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off completely with
+`prefers-reduced-motion: reduce`.
+
+- **Scroll reveal** (`src/scripts/reveal.ts`, styles at the end of `global.css`): add `data-reveal` to an
+  element, or `data-reveal-stagger` to a list so its items follow each other 70 ms apart (max 420 ms).
+  Use `data-reveal-stagger="inner"` for grids whose 1px dividers are the list's background (proof bar,
+  hard wins, counters): the items' contents fade instead of the items. Elements on screen at load never
+  fade, and nothing is hidden without JavaScript or in print.
+- **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades.
+- **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
+  into view. The HTML holds the final values and screen readers only hear those.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` builds with `withastro/action` and deploys with `actions/deploy-pages` on every push to `main` (or run it manually from the Actions tab). Pages is set to build from GitHub Actions.

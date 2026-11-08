@@ -71,7 +71,7 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
 ---
 
 <div class="gallery" data-gallery>
-  <ul class:list={listClass} aria-label={label}>
+  <ul class:list={listClass} aria-label={label} data-reveal-stagger={strip ? undefined : ''}>
     {
       photos.map((p, i) => (
         <li class:list={[strip && i === 0 && 'col-span-3']}>

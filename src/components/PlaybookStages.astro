@@ -21,7 +21,7 @@ interface Props {
 const { stages } = Astro.props;
 ---
 
-<ol class="stages grid gap-4 lg:grid-cols-3 lg:gap-8">
+<ol class="stages grid gap-4 lg:grid-cols-3 lg:gap-8" data-reveal-stagger>
   {
     stages.map((stage, i) => (
       <li class="stage flex flex-col rounded-card border border-line bg-surface p-6 md:p-8" id={`stage-${stage.id}`}>

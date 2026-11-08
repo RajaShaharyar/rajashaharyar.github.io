@@ -7,7 +7,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ol class="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+<ol class="grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-2 lg:grid-cols-4" data-reveal-stagger="inner">
   {
     items.map((item, i) => (
       <li class="relative flex flex-col gap-3 bg-surface p-6 md:p-7">

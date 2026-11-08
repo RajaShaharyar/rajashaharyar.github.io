@@ -67,7 +67,7 @@ const sectionY = 'py-16 md:py-24';
   <!-- Courses and programmes -->
   <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="programmes-heading">
     <SectionHeader id="programmes-heading" heading={page.programmes.heading} />
-    <ol class="mt-10 flex flex-col gap-4 md:mt-12">
+    <ol class="mt-10 flex flex-col gap-4 md:mt-12" data-reveal-stagger>
       {
         programmes.map((p) => (
           <li class="programme rounded-card border border-line bg-surface p-6 sm:p-8">

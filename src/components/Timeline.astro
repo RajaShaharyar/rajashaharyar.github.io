@@ -14,7 +14,7 @@ interface Props {
 const { items, label } = Astro.props;
 ---
 
-<ol class="timeline" aria-label={label}>
+<ol class="timeline" aria-label={label} data-reveal-stagger>
   {
     items.map((item, i) => (
       <li class="timeline-item" data-latest={i === items.length - 1 || undefined}>

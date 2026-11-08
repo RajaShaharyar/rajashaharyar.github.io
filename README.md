@@ -20,7 +20,9 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 ```
 src/
   content/
-    site.json          name, title, contact, nav, headline stats, venture cards (+ venture facts), offers, testimonials
+    site.json          name, title, contact, nav, headline stats, venture cards, offers (home: true = on the
+                       homepage too), testimonials
+    work-with-me.json  copy for /work-with-me (steps, engagement models, FAQ, call to action)
     home.json          homepage copy, section by section (carousel order: recognition.slides)
     about.json         copy for the four About pages; points into cv.json by id for CV facts
     images.json        every published photo: size (prevents layout shift), alt text, caption
@@ -28,7 +30,8 @@ src/
                        organiser, venue, date, prize, venture, photos; "shownOn" decides which pages list it)
     recognition-pages.json  copy for /recognition and its four sub-pages (counter labels, headings, topics)
     cv.json            all 14 CV sections: the one source for roles, degree, programmes, skills, languages
-    ventures/*.mdx     one file per venture, rendered by pages/ventures/[slug].astro
+    ventures/*.mdx     one file per venture: a case study (kind: case-study → layouts/VentureLayout) or the
+                       Consulting & product roles page (kind: roles → layouts/RolesLayout, cards from cv.json)
   content.config.ts    schemas: the build fails if recognition.json or a venture file is malformed
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
@@ -42,7 +45,7 @@ public/images/         ventures/, recognition/, speaking/, about/, education/
 
 - **Never invent numbers, names or dates.** Missing content is a string starting with `TODO:`. It stays in the data
   and the field is **hidden** on the live site: no "TODO" text is ever published (`isTodo()` / `filled()` in
-  `src/lib/site.ts`; the `<Todo>` component renders only in `npm run dev`).
+  `src/lib/site.ts`). Blocks and fields with no data are left out entirely: no empty headings or placeholders.
 - `toConfirm` fields list facts to settle before a page relies on them. Raja's answers of 6 Nov 2026 are applied.
 - Contact details live only in `site.json`; the CV and footer read them from there.
 - No date of birth, gender, nationality or home address anywhere in the site or the CV PDF.

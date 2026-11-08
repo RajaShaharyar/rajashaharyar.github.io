@@ -170,21 +170,45 @@
       "id": "fit-sprint",
       "title": "Fit Sprint",
       "stage": "Product-Idea Fit",
-      "summary": "For founders before or just after launch: ideal customer, interviews, MVP scope and a plan for the first 50 customers."
+      "home": true,
+      "summary": "For founders before or just after launch: ideal customer, interviews, MVP scope and a plan for the first 50 customers.",
+      "forWhom": "For founders before or just after launch",
+      "gets": "Ideal customer, interviews, MVP scope and a plan for the first 50 customers.",
+      "proof": {
+        "label": "AsaanBill's first 50 customers; Tapit pre-sold on a prototype",
+        "href": "/ventures/asaanbill/#product-market-fit"
+      }
     },
     {
       "id": "sales-gtm-engine",
       "title": "Sales & GTM Engine",
       "stage": "Product-Market Fit",
-      "summary": "For products that sell, but not repeatably: funnel, CRM, outbound and a partnership channel."
+      "home": true,
+      "summary": "For products that sell, but not repeatably: funnel, CRM, outbound and a partnership channel.",
+      "forWhom": "For products that sell, but not repeatably",
+      "gets": "Funnel and CRM set-up (HubSpot, Salesforce, Apollo, LinkedIn Sales Navigator), outbound and a partnership channel.",
+      "proof": { "label": "15+ ERP partnerships; PKR 25 Cr+ in sales", "href": "/ventures/asaanbill/#scale" }
     },
     {
       "id": "payments-fintech-launch",
       "title": "Payments & Fintech Launch",
       "stage": "Scale",
-      "summary": "For fintechs and businesses adding digital collections: 1Bill and Raast, payment journeys and merchant onboarding."
+      "home": true,
+      "summary": "For fintechs and businesses adding digital collections: 1Bill and Raast, payment journeys and merchant onboarding.",
+      "forWhom": "For fintechs and businesses adding digital collections",
+      "gets": "1Bill and Raast, payment journeys and merchant onboarding.",
+      "proof": { "label": "1Bill and Raast approvals at AsaanBill", "href": "/ventures/asaanbill/#approvals" }
+    },
+    {
+      "id": "talks-workshops",
+      "title": "Talks & workshops",
+      "home": false,
+      "forWhom": "For universities, incubators and events",
+      "gets": "Sessions on pitching, go-to-market and early sales.",
+      "proof": { "label": "HITEC, NUML, Air University and NUST EME", "href": "/recognition/speaking-events/" }
     }
   ],
   "_testimonialsHowTo": "Add objects like { \"quote\": \"...\", \"name\": \"...\", \"role\": \"...\", \"company\": \"...\" }. The homepage Testimonials section appears as soon as there is at least one.",
-  "testimonials": []
+  "testimonials": [],
+  "_offersNote": "home: true = shown in the homepage \"How I can help\" (with its summary); all offers show on /work-with-me (for whom, what they get, proof)."
 }

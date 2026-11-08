@@ -99,6 +99,8 @@ export interface Cv {
     location: string;
     website: { display: string; href: string };
     downloadLabel: string;
+    /** The page's contact button (preselects a reason on /contact) */
+    contactCta: { label: string; href: string };
   };
   summary: Section & { text: string; draft?: boolean };
   keyNumbers: Section;

@@ -8,6 +8,7 @@ import { filled } from './site';
 
 export type VentureEntry = CollectionEntry<'ventures'>;
 export type CaseStudy = Extract<VentureEntry['data'], { kind: 'case-study' }>;
+export type RolesPage = Extract<VentureEntry['data'], { kind: 'roles' }>;
 
 /** "PKR 40K" once the currency is filled in; undefined while it is still a TODO. */
 export function preSalesText(preSales?: { amount: string; currency: string }): string | undefined {

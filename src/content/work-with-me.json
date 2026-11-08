@@ -1,0 +1,29 @@
+{
+  "_rules": "Copy for /work-with-me. The offers themselves live in site.json → offers (the homepage shows those with home: true).",
+  "title": "Work With Me",
+  "intro": "I help founders and teams find fit, build a sales engine and scale, especially in payments.",
+  "description": "Work with Raja Shaharyar Ali: Fit Sprint, Sales & GTM Engine, Payments & Fintech Launch, and talks and workshops, each backed by proof from AsaanBill and Tapit.",
+  "offersHeading": "Offers",
+  "steps": {
+    "heading": "How we'd work",
+    "items": ["Intro call", "1–2 week audit", "30/60/90-day plan", "Execution, with a weekly report"]
+  },
+  "models": {
+    "heading": "Engagement models",
+    "items": ["Full-time role", "Fractional or advisory", "Fixed-scope project", "Talk or workshop"]
+  },
+  "faq": {
+    "heading": "FAQ",
+    "items": [
+      { "q": "Which sectors?", "a": "Fintech, SaaS and consumer: the three markets on the Ventures page." },
+      { "q": "Where are you based?", "a": "Islamabad, Pakistan." },
+      { "q": "Which languages?", "a": "English and Urdu." },
+      { "q": "How do we start?", "a": "Send a message with what you're building and pick 'Growth help'. The first step is a short intro call." }
+    ]
+  },
+  "cta": {
+    "_headingFrom": "home.json → finalCta.heading",
+    "label": "Let's talk",
+    "href": "/contact/?reason=growth-help"
+  }
+}

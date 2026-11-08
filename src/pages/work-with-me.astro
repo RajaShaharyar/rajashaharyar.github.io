@@ -1,11 +1,164 @@
 ---
+/**
+ * Work With Me (/work-with-me): the four offers (site.json → offers), each
+ * with a proof link into a venture page, then how we'd work, engagement
+ * models, an FAQ and a call to action that preselects "Growth help".
+ * Copy: src/content/work-with-me.json · CTA heading: home.json → finalCta
+ */
 import Base from '../layouts/Base.astro';
-import StubPage from '../components/StubPage.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import OfferCard from '../components/OfferCard.astro';
+import CTA from '../components/CTA.astro';
+import copy from '../content/work-with-me.json';
+import home from '../content/home.json';
+import { site } from '../lib/site';
 
-const title = 'Work With Me';
-const purpose = 'How I can help you grow: offers mapped to each stage, from first fit to scale, with proof links.';
+const sectionY = 'py-16 md:py-20';
 ---
 
-<Base title={title} description={purpose}>
-  <StubPage eyebrow="Work With Me" title={title} purpose={purpose} phase="Phase 8 · Work With Me" />
+<Base title={copy.title} description={copy.description}>
+  <header class="wrap pt-12 md:pt-20">
+    <h1 class="max-w-4xl text-display-lg">{copy.title}</h1>
+    <p class="lead mt-6 max-w-prose">{copy.intro}</p>
+  </header>
+
+  <!-- Offers -->
+  <section class="wrap pt-12 pb-16 md:pt-16 md:pb-20" aria-labelledby="offers-heading">
+    <SectionHeader id="offers-heading" heading={copy.offersHeading} hidden />
+    <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+      {
+        site.offers.map((offer, i) => (
+          <li id={offer.id}>
+            <OfferCard offer={offer} index={i} variant="full" />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- How we'd work -->
+  <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="steps-heading">
+    <SectionHeader id="steps-heading" heading={copy.steps.heading} />
+    <ol class="steps mt-8 md:mt-10">
+      {
+        copy.steps.items.map((step, i) => (
+          <li class="step">
+            <span class="step-num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="step-label">{step}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Engagement models -->
+  <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="models-heading">
+    <SectionHeader id="models-heading" heading={copy.models.heading} />
+    <ul class="mt-8 flex flex-wrap gap-2 md:mt-10">
+      {copy.models.items.map((m) => <li class="chip">{m}</li>)}
+    </ul>
+  </section>
+
+  <!-- FAQ -->
+  <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="faq-heading">
+    <SectionHeader id="faq-heading" heading={copy.faq.heading} />
+    <div class="faq mt-8 md:mt-10">
+      {
+        copy.faq.items.map((item) => (
+          <details class="faq-item">
+            <summary class="faq-q">
+              {item.q}
+              <svg class="faq-chevron" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path d="M4 6l4 4 4-4" />
+              </svg>
+            </summary>
+            <p class="faq-a">{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Call to action: preselects "Growth help" on the contact form -->
+  <section class="wrap pt-4 pb-4" aria-labelledby="wwm-cta-heading">
+    <CTA heading={home.finalCta.heading} href={copy.cta.href} label={copy.cta.label} headingId="wwm-cta-heading" />
+  </section>
 </Base>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (width >= 48rem) {
+    .steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem 1.375rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .step-label {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-fg);
+  }
+
+  .faq {
+    max-width: 48rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .faq-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+    padding: 0.875rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-fg);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .faq-chevron {
+    flex: none;
+    fill: none;
+    stroke: var(--color-fg-muted);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s var(--ease-out-quart);
+  }
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+  .faq-a {
+    padding: 0 0 1.25rem;
+    max-width: var(--container-prose);
+    color: var(--color-fg-muted);
+  }
+</style>

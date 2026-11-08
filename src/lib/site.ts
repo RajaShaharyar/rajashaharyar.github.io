@@ -31,8 +31,13 @@ export interface Stat {
 export interface Offer {
   id: string;
   title: string;
-  stage: string;
-  summary: string;
+  stage?: string;
+  /** Shown in the homepage "How I can help" (with its summary) */
+  home: boolean;
+  summary?: string;
+  forWhom: string;
+  gets: string;
+  proof: { label: string; href: string };
 }
 
 export interface Testimonial {
@@ -89,7 +94,3 @@ export function filled<T>(value: T | null | undefined): T | undefined {
   return isTodo(value) ? undefined : (value as T);
 }
 
-/** Strip the leading "TODO:" from a placeholder string for display. */
-export function todoText(value: string): string {
-  return value.replace(/^TODO:\s*/, '');
-}

@@ -11,7 +11,8 @@
     "location": "Islamabad, Pakistan",
     "contactFrom": "site.json → contact (email, whatsapp, linkedin): one source, so the CV and the footer never disagree.",
     "website": { "display": "rajashaharyar.github.io", "href": "https://rajashaharyar.github.io" },
-    "downloadLabel": "Download PDF"
+    "downloadLabel": "Download PDF",
+    "contactCta": { "label": "Let's talk", "href": "/contact/?reason=hiring" }
   },
 
   "summary": {

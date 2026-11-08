@@ -1,19 +1,17 @@
 ---
 /**
- * One route for every venture: each MDX file in src/content/ventures becomes
- * /ventures/<file-name>/. Case studies (kind: case-study) render with
- * VentureLayout; Consulting & product roles (kind: roles) gets its own role
- * cards in Phase 8. A file still marked status: draft shows its stub until
- * its phase ships (Phase 7: Tapit and Ladenza; Phase 8: Consulting).
+ * One route for every venture: each published MDX file in src/content/ventures
+ * becomes /ventures/<file-name>/. Case studies (kind: case-study) render with
+ * VentureLayout; Consulting & product roles (kind: roles) with RolesLayout.
+ * A file marked status: draft is not built.
  */
 import type { InferGetStaticPropsType } from 'astro';
 import { getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
 import VentureLayout from '../../layouts/VentureLayout.astro';
-import StubPage from '../../components/StubPage.astro';
+import RolesLayout from '../../layouts/RolesLayout.astro';
 
 export async function getStaticPaths() {
-  const ventures = await getCollection('ventures');
+  const ventures = await getCollection('ventures', (entry) => entry.data.status === 'published');
   return ventures.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
@@ -23,12 +21,4 @@ const { entry } = Astro.props;
 const { data } = entry;
 ---
 
-{
-  data.status === 'published' && data.kind === 'case-study' ? (
-    <VentureLayout id={entry.id} data={data} />
-  ) : (
-    <Base title={data.title} description={data.summary}>
-      <StubPage eyebrow="Ventures" title={data.title} purpose={data.summary} phase={`Phase ${data.phase} · Ventures`} />
-    </Base>
-  )
-}
+{data.kind === 'case-study' ? <VentureLayout id={entry.id} data={data} /> : <RolesLayout data={data} />}

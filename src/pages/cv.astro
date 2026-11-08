@@ -90,13 +90,17 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
         <a href={header.website.href}>{header.website.display}</a>
       </li>
     </ul>
-    {
-      hasPdf && (
-        <a href={site.cv.pdfHref} download={site.cv.downloadName} class="btn btn-primary cv-download">
-          {header.downloadLabel}
-        </a>
-      )
-    }
+    <div class="cv-actions">
+      {
+        hasPdf && (
+          <a href={site.cv.pdfHref} download={site.cv.downloadName} class="btn btn-primary cv-download">
+            {header.downloadLabel}
+          </a>
+        )
+      }
+      <!-- Contact call to action: preselects "Hiring" on the contact form -->
+      <a href={header.contactCta.href} class="btn btn-secondary cv-contact-cta">{header.contactCta.label}</a>
+    </div>
   </header>
 
   <div class="wrap cv-layout">
@@ -391,7 +395,10 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     text-transform: uppercase;
     color: var(--color-fg-subtle);
   }
-  .cv-download {
+  .cv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-top: 1.75rem;
   }
 
@@ -750,6 +757,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     .skip-link,
     .cv-menu,
     .cv-download,
+    .cv-contact-cta,
     .journey-link,
     .xp-chevron,
     .screen-only {

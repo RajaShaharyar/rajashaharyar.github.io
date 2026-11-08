@@ -94,7 +94,9 @@ const sectionY = 'py-16 md:py-24';
     <SectionHeader id="help-heading" heading={help.heading} />
     <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6">
       {
-        site.offers.map((offer, i) => (
+        site.offers
+          .filter((offer) => offer.home)
+          .map((offer, i) => (
           <li>
             <OfferCard offer={offer} index={i} />
           </li>

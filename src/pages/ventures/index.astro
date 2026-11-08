@@ -1,11 +1,78 @@
 ---
+/**
+ * Ventures overview (/ventures): the same four cards as the homepage
+ * (VentureCard + site.json → ventures), a legend for the stage badges (each
+ * with the playbook question from home.json) and "Let's talk".
+ */
 import Base from '../../layouts/Base.astro';
-import StubPage from '../../components/StubPage.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import VentureCard from '../../components/VentureCard.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import home from '../../content/home.json';
+import { site } from '../../lib/site';
 
-const title = 'Ventures';
-const purpose = 'Four ventures, each with the stage it reached and one headline metric.';
+const { ventures, playbook } = home;
+const description = 'Raja Shaharyar Ali\'s ventures: AsaanBill (fintech), Tapit (SaaS), Ladenza Clothing (consumer) and his consulting and product roles, each with the stage it reached.';
 ---
 
-<Base title={title} description={purpose}>
-  <StubPage eyebrow="Ventures" title={title} purpose={purpose} phase="Phase 8 · Ventures" />
+<Base title={ventures.heading} description={description}>
+  <SubPageHeader section="/ventures/" overviewLabel="Overview" title={ventures.heading} intro={ventures.intro} />
+
+  <section class="wrap pt-10 md:pt-14" aria-labelledby="all-ventures-heading">
+    <SectionHeader id="all-ventures-heading" heading="All ventures" hidden />
+    <ul class="grid gap-4 md:grid-cols-2 md:gap-6">
+      {
+        site.ventures.map((v) => (
+          <li>
+            <VentureCard venture={v} linkLabel={ventures.cardLink} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap pt-12 md:pt-16" aria-labelledby="legend-heading">
+    <h2 id="legend-heading" class="text-xl font-semibold tracking-tight">Stage reached</h2>
+    <dl class="legend mt-5">
+      {
+        playbook.stages.map((s) => (
+          <div class="legend-item">
+            <dt>
+              <span class="badge">{s.name}</span>
+            </dt>
+            <dd>{s.question}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="wrap pt-12 pb-4 md:pt-16" aria-label="Get in touch">
+    <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>
+  </section>
 </Base>
+
+<style>
+  .legend {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (width >= 48rem) {
+    .legend {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+  .legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+  .legend-item dd {
+    color: var(--color-fg-muted);
+  }
+</style>

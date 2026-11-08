@@ -704,10 +704,18 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     grid-template-columns: minmax(0, 20rem);
     width: fit-content;
   }
-  /* An odd last tile spans the row on phones */
+  /* The last tile fills the rest of its row, so no empty cell shows */
   @media (width < 48rem) {
     .results-grid > :global(li:last-child:nth-child(odd)) {
       grid-column: 1 / -1;
+    }
+  }
+  @media (width >= 48rem) {
+    .results-grid > :global(li:last-child:nth-child(3n + 1)) {
+      grid-column: 1 / -1;
+    }
+    .results-grid > :global(li:last-child:nth-child(3n + 2)) {
+      grid-column: span 2;
     }
   }
 

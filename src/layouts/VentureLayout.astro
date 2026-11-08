@@ -1,0 +1,788 @@
+---
+/**
+ * The venture case-study template (AsaanBill, Tapit, Ladenza), fed by one MDX
+ * file's frontmatter (schema: src/content.config.ts). Blocks, in order, each
+ * with an anchor id and rendered only when it has data:
+ *   snapshot · problem · product-idea-fit · product-market-fit · scale ·
+ *   approvals · journey · terms · limitations · team · results · lessons ·
+ *   evidence · next
+ * A value that is still "TODO: …" counts as missing, so its block or field is
+ * simply left out: no empty headings, no placeholders.
+ * Desktop: a sticky "On this page" list of the rendered blocks.
+ */
+import Base from './Base.astro';
+import SubPageHeader from '../components/SubPageHeader.astro';
+import StageSpine from '../components/StageSpine.astro';
+import JourneyFlow from '../components/JourneyFlow.astro';
+import DataTable from '../components/DataTable.astro';
+import Counter from '../components/Counter.astro';
+import Gallery from '../components/Gallery.astro';
+import ArrowLink from '../components/ArrowLink.astro';
+import home from '../content/home.json';
+import { site, filled } from '../lib/site';
+import { getRecognition, photosOf } from '../lib/recognition';
+import { preSalesText, type CaseStudy } from '../lib/ventures';
+
+interface Props {
+  id: string;
+  data: CaseStudy;
+}
+
+const { id, data } = Astro.props;
+const card = site.ventures.find((v) => v.id === id);
+
+// External link only once its href is real (Ladenza's Instagram is still a TODO)
+const external = data.external && filled(data.external.href)?.startsWith('http') ? data.external : undefined;
+
+// Stages, with the homepage playbook's question for each
+const preSales = preSalesText(data.preSales);
+const stageBlocks = [
+  { id: 'product-idea-fit', name: 'Product-Idea Fit', stage: data.stages.ideaFit },
+  { id: 'product-market-fit', name: 'Product-Market Fit', stage: data.stages.marketFit },
+  { id: 'scale', name: 'Scale', stage: data.stages.scale },
+].map((b, i) => ({
+  ...b,
+  number: String(i + 1).padStart(2, '0'),
+  question: home.playbook.stages.find((s) => s.id === b.id)?.question,
+  text: preSales && b.stage.textWithPreSales ? b.stage.textWithPreSales.replace('{preSales}', preSales) : b.stage.text,
+  reached: data.snapshot.stage === b.name,
+}));
+
+const pain = filled(data.problem.pain);
+const journey = data.journey;
+const evidence = data.evidenceIds.map(getRecognition).flatMap((item) => photosOf(item).map((p) => ({ image: p.file, caption: p.caption })));
+const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
+
+const blocks = [
+  { id: 'snapshot', label: 'Snapshot', show: true },
+  { id: 'problem', label: 'The problem', show: Boolean(filled(data.problem.text)) },
+  ...stageBlocks.map((b) => ({ id: b.id, label: b.name, show: Boolean(filled(b.text)) })),
+  { id: 'approvals', label: 'Approvals', show: Boolean(data.spotlight) },
+  { id: 'journey', label: 'Journey', show: Boolean(journey) },
+  { id: 'terms', label: 'Terms', show: data.glossary.length > 0 },
+  { id: 'limitations', label: 'Limitations', show: data.limitations.length > 0 },
+  { id: 'team', label: 'Who did what', show: data.contributions.length > 0 },
+  { id: 'results', label: 'Results', show: Boolean(data.results) },
+  { id: 'lessons', label: 'Lessons', show: data.lessons.length > 0 },
+  { id: 'evidence', label: 'Evidence', show: evidence.length > 0 || data.press.length > 0 },
+  { id: 'next', label: 'Next', show: true },
+];
+const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
+---
+
+<Base title={data.title} description={data.summary}>
+  <SubPageHeader section="/ventures/" overviewLabel="Overview" title={data.title} intro={card?.line} />
+
+  <div class="wrap venture">
+    <nav class="toc" aria-label="On this page" data-toc>
+      <p class="toc-title">On this page</p>
+      <ol class="toc-list">
+        {
+          blocks
+            .filter((b) => b.show)
+            .map((b) => (
+              <li>
+                <a href={`#${b.id}`} class="toc-link" data-toc-link={b.id}>
+                  {b.label}
+                </a>
+              </li>
+            ))
+        }
+      </ol>
+    </nav>
+
+    <div class="venture-body">
+      <!-- Snapshot -->
+      <section id="snapshot" class="block snapshot" aria-labelledby="snapshot-heading" data-block>
+        <div class="snapshot-top">
+          <h2 id="snapshot-heading" class="snapshot-title">Snapshot</h2>
+          <p class="badge">Stage reached: {data.snapshot.stage}</p>
+        </div>
+        <dl class="snapshot-facts">
+          <div>
+            <dt>Role</dt>
+            <dd>{data.snapshot.role}</dd>
+          </div>
+          <div>
+            <dt>Dates</dt>
+            <dd>{data.snapshot.dates}</dd>
+          </div>
+          {
+            filled(data.snapshot.team) && (
+              <div>
+                <dt>Team</dt>
+                <dd>{data.snapshot.team}</dd>
+              </div>
+            )
+          }
+        </dl>
+        {
+          data.snapshot.metrics.length > 0 && (
+            <ul class="snapshot-metrics">
+              {data.snapshot.metrics.map((m) => (
+                <li>
+                  <span class="snapshot-value">{m.value}</span> <span class="snapshot-label">{m.label}</span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        <p class="snapshot-outcome">{data.snapshot.outcome}</p>
+        {
+          external && (
+            <a href={external.href} class="btn btn-secondary mt-6" target="_blank" rel="noopener">
+              {external.label} <span aria-hidden="true">↗</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          )
+        }
+      </section>
+
+      <!-- The problem and the market -->
+      {
+        shown.has('problem') && (
+          <section id="problem" class="block" aria-labelledby="problem-heading" data-block>
+            <h2 id="problem-heading" class="block-title">
+              The problem and the market
+            </h2>
+            {pain && <p class="block-lead">{pain}</p>}
+            <p class="block-text">{data.problem.text}</p>
+            {data.problem.source && (
+              <p class="block-source">
+                <a href={data.problem.source.href} class="link" target="_blank" rel="noopener">
+                  {data.problem.source.label}
+                  <span class="sr-only"> (opens in a new tab)</span> ↗
+                </a>
+              </p>
+            )}
+          </section>
+        )
+      }
+
+      <!-- The three stages, on the Idea → Fit → Scale spine -->
+      <div class="block stages">
+        <StageSpine reached={data.snapshot.stage} anchors={['product-idea-fit', 'product-market-fit', 'scale']} />
+        {
+          stageBlocks
+            .filter((b) => shown.has(b.id))
+            .map((b) => (
+              <section id={b.id} class="stage" data-reached={b.reached || undefined} aria-labelledby={`${b.id}-heading`} data-block>
+                <p class="stage-kicker">
+                  <span class="stage-num" aria-hidden="true">
+                    {b.number}
+                  </span>
+                  {b.question}
+                  {b.reached && <span class="badge">Stage reached</span>}
+                </p>
+                <h2 id={`${b.id}-heading`} class="block-title">
+                  {b.name}
+                </h2>
+                <p class="block-text">{b.text}</p>
+                {b.stage.bullets.length > 0 && (
+                  <ul class="block-bullets">
+                    {b.stage.bullets.map((x) => (
+                      <li>{x}</li>
+                    ))}
+                  </ul>
+                )}
+                {b.stage.source && (
+                  <p class="block-source">
+                    <a href={b.stage.source.href} class="link" target="_blank" rel="noopener">
+                      {b.stage.source.label}
+                      <span class="sr-only"> (opens in a new tab)</span> ↗
+                    </a>
+                  </p>
+                )}
+
+                {b.id === 'scale' && data.verticals.length > 0 && (
+                  <ul class="verticals" aria-label="Verticals entered">
+                    {data.verticals.map((v) => (
+                      <li class="vertical">
+                        <p class="vertical-name">{v.name}</p>
+                        <p class="vertical-text">{v.text}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {b.id === 'scale' && data.clients && (
+                  <p class="block-source">
+                    {data.clients.text}{' '}
+                    <a href={data.clients.source.href} class="link" target="_blank" rel="noopener">
+                      {data.clients.source.label}
+                      <span class="sr-only"> (opens in a new tab)</span> ↗
+                    </a>
+                  </p>
+                )}
+              </section>
+            ))
+        }
+      </div>
+
+      <!-- Payments and approvals spotlight (AsaanBill) -->
+      {
+        data.spotlight && (
+          <section id="approvals" class="block" aria-labelledby="approvals-heading" data-block>
+            <h2 id="approvals-heading" class="block-title">
+              {data.spotlight.heading}
+            </h2>
+            <p class="block-text">{data.spotlight.intro}</p>
+            <div class="mt-8">
+              <DataTable
+                caption={data.spotlight.heading}
+                columns={[
+                  { key: 'item', label: 'Item' },
+                  { key: 'when', label: 'When' },
+                  { key: 'means', label: 'What it means' },
+                  { key: 'source', label: 'Source' },
+                ]}
+                rows={data.spotlight.rows.map((r) => ({
+                  item: r.item,
+                  when: r.when,
+                  means: r.means,
+                  source: r.source ? { label: hostname(r.source), href: r.source } : undefined,
+                }))}
+              />
+            </div>
+          </section>
+        )
+      }
+
+      <!-- Customer journey -->
+      {
+        journey && (
+          <section id="journey" class="block" aria-labelledby="journey-heading" data-block>
+            <h2 id="journey-heading" class="block-title">
+              {journey.heading}
+            </h2>
+            <div class="mt-8">
+              <JourneyFlow label={journey.heading} steps={journey.steps} goesLiveWith={journey.goesLiveWith} caption={journey.caption} />
+            </div>
+          </section>
+        )
+      }
+
+      <!-- Terms used on this page -->
+      {
+        data.glossary.length > 0 && (
+          <section id="terms" class="block terms" aria-labelledby="terms-heading" data-block>
+            <h2 id="terms-heading" class="terms-title">
+              Terms used on this page
+            </h2>
+            <dl class="terms-list">
+              {data.glossary.map((g) => (
+                <div>
+                  <dt>{g.term}:</dt> <dd>{g.definition}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )
+      }
+
+      <!-- Limitations and solutions -->
+      {
+        data.limitations.length > 0 && (
+          <section id="limitations" class="block" aria-labelledby="limitations-heading" data-block>
+            <h2 id="limitations-heading" class="block-title">
+              Limitations and solutions
+            </h2>
+            <div class="mt-8">
+              <DataTable
+                caption="Limitations and solutions"
+                columns={[
+                  { key: 'constraint', label: 'Constraint' },
+                  { key: 'whyItMattered', label: 'Why it mattered' },
+                  { key: 'tried', label: 'What we tried' },
+                  { key: 'worked', label: 'What worked' },
+                  { key: 'result', label: 'Result' },
+                ]}
+                rows={data.limitations}
+              />
+            </div>
+          </section>
+        )
+      }
+
+      <!-- Who did what -->
+      {
+        data.contributions.length > 0 && (
+          <section id="team" class="block" aria-labelledby="team-heading" data-block>
+            <h2 id="team-heading" class="block-title">
+              Who did what
+            </h2>
+            <div class="mt-8">
+              <DataTable
+                caption="Who did what"
+                columns={[
+                  { key: 'area', label: 'Area' },
+                  { key: 'raja', label: 'Raja' },
+                  { key: 'others', label: 'Team and partners' },
+                ]}
+                rows={data.contributions}
+              />
+            </div>
+          </section>
+        )
+      }
+
+      <!-- Results -->
+      {
+        data.results && (
+          <section id="results" class="block" aria-labelledby="results-heading" data-block>
+            <h2 id="results-heading" class="block-title">
+              Results
+            </h2>
+            <ul class="results-grid mt-8" data-count={data.results.tiles.length}>
+              {data.results.tiles.map((t) => (
+                <Counter value={t.value} label={t.label} />
+              ))}
+            </ul>
+            {data.results.definition && <p class="block-source">{data.results.definition}</p>}
+          </section>
+        )
+      }
+
+      <!-- What I'd do differently -->
+      {
+        data.lessons.length > 0 && (
+          <section id="lessons" class="block" aria-labelledby="lessons-heading" data-block>
+            <h2 id="lessons-heading" class="block-title">
+              What I'd do differently
+            </h2>
+            <ul class="block-bullets">
+              {data.lessons.map((l) => (
+                <li>{l}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <!-- Evidence -->
+      {
+        shown.has('evidence') && (
+          <section id="evidence" class="block" aria-labelledby="evidence-heading" data-block>
+            <h2 id="evidence-heading" class="block-title">
+              Evidence
+            </h2>
+            {evidence.length > 0 && (
+              <div class="mt-8">
+                <Gallery
+                  label={`${data.title} evidence photos`}
+                  items={evidence}
+                  columns="grid-cols-2 md:grid-cols-3"
+                  sizes="(min-width: 1024px) 280px, (min-width: 768px) 33vw, 50vw"
+                />
+              </div>
+            )}
+            {data.press.length > 0 && (
+              <div class="press">
+                <h3 class="press-title">In the press</h3>
+                <ul class="mt-3 flex flex-col gap-2">
+                  {data.press.map((p) => (
+                    <li>
+                      <a href={p.href} class="link" target="_blank" rel="noopener">
+                        {p.label}
+                        <span class="sr-only"> (opens in a new tab)</span> ↗
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        )
+      }
+
+      <!-- Next venture and call to action -->
+      <section id="next" class="block next" aria-labelledby="next-heading" data-block>
+        <h2 id="next-heading" class="next-kicker">{data.next ? 'Next venture' : 'Next'}</h2>
+        <div class="next-row">
+          {
+            data.next && (
+              <ArrowLink href={data.next.href} class="next-link">
+                {data.next.label}
+              </ArrowLink>
+            )
+          }
+          <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .venture {
+    padding-top: 2.5rem;
+    padding-bottom: 1rem;
+  }
+  @media (width >= 64rem) {
+    .venture {
+      display: grid;
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: 4rem;
+      align-items: start;
+      padding-top: 3.5rem;
+    }
+  }
+  .venture-body {
+    min-width: 0;
+  }
+
+  /* On this page: desktop only */
+  .toc {
+    display: none;
+  }
+  @media (width >= 64rem) {
+    .toc {
+      position: sticky;
+      top: 6.5rem;
+      display: block;
+    }
+  }
+  .toc-title {
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    border-left: 1px solid var(--color-line);
+  }
+  .toc-link {
+    display: block;
+    margin-left: -1px;
+    padding: 0.3rem 0 0.3rem 1rem;
+    border-left: 2px solid transparent;
+    font-size: 0.875rem;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+  }
+  .toc-link:hover {
+    color: var(--color-fg);
+  }
+  .toc-link[aria-current='true'] {
+    color: var(--color-fg);
+    border-left-color: var(--color-accent);
+  }
+
+  /* Blocks */
+  .block {
+    padding-top: 3.5rem;
+    scroll-margin-top: 6rem;
+  }
+  @media (width >= 64rem) {
+    .block {
+      padding-top: 4.5rem;
+    }
+  }
+  .block-title {
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
+  }
+  .block-lead {
+    margin-top: 1rem;
+    max-width: var(--container-prose);
+    font-size: var(--text-lead);
+    color: var(--color-fg);
+  }
+  .block-text {
+    margin-top: 1rem;
+    max-width: var(--container-prose);
+    font-size: var(--text-lead);
+    line-height: 1.6;
+    color: var(--color-fg-muted);
+  }
+  .block-bullets {
+    margin-top: 1rem;
+    max-width: var(--container-prose);
+    padding-left: 1.125rem;
+    list-style: disc;
+    color: var(--color-fg-muted);
+  }
+  .block-source {
+    margin-top: 1.25rem;
+    max-width: var(--container-prose);
+    font-size: 0.9375rem;
+    color: var(--color-fg-muted);
+  }
+
+  /* Snapshot card */
+  .snapshot {
+    padding: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    scroll-margin-top: 6rem;
+  }
+  @media (width >= 48rem) {
+    .snapshot {
+      padding: 2.25rem;
+    }
+  }
+  .snapshot-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .snapshot-title {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .snapshot-facts {
+    display: grid;
+    gap: 0.75rem 2rem;
+    margin-top: 1.5rem;
+  }
+  @media (width >= 48rem) {
+    .snapshot-facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .snapshot-facts dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .snapshot-facts dd {
+    margin-top: 0.125rem;
+    color: var(--color-fg);
+  }
+  .snapshot-metrics {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-line);
+  }
+  @media (width >= 40rem) {
+    .snapshot-metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .snapshot-metrics li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  .snapshot-value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .snapshot-label {
+    color: var(--color-fg-muted);
+  }
+  .snapshot-outcome {
+    margin-top: 1.75rem;
+    max-width: 46rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--color-fg);
+  }
+
+  /* Stages */
+  .stages {
+    display: flex;
+    flex-direction: column;
+  }
+  .stage {
+    margin-top: 2.5rem;
+    padding: 1.5rem 0 0 1.5rem;
+    border-left: 2px solid var(--color-line);
+    scroll-margin-top: 6rem;
+  }
+  .stage[data-reached] {
+    border-left-color: var(--color-accent);
+  }
+  .stage-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-fg-muted);
+  }
+  .stage-num {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .verticals {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  @media (width >= 48rem) {
+    .verticals {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .vertical {
+    padding: 1.125rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .vertical-name {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .vertical-text {
+    margin-top: 0.375rem;
+    font-size: 0.9375rem;
+    color: var(--color-fg-muted);
+  }
+
+  /* Terms */
+  .terms {
+    max-width: var(--container-prose);
+  }
+  .terms-title {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .terms-list {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 1.125rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    color: var(--color-fg-muted);
+  }
+  .terms-list div > * {
+    display: inline;
+  }
+  .terms-list dt {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+
+  /* Results */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-line);
+  }
+  @media (width >= 48rem) {
+    .results-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .results-grid[data-count='1'] {
+    grid-template-columns: minmax(0, 20rem);
+    width: fit-content;
+  }
+  /* An odd last tile spans the row on phones */
+  @media (width < 48rem) {
+    .results-grid > :global(li:last-child:nth-child(odd)) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Evidence and press */
+  .press {
+    margin-top: 2rem;
+  }
+  .press-title {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* Next */
+  .next {
+    margin-top: 1rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-line);
+  }
+  @media (width >= 64rem) {
+    .next {
+      margin-top: 4.5rem;
+      padding-top: 2.5rem;
+    }
+  }
+  .next-kicker {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .next-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    margin-top: 0.75rem;
+  }
+  .next-row :global(.next-link) {
+    font-family: var(--font-display);
+    font-size: var(--text-display-md);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+</style>
+
+<script>
+  // "On this page": mark the block being read (the first one while at the top of the page).
+  const links = new Map(
+    Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')).map((a) => [a.dataset.tocLink, a]),
+  );
+  const first = links.keys().next().value;
+  let current = '';
+  const activate = (id: string | undefined) => {
+    if (!id || id === current || !links.has(id)) return;
+    current = id;
+    for (const [key, link] of links) {
+      if (key === id) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    }
+  };
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      activate(visible[0]?.target.id);
+    },
+    { rootMargin: '-20% 0px -70% 0px' },
+  );
+  document.querySelectorAll('[data-block]').forEach((block) => observer.observe(block));
+  const atTop = () => {
+    if (window.scrollY < 120) activate(first);
+  };
+  window.addEventListener('scroll', atTop, { passive: true });
+  atTop();
+</script>

@@ -1,11 +1,15 @@
 ---
 /**
  * One route for every venture: each MDX file in src/content/ventures becomes
- * /ventures/<file-name>/. Phase 5 swaps the stub for VentureLayout.
+ * /ventures/<file-name>/. Case studies (kind: case-study) render with
+ * VentureLayout; Consulting & product roles (kind: roles) gets its own role
+ * cards in Phase 8. A file still marked status: draft shows its stub until
+ * its phase ships (Phase 7: Tapit and Ladenza; Phase 8: Consulting).
  */
 import type { InferGetStaticPropsType } from 'astro';
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import VentureLayout from '../../layouts/VentureLayout.astro';
 import StubPage from '../../components/StubPage.astro';
 
 export async function getStaticPaths() {
@@ -16,16 +20,15 @@ export async function getStaticPaths() {
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { data } = entry;
 ---
 
-<Base title={entry.data.title} description={entry.data.summary}>
-  <StubPage
-    eyebrow="Ventures"
-    title={entry.data.title}
-    purpose={entry.data.summary}
-    phase={`Phase ${entry.data.phase} · Ventures`}
-  >
-    <Content />
-  </StubPage>
-</Base>
+{
+  data.status === 'published' && data.kind === 'case-study' ? (
+    <VentureLayout id={entry.id} data={data} />
+  ) : (
+    <Base title={data.title} description={data.summary}>
+      <StubPage eyebrow="Ventures" title={data.title} purpose={data.summary} phase={`Phase ${data.phase} · Ventures`} />
+    </Base>
+  )
+}

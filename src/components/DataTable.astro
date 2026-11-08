@@ -1,0 +1,161 @@
+---
+/**
+ * A table on desktop that becomes one card per row on phones (limitations,
+ * who did what, the approvals spotlight). Both are real HTML: the table has a
+ * caption and scoped headers; only one version is displayed at a time, so
+ * screen readers meet each row once.
+ */
+interface Cell {
+  label: string;
+  href?: string;
+}
+type Value = string | Cell | undefined;
+
+interface Props {
+  /** Accessible name (visually hidden caption) */
+  caption: string;
+  /** The first column is the row heading */
+  columns: { key: string; label: string }[];
+  rows: Record<string, Value>[];
+}
+
+const { caption, columns, rows } = Astro.props;
+const [first, ...rest] = columns;
+const isLink = (v: Value): v is Cell => typeof v === 'object' && v !== null && Boolean(v.href);
+const text = (v: Value) => (typeof v === 'string' ? v : (v?.label ?? ''));
+---
+
+<div class="dt">
+  <table class="dt-table">
+    <caption class="sr-only">{caption}</caption>
+    <thead>
+      <tr>{columns.map((c) => <th scope="col">{c.label}</th>)}</tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <th scope="row">{text(row[first.key])}</th>
+            {rest.map((c) => {
+              const v = row[c.key];
+              return (
+                <td>
+                  {isLink(v) ? (
+                    <a href={v.href} class="link" target="_blank" rel="noopener">
+                      {v.label}
+                      <span class="sr-only"> (opens in a new tab)</span> ↗
+                    </a>
+                  ) : (
+                    text(v)
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <ul class="dt-cards" aria-label={caption}>
+    {
+      rows.map((row) => (
+        <li class="dt-card">
+          <p class="dt-card-title">{text(row[first.key])}</p>
+          <dl>
+            {rest
+              .filter((c) => text(row[c.key]))
+              .map((c) => {
+                const v = row[c.key];
+                return (
+                  <div>
+                    <dt>{c.label}</dt>
+                    <dd>
+                      {isLink(v) ? (
+                        <a href={v.href} class="link" target="_blank" rel="noopener">
+                          {v.label}
+                          <span class="sr-only"> (opens in a new tab)</span> ↗
+                        </a>
+                      ) : (
+                        text(v)
+                      )}
+                    </dd>
+                  </div>
+                );
+              })}
+          </dl>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .dt-table {
+    display: none;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  .dt-table th,
+  .dt-table td {
+    padding: 0.875rem 1rem 0.875rem 0;
+    border-bottom: 1px solid var(--color-line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .dt-table thead th {
+    padding-top: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .dt-table tbody th {
+    width: 22%;
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .dt-table td {
+    color: var(--color-fg-muted);
+  }
+  .dt-cards {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .dt-card {
+    padding: 1.125rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .dt-card-title {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .dt-card dl {
+    display: grid;
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+  }
+  .dt-card dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .dt-card dd {
+    margin-top: 0.125rem;
+    color: var(--color-fg-muted);
+  }
+  @media (width >= 48rem) {
+    .dt-table {
+      display: table;
+    }
+    .dt-cards {
+      display: none;
+    }
+  }
+</style>

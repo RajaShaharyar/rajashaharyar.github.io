@@ -1,21 +1,111 @@
 import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { ventureStages } from './lib/stages';
+
+
+const link = z.object({ label: z.string(), href: z.string() });
+const metric = z.object({ value: z.string(), label: z.string() });
+/** Shared by every venture file */
+const base = {
+  title: z.string(),
+  /** Meta description */
+  summary: z.string(),
+  order: z.number().int(),
+  status: z.enum(['draft', 'published']),
+  phase: z.number().int(),
+  /** Missing facts, each starting with "TODO:". Kept in the data, never rendered. */
+  todo: z.array(z.string().startsWith('TODO:')).default([]),
+};
+const stage = z.object({
+  text: z.string(),
+  /** Wording used once a missing fact is filled in (Tapit's pre-sales amount) */
+  textWithPreSales: z.string().optional(),
+  bullets: z.array(z.string()).default([]),
+  source: link.optional(),
+});
 
 /**
- * Ventures: one MDX file per venture in src/content/ventures, all rendered
- * by one route (src/pages/ventures/[slug].astro). Adding a venture later is
- * a new file, not new code.
+ * A case study (AsaanBill, Tapit, Ladenza), rendered by VentureLayout. Every
+ * optional block renders only when it has data; a value that is still a
+ * "TODO: …" string is treated as missing.
+ * The discriminator is `kind`, not `layout`: MDX reads a frontmatter `layout`
+ * as the path of a layout component to wrap the file in.
+ */
+const caseStudy = z.object({
+  ...base,
+  kind: z.literal('case-study'),
+  snapshot: z.object({
+    role: z.string(),
+    dates: z.string(),
+    team: z.string().optional(),
+    stage: z.enum(ventureStages),
+    metrics: z.array(metric).max(3),
+    outcome: z.string(),
+  }),
+  /** "Visit … ↗" in the snapshot; an href that is still TODO is not shown */
+  external: link.optional(),
+  problem: z.object({
+    text: z.string(),
+    /** Wording for Raja to revise (published as is) */
+    draft: z.boolean().default(false),
+    source: link.optional(),
+    /** The customer pain in Raja's words, when it differs from the product description */
+    pain: z.string().optional(),
+  }),
+  stages: z.object({ ideaFit: stage, marketFit: stage, scale: stage }),
+  /** Tapit's prototype pre-sales; the amount shows only once the currency is filled in */
+  preSales: z.object({ amount: z.string(), currency: z.string() }).optional(),
+  verticals: z.array(z.object({ name: z.string(), text: z.string() })).default([]),
+  clients: z.object({ text: z.string(), source: link }).optional(),
+  spotlight: z
+    .object({
+      heading: z.string(),
+      intro: z.string(),
+      rows: z.array(z.object({ item: z.string(), when: z.string(), means: z.string(), source: z.url().optional() })).min(1),
+    })
+    .optional(),
+  journey: z
+    .object({
+      heading: z.string(),
+      steps: z.array(z.object({ label: z.string(), owner: z.string(), accent: z.boolean().default(false) })).min(1),
+      goesLiveWith: z.array(z.string()).default([]),
+      caption: z.string().optional(),
+      refundSteps: z.string().optional(),
+    })
+    .optional(),
+  glossary: z.array(z.object({ term: z.string(), definition: z.string() })).default([]),
+  limitations: z
+    .array(z.object({ constraint: z.string(), whyItMattered: z.string(), tried: z.string(), worked: z.string(), result: z.string() }))
+    .default([]),
+  contributions: z.array(z.object({ area: z.string(), raja: z.string(), others: z.string() })).default([]),
+  results: z.object({ tiles: z.array(metric).min(1), definition: z.string().optional() }).optional(),
+  lessons: z.array(z.string()).default([]),
+  /** recognition.json ids whose photos make the evidence gallery */
+  evidenceIds: z.array(z.string()).default([]),
+  press: z.array(link).default([]),
+  next: link.optional(),
+});
+
+/** A page of role cards (Consulting & product roles), built from cv.json. */
+const roles = z.object({
+  ...base,
+  kind: z.literal('roles'),
+  intro: z.string(),
+  /** cv.json experience ids, in display order; the first is the wide featured card */
+  roles: z.array(z.string()).min(1),
+  featuredNote: z.string().optional(),
+  cta: z.object({ heading: z.string(), link }),
+});
+
+/**
+ * Ventures: one MDX file per venture in src/content/ventures, all rendered by
+ * one route (src/pages/ventures/[slug].astro). Adding a venture later is a new
+ * file, not new code.
  */
 const ventures = defineCollection({
   loader: glob({ pattern: '*.mdx', base: './src/content/ventures' }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string(),
-    order: z.number().int(),
-    status: z.enum(['stub', 'draft', 'published']),
-    phase: z.number().int(),
-  }),
+  schema: z.discriminatedUnion('kind', [caseStudy, roles]),
 });
 
 /** Pages that can list a Recognition-log item (the log's "Shown on" column). */
@@ -47,6 +137,8 @@ const recognition = defineCollection({
     category: z.enum(['competition', 'award', 'programme', 'office', 'partnership', 'talk', 'event', 'represented', 'media', 'milestone', 'education']),
     /** null = not shown on the Recognition pages (a milestone or education row) */
     badge: z.enum(recognitionBadges).nullable(),
+    /** What the badge reads on cards and the carousel, when it differs from the counted badge (e.g. "1st prize" for a Winner) */
+    badgeLabel: text,
     title: z.string(),
     subtitle: text,
     organiser: text,

@@ -1,0 +1,124 @@
+---
+/**
+ * The growth spine shared with the homepage playbook:
+ * Idea → Product-Idea Fit → Product-Market Fit → Scale, marking the stage a
+ * venture reached. Each stage links to its block on the page.
+ */
+import { ventureStages, type VentureStage } from '../lib/stages';
+
+interface Props {
+  reached: VentureStage;
+  /** Anchor ids of the three stage blocks, in order */
+  anchors: [string, string, string];
+}
+
+const { reached, anchors } = Astro.props;
+const reachedIndex = ventureStages.indexOf(reached) + 1; // 0 is "Idea"
+const steps = [{ label: 'Idea', href: null }, ...ventureStages.map((label, i) => ({ label, href: `#${anchors[i]}` }))];
+---
+
+<ol class="spine" aria-label="Growth stages">
+  {
+    steps.map((step, i) => (
+      <li class="spine-step" data-state={i < reachedIndex ? 'done' : i === reachedIndex ? 'reached' : 'ahead'}>
+        <span class="spine-dot" aria-hidden="true" />
+        {step.href ? (
+          <a href={step.href} class="spine-label">
+            {step.label}
+          </a>
+        ) : (
+          <span class="spine-label">{step.label}</span>
+        )}
+        {i === reachedIndex && <span class="badge spine-badge">Stage reached</span>}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .spine {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (width >= 48rem) {
+    .spine {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+    }
+  }
+  .spine-step {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  @media (width >= 48rem) {
+    .spine-step {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: 1.5rem;
+    }
+    /* The line between dots */
+    .spine-step::before {
+      content: '';
+      position: absolute;
+      top: 0.4375rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--color-line);
+    }
+    .spine-step[data-state='done']::before {
+      background-color: var(--color-accent);
+    }
+    .spine-step:last-child::before {
+      right: auto;
+      width: 1rem;
+    }
+  }
+  .spine-dot {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--color-line-strong);
+    border-radius: 999px;
+    background-color: var(--color-bg);
+  }
+  @media (width >= 48rem) {
+    .spine-dot {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+  .spine-step[data-state='done'] .spine-dot,
+  .spine-step[data-state='reached'] .spine-dot {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+  }
+  .spine-step[data-state='reached'] .spine-dot {
+    box-shadow: 0 0 0 4px rgb(190 242 100 / 0.2);
+  }
+  .spine-label {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .spine-step[data-state='ahead'] .spine-label {
+    color: var(--color-fg-subtle);
+    font-weight: 500;
+  }
+  a.spine-label {
+    text-decoration: underline;
+    text-decoration-color: var(--color-line-strong);
+    text-underline-offset: 0.2em;
+  }
+  a.spine-label:hover {
+    text-decoration-color: var(--color-accent);
+  }
+  .spine-badge {
+    font-size: 0.75rem;
+  }
+</style>

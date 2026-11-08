@@ -69,6 +69,15 @@ A typo in an image path fails the build. Everything except the hero image is laz
 - Every photo group is a `Gallery`: a lazy-loaded grid whose photos open in an accessible lightbox
   (Enter or click opens, ←/→ step, Tab stays inside, Escape closes, focus returns to the photo).
 
+## Venture case studies
+
+Each venture is one file in `src/content/ventures/`: its frontmatter holds the whole case study (snapshot,
+problem, the three stages, approvals spotlight, journey, glossary, limitations, who did what, results, lessons,
+evidence ids, press, next), validated by the schema in `src/content.config.ts`. `src/layouts/VentureLayout.astro`
+renders every case study the same way and leaves out any block with no data, so adding a limitation or a lesson
+later is a data edit. Case-study facts live only there (the CV reads Tapit's pre-sales from `tapit.mdx`).
+A file marked `status: draft` shows a stub until it is published.
+
 ## Recognition pages
 
 `/recognition` and its four sub-pages are built from `recognition.json` only. Counters are computed from each

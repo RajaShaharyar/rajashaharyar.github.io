@@ -37,8 +37,8 @@
         "question": "Is the problem worth solving, and for whom?",
         "proof": "Led AsaanBill's 0→1 launch and pre-sold Tapit on a prototype.",
         "links": [
-          { "label": "AsaanBill", "href": "/ventures/asaanbill/" },
-          { "label": "Tapit", "href": "/ventures/tapit/" }
+          { "label": "AsaanBill", "href": "/ventures/asaanbill/#product-idea-fit" },
+          { "label": "Tapit", "href": "/ventures/tapit/#product-idea-fit" }
         ]
       },
       {
@@ -47,8 +47,8 @@
         "question": "Will customers pay and come back?",
         "proof": "Onboarded AsaanBill's first 50 business customers; took Tapit to 3,000+ customers.",
         "links": [
-          { "label": "AsaanBill", "href": "/ventures/asaanbill/" },
-          { "label": "Tapit", "href": "/ventures/tapit/" }
+          { "label": "AsaanBill", "href": "/ventures/asaanbill/#product-market-fit" },
+          { "label": "Tapit", "href": "/ventures/tapit/#product-market-fit" }
         ]
       },
       {
@@ -56,7 +56,7 @@
         "name": "Scale",
         "question": "Can it grow without breaking, and legally?",
         "proof": "15+ ERP partnerships, the Raast P2M go-to-market and $1.8M+ in monthly volume.",
-        "links": [{ "label": "AsaanBill", "href": "/ventures/asaanbill/" }]
+        "links": [{ "label": "AsaanBill", "href": "/ventures/asaanbill/#scale" }]
       }
     ]
   },
@@ -79,7 +79,7 @@
         "text": "Every merchant integration passes a State Bank review before it goes live."
       }
     ],
-    "link": { "label": "See the AsaanBill story", "href": "/ventures/asaanbill/" }
+    "link": { "label": "See the AsaanBill story", "href": "/ventures/asaanbill/#approvals" }
   },
   "recognition": {
     "heading": "Recognition",

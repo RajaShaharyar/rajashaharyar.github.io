@@ -1,5 +1,5 @@
 import cvJson from '../content/cv.json';
-import { site, filled } from './site';
+import { filled } from './site';
 import { formatRange, isIsoDate } from './dates';
 
 /**
@@ -148,19 +148,11 @@ export function programmeDates(p: Programme): string | null {
   return filled(p.year) ?? null;
 }
 
-/** Tapit's pre-sales as "PKR 40K" once the currency is filled in, else undefined. */
-function preSales(): string | undefined {
-  const facts = site.ventures.find((v) => v.id === 'tapit')?.facts as
-    | { preSales?: { amount?: string; currency?: string } }
-    | undefined;
-  const currency = filled(facts?.preSales?.currency);
-  const amount = filled(facts?.preSales?.amount);
-  return currency && amount ? `${currency} ${amount}` : undefined;
-}
-
-/** The text a bullet shows right now. */
-export function bulletText(bullet: Bullet): string {
+/**
+ * The text a bullet shows right now. `preSales` is Tapit's pre-sales amount
+ * ("PKR 40K") once its currency is known (see tapitPreSales in ./ventures).
+ */
+export function bulletText(bullet: Bullet, preSales?: string): string {
   if (typeof bullet === 'string') return bullet;
-  const amount = preSales();
-  return amount ? bullet.withPreSales.replace('{preSales}', amount) : bullet.text;
+  return preSales ? bullet.withPreSales.replace('{preSales}', preSales) : bullet.text;
 }

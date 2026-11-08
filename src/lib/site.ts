@@ -7,22 +7,17 @@ export interface NavLink {
   children?: NavLink[];
 }
 
+/** A venture card (homepage and /ventures). The case study itself lives in src/content/ventures/<id>.mdx. */
 export interface Venture {
   id: string;
   name: string;
-  role?: string;
   href: string;
-  external: string;
   footer: boolean;
   meta: string;
   badge?: string;
   metric?: { value: string; label: string };
   line: string;
   image?: { src: string; fit: 'cover' | 'contain'; position?: string };
-  /** Facts for the venture page (Raja's answers); not shown on the homepage. */
-  facts?: Record<string, unknown>;
-  /** cv.json experience ids (Consulting & product roles). */
-  roles?: string[];
 }
 
 export interface Stat {

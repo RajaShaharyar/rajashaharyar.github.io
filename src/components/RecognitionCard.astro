@@ -9,7 +9,7 @@
 import Gallery from './Gallery.astro';
 import ArrowLink from './ArrowLink.astro';
 import { getImage } from '../lib/images';
-import { photosOf, type RecognitionItem } from '../lib/recognition';
+import { badgeText, photosOf, type RecognitionItem } from '../lib/recognition';
 import { filled } from '../lib/site';
 
 interface Props {
@@ -52,7 +52,7 @@ const links = item.links ?? [];
     )
   }
   <div class="rcard-body">
-    {item.badge && <p class="badge w-fit">{item.badge}</p>}
+    {item.badge && <p class="badge w-fit">{badgeText(item)}</p>}
     <h3 class="rcard-title">{heading}</h3>
     {subheading && <p class="rcard-sub">{subheading}</p>}
     {

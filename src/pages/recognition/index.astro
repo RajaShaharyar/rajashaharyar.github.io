@@ -9,7 +9,7 @@ import SubPageHeader from '../../components/SubPageHeader.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Counter from '../../components/Counter.astro';
 import Media from '../../components/Media.astro';
-import { highlights, photosOf } from '../../lib/recognition';
+import { badgeText, highlights, photosOf } from '../../lib/recognition';
 import { badgeCounter, pageFor, recognitionCopy, recognitionMenuEntry } from '../../lib/recognition-pages';
 
 const { overview } = recognitionCopy;
@@ -38,7 +38,7 @@ const sectionY = 'py-16 md:py-20';
           <li class="highlight">
             {c.photo && <Media image={c.photo.file} fit="contain" sizes="(min-width: 768px) 380px, 100vw" class="aspect-[4/3] border-b border-line" />}
             <div class="flex flex-1 flex-col gap-2 p-5 md:p-6">
-              {c.badge && <p class="badge w-fit">{c.badge}</p>}
+              {c.badge && <p class="badge w-fit">{badgeText(c)}</p>}
               <h3 class="mt-1 text-2xl leading-tight">
                 <a href={c.href} class="highlight-link">
                   {c.title}

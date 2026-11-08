@@ -160,7 +160,7 @@
               {
                 "text": "Pre-sold the prototype at the idea stage, before it was built.",
                 "withPreSales": "Pre-sold the prototype at the idea stage, raising {preSales} before it was built.",
-                "_note": "The amount appears only once site.json → ventures[tapit].facts.preSales.currency is filled in (as a code, e.g. PKR or USD)."
+                "_note": "The amount appears only once src/content/ventures/tapit.mdx → preSales.currency is filled in (as a code, e.g. PKR or USD)."
               },
               "Grew to 3,000+ customers nationwide in 2 years, mostly through B2B sales to corporates.",
               "Secured PKR 1M+ in grants and won 4 startup competitions: Zindigi Prize, AIESEC Sparkathon, Startup Pitching League '24 and ICSTSI.",

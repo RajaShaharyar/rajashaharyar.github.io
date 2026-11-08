@@ -1,9 +1,117 @@
 ---
+kind: case-study
 title: AsaanBill
-summary: Regulated fintech, from the 0→1 launch on 1Bill through product-market fit to Raast approval and $1.8M+ in monthly transaction volume.
+summary: "How Raja Shaharyar Ali took AsaanBill from a 0→1 launch on 1Bill to Raast approval and $1.8M+ in monthly transaction volume: the approvals, the merchant journey and who did what."
 order: 1
-status: stub
+status: published
 phase: 6
+
+snapshot:
+  role: "Product Owner (Growth), then Manager, Product & Growth"
+  dates: "Nov 2024 – present"
+  team: "25+ across sales, technology and operations"
+  stage: Scale
+  metrics:
+    - { value: "$1.8M+", label: "monthly transaction volume" }
+    - { value: "15+", label: "ERP partnerships" }
+    - { value: "50", label: "first business customers" }
+  outcome: "Took AsaanBill from a 0→1 launch on 1Bill to Raast approval and $1.8M+ in monthly transaction volume."
+external: { label: "Visit AsaanBill", href: "https://evampsaanga.com/asaan-bill/" }
+
+problem:
+  draft: true
+  text: "Pakistani businesses get paid through many channels: banking apps, mobile wallets and bank branches. AsaanBill sends a branded invoice by email or mobile and collects through all of them: bank transfer, mobile wallet, 1LINK instant payments including Raast P2M, and 1LINK Bill Payment inside banking apps. Confirmations, reminders, reporting and reconciliation are built in, and billers pay a flat fee per transaction, from PKR 50 to PKR 1,500."
+  source: { label: "Product page", href: "https://evampsaanga.com/asaan-bill/" }
+
+stages:
+  ideaFit:
+    text: "I led AsaanBill's 0→1 launch in November 2024, on the 1Bill aggregator approval through 1LINK. I defined the ideal customer profiles and ran the brand campaigns."
+  marketFit:
+    text: "I onboarded the first 50 business customers and ran the loop that turned their feedback into feature priorities."
+  scale:
+    text: "Since October 2025, as Manager, Product & Growth, I've led a 25+ team across sales, technology and operations. We built 6 strategic partnerships across Karachi, Lahore and Islamabad, opened the restaurant vertical through 15+ ERP partnerships, drove the Raast P2M go-to-market and received Raast approval through the State Bank in June 2026. AsaanBill has scaled to $1.8M+ in monthly transaction volume."
+
+verticals:
+  - { name: "Education", text: "MOU with The Tuitionist, NIC Islamabad" }
+  - { name: "Restaurants", text: "15+ ERP partnerships" }
+  - { name: "AI chat payments", text: "MOU with Najoomi Technologies, ITCN Asia Lahore" }
+clients:
+  text: "Clients named on the product page include RMI Peshawar, FF Steel, PakVista Technologies, Dupilex F-6 and Motorway Express Peshawar."
+  source: { label: "Product page", href: "https://evampsaanga.com/asaan-bill/" }
+
+spotlight:
+  heading: "Payments and approvals"
+  intro: "Payments in Pakistan are regulated and gated. These are the approvals and rails AsaanBill runs on."
+  rows:
+    - item: "1Bill aggregator approval, through 1LINK"
+      when: "Nov 2024"
+      means: "Merchants' bills go onto 1LINK's 1BILL rails, payable in banking apps and at bank branches."
+      source: "https://1link.net.pk/products-services/bill-payment-service"
+    - item: "Raast approval, through the State Bank"
+      when: "Jun 2026"
+      means: "Raast onboarding runs from application, NDA and participant agreement through technical integration to a conditional pilot before commercial go-live."
+      source: "https://propakistani.pk/2025/02/23/sbp-rolls-out-raast-participation-criteria-to-expand-digital-payments-network/"
+    - item: "Three payment types"
+      when: "Live"
+      means: "PSID-based payments, QR payments and Request to Pay. Raast P2M supports QR codes and Request to Pay."
+      source: "https://www.sbp.org.pk/press/2023/Pr-06-Dec-2023.pdf"
+    - item: "SBP-reviewed merchant onboarding"
+      when: "Every merchant"
+      means: "Each integration passes a State Bank review before it goes live."
+    - item: "Raast P2M go-to-market"
+      when: "Oct 2025 – present"
+      means: "The State Bank directed banks, microfinance banks and e-money institutions to fully integrate Raast P2M by 31 March 2025."
+      source: "https://profit.pakistantoday.com.pk/2024/11/29/sbp-pushes-for-raast-p2m-integration-across-financial-institutions"
+
+journey:
+  heading: "How a merchant goes live"
+  steps:
+    - { label: "Close the deal", owner: "AsaanBill" }
+    - { label: "Gather requirements", owner: "AsaanBill" }
+    - { label: "SBP review", owner: "State Bank", accent: true }
+    - { label: "Integrate", owner: "AsaanBill" }
+    - { label: "Monitor", owner: "AsaanBill" }
+  goesLiveWith: ["PSID-based payments", "QR payments", "Request to Pay"]
+  caption: "The SBP review is the step an ordinary SaaS onboarding doesn't have."
+  refundSteps: "TODO: refund steps (not described yet)"
+
+glossary:
+  - { term: "1LINK", definition: "Pakistan's interbank payment network." }
+  - { term: "Raast", definition: "the State Bank of Pakistan's instant payment system. P2M means person-to-merchant." }
+  - { term: "PSID", definition: "a payment slip ID that a customer pays against from their banking app." }
+  - { term: "Request to Pay", definition: "the merchant sends a payment request and the customer approves it." }
+
+limitations: []
+contributions:
+  - area: "Launch and positioning"
+    raja: "Led the 0→1 launch, defined the ideal customer profiles, ran the brand campaigns"
+    others: "Evamp & Saanga's product and technology teams"
+  - area: "Customers and partners"
+    raja: "Onboarded the first 50 business customers; built 6 strategic and 15+ ERP partnerships"
+    others: "ERP partners; Najoomi Technologies and The Tuitionist (MOUs)"
+  - area: "Approvals and team"
+    raja: "Leads product and growth and a 25+ team across sales, technology and operations"
+    others: "1LINK (1Bill), the State Bank (Raast approval and merchant reviews)"
+
+results:
+  tiles:
+    - { value: "$1.8M+", label: "monthly transaction volume" }
+    - { value: "50", label: "first business customers" }
+    - { value: "15+", label: "ERP partnerships" }
+    - { value: "6", label: "strategic partnerships" }
+    - { value: "2", label: "payment approvals (1Bill, Raast)" }
+    - { value: "25+", label: "team led" }
+  definition: "Monthly transaction volume: the value of payments processed through AsaanBill in a month."
+lessons: []
+
+evidenceIds: [mou-asaanbill-najoomi, mou-asaanbill-tuitionist, podcast-asaanbill, milestone-asaanbill-start]
+next: { label: "Tapit", href: "/ventures/tapit/" }
+
+todo:
+  - "TODO: limitations and solutions (constraint, why it mattered, what we tried, what worked, result); likely rows: the SBP review, the bank and 1LINK integrations"
+  - "TODO: what I'd do differently (three honest bullets)"
+  - "TODO: refund steps for the journey"
+  - "TODO: monthly volume by month, for a chart (optional)"
 ---
 
-{/* Phase 6: case-study template plus the payments and approvals spotlight and the merchant onboarding journey (facts in site.json → ventures[asaanbill].facts). */}
+{/* The case study lives in the frontmatter above and is rendered by src/layouts/VentureLayout.astro. */}

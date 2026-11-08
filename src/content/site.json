@@ -1,5 +1,5 @@
 {
-  "_rules": "Site-wide details. Contact details come from the CV. Never add date of birth, gender or home address. Missing data is a string starting with TODO: it stays in the data and the field is hidden on the live site. toConfirm lists facts still to settle. Raja's answers (6 Nov 2026) are applied throughout.",
+  "_rules": "Site-wide details. Contact details come from the CV. Never add date of birth, gender or home address. Missing data is a string starting with TODO: it stays in the data and the field is hidden on the live site. toConfirm lists facts still to settle. Raja's answers (6 Nov 2026) are applied throughout. Case-study facts (approvals, payment types, onboarding steps, pre-sales, external links) live in src/content/ventures/*.mdx, not here.",
   "name": "Raja Shaharyar Ali",
   "shortName": "Raja Shaharyar",
   "title": "Manager, Product & Growth",
@@ -86,11 +86,7 @@
           "description": "Degree, courses and the final-year project prize"
         },
         { "label": "Skills & tools", "href": "/about/skills/", "description": "The grouped toolkit and how I work" },
-        {
-          "label": "Beyond work",
-          "href": "/about/beyond-work/",
-          "description": "NGO Mustahiq and the K2 base camp trek"
-        }
+        { "label": "Beyond work", "href": "/about/beyond-work/", "description": "NGO Mustahiq and the K2 trek" }
       ]
     },
     { "label": "CV", "href": "/cv/" }
@@ -100,83 +96,41 @@
       "id": "asaanbill",
       "name": "AsaanBill",
       "href": "/ventures/asaanbill/",
-      "external": "https://evampsaanga.com/asaan-bill/",
       "footer": true,
       "meta": "Fintech · Evamp & Saanga · 2024–present",
       "badge": "Scale",
       "metric": { "value": "$1.8M+", "label": "monthly volume" },
       "line": "Invoicing and payment collection for Pakistani businesses, approved on 1Bill and Raast.",
-      "image": { "src": "recognition/mou-asaanbill-najoomi.webp", "fit": "contain" },
-      "facts": {
-        "_note": "Raja's answers (6 Nov 2026). Figures and client names are cleared for publishing. Feeds the AsaanBill page (Phase 6).",
-        "publishingCleared": true,
-        "approvals": [
-          { "name": "1Bill aggregator approval", "via": "1LINK", "date": "November 2024", "dateISO": "2024-11" },
-          { "name": "Raast approval", "via": "State Bank of Pakistan (SBP)", "date": "June 2026", "dateISO": "2026-06" }
-        ],
-        "paymentTypes": ["PSID-based payments", "QR payments", "Request to Pay"],
-        "onboardingSteps": ["Close the deal", "Gather requirements", "SBP review", "Integrate", "Monitor"],
-        "_onboardingNote": "Refund steps were not described, so they are left out unless Raja adds them."
-      }
+      "image": { "src": "recognition/mou-asaanbill-najoomi.webp", "fit": "contain" }
     },
     {
       "id": "tapit",
       "name": "Tapit",
-      "role": "Co-Founder & Head of Growth",
       "href": "/ventures/tapit/",
-      "external": "https://www.thetapitcard.com/",
       "footer": true,
       "meta": "Co-Founder & Head of Growth · 2022–present",
       "badge": "Product-Market Fit",
       "metric": { "value": "3,000+", "label": "customers" },
       "line": "A digital contact card, pre-sold on a prototype and sold mostly to corporates.",
-      "image": { "src": "recognition/k2prenuer-youngest-startup.webp", "fit": "cover", "position": "50% 50%" },
-      "facts": {
-        "_note": "Raja's answers (6 Nov 2026). The CV summary's \"AdTech startup\" is TapitCard. Feeds the Tapit page (Phase 7).",
-        "company": "TapitCard (Pvt) Ltd",
-        "start": "2022-01-10",
-        "product": "A digital contact card that shares contact and business details with one tap.",
-        "preSales": {
-          "amount": "40K",
-          "currency": "TODO: currency of the 40K in pre-sales",
-          "text": "A prototype raised 40K in pre-sales at the idea stage."
-        },
-        "sales": "Most sales were B2B, to corporates.",
-        "team": [{ "name": "Haziq Farooq", "role": "CTO", "coFounder": true }]
-      }
+      "image": { "src": "recognition/k2prenuer-youngest-startup.webp", "fit": "cover", "position": "50% 50%" }
     },
     {
       "id": "ladenza",
       "name": "Ladenza Clothing",
-      "role": "Founder",
       "href": "/ventures/ladenza/",
-      "external": "",
-      "todo": "TODO: Ladenza Clothing Instagram link",
       "footer": true,
       "meta": "Founder · Consumer",
       "badge": "Product-Market Fit",
       "metric": { "value": "PKR 1 Cr", "label": "in sales" },
-      "line": "An online thrift store for branded clothes, started during COVID and sold through hostel dorms.",
-      "facts": {
-        "_note": "Raja's answers (6 Nov 2026). Role set as Founder; Raja can revise it. Feeds the Ladenza page (Phase 7).",
-        "what": "An online thrift store",
-        "started": "During COVID",
-        "problem": "People wanted branded clothes at good prices but worried about hygiene and convenience when buying second-hand.",
-        "channel": "Sold through hostel dorms",
-        "sales": "PKR 1 Cr",
-        "instagram": "TODO: Instagram link"
-      }
+      "line": "An online thrift store for branded clothes, started during COVID and sold through hostel dorms."
     },
     {
       "id": "consulting",
       "name": "Consulting & product roles",
       "href": "/ventures/consulting/",
-      "external": "",
       "footer": false,
       "meta": "HOMS · Dressup · Gameotivity · SonicEngine AI",
-      "line": "Growth and product roles across hostel tech, marketplaces, web3 and game tech.",
-      "roles": ["homs-inc", "dressup", "gameotivity", "sonicengine-ai"],
-      "_rolesNote": "cv.json experience ids, one card each on /ventures/consulting (Phase 8)."
+      "line": "Growth and product roles across hostel tech, marketplaces, web3 and game tech."
     }
   ],
   "stats": [

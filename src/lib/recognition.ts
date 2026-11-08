@@ -20,6 +20,8 @@ export interface RecognitionItem {
   id: string;
   category: string;
   badge: Badge | null;
+  /** Display text for the badge when it differs from the counted badge, e.g. "1st prize" */
+  badgeLabel?: string;
   title: string;
   subtitle?: string;
   organiser?: string;
@@ -71,6 +73,11 @@ export function shownOn(page: string, badges?: Badge[]): RecognitionItem[] {
   return recognition
     .filter((r) => r.shownOn.includes(page) && (!badges || (r.badge !== null && badges.includes(r.badge))))
     .sort(byOrder);
+}
+
+/** The text a badge shows: its display label if set, else the badge itself. */
+export function badgeText(item: Pick<RecognitionItem, 'badge' | 'badgeLabel'>): string | null {
+  return item.badgeLabel ?? item.badge;
 }
 
 /** How many log items carry a badge (each item counts once). */

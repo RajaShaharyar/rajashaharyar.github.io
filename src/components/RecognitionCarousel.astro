@@ -11,7 +11,7 @@
  * a pause/play button, and stops for good on any manual navigation or keyboard focus.
  */
 import Media from './Media.astro';
-import { getRecognition, photosOf, shownOn } from '../lib/recognition';
+import { badgeText, getRecognition, photosOf, shownOn } from '../lib/recognition';
 
 interface Props {
   label: string;
@@ -32,7 +32,7 @@ const ordered = [
 const slides = ordered.flatMap((r) => {
   const photo = photosOf(r)[0];
   if (!photo || !r.badge) return [];
-  return [{ id: r.id, image: photo.file, badge: r.badge, caption: r.title, date: r.date, dateISO: r.dateISO }];
+  return [{ id: r.id, image: photo.file, badge: badgeText(r), caption: r.title, date: r.date, dateISO: r.dateISO }];
 });
 
 const trackId = 'recognition-track';

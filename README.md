@@ -168,6 +168,11 @@ work on the long pages. They always render for print, and any anchor jump (`:tar
 so it lands exactly. Note for tooling: a full-page screenshot only paints what is on screen, so scripts that
 screenshot or audit whole pages first add `* { content-visibility: visible !important }` (as `check:a11y` does).
 
+The fonts are preloaded. If they still arrive after the first paint (a slow first visit), text is first drawn in
+"Inter Fallback" / "Bricolage Fallback" (top of `global.css`): Arial with `size-adjust` and ascent/descent
+overrides measured against the site's own text, so the swap moves nothing (CLS stayed at 0.0005 or less
+with the fonts delayed 1.2 s, against up to 0.15 before). Re-measure those values if the fonts or type scale change.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` builds with `withastro/action` and deploys with `actions/deploy-pages` on every push to `main` (or run it manually from the Actions tab). Pages is set to build from GitHub Actions.

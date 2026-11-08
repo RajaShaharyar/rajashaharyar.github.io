@@ -26,7 +26,7 @@
   },
 
   "competitions": {
-    "description": "Raja Shaharyar Ali's competition wins, top-3 finish and awards, with photos: Zindigi Prize, Startup Pitching League, AIESEC Sparkathon, ICSTSI, PGDC, LMKT Startup Showdown.",
+    "description": "Raja Shaharyar Ali's competition wins, top-3 finish and awards, with photos: Zindigi Prize, Startup Pitching League, AIESEC Sparkathon, ICSTSI and PGDC.",
     "sections": [
       { "id": "wins", "heading": "Wins", "badges": ["Winner"] },
       { "id": "top-3", "heading": "Top 3", "badges": ["Top 3"] },

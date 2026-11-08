@@ -1,0 +1,60 @@
+/**
+ * Accessibility check: axe-core on every built page at 390px and 1280px.
+ *
+ *   npm run build && npm run check:a11y
+ *
+ * Serves dist/ with Astro's preview server, opens each page in Playwright's
+ * Chromium, scrolls through it (so lazy images and scroll reveals settle),
+ * then runs axe (WCAG 2.x A/AA rules plus best practices). Exits 1 on any
+ * violation. Redirect pages are skipped.
+ */
+import { preview } from 'astro';
+import { chromium } from 'playwright';
+import { AxeBuilder } from '@axe-core/playwright';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+
+const PORT = 4330;
+const WIDTHS = [390, 1280];
+
+const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
+const pages = walk('dist')
+  .filter((f) => f.endsWith('.html') && !/http-equiv="refresh"/.test(readFileSync(f, 'utf8')))
+  .map((f) => '/' + relative('dist', f).split(sep).join('/').replace(/index\.html$/, ''))
+  .sort();
+
+const server = await preview({ root: '.', logLevel: 'error', server: { host: '127.0.0.1', port: PORT } });
+const browser = await chromium.launch();
+let violations = 0;
+try {
+  for (const width of WIDTHS) {
+    const context = await browser.newContext({ viewport: { width, height: 900 } });
+    for (const path of pages) {
+      const page = await context.newPage();
+      await page.goto(`http://127.0.0.1:${PORT}${path}`, { waitUntil: 'networkidle' });
+      await page.evaluate(async () => {
+        for (let y = 0; y < document.documentElement.scrollHeight; y += 500) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 60));
+        }
+        window.scrollTo(0, 0);
+      });
+      await page.waitForTimeout(700);
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
+        .analyze();
+      for (const v of results.violations) {
+        violations += v.nodes.length;
+        console.log(`✗ ${width}px ${path}  [${v.id}] ${v.help} (${v.nodes.length})`);
+        for (const n of v.nodes.slice(0, 3)) console.log(`    ${n.target.join(' ')}`);
+      }
+      await page.close();
+    }
+    await context.close();
+  }
+} finally {
+  await browser.close();
+  await server.stop();
+}
+console.log(`\n${pages.length} pages × ${WIDTHS.length} widths checked with axe: ${violations ? `${violations} violation(s)` : 'no violations'}`);
+process.exit(violations ? 1 : 0);

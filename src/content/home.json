@@ -8,7 +8,7 @@
     "image": "about/2024-airtech.webp",
     "imagePosition": "22% 35%",
     "primary": { "label": "Let's talk", "href": "/contact/" },
-    "secondary": { "label": "See the work", "href": "#ventures" },
+    "secondary": { "label": "See the work", "href": "#products" },
     "cvButton": { "label": "Download CV", "_note": "Shown only once public/cv.pdf exists." },
     "_imageNote": "Interim until a headshot exists: Raja at the podium, AirTech'24 closing ceremony (no watermark). The NUML photo carries the photographer's credit, so it isn't used here."
   },
@@ -26,6 +26,15 @@
       "Founder Institute",
       "NUST"
     ]
+  },
+  "products": {
+    "heading": "Five products, one method",
+    "intro": "From a marketplace and a text-to-game engine to regulated payments: what each product does and what I did there.",
+    "draft": true,
+    "_draftNote": "Heading and intro are new wording for Raja to revise.",
+    "order": ["dressup", "asaanbill", "sonicengine-ai", "tapit", "ladenza"],
+    "_orderNote": "Reorder the products by reordering these ids (site.json → ventures ids). Name, role, line and metric come from site.json → ventures; each id needs a drawing in src/components/ProductArt.astro.",
+    "storyLink": "Read the story"
   },
   "playbook": {
     "heading": "How I grow products",
@@ -75,26 +84,6 @@
       "_note": "Shown at /ventures/#yours-next and at the end of /ventures/other/. The line is draft wording for Raja to revise."
     }
   },
-  "hardWins": {
-    "heading": "Things that aren't easy",
-    "intro": "Payments in Pakistan are regulated, gated and slow to open. These are the gates AsaanBill got through.",
-    "items": [
-      {
-        "title": "1Bill aggregator approval",
-        "text": "Through 1LINK, November 2024. Merchants' bills become payable in banking apps and at bank branches."
-      },
-      {
-        "title": "Raast approval",
-        "text": "Through the State Bank, June 2026. Raast onboarding runs from application and integration through a pilot before going live."
-      },
-      { "title": "Three ways to get paid", "text": "PSID-based payments, QR payments and Request to Pay." },
-      {
-        "title": "SBP-reviewed onboarding",
-        "text": "Every merchant integration passes a State Bank review before it goes live."
-      }
-    ],
-    "link": { "label": "See the AsaanBill story", "href": "/ventures/asaanbill/#approvals" }
-  },
   "recognition": {
     "heading": "Recognition",
     "line": "5 competitions won · Top 3, LMKT Startup Showdown 2023 · K2prenuer, top 10 of 3,000+ applicants",
@@ -110,7 +99,10 @@
       "award-entrepreneur-of-the-year-2024",
       "award-major-contributor"
     ],
-    "link": { "label": "All recognition", "href": "/recognition/" }
+    "links": [
+      { "label": "All recognition", "href": "/recognition/" },
+      { "label": "Speaking & events", "href": "/recognition/speaking-events/" }
+    ]
   },
   "speaking": {
     "heading": "On stage",

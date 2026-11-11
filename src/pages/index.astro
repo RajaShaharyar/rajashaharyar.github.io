@@ -1,6 +1,9 @@
 ---
 /**
- * Homepage: the blueprint's ten sections, in order.
+ * Homepage, in the order of the sitemap (Consultation Website.pdf):
+ * hero · quick proof (#proof) · credibility strip (#credibility) · products
+ * (#products) · methodologies (#playbook) · how I can help (#help) ·
+ * recognition (#recognition) · testimonials (#testimonials) · closing CTA.
  * Copy: src/content/home.json · numbers, ventures, offers, testimonials: site.json
  * Photos and alt text: images.json · Recognition carousel: recognition.json
  */
@@ -9,11 +12,9 @@ import Hero from '../components/Hero.astro';
 import StatBar from '../components/StatBar.astro';
 import NameStrip from '../components/NameStrip.astro';
 import SectionHeader from '../components/SectionHeader.astro';
+import ProductShowcase from '../components/ProductShowcase.astro';
 import PlaybookStages from '../components/PlaybookStages.astro';
-import VentureCard from '../components/VentureCard.astro';
-import HardWins from '../components/HardWins.astro';
 import RecognitionCarousel from '../components/RecognitionCarousel.astro';
-import SpeakingStrip from '../components/SpeakingStrip.astro';
 import OfferCard from '../components/OfferCard.astro';
 import Testimonial from '../components/Testimonial.astro';
 import CTA from '../components/CTA.astro';
@@ -21,7 +22,7 @@ import ArrowLink from '../components/ArrowLink.astro';
 import home from '../content/home.json';
 import { site } from '../lib/site';
 
-const { proof, playbook, ventures, hardWins, recognition, speaking, help, testimonials, finalCta } = home;
+const { proof, playbook, recognition, help, testimonials, finalCta } = home;
 const sectionY = 'py-16 md:py-24';
 ---
 
@@ -29,16 +30,23 @@ const sectionY = 'py-16 md:py-24';
   <!-- 1. Hero -->
   <Hero />
 
-  <!-- 2. Proof bar: numbers, then names -->
-  <section class="wrap pb-16 md:pb-24" aria-labelledby="proof-heading">
+  <!-- 2. Quick proof: the numbers -->
+  <section id="proof" class="wrap pb-14 md:pb-20" aria-labelledby="proof-heading">
     <SectionHeader id="proof-heading" heading={proof.heading} hidden />
     <StatBar />
-    <div class="mt-10 md:mt-12" data-reveal>
-      <NameStrip title={proof.nameStripTitle} names={proof.names} />
+  </section>
+
+  <!-- 3. Credibility strip: a full-width band -->
+  <section id="credibility" class="border-y border-line bg-surface/40 py-10 md:py-12" aria-labelledby="credibility-heading">
+    <div class="wrap" data-reveal>
+      <NameStrip id="credibility-heading" title={proof.nameStripTitle} names={proof.names} />
     </div>
   </section>
 
-  <!-- 3. The playbook -->
+  <!-- 4. Products: what each does and what Raja did ("See the work" scrolls here) -->
+  <ProductShowcase />
+
+  <!-- 5. Methodologies: the playbook -->
   <section id="playbook" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="playbook-heading">
     <SectionHeader id="playbook-heading" heading={playbook.heading} intro={playbook.intro} />
     <div class="mt-10 md:mt-12">
@@ -46,67 +54,35 @@ const sectionY = 'py-16 md:py-24';
     </div>
   </section>
 
-  <!-- 4. Ventures ("See the work" scrolls here) -->
-  <section id="ventures" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="ventures-heading">
-    <SectionHeader id="ventures-heading" heading={ventures.heading} intro={ventures.intro} />
-    <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 md:gap-6" data-reveal-stagger>
-      {
-        site.ventures.map((v) => (
-          <li>
-            <VentureCard venture={v} linkLabel={ventures.cardLink} />
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
-  <!-- 5. Hard wins -->
-  <section id="hard-wins" class:list={['border-y border-line bg-surface/40', sectionY, 'defer-render']} aria-labelledby="hard-wins-heading">
-    <div class="wrap">
-      <SectionHeader id="hard-wins-heading" heading={hardWins.heading} intro={hardWins.intro} />
-      <div class="mt-10 md:mt-12">
-        <HardWins items={hardWins.items} />
-      </div>
-      <ArrowLink href={hardWins.link.href} class="mt-8">{hardWins.link.label}</ArrowLink>
-    </div>
-  </section>
-
-  <!-- 6. Recognition strip -->
-  <section id="recognition" class:list={['wrap', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
-    <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
-    <div class="mt-8 md:mt-10" data-reveal>
-      <RecognitionCarousel label={recognition.carouselLabel} order={recognition.slides} />
-    </div>
-    <ArrowLink href={recognition.link.href} class="mt-6">{recognition.link.label}</ArrowLink>
-  </section>
-
-  <!-- 7. Speaking and ecosystem -->
-  <section id="speaking" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="speaking-heading">
-    <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
-    <div class="mt-10 md:mt-12">
-      <SpeakingStrip images={speaking.images} />
-    </div>
-    <ArrowLink href={speaking.link.href} class="mt-8">{speaking.link.label}</ArrowLink>
-  </section>
-
-  <!-- 8. How I can help -->
+  <!-- 6. How I can help: the four offers -->
   <section id="help" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="help-heading">
     <SectionHeader id="help-heading" heading={help.heading} />
-    <ul class="mt-10 grid gap-4 md:mt-12 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
+    <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 lg:gap-6 xl:grid-cols-4" data-reveal-stagger>
       {
         site.offers
           .filter((offer) => offer.home)
           .map((offer, i) => (
-          <li>
-            <OfferCard offer={offer} index={i} />
-          </li>
-        ))
+            <li>
+              <OfferCard offer={offer} index={i} />
+            </li>
+          ))
       }
     </ul>
     <ArrowLink href={help.link.href} class="mt-8">{help.link.label}</ArrowLink>
   </section>
 
-  <!-- 9. Testimonials: hidden until site.json has at least one quote -->
+  <!-- 7. Recognition -->
+  <section id="recognition" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
+    <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
+    <div class="mt-8 md:mt-10" data-reveal>
+      <RecognitionCarousel label={recognition.carouselLabel} order={recognition.slides} />
+    </div>
+    <div class="mt-6 flex flex-wrap gap-x-8 gap-y-1">
+      {recognition.links.map((link) => <ArrowLink href={link.href}>{link.label}</ArrowLink>)}
+    </div>
+  </section>
+
+  <!-- 8. Testimonials: hidden until site.json has at least one quote -->
   {
     site.testimonials.length > 0 && (
       <section id="testimonials" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="testimonials-heading">
@@ -122,7 +98,7 @@ const sectionY = 'py-16 md:py-24';
     )
   }
 
-  <!-- 10. Final call to action (the footer follows) -->
+  <!-- 9. Closing call to action (the footer follows) -->
   <section class="wrap defer-render pt-8 pb-4 md:pt-12" aria-labelledby="cta-heading">
     <CTA heading={finalCta.heading} />
   </section>

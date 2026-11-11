@@ -208,7 +208,8 @@
     {
       "id": "talks-workshops",
       "title": "Talks & workshops",
-      "home": false,
+      "home": true,
+      "summary": "For universities, incubators and events: sessions on pitching, go-to-market and early sales.",
       "forWhom": "For universities, incubators and events",
       "gets": "Sessions on pitching, go-to-market and early sales.",
       "proof": { "label": "HITEC, NUML, Air University and NUST EME", "href": "/recognition/speaking-events/" }

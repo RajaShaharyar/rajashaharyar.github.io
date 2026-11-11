@@ -1,15 +1,17 @@
 ---
-/** Homepage section 2b: names as plain text (no logos until permission is clear). */
+/** Homepage credibility strip: names as plain text (no logos until permission is clear). */
 interface Props {
+  /** id of the heading, for the section's aria-labelledby */
+  id?: string;
   title: string;
   names: string[];
 }
 
-const { title, names } = Astro.props;
+const { id, title, names } = Astro.props;
 ---
 
 <div>
-  <h3 class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{title}</h3>
+  <h2 id={id} class="font-sans text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{title}</h2>
   <ul class="mt-4 flex flex-wrap gap-x-7 gap-y-2">
     {names.map((name) => <li class="font-display text-lg font-semibold text-fg-muted sm:text-xl">{name}</li>)}
   </ul>

@@ -1,0 +1,308 @@
+---
+/**
+ * Homepage #products: the five products, what each does and what Raja did.
+ * Order: home.json → products.order (site.json → ventures ids). Name, role,
+ * line, metric and link come from site.json → ventures; nothing is invented.
+ *
+ * Layout
+ * - 1024px and wider, with JavaScript: two columns. Left, the product blocks;
+ *   right, a sticky stage showing the active product's drawing. The active
+ *   product is the block crossing the middle of the viewport. Switching
+ *   crossfades (280 ms) and plays the new drawing once.
+ * - Narrower, or without JavaScript: each block shows its own drawing above its
+ *   text, which plays once when it scrolls into view.
+ * Motion: each drawing plays once (≤ 1.6 s), transform and opacity only, never
+ * more than 24px of travel, no loops. With reduced motion or no JavaScript the
+ * final frame shows. Drawings are decorative (aria-hidden); all meaning is in
+ * the text, and the links are ordinary links in reading order.
+ */
+import SectionHeader from './SectionHeader.astro';
+import ProductArt from './ProductArt.astro';
+import ArrowLink from './ArrowLink.astro';
+import home from '../content/home.json';
+import { site } from '../lib/site';
+
+const copy = home.products;
+const products = copy.order.map((id) => {
+  const v = site.ventures.find((x) => x.id === id);
+  if (!v) throw new Error(`home.json → products.order: "${id}" is not in site.json → ventures.`);
+  return v;
+});
+---
+
+<section id="products" class="wrap defer-render py-16 md:py-24" aria-labelledby="products-heading" style="--defer-size: 120rem">
+  <SectionHeader id="products-heading" heading={copy.heading} intro={copy.intro} />
+  <div class="showcase mt-10 md:mt-14" data-showcase>
+    <ol class="showcase-list">
+      {
+        products.map((p, i) => (
+          <li class="product" data-product={p.id} data-active={i === 0 || undefined}>
+            <div class="art product-art" aria-hidden="true">
+              <ProductArt id={p.id} />
+            </div>
+            <div class="product-text">
+              <h3 class="product-name">{p.name}</h3>
+              {p.role && <p class="product-role">{p.role}</p>}
+              <p class="product-line">{p.line}</p>
+              {p.metric && (
+                <p class="product-metric">
+                  <span class="product-metric-value">{p.metric.value}</span> {p.metric.label}
+                </p>
+              )}
+              <ArrowLink href={p.href} srContext={p.name} class="mt-1">
+                {copy.storyLink}
+              </ArrowLink>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="stage" aria-hidden="true">
+      {
+        products.map((p, i) => (
+          <div class="art stage-art" data-stage={p.id} data-active={i === 0 || undefined}>
+            <ProductArt id={p.id} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .showcase {
+    display: grid;
+    gap: 3rem;
+  }
+  .showcase-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.5rem;
+  }
+  .product {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .art {
+    aspect-ratio: 320 / 220;
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .product-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 34rem;
+  }
+  .product-name {
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
+  }
+  .product-role {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+  .product-line {
+    font-size: var(--text-lead);
+    line-height: 1.5;
+    color: var(--color-fg-muted);
+  }
+  .product-metric {
+    color: var(--color-fg-muted);
+  }
+  .product-metric-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .stage {
+    display: none;
+  }
+
+  /* Wide screens with JavaScript: list on the left, sticky stage on the right */
+  @media (width >= 64rem) {
+    :global(html.js) .showcase {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 4rem;
+      align-items: start;
+    }
+    :global(html.js) .showcase-list {
+      gap: 0;
+    }
+    :global(html.js) .product {
+      min-height: 62vh;
+      align-content: center;
+      padding-left: 1.75rem;
+    }
+    /* The active product's marker: an accent rule that fades in */
+    :global(html.js) .product::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 3px;
+      height: 7rem;
+      margin-top: -3.5rem;
+      border-radius: 3px;
+      background-color: var(--color-accent);
+      opacity: 0;
+      transition: opacity 280ms var(--ease-out-quart);
+    }
+    :global(html.js) .product[data-active]::before {
+      opacity: 1;
+    }
+    :global(html.js) .product-art {
+      display: none;
+    }
+    :global(html.js) .stage {
+      position: sticky;
+      top: max(6rem, calc(50vh - 13rem));
+      display: grid;
+    }
+    :global(html.js) .stage-art {
+      grid-area: 1 / 1;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 280ms var(--ease-out-quart);
+    }
+    :global(html.js) .stage-art[data-active] {
+      opacity: 1;
+    }
+  }
+
+  /* Drawings: armed (paused on their first frame) by the script, then played once */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .art[data-armed] :global(.k) {
+      animation-duration: 350ms;
+      animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+      animation-fill-mode: both;
+      animation-delay: var(--d, 0ms);
+      animation-play-state: paused;
+    }
+    :global(html.js) .art[data-armed] :global(.k-fade) {
+      animation-name: art-fade;
+    }
+    :global(html.js) .art[data-armed] :global(.k-up) {
+      animation-name: art-up;
+    }
+    :global(html.js) .art[data-armed] :global(.k-down) {
+      animation-name: art-down;
+    }
+    :global(html.js) .art[data-armed] :global(.k-left) {
+      animation-name: art-left;
+    }
+    :global(html.js) .art[data-armed] :global(.k-pop) {
+      animation-name: art-pop;
+    }
+    :global(html.js) .art[data-armed][data-playing] :global(.k) {
+      animation-play-state: running;
+    }
+  }
+  @keyframes art-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes art-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+  @keyframes art-down {
+    from {
+      opacity: 0;
+      transform: translateY(-14px);
+    }
+  }
+  @keyframes art-left {
+    from {
+      opacity: 0;
+      transform: translateX(-24px);
+    }
+  }
+  @keyframes art-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-showcase]');
+  if (root && 'IntersectionObserver' in window) {
+    const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+    const products = Array.from(root.querySelectorAll<HTMLElement>('[data-product]'));
+    const stageArts = new Map(Array.from(root.querySelectorAll<HTMLElement>('[data-stage]')).map((el) => [el.dataset.stage, el]));
+    const stage = root.querySelector<HTMLElement>('.stage');
+    const play = (art?: HTMLElement | null) => {
+      if (motionOk && art?.hasAttribute('data-armed') && !art.hasAttribute('data-playing')) art.setAttribute('data-playing', '');
+    };
+    let active = products[0]?.dataset.product;
+    let stageSeen = false;
+
+    // Stage (wide screens): the block crossing the middle of the viewport is active.
+    const activate = (id?: string) => {
+      if (!id || id === active) return;
+      active = id;
+      for (const p of products) p.toggleAttribute('data-active', p.dataset.product === id);
+      for (const [key, art] of stageArts) art.toggleAttribute('data-active', key === id);
+      if (stageSeen) play(stageArts.get(id));
+    };
+    const middle = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) activate((e.target as HTMLElement).dataset.product);
+      },
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    products.forEach((p) => middle.observe(p));
+
+    if (motionOk) {
+      // Stage drawings start on their first frame; the active one plays once the stage is in view.
+      for (const art of stageArts.values()) art.setAttribute('data-armed', '');
+      if (stage) {
+        const seen = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((e) => e.isIntersecting)) return;
+            seen.disconnect();
+            stageSeen = true;
+            play(stageArts.get(active));
+          },
+          { threshold: 0.3 },
+        );
+        seen.observe(stage);
+      }
+      // Each block's own drawing (narrow screens): arm it while off screen, play it once in view.
+      const inView = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            inView.unobserve(e.target);
+            play(e.target as HTMLElement);
+          }
+        },
+        { threshold: 0.35 },
+      );
+      const first = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          first.unobserve(e.target);
+          if (e.isIntersecting) continue; // already on screen: keep the final frame
+          e.target.setAttribute('data-armed', '');
+          inView.observe(e.target);
+        }
+      });
+      root.querySelectorAll('.product-art').forEach((art) => first.observe(art));
+    }
+  }
+</script>

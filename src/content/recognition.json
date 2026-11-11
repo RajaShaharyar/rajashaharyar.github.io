@@ -40,7 +40,7 @@
     "date": "2025–26",
     "dateISO": null,
     "purpose": "TODO: purpose of the MOU",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "recognition/mou-tapitcard-encoder-bytes.webp", "source": "MOU with Encorder bytes at KP Investor Summit.jpeg" }],
     "shownOn": ["partnerships", "tapit"],
     "order": 3,
@@ -72,7 +72,7 @@
     "role": "Guest speaker",
     "date": "7 Jan 2025",
     "dateISO": "2025-01-07",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "speaking/talk-hitec-hibis-2025.webp", "source": "Invited as guest speaker at HITEC University Taxila.jpeg" }],
     "shownOn": ["speaking-events"],
     "order": 1,
@@ -116,7 +116,7 @@
     "detail": "Received from Nayatel's CEO",
     "date": "2024",
     "dateISO": "2024",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "recognition/award-nayatel-ceo.webp", "source": "Recieving Award from CEO Nayatel.jpeg" }],
     "shownOn": ["competitions-awards"],
     "order": 1,
@@ -133,7 +133,7 @@
     "selectivity": "Top 10 of 3,000+ applicants; youngest startup",
     "summary": "TapitCard was selected as the youngest startup, in the top 10 of 3,000+ applicants; the cohort trekked to K2 and premiered on the big screen.",
     "gave": "TODO: what it gave (mentoring, exposure, funding)",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [
       { "file": "recognition/k2prenuer-youngest-startup.webp", "source": "K2.png" },
       { "file": "about/2024-k2prenuer-selected.webp", "source": "2024 Unwrapped.pdf, page 9" },
@@ -153,7 +153,7 @@
     "venue": "TODO: venue (not settled: the file name and 2024 Unwrapped disagree)",
     "date": "2024",
     "dateISO": "2024",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "about/2024-k2prenuer-premiere.webp", "source": "2024 Unwrapped.pdf, page 12" }],
     "shownOn": ["speaking-events"],
     "order": 1,
@@ -267,7 +267,7 @@
     "summary": "TapitCard's office from April 2024",
     "date": "Apr 2024",
     "dateISO": "2024-04",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "about/2024-tapitcard-office.webp", "source": "2024 Unwrapped.pdf, page 6" }],
     "shownOn": ["programmes", "my-story", "tapit"],
     "order": 4,
@@ -298,7 +298,7 @@
     "role": "Speaker",
     "date": "7 Mar 2024",
     "dateISO": "2024-03-07",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [
       { "file": "speaking/talk-numl-poster-2024.webp", "source": "Invited as guest speaker at NUML Banner.jpeg" },
       { "file": "speaking/talk-numl-session.webp", "source": "Invited as guest speaker at NUML University.jpeg" }
@@ -318,7 +318,7 @@
     "dateISO": "2023-03",
     "summary": "TapitCard secured a place in Cohort-11 and graduated in February 2024.",
     "gave": "TODO: what it gave (mentoring, office, grants)",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [
       { "file": "recognition/nic-peshawar-cohort-11.webp", "source": "Secured Incubation in NIC Peshawar.jpeg" },
       { "file": "recognition/nic-peshawar-graduation-2024.webp", "source": "Graduate of NIC Peshawar.jpeg" }
@@ -337,7 +337,7 @@
     "date": "Jan 2024",
     "dateISO": "2024-01",
     "recognisedBy": "With Air University's Registrar",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [
       { "file": "recognition/startup-pitching-league-2024.webp", "source": "Won Startup Pitching League _24 at NIC Peshawar.jpeg" },
       { "file": "recognition/award-air-university-registrar.webp", "source": "Recieving recognition from Registrar.jpeg" }
@@ -356,7 +356,7 @@
     "venue": "TMUC Islamabad",
     "date": "Sep 2023",
     "dateISO": "2023-09",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "recognition/aiesec-sparkathon-2023.webp", "source": "Won AIESEC Sparkaton 2023 at TMUC ISB.jpeg" }],
     "shownOn": ["competitions-awards"],
     "order": 3,
@@ -370,7 +370,7 @@
     "subtitle": "\"TapitCard crowned winner at Zindigi Prize Islamabad Regionals\"",
     "date": "15 Jul 2023",
     "dateISO": "2023-07-15",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [],
     "links": [
       { "label": "Read on ProPakistani", "href": "https://propakistani.pk/2023/07/15/zindigi-prizes-roaring-success-at-islamabad-regionals-tapitcard-crowned-winner/" }
@@ -388,7 +388,7 @@
     "venue": "ITCN Asia Karachi",
     "date": "2023",
     "dateISO": "2023",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [
       { "file": "recognition/lmkt-showdown-top3-2023.webp", "source": "Top 3 in LMKT Startup Showdown 2023.jpeg" },
       { "file": "recognition/lmkt-showdown-stage.webp", "source": "LMKT Startup Showdown at ITCN Asia Karachi.jpeg" }
@@ -409,7 +409,7 @@
     "prize": "Rs 100,000",
     "detail": "94 startups presented",
     "recognisedBy": "Recognised by NIC Peshawar and by Air University's Vice-Chancellor",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [
       { "file": "recognition/zindigi-prize-2023.webp", "source": "Won Zinidigi Prize Islamabad Regionals 2023 at Hitec Taxila.jpeg" },
       { "file": "recognition/zindigi-win-nic-post.webp", "source": "NIC Peshawar recognizing our win.jpeg" },
@@ -450,7 +450,7 @@
     "detail": "Business Expo 2023",
     "date": "May 2023",
     "dateISO": "2023-05",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [{ "file": "recognition/icstsi-competition-win.webp", "source": "Won ICSTSI Business plan competition.jpeg" }],
     "shownOn": ["competitions-awards"],
     "order": 4,
@@ -465,7 +465,7 @@
     "date": "Mar – Aug 2023",
     "dateISO": "2023-03",
     "gave": "TODO: what it gave",
-    "venture": { "name": "Tapit", "href": "/ventures/tapit/" },
+    "venture": { "name": "TapitCard", "href": "/ventures/tapit/" },
     "photos": [],
     "shownOn": ["programmes", "education"],
     "order": 3,

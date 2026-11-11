@@ -124,6 +124,11 @@
   [id] {
     scroll-margin-top: 5.5rem;
   }
+  /* A section that receives focus from a same-page link (the reading position moves there):
+     no outline around the whole section, as for <main>. */
+  section[tabindex='-1']:focus {
+    outline: none;
+  }
 
   body {
     background-color: var(--color-bg);

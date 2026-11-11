@@ -34,7 +34,7 @@
     "_note": "Every Download CV link (home hero, footer, /cv header) points at pdfHref with this download name, and appears once public/cv.pdf exists. Regenerate it with npm run cv:pdf after editing cv.json."
   },
   "cta": { "label": "Let's talk", "href": "/contact/" },
-  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About · CV · then the cta button. Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
+  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · CV · then the cta button. About's items are sections of the one About page. Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
   "nav": [
     { "label": "Home", "href": "/" },
     {
@@ -43,7 +43,7 @@
       "children": [
         { "label": "Dressup", "href": "/ventures/dressup/", "description": "Product consultant: a hyper-personalised marketplace" },
         { "label": "AsaanBill", "href": "/ventures/asaanbill/", "description": "Regulated fintech, from 0→1 to scale" },
-        { "label": "SonicEngine AI", "href": "/ventures/sonicengine-ai/", "description": "Product owner: a text-to-game engine" },
+        { "label": "Sonic AI Engine", "href": "/ventures/sonicengine-ai/", "description": "Product owner: a text-to-game engine" },
         { "label": "TapitCard", "href": "/ventures/tapit/", "description": "Founder story: from idea to 3,000+ customers" },
         { "label": "Ladenza", "href": "/ventures/ladenza/", "description": "Consumer selling and acquisition" },
         { "label": "Other ventures", "href": "/ventures/other/", "description": "HOMS, Gameotivity and Mustahiq" },
@@ -51,7 +51,20 @@
       ]
     },
     { "label": "Work With Me", "href": "/work-with-me/" },
-    { "label": "About", "href": "/about/" },
+    {
+      "label": "About",
+      "href": "/about/",
+      "children": [
+        { "label": "My story", "href": "/about/#intro" },
+        { "label": "Career timeline", "href": "/about/#career" },
+        { "label": "Recognition", "href": "/about/#recognition" },
+        { "label": "Education", "href": "/about/#education" },
+        { "label": "Courses", "href": "/about/#courses" },
+        { "label": "Distinctions", "href": "/about/#distinctions" },
+        { "label": "Beyond work", "href": "/about/#beyond-work" },
+        { "label": "Invite me to speak", "href": "/about/#speaking" }
+      ]
+    },
     { "label": "CV", "href": "/cv/" }
   ],
   "recognitionMenu": {
@@ -90,7 +103,7 @@
       "role": "Product Consultant",
       "line": "A hyper-personalised marketplace",
       "art": true,
-      "_artNote": "No photo yet: the card shows the product's schematic drawing (ProductArt) instead. Replace with an image once there is one."
+      "_artNote": "No photo yet: the card shows the product's schematic drawing (ProductScene) instead. Replace with an image once there is one."
     },
     {
       "id": "asaanbill",
@@ -105,7 +118,7 @@
     },
     {
       "id": "sonicengine-ai",
-      "name": "SonicEngine AI",
+      "name": "Sonic AI Engine",
       "href": "/ventures/sonicengine-ai/",
       "meta": "Product Owner · Game tech · 2024",
       "role": "Product Owner",
@@ -139,7 +152,7 @@
       "href": "/ventures/other/",
       "meta": "HOMS · Gameotivity · Mustahiq",
       "line": "Growth and product roles in hostel tech and web3, and the NGO Mustahiq.",
-      "_draft": "line is new wording (the old one also covered Dressup and SonicEngine AI, which now have their own pages): for Raja to revise."
+      "_draft": "line is new wording (the old one also covered Dressup and Sonic AI Engine, which now have their own pages): for Raja to revise."
     }
   ],
   "stats": [
@@ -157,7 +170,7 @@
       "source": "CV (Evamp & Saanga)",
       "note": "Cleared for publishing (Raja, 6 Nov 2026). Monthly transaction volume = value of payments processed per month."
     },
-    { "id": "tapit-customers", "value": "3,000+", "label": "Tapit customers in 2 years", "source": "CV (TapitCard)" },
+    { "id": "tapit-customers", "value": "3,000+", "label": "TapitCard customers in 2 years", "source": "CV (TapitCard)" },
     { "id": "erp-partnerships", "value": "15+", "label": "ERP partnerships", "source": "CV (Evamp & Saanga)" },
     { "id": "team", "value": "25+", "label": "cross-functional team led", "source": "CV (Evamp & Saanga)" },
     {

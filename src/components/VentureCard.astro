@@ -3,10 +3,10 @@
  * One venture card (/ventures). The whole card is clickable through its
  * single "Read the journey →" link (no duplicate links for screen readers).
  * Ventures without a photo but with art: true show their schematic drawing
- * (ProductArt, final frame, decorative) in the photo slot.
+ * (ProductScene, final frame, decorative) in the photo slot.
  */
 import Media from './Media.astro';
-import ProductArt from './ProductArt.astro';
+import ProductScene from './ProductScene.astro';
 import type { Venture } from '../lib/site';
 
 interface Props {
@@ -32,7 +32,7 @@ const { venture: v, linkLabel } = Astro.props;
   {
     !v.image && v.art && (
       <div class="card-media-top venture-art aspect-video border-b border-line" aria-hidden="true">
-        <ProductArt id={v.id} />
+        <ProductScene id={v.id} />
       </div>
     )
   }
@@ -77,7 +77,10 @@ const { venture: v, linkLabel } = Astro.props;
     overflow: hidden;
     background-color: var(--color-raised);
   }
-  .venture-art :global(svg) {
+  .venture-art :global(.scene) {
+    height: 100%;
+  }
+  .venture-art :global(.scene svg) {
     width: auto;
     height: 100%;
     max-width: 100%;

@@ -1,55 +1,105 @@
 ---
 /**
- * Homepage #products: the five products, what each does and what Raja did.
- * Order: home.json → products.order (site.json → ventures ids). Name, role,
- * line, metric and link come from site.json → ventures; nothing is invented.
+ * Homepage #products, "The work": the featured products (home.json →
+ * products.featured) with a sticky stage on wide screens, then "Also worked
+ * on" (products.alsoWorkedOn) as compact cards, then a link to Other ventures.
+ * Name, stage badge, one line and metric: site.json → ventures. Role and dates:
+ * the venture's MDX snapshot (case studies) or cv.json (role stories); dates
+ * that are still TODO are hidden. Steps, "My part" and the research behind
+ * each scene: home.json → products.items.
  *
- * Layout
- * - 1024px and wider, with JavaScript: two columns. Left, the product blocks;
- *   right, a sticky stage showing the active product's drawing. The active
- *   product is the block crossing the middle of the viewport. Switching
- *   crossfades (280 ms) and plays the new drawing once.
- * - Narrower, or without JavaScript: each block shows its own drawing above its
- *   text, which plays once when it scrolls into view.
- * Motion: each drawing plays once (≤ 1.6 s), transform and opacity only, never
- * more than 24px of travel, no loops. With reduced motion or no JavaScript the
- * final frame shows. Drawings are decorative (aria-hidden); all meaning is in
- * the text, and the links are ordinary links in reading order.
+ * Playback (scenes: ProductScene; step lists: ProductSteps)
+ * - Wide screens with JavaScript: the featured block crossing the middle of the
+ *   viewport is active; the stage crossfades to its scene (280 ms) and plays it
+ *   from the start, in step with its list. Scrolling back to a product replays it.
+ * - Phones (and every compact card): a scene plays once when it scrolls into
+ *   view. Each scene has a Replay button (the stage has one, outside its
+ *   aria-hidden drawing).
+ * - Reduced motion: final frames, all steps complete, no Replay buttons.
+ *   Without JavaScript: final frames (each featured block shows its own scene).
  */
+import { getEntry } from 'astro:content';
 import SectionHeader from './SectionHeader.astro';
-import ProductArt from './ProductArt.astro';
+import ProductScene from './ProductScene.astro';
+import ProductSteps from './ProductSteps.astro';
 import ArrowLink from './ArrowLink.astro';
 import home from '../content/home.json';
-import { site } from '../lib/site';
+import { site, filled } from '../lib/site';
+import { getExperience, roleDates } from '../lib/cv';
 
 const copy = home.products;
-const products = copy.order.map((id) => {
-  const v = site.ventures.find((x) => x.id === id);
-  if (!v) throw new Error(`home.json → products.order: "${id}" is not in site.json → ventures.`);
-  return v;
-});
+
+async function product(id: string) {
+  const venture = site.ventures.find((v) => v.id === id);
+  const story = copy.items.find((s) => s.id === id);
+  const entry = await getEntry('ventures', id);
+  if (!venture || !story || !entry) throw new Error(`home.json → products: "${id}" needs a site.json venture, a products.items entry and a venture file.`);
+  let role: string | undefined;
+  let dates: string | undefined;
+  if (entry.data.kind === 'case-study') {
+    role = entry.data.snapshot.role;
+    dates = filled(entry.data.snapshot.dates);
+  } else if (entry.data.kind === 'role-story') {
+    const r = getExperience(entry.data.experienceId).roles[0];
+    role = r.title;
+    dates = roleDates(r) ?? undefined;
+  }
+  const steps = story.steps.map((s, i, all) => ({ ...s, len: (all[i + 1]?.at ?? story.duration) - s.at }));
+  return { ...venture, role, dates, steps, myPart: story.myPart, replay: `Replay the ${venture.name} animation` };
+}
+const featured = await Promise.all(copy.featured.map(product));
+const also = await Promise.all(copy.alsoWorkedOn.map(product));
 ---
 
-<section id="products" class="wrap defer-render py-16 md:py-24" aria-labelledby="products-heading" style="--defer-size: 120rem">
+<section id="products" class="wrap defer-render py-14 md:py-16" aria-labelledby="products-heading" style="--defer-size: 150rem">
   <SectionHeader id="products-heading" heading={copy.heading} intro={copy.intro} />
-  <div class="showcase mt-10 md:mt-14" data-showcase>
-    <ol class="showcase-list">
+
+  <div class="showcase mt-8 md:mt-10" data-showcase>
+    <ol class="features">
       {
-        products.map((p, i) => (
-          <li class="product" data-product={p.id} data-active={i === 0 || undefined}>
-            <div class="art product-art" aria-hidden="true">
-              <ProductArt id={p.id} />
+        featured.map((p, i) => (
+          <li class="feature" data-feature={p.id} data-active={i === 0 || undefined}>
+            <div class="own">
+              <div class="frame">
+                <ProductScene id={p.id} />
+              </div>
+              <button type="button" class="replay" data-replay={p.id} aria-label={p.replay} hidden>
+                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.5 8a4.5 4.5 0 1 0 1.3-3.2M4.5 2.5v2.6h2.6" /></svg>
+                Replay
+              </button>
             </div>
-            <div class="product-text">
-              <h3 class="product-name">{p.name}</h3>
-              {p.role && <p class="product-role">{p.role}</p>}
-              <p class="product-line">{p.line}</p>
+            <div class="feature-text">
+              <h3 class="feature-name">{p.name}</h3>
+              <div class="feature-meta">
+                <p class="feature-role">
+                  {p.role}
+                  {p.dates && <span class="text-fg-muted"> · {p.dates}</span>}
+                </p>
+                {p.badge && (
+                  <p class="badge">
+                    <span class="sr-only">Stage reached: </span>
+                    {p.badge}
+                  </p>
+                )}
+              </div>
+              <p class="feature-line">{p.line}</p>
               {p.metric && (
-                <p class="product-metric">
-                  <span class="product-metric-value">{p.metric.value}</span> {p.metric.label}
+                <p class="feature-metric">
+                  <span class="feature-metric-value">{p.metric.value}</span> {p.metric.label}
                 </p>
               )}
-              <ArrowLink href={p.href} srContext={p.name} class="mt-1">
+              <ProductSteps id={p.id} steps={p.steps} heading={copy.stepsHeading} keyLabel={copy.stepsKey} />
+              {p.myPart.length > 0 && (
+                <div>
+                  <p class="how-label">{copy.myPartLabel}</p>
+                  <ul class="my-part">
+                    {p.myPart.map((line) => (
+                      <li>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <ArrowLink href={p.href} srContext={p.name}>
                 {copy.storyLink}
               </ArrowLink>
             </div>
@@ -57,239 +107,369 @@ const products = copy.order.map((id) => {
         ))
       }
     </ol>
-    <div class="stage" aria-hidden="true">
-      {
-        products.map((p, i) => (
-          <div class="art stage-art" data-stage={p.id} data-active={i === 0 || undefined}>
-            <ProductArt id={p.id} />
-          </div>
-        ))
-      }
+
+    <div class="stage">
+      <div class="stage-art frame" aria-hidden="true">
+        {
+          featured.map((p, i) => (
+            <div class="stage-item" data-stage-item={p.id} data-active={i === 0 || undefined}>
+              <ProductScene id={p.id} />
+            </div>
+          ))
+        }
+      </div>
+      <button type="button" class="replay" data-replay-stage data-labels={JSON.stringify(Object.fromEntries(featured.map((p) => [p.id, p.replay])))} aria-label={featured[0]?.replay} hidden>
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.5 8a4.5 4.5 0 1 0 1.3-3.2M4.5 2.5v2.6h2.6" /></svg>
+        Replay
+      </button>
     </div>
   </div>
+
+  <h3 class="also-heading">{copy.alsoHeading}</h3>
+  <ul class="also" data-reveal-stagger>
+    {
+      also.map((p) => (
+        <li class="also-card">
+          <div class="also-art">
+            <div class="frame">
+              <ProductScene id={p.id} />
+            </div>
+            <button type="button" class="replay" data-replay={p.id} aria-label={p.replay} hidden>
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.5 8a4.5 4.5 0 1 0 1.3-3.2M4.5 2.5v2.6h2.6" /></svg>
+              Replay
+            </button>
+          </div>
+          <div class="also-text">
+            <h4 class="also-name">{p.name}</h4>
+            <p class="feature-role">
+              {p.role}
+              {p.dates && <span class="text-fg-muted"> · {p.dates}</span>}
+            </p>
+            <p class="also-line">{p.line}</p>
+            <ProductSteps id={p.id} steps={p.steps} heading={copy.stepsHeading} keyLabel={copy.stepsKey} />
+            <ArrowLink href={p.href} srContext={p.name}>
+              {copy.storyLink}
+            </ArrowLink>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+  <ArrowLink href={copy.otherLink.href} class="mt-6">{copy.otherLink.label}</ArrowLink>
 </section>
 
 <style>
   .showcase {
     display: grid;
-    gap: 3rem;
   }
-  .showcase-list {
+  .features {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 3.5rem;
+    gap: 2.5rem;
   }
-  .product {
+  .feature {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
-  .art {
-    aspect-ratio: 320 / 220;
-    padding: 1rem;
+  .frame {
+    padding: 0.75rem;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     background-color: var(--color-surface);
   }
-  .product-text {
+  /* Phones: the drawing with Replay beside its bottom edge (saves a row) */
+  .own,
+  .also-art {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+  .own .frame {
+    flex: 0 1 17rem;
+    min-width: 0;
+  }
+  .replay {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-fg-muted);
+    cursor: pointer;
+    transition: color 180ms;
+  }
+  .replay:hover {
+    color: var(--color-fg);
+  }
+  .replay[hidden] {
+    display: none;
+  }
+  .replay svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .feature-text {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
-    max-width: 34rem;
+    gap: 0.625rem;
+    max-width: 36rem;
   }
-  .product-name {
-    font-size: var(--text-display-md);
-    line-height: var(--text-display-md--line-height);
-    letter-spacing: var(--text-display-md--letter-spacing);
+  .feature-name {
+    font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
+    line-height: 1.1;
   }
-  .product-role {
+  .feature-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem 0.75rem;
+    margin-top: -0.375rem;
+  }
+  .feature-role {
     font-size: 0.9375rem;
     font-weight: 600;
     color: var(--color-accent);
   }
-  .product-line {
-    font-size: var(--text-lead);
+  .feature-line {
+    font-size: 1.0625rem;
     line-height: 1.5;
     color: var(--color-fg-muted);
   }
-  .product-metric {
+  .feature-metric {
     color: var(--color-fg-muted);
   }
-  .product-metric-value {
+  .feature-metric-value {
     font-family: var(--font-display);
-    font-size: 1.75rem;
+    font-size: 1.625rem;
     font-weight: 650;
     letter-spacing: -0.02em;
     color: var(--color-fg);
     font-variant-numeric: tabular-nums;
   }
+  .how-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .my-part {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--color-fg-muted);
+  }
   .stage {
     display: none;
   }
 
-  /* Wide screens with JavaScript: list on the left, sticky stage on the right */
+  /* Wide screens with JavaScript: blocks on the left, the sticky stage on the right */
   @media (width >= 64rem) {
     :global(html.js) .showcase {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-      gap: 4rem;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+      gap: 3.5rem;
       align-items: start;
     }
-    :global(html.js) .showcase-list {
+    :global(html.js) .features {
       gap: 0;
     }
-    :global(html.js) .product {
-      min-height: 62vh;
-      align-content: center;
-      padding-left: 1.75rem;
+    :global(html.js) .feature {
+      padding: 1rem 0 1rem 1.5rem;
     }
-    /* The active product's marker: an accent rule that fades in */
-    :global(html.js) .product::before {
+    :global(html.js) .feature :global(.steps) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1rem;
+    }
+    :global(html.js) .feature::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 50%;
+      top: 1rem;
+      bottom: 1rem;
       width: 3px;
-      height: 7rem;
-      margin-top: -3.5rem;
       border-radius: 3px;
       background-color: var(--color-accent);
       opacity: 0;
       transition: opacity 280ms var(--ease-out-quart);
     }
-    :global(html.js) .product[data-active]::before {
+    :global(html.js) .feature[data-active]::before {
       opacity: 1;
     }
-    :global(html.js) .product-art {
+    :global(html.js) .own {
       display: none;
     }
     :global(html.js) .stage {
       position: sticky;
-      top: max(6rem, calc(50vh - 13rem));
-      display: grid;
+      top: max(6rem, calc(50vh - 15.5rem));
+      display: block;
+      margin-top: 2rem;
     }
     :global(html.js) .stage-art {
+      display: grid;
+      padding: 1.25rem;
+    }
+    :global(html.js) .stage-item {
       grid-area: 1 / 1;
-      padding: 2rem;
       opacity: 0;
       transition: opacity 280ms var(--ease-out-quart);
     }
-    :global(html.js) .stage-art[data-active] {
+    :global(html.js) .stage-item[data-active] {
       opacity: 1;
     }
   }
 
-  /* Drawings: armed (paused on their first frame) by the script, then played once */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html.js) .art[data-armed] :global(.k) {
-      animation-duration: 350ms;
-      animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
-      animation-fill-mode: both;
-      animation-delay: var(--d, 0ms);
-      animation-play-state: paused;
-    }
-    :global(html.js) .art[data-armed] :global(.k-fade) {
-      animation-name: art-fade;
-    }
-    :global(html.js) .art[data-armed] :global(.k-up) {
-      animation-name: art-up;
-    }
-    :global(html.js) .art[data-armed] :global(.k-down) {
-      animation-name: art-down;
-    }
-    :global(html.js) .art[data-armed] :global(.k-left) {
-      animation-name: art-left;
-    }
-    :global(html.js) .art[data-armed] :global(.k-pop) {
-      animation-name: art-pop;
-    }
-    :global(html.js) .art[data-armed][data-playing] :global(.k) {
-      animation-play-state: running;
+  /* Also worked on */
+  .also-heading {
+    margin-top: 2.5rem;
+    font-size: 1.375rem;
+    letter-spacing: -0.01em;
+  }
+  .also {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  .also-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+  .also-art .frame {
+    flex: 0 1 15rem;
+    min-width: 0;
+    padding: 0.5rem;
+  }
+  .also-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+  }
+  .also-name {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 650;
+    line-height: 1.15;
+  }
+  .also-line {
+    color: var(--color-fg-muted);
+  }
+  @media (width >= 48rem) {
+    .also {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
     }
   }
-  @keyframes art-fade {
-    from {
-      opacity: 0;
+  @media (width >= 80rem) {
+    .also-card {
+      grid-template-columns: 15rem minmax(0, 1fr);
+      align-items: start;
+      gap: 1.25rem;
+      padding: 1.25rem;
     }
-  }
-  @keyframes art-up {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
+    .also-art {
+      flex-direction: column;
+      align-items: flex-start;
     }
-  }
-  @keyframes art-down {
-    from {
-      opacity: 0;
-      transform: translateY(-14px);
-    }
-  }
-  @keyframes art-left {
-    from {
-      opacity: 0;
-      transform: translateX(-24px);
-    }
-  }
-  @keyframes art-pop {
-    from {
-      opacity: 0;
-      transform: scale(0.6);
+    .also-art .frame {
+      flex: none;
+      width: 100%;
     }
   }
 </style>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-showcase]');
+  const root = document.querySelector<HTMLElement>('#products');
   if (root && 'IntersectionObserver' in window) {
     const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-    const products = Array.from(root.querySelectorAll<HTMLElement>('[data-product]'));
-    const stageArts = new Map(Array.from(root.querySelectorAll<HTMLElement>('[data-stage]')).map((el) => [el.dataset.stage, el]));
-    const stage = root.querySelector<HTMLElement>('.stage');
-    const play = (art?: HTMLElement | null) => {
-      if (motionOk && art?.hasAttribute('data-armed') && !art.hasAttribute('data-playing')) art.setAttribute('data-playing', '');
-    };
-    let active = products[0]?.dataset.product;
-    let stageSeen = false;
+    const wide = window.matchMedia('(width >= 64rem)');
+    const sceneIn = (el: Element | null | undefined) => el?.querySelector<HTMLElement>('.scene');
+    const listFor = (id?: string) => (id ? root.querySelector<HTMLElement>(`[data-steps="${id}"]`) : null);
+    const features = Array.from(root.querySelectorAll<HTMLElement>('[data-feature]'));
+    const stageItems = new Map(Array.from(root.querySelectorAll<HTMLElement>('[data-stage-item]')).map((el) => [el.dataset.stageItem, el]));
+    const stageReplay = root.querySelector<HTMLButtonElement>('[data-replay-stage]');
+    const labels: Record<string, string> = JSON.parse(stageReplay?.dataset.labels ?? '{}');
 
-    // Stage (wide screens): the block crossing the middle of the viewport is active.
+    // Restart a scene and its step list together: drop both states so the CSS animations are
+    // removed, force a reflow, then arm and play again (new animations, from the first frame).
+    const play = (...els: (HTMLElement | null | undefined)[]) => {
+      if (!motionOk) return;
+      for (const el of els) {
+        el?.removeAttribute('data-playing');
+        el?.removeAttribute('data-armed');
+      }
+      void root.offsetWidth;
+      for (const el of els) {
+        el?.setAttribute('data-armed', '');
+        el?.setAttribute('data-playing', '');
+      }
+    };
+    const arm = (el?: HTMLElement | null) => {
+      if (motionOk && el && !el.hasAttribute('data-playing')) el.setAttribute('data-armed', '');
+    };
+
+    // Wide screens: the featured block crossing the middle of the viewport drives the stage.
+    let active = features[0]?.dataset.feature;
+    let stageSeen = false;
+    let timer = 0;
+    const playStage = () => play(sceneIn(stageItems.get(active)), listFor(active));
     const activate = (id?: string) => {
       if (!id || id === active) return;
       active = id;
-      for (const p of products) p.toggleAttribute('data-active', p.dataset.product === id);
-      for (const [key, art] of stageArts) art.toggleAttribute('data-active', key === id);
-      if (stageSeen) play(stageArts.get(id));
+      for (const f of features) f.toggleAttribute('data-active', f.dataset.feature === id);
+      for (const [key, item] of stageItems) item.toggleAttribute('data-active', key === id);
+      if (stageReplay) stageReplay.setAttribute('aria-label', labels[id] ?? '');
+      if (!stageSeen || !wide.matches) return;
+      arm(sceneIn(stageItems.get(id)));
+      window.clearTimeout(timer);
+      timer = window.setTimeout(playStage, 260); // after the crossfade
     };
     const middle = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) if (e.isIntersecting) activate((e.target as HTMLElement).dataset.product);
+        for (const e of entries) if (e.isIntersecting) activate((e.target as HTMLElement).dataset.feature);
       },
       { rootMargin: '-50% 0px -50% 0px' },
     );
-    products.forEach((p) => middle.observe(p));
+    features.forEach((f) => middle.observe(f));
 
     if (motionOk) {
-      // Stage drawings start on their first frame; the active one plays once the stage is in view.
-      for (const art of stageArts.values()) art.setAttribute('data-armed', '');
+      for (const item of stageItems.values()) arm(sceneIn(item));
+      const stage = root.querySelector('.stage');
       if (stage) {
         const seen = new IntersectionObserver(
           (entries) => {
-            if (!entries.some((e) => e.isIntersecting)) return;
+            if (!entries.some((e) => e.isIntersecting) || !wide.matches) return;
             seen.disconnect();
             stageSeen = true;
-            play(stageArts.get(active));
+            playStage();
           },
           { threshold: 0.3 },
         );
         seen.observe(stage);
       }
-      // Each block's own drawing (narrow screens): arm it while off screen, play it once in view.
+
+      // Phones (featured blocks) and every compact card: play once when it scrolls into view.
+      const owners = Array.from(root.querySelectorAll<HTMLElement>('.own, .also-art'));
+      const idOf = (el: Element) => el.querySelector<HTMLElement>('[data-replay]')?.dataset.replay;
       const inView = new IntersectionObserver(
         (entries) => {
           for (const e of entries) {
             if (!e.isIntersecting) continue;
             inView.unobserve(e.target);
-            play(e.target as HTMLElement);
+            play(sceneIn(e.target), listFor(idOf(e.target)));
           }
         },
         { threshold: 0.35 },
@@ -297,12 +477,25 @@ const products = copy.order.map((id) => {
       const first = new IntersectionObserver((entries) => {
         for (const e of entries) {
           first.unobserve(e.target);
-          if (e.isIntersecting) continue; // already on screen: keep the final frame
-          e.target.setAttribute('data-armed', '');
+          if (e.isIntersecting) continue; // on screen at load: keep the final frame
+          const isOwnFeature = e.target.classList.contains('own');
+          arm(sceneIn(e.target));
+          if (!(isOwnFeature && wide.matches)) arm(listFor(idOf(e.target)));
           inView.observe(e.target);
         }
       });
-      root.querySelectorAll('.product-art').forEach((art) => first.observe(art));
+      owners.forEach((o) => first.observe(o));
+      // On wide screens, featured lists wait (pending) until their product plays on the stage.
+      if (wide.matches) features.forEach((f) => arm(listFor(f.dataset.feature)));
+
+      // Replay buttons
+      for (const button of root.querySelectorAll<HTMLButtonElement>('[data-replay], [data-replay-stage]')) {
+        button.hidden = false;
+        button.addEventListener('click', () => {
+          if (button.hasAttribute('data-replay-stage')) playStage();
+          else play(sceneIn(button.closest('.own, .also-art')), listFor(button.dataset.replay));
+        });
+      }
     }
   }
 </script>

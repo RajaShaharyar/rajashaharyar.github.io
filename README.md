@@ -37,7 +37,7 @@ The structure follows the sitemap in `_source/Consultation Website.pdf`.
 
 | Page | Sections (anchor) |
 | ---- | ----------------- |
-| Top bar | Home · Ventures ▾ · Work With Me · About · CV · Let's talk (`site.json → nav`, `cta`) |
+| Top bar | Home · Ventures ▾ · Work With Me · About ▾ · CV · Let's talk (`site.json → nav`, `cta`). About's eight items are sections of `/about/`. |
 | `/` | Hero · `#proof` · `#credibility` · `#products` · `#playbook` · `#help` · `#recognition` · `#testimonials` · closing CTA |
 | `/ventures/` | Cards in menu order (Other ventures last) · stage legend · `#yours-next` |
 | `/ventures/dressup/`, `/ventures/sonicengine-ai/` | Role stories: header (role, dates, location) · `#product` · `#what-i-did` · optional blocks · `#next` · CTA |
@@ -54,9 +54,14 @@ pointing straight at the final address): `/ventures/consulting/` and `/ventures/
 `/about/education/` → `/about/#education`; `/about/beyond-work/` → `/about/#beyond-work`; `/about/skills/` →
 `/cv/#skills`. `npm run check:links` fails if a redirect's page or anchor is missing or it points at another redirect.
 
-**Reorder the homepage products:** edit the id list in `home.json → products.order` (ids from
-`site.json → ventures`). Name, role, line and metric come from `site.json → ventures`; each id needs a drawing in
-`src/components/ProductArt.astro` (an inline SVG with steps marked `k k-up` etc. and a `--d` delay).
+**Reorder the homepage products:** edit `home.json → products.featured` (the sticky-stage blocks: AsaanBill,
+TapitCard, Ladenza) and `products.alsoWorkedOn` (the compact cards: Sonic AI Engine, Dressup). Ids are
+`site.json → ventures` ids; moving an id between the two lists also needs its scene redrawn at the other size
+(featured scenes are 480×360, compact ones 320×220). The Ventures menu keeps its own order (`site.json → nav`).
+
+**Same-page menu links** (About's items on `/about/`, "Yours next?" on `/ventures/`): the nav script closes the
+dropdown or the mobile panel first, the browser then scrolls (smoothly unless reduced motion is on) to the
+section, which lands below the sticky header (`[id] { scroll-margin-top }`), and focus moves to it.
 
 **Add a testimonial:** add `{ "quote": "...", "name": "...", "role": "...", "company": "..." }` to
 `site.json → testimonials`. The homepage Testimonials section (`#testimonials`) appears as soon as there is one.
@@ -74,7 +79,8 @@ src/
     site.json          name, title, contact, nav (top bar), recognitionMenu, headline stats, venture cards (menu
                        order), offers (home: true = on the homepage too), testimonials
     work-with-me.json  copy for /work-with-me (services heading, steps, how I work, FAQ, call to action)
-    home.json          homepage copy, section by section (products order, carousel order: recognition.slides),
+    home.json          homepage copy, section by section (products: featured / alsoWorkedOn and each story's
+                       steps and sources; carousel order: recognition.slides),
                        plus the /ventures heading and the shared "Yours next?" block
     about.json         copy for the one About page (sections, story, recognition, education, distinctions,
                        beyond work, speaking); points into cv.json by id for CV facts
@@ -90,7 +96,7 @@ src/
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
   layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
-  components/          Nav, Footer, homepage sections (ProductShowcase + ProductArt), Timeline, Gallery (photo
+  components/          Nav, Footer, homepage sections (ProductShowcase + ProductScene + ProductSteps), Timeline, Gallery (photo
                        grid + lightbox), YoursNext
   pages/               one file per route (see Site structure)
 public/images/         ventures/, recognition/, speaking/, about/, education/
@@ -142,11 +148,11 @@ renders every case study the same way and leaves out any block with no data, so 
 later is a data edit. Case-study facts live only there (the CV reads Tapit's pre-sales from `tapit.mdx`).
 A file marked `status: draft` shows a stub until it is published.
 
-Dressup and SonicEngine AI are role stories (`kind: role-story`): the header and the "The product" and "What I
+Dressup and Sonic AI Engine are role stories (`kind: role-story`): the header and the "The product" and "What I
 did" blocks come from their `cv.json → experience` entry. The problem, limitations, results, lessons, evidence
 photos and product link render only once filled in; their `todo` lists say what is missing. Other ventures
 (`other.mdx`, `kind: roles`) lists cv.json roles (`roles`) and other ventures (`otherVentures`, e.g. Mustahiq,
-linking to About → Beyond work). Next links run Dressup → AsaanBill → SonicEngine AI → TapitCard → Ladenza →
+linking to About → Beyond work). Next links run Dressup → AsaanBill → Sonic AI Engine → TapitCard → Ladenza →
 Other ventures.
 
 ## Recognition pages
@@ -195,10 +201,24 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
   hard wins, counters): the items' contents fade instead of the items. Elements on screen at load never
   fade, and nothing is hidden without JavaScript or in print.
 - **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades.
-- **Homepage products** (`ProductShowcase.astro`, `ProductArt.astro`): on wide screens a sticky stage crossfades
-  to the product crossing the middle of the viewport and plays its drawing once; on phones (and without
-  JavaScript) each drawing sits above its text and plays once in view. Each drawing finishes within 1.6 s,
-  moves at most 24px and never loops; reduced motion or no JavaScript shows the final frame.
+- **Homepage products, "The work"** (`ProductShowcase`, `ProductScene`, `ProductSteps`): one short brand story
+  per product, in 4 beats, with Raja's part in the accent colour.
+  - *Data:* `home.json → products.items[]`: `steps` (text, `at` = beat start in ms, `mine` = Raja's part),
+    `duration`, `myPart` (lines copied from cv.json or the venture MDX) and `_sources` (the research behind each
+    scene; never rendered).
+  - *Scenes* (`ProductScene.astro`): inline SVG in the colour tokens, no words, numbers or logos. The beat
+    starts become `--b1`…`--b4` on the scene; every animated element has class `a`, an animation class (`fade`,
+    `up`, `draw`, `pop`, `move`, …) and `--t: calc(var(--bN) + offset)` (plus `--d` for its duration). The
+    element's default style is its final frame, so no-JavaScript and reduced-motion visitors see a complete
+    illustration.
+  - *Step list* (`ProductSteps.astro`): a real `<ol>`; each step has the same `--t`, so it lights up (accent
+    tick, full-contrast text) when its beat starts. Raja's steps have an accent dot and "(my part)" for screen
+    readers, with the key "Highlighted: my part".
+  - *Playback:* the script only sets `data-armed` (paused on the first frame) and `data-playing` on a scene and
+    its list together; a replay removes both, forces a reflow and sets both again. Wide screens: the block
+    crossing the middle of the viewport drives a sticky stage (crossfade, then play; scrolling back replays).
+    Phones and the compact cards: play once in view. Every scene has a Replay button (hidden with reduced
+    motion). Transform, opacity and stroke-dashoffset only; each scene lasts at most 4.2 s.
 - **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
   into view. The HTML holds the final values and screen readers only hear those.
 - **Hover and focus**: cards that are one big link get `.lift-card` (lift 2px, a soft shadow that fades in,

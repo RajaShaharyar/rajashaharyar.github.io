@@ -516,6 +516,23 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
     });
   }
 
+  // A link to a section of the page you are on (About's items on /about/, "Yours next?" on
+  // /ventures/): close the dropdown or the mobile panel first, so the page can scroll (smoothly,
+  // unless reduced motion is on) and the section lands below the header; then move keyboard
+  // focus to the section.
+  nav?.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href*="#"]');
+    if (!link) return;
+    const url = new URL(link.href);
+    if (url.pathname !== location.pathname) return;
+    const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+    if (!target) return;
+    closeOtherMenus();
+    if (nav.hasAttribute('data-open')) setPanel(false);
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    requestAnimationFrame(() => target.focus({ preventScroll: true }));
+  });
+
   // Escape closes the open dropdown (focus returns to its button) or the panel.
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;

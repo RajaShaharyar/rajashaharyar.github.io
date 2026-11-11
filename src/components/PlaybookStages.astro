@@ -1,22 +1,33 @@
 ---
 /**
- * Homepage section 3: Idea → Fit → Scale. Each card: the question it answers
- * and one proof line linking to the venture page.
- * TODO (Phase 5): deep-link each proof to the matching stage section on the venture page.
+ * Homepage methodologies: Idea → Fit → Scale. Each card: the question it
+ * answers, "How I do it" (the matching principles, worded exactly as in Work
+ * With Me → How I work) and "Seen at" links into the venture pages.
+ * Copy: home.json → playbook (the principles are checked against work-with-me.json).
  */
 import ArrowLink from './ArrowLink.astro';
+import home from '../content/home.json';
+import workWithMe from '../content/work-with-me.json';
 
 interface Stage {
   id: string;
   name: string;
   question: string;
-  proof: string;
-  links: { label: string; href: string }[];
+  principles: string[];
+  seenAt: { label: string; href: string }[];
 }
 
 interface Props {
   stages: Stage[];
 }
+
+const known = new Set(workWithMe.howIWork.items.map((i) => i.principle));
+for (const s of Astro.props.stages) {
+  for (const p of s.principles) {
+    if (!known.has(p)) throw new Error(`home.json → playbook: "${p}" is not a principle in work-with-me.json → howIWork.`);
+  }
+}
+const { howLabel, seenAtLabel } = home.playbook;
 
 const { stages } = Astro.props;
 ---
@@ -36,13 +47,20 @@ const { stages } = Astro.props;
         </p>
         <div class="min-h-8 flex-1" aria-hidden="true" />
         <div class="border-t border-line pt-5">
-          <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">Proof</p>
-          <p class="mt-2 text-fg-muted">{stage.proof}</p>
-          <p class="mt-1 flex flex-wrap gap-x-5">
-            {stage.links.map((link) => (
-              <ArrowLink href={link.href}>{link.label}</ArrowLink>
+          <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{howLabel}</p>
+          <ul class="mt-2 flex flex-col gap-1">
+            {stage.principles.map((p) => (
+              <li class="font-medium text-fg">{p}</li>
             ))}
-          </p>
+          </ul>
+          <p class="mt-4 text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{seenAtLabel}</p>
+          <ul class="flex flex-wrap gap-x-5">
+            {stage.seenAt.map((link) => (
+              <li>
+                <ArrowLink href={link.href}>{link.label}</ArrowLink>
+              </li>
+            ))}
+          </ul>
         </div>
       </li>
     ))

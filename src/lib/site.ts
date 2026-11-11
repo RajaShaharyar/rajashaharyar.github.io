@@ -19,7 +19,7 @@ export interface Venture {
   metric?: { value: string; label: string };
   line: string;
   image?: { src: string; fit: 'cover' | 'contain'; position?: string };
-  /** No photo: show the product's schematic drawing (ProductArt) in the card instead */
+  /** No photo: show the product's schematic drawing (ProductScene, final frame) in the card instead */
   art?: boolean;
 }
 

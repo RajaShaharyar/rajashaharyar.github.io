@@ -1,0 +1,726 @@
+---
+/**
+ * One short brand story per product (homepage #products; the compact two also
+ * fill the photo slot of their /ventures cards). Each scene shows what the
+ * product does in 4 beats; the accent marks Raja's part.
+ *
+ * How it is wired
+ * - The beat start times come from home.json → products.items[].steps[].at and
+ *   are set on the root as --b1…--b4. Every animated element has class "a", an
+ *   animation class (fade, up, draw, pop, …) and its start as
+ *   --t: calc(var(--bN) + offset), with an optional duration --d. The step list
+ *   in ProductShowcase uses the same --t values, so drawing and list stay in sync.
+ * - The default (unanimated) state of every element IS the final frame: that is
+ *   what visitors without JavaScript or with reduced motion see.
+ * - ProductShowcase's script only sets data-armed (paused on the first frame) and
+ *   data-playing (run). Replaying = removing both, reflow, setting both again.
+ * - Only transform, opacity and stroke-dashoffset animate. Travel stays within
+ *   ~50 viewBox units (one hand-off per scene: ~100), rotation within 8°, one
+ *   overshoot to 1.08. No words, numbers or logos in the drawings.
+ * - Featured scenes (AsaanBill, TapitCard, Ladenza) use a 480×360 viewBox; the
+ *   compact ones (Sonic AI Engine, Dressup) 320×220.
+ */
+import home from '../content/home.json';
+
+interface Props {
+  id: string;
+  class?: string;
+}
+const { id, class: className } = Astro.props;
+const story = home.products.items.find((p) => p.id === id);
+if (!story) throw new Error(`ProductScene: no home.json → products.items entry for "${id}".`);
+const compact = id === 'sonicengine-ai' || id === 'dressup';
+const [w, h] = compact ? [320, 220] : [480, 360];
+const beats = story.steps.map((s, i) => `--b${i + 1}:${s.at}ms`).join(';');
+/** Start time (beat + offset) and optional duration, as inline custom properties */
+const T = (beat: number, offset = 0, dur?: number) => `--t:calc(var(--b${beat}) + ${offset}ms)${dur ? `;--d:${dur}ms` : ''}`;
+---
+
+<div class:list={['scene', className]} data-scene={id} style={beats}>
+  <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} aria-hidden="true" focusable="false">
+    {
+      id === 'asaanbill' && (
+        <>
+          {/* 1 [R] An ERP block syncs a bill; the invoice builds */}
+          <g class="a up" style={T(1)}>
+            <rect class="f-raised s-strong" x="24" y="104" width="100" height="112" rx="12" />
+            <rect class="f-strong" x="38" y="120" width="44" height="8" rx="4" />
+            <path class="s-line" d="M38 140h72" />
+            <circle class="f-sub" cx="43" cy="156" r="3" />
+            <rect class="f-line" x="53" y="153" width="50" height="6" rx="3" />
+            <circle class="f-sub" cx="43" cy="174" r="3" />
+            <rect class="f-line" x="53" y="171" width="40" height="6" rx="3" />
+            <circle class="f-sub" cx="43" cy="192" r="3" />
+            <rect class="f-line" x="53" y="189" width="46" height="6" rx="3" />
+          </g>
+          <g class="a fade" style={T(1, 100)}>
+            <rect class="f-raised s-strong" x="356" y="36" width="104" height="272" rx="18" />
+            <rect class="f-bg" x="366" y="56" width="84" height="236" rx="9" />
+            <rect class="f-strong" x="394" y="44" width="28" height="4" rx="2" />
+          </g>
+          <path class="a draw s-accent" pathLength="1" d="M124 160c18 0 26 0 42 0" stroke-width="2.5" style={T(1, 200, 400)} />
+          <circle class="a pop f-accent" cx="166" cy="160" r="4" style={T(1, 520, 250)} />
+          <rect class="a up f-surface s-strong" x="170" y="56" width="140" height="208" rx="14" style={T(1, 120)} />
+          <rect class="a gx f-strong" x="188" y="76" width="58" height="10" rx="5" style={T(1, 260, 250)} />
+          <rect class="a gx f-line" x="188" y="104" width="104" height="7" rx="3.5" style={T(1, 340, 250)} />
+          <rect class="a gx f-line" x="188" y="122" width="88" height="7" rx="3.5" style={T(1, 420, 250)} />
+          <rect class="a gx f-line" x="188" y="140" width="96" height="7" rx="3.5" style={T(1, 500, 250)} />
+          <path class="a fade s-line" d="M188 162h104" style={T(1, 560, 200)} />
+          <rect class="a gx f-strong" x="244" y="176" width="48" height="10" rx="5" style={T(1, 580, 250)} />
+
+          {/* 2 Sent to the customer: a bubble copy travels to the phone */}
+          <path class="a fade s-sub" d="M312 76L388 86" stroke-dasharray="1 7" style={T(2, 0, 300)} />
+          <g class="a move" style={`${T(2, 150, 650)};--x0:-100px;--y0:-14px`}>
+            <rect class="f-surface s-strong" x="388" y="74" width="40" height="28" rx="8" />
+            <path class="f-surface s-strong" d="M396 102l-2 8 9-8" />
+            <rect class="f-line" x="396" y="82" width="24" height="4" rx="2" />
+            <rect class="f-line" x="396" y="90" width="16" height="4" rx="2" />
+          </g>
+
+          {/* 3 [R] Pay by PSID, QR or Request to Pay; a tap; the progress ring */}
+          <g class="a up" style={T(3, 0, 300)}>
+            <rect class="f-surface s-accent" x="372" y="116" width="72" height="30" rx="8" />
+            <rect class="f-fg" x="381" y="127" width="5" height="8" rx="1.5" />
+            <rect class="f-fg" x="389" y="127" width="5" height="8" rx="1.5" />
+            <rect class="f-fg" x="397" y="127" width="5" height="8" rx="1.5" />
+            <rect class="f-fg" x="405" y="127" width="5" height="8" rx="1.5" />
+            <rect class="f-line" x="416" y="129" width="20" height="4" rx="2" />
+          </g>
+          <g class="a up" style={T(3, 80, 300)}>
+            <rect class="f-surface s-accent" x="372" y="154" width="72" height="30" rx="8" />
+            <rect class="f-line" x="416" y="167" width="20" height="4" rx="2" />
+          </g>
+          {[0, 1, 2].flatMap((r) =>
+            [0, 1, 2].map((c) => <rect class="a pop f-fg" x={381 + c * 7} y={159 + r * 7} width="5" height="5" rx="1" style={T(3, 220 + (r * 3 + c) * 30, 220)} />),
+          )}
+          <g class="a up" style={T(3, 160, 300)}>
+            <rect class="f-surface s-accent" x="372" y="192" width="72" height="30" rx="8" />
+            <circle class="s-fg" cx="389" cy="207" r="7" />
+            <path class="s-fg" d="M385 207h8m-3-3 3 3-3 3" />
+            <rect class="f-line" x="416" y="205" width="20" height="4" rx="2" />
+          </g>
+          <rect class="a fade f-accent-soft" x="372" y="154" width="72" height="30" rx="8" style={T(3, 650, 200)} />
+          <circle class="a ripple s-accent" cx="428" cy="169" r="10" style={T(3, 500, 500)} />
+          <path class="a fade s-line" d="M408 240a16 16 0 1 1 0 32a16 16 0 1 1 0-32" style={T(3, 200, 300)} />
+          <path class="a draw s-accent" pathLength="1" d="M408 240a16 16 0 1 1 0 32a16 16 0 1 1 0-32" stroke-width="3" style={T(3, 760, 600)} />
+
+          {/* 4 Confirmed and reconciled: tick, a paid stamp (no word), dashboard bars */}
+          <path class="a pop s-fg" d="M400 256l5 5 10-11" stroke-width="3" style={T(4, 0, 450)} />
+          <g class="a stamp" style={T(4, 250, 450)}>
+            <rect class="s-fg" x="226" y="200" width="70" height="34" rx="8" stroke-width="2.5" />
+            <path class="s-fg" d="M248 217l6 6 12-13" stroke-width="2.5" />
+          </g>
+          <path class="a fade s-line" d="M184 330h116" style={T(4, 450, 200)} />
+          {[18, 30, 24, 40].map((bar, i) => (
+            <rect class="a gy f-strong" x={192 + i * 24} y={328 - bar} width="16" height={bar} rx="3" style={T(4, 500 + i * 90, 400)} />
+          ))}
+        </>
+      )
+    }
+    {
+      id === 'tapit' && (
+        <>
+          <g class="a fade" style={T(1, 0, 300)}>
+            <rect class="f-raised s-strong" x="268" y="26" width="124" height="308" rx="20" />
+            <rect class="f-bg" x="279" y="46" width="102" height="268" rx="10" />
+            <rect class="f-strong" x="314" y="34" width="32" height="4" rx="2" />
+          </g>
+          {/* 4 [R] Rolled out to whole teams: the card fans into a stack of 5 (drawn behind the card) */}
+          {[-8, -4, 4, 8].map((rot, i) => (
+            <rect class="a fan f-surface s-strong" x="106" y="141" width="124" height="78" rx="12" style={`${T(4, i * 80, 450)};--rot:${rot}deg`} />
+          ))}
+          {/* 1 Tap the card on a phone */}
+          <g class="a glide" style={T(1, 100, 700)}>
+            <rect class="f-surface s-strong" x="106" y="141" width="124" height="78" rx="12" />
+            <rect class="f-line" x="120" y="156" width="22" height="16" rx="3" />
+            <path class="s-sub" d="M206 156a7 7 0 0 1 0 12M212 152a12 12 0 0 1 0 20" />
+            <rect class="f-strong" x="120" y="190" width="56" height="7" rx="3.5" />
+            <rect class="f-line" x="120" y="202" width="38" height="5" rx="2.5" />
+          </g>
+          {[0, 1, 2].map((i) => (
+            <path class="a ripple s-sub" d={`M${240 + i * 7} ${168 - i * 6}a${14 + i * 6} ${14 + i * 6} 0 0 1 0 ${24 + i * 12}`} stroke-width="2.5" style={T(1, 600 + i * 120, 420)} />
+          ))}
+          {/* 2 The profile opens */}
+          <path class="a fade f-surface" d="M279 56a10 10 0 0 1 10-10h82a10 10 0 0 1 10 10v46h-102z" style={T(2, 0, 300)} />
+          <circle class="a pop f-strong s-bg" cx="330" cy="102" r="20" style={T(2, 100, 350)} />
+          <rect class="a gc f-fg" x="300" y="132" width="60" height="8" rx="4" style={T(2, 300, 250)} />
+          <rect class="a gc f-line" x="310" y="146" width="40" height="6" rx="3" style={T(2, 380, 250)} />
+          {[0, 1, 2, 3].map((i) => (
+            <circle class="a pop f-raised s-strong" cx={300 + i * 20} cy="176" r="7" style={T(2, 520 + i * 70, 300)} />
+          ))}
+          <g class="a press" style={T(3, 0, 260)}>
+            <g class="a up" style={T(2, 850, 300)}>
+              <rect class="f-raised s-strong" x="294" y="200" width="72" height="24" rx="12" />
+              <rect class="f-line" x="312" y="209" width="36" height="6" rx="3" />
+            </g>
+            {/* 3 Contact saved: the pill turns accent and draws a tick */}
+            <rect class="a fade f-accent" x="294" y="200" width="72" height="24" rx="12" style={T(3, 100, 200)} />
+            <path class="a draw s-ink" pathLength="1" d="M321 212l5 5 10-11" stroke-width="2.5" style={T(3, 250, 300)} />
+          </g>
+          <rect class="a fade f-surface s-line" x="287" y="248" width="86" height="54" rx="8" style={T(3, 0, 300)} />
+          <g class="a up" style={`${T(3, 350, 400)};--dy:20px`}>
+            <circle class="f-strong" cx="301" cy="275" r="7" />
+            <rect class="f-line" x="313" y="270" width="44" height="5" rx="2.5" />
+            <rect class="f-line" x="313" y="280" width="30" height="4" rx="2" />
+          </g>
+          {/* 4 [R] ...and the stack gets an accent outline */}
+          <path class="a draw s-accent" pathLength="1" d="M112 126h112a18 18 0 0 1 18 18v68a18 18 0 0 1-18 18h-112a18 18 0 0 1-18-18v-68a18 18 0 0 1 18-18z" stroke-width="2.5" style={T(4, 520, 500)} />
+        </>
+      )
+    }
+    {
+      id === 'ladenza' && (
+        <>
+          <g class="a fade" style={T(1, 200, 300)}>
+            <rect class="f-raised s-strong" x="196" y="40" width="112" height="224" rx="18" />
+            <rect class="f-bg" x="206" y="58" width="92" height="188" rx="9" />
+            <circle class="f-strong" cx="220" cy="74" r="7" />
+            <rect class="f-line" x="232" y="70" width="40" height="6" rx="3" />
+          </g>
+          <g class="a fade" style={T(1, 250, 300)}>
+            <path class="f-raised s-strong" d="M362 300V124h88v176z" />
+            <path class="s-strong" d="M354 126l52-34 52 34" />
+            {[146, 188, 230].flatMap((y) => [376, 416].map((x) => <rect class="f-line" x={x} y={y} width="20" height="18" rx="3" />))}
+            <rect class="f-strong" x="396" y="266" width="20" height="34" rx="3" />
+          </g>
+          <path class="a fade s-sub" d="M150 330h244" stroke-dasharray="1 8" style={T(1, 300, 300)} />
+          {/* 1 Branded clothes at a fair price: a shirt drops in and sways; a tag swings in */}
+          <g class="a drop" style={`${T(1, 0, 400)};--dy:-16px`}>
+            <g class="a sway" style={T(1, 350, 600)}>
+              <path class="s-strong" d="M92 66v-6a7 7 0 1 1 7-7" />
+              <path class="s-strong" d="M92 66L54 90h76z" />
+              <path class="f-surface s-strong" d="M68 92L50 104l8 22 12-6v60h44v-60l12 6 8-22-18-12q-24 12-48 0z" />
+              <path class="s-sub" d="M80 94q12 10 24 0" />
+            </g>
+          </g>
+          <g class="a swing" style={T(1, 550, 350)}>
+            <path class="s-sub" d="M126 112l12 12" />
+            <path class="f-raised s-strong" d="M138 124h22a4 4 0 0 1 4 4v20a4 4 0 0 1-4 4h-22l-8-14z" />
+            <circle class="f-bg s-strong" cx="142" cy="138" r="2.5" stroke-width="1.5" />
+            <rect class="f-line" x="148" y="132" width="11" height="4" rx="2" />
+            <rect class="f-line" x="148" y="140" width="7" height="4" rx="2" />
+          </g>
+          {/* 2 Hygiene and convenience handled: sparkles and a shield with a tick */}
+          {[
+            [38, 118],
+            [148, 96],
+            [40, 196],
+          ].map(([x, y], i) => (
+            <path class="a pop s-fg" d={`M${x} ${y - 7}v14M${x - 7} ${y}h14`} style={T(2, i * 90, 300)} />
+          ))}
+          <g class="a pop" style={T(2, 400, 400)}>
+            <path class="f-raised s-strong" d="M140 158l15 6v10c0 9-6 15-15 19-9-4-15-10-15-19v-10z" />
+            <path class="s-fg" d="M134 175l4 4 8-9" />
+          </g>
+          {/* 3 Sold online: a 2×2 post grid, the shirt in the highlighted tile, a heart, a message */}
+          {[
+            [210, 92],
+            [254, 92],
+            [210, 136],
+            [254, 136],
+          ].map(([x, y], i) => (
+            <rect class="a up f-surface s-line" x={x} y={y} width="40" height="40" rx="6" style={T(3, i * 70, 300)} />
+          ))}
+          <rect class="a pop s-fg" x="210" y="92" width="40" height="40" rx="6" stroke-width="2.5" style={T(3, 300, 300)} />
+          <path class="a fade f-strong" d="M222 102l-5 3 2 6 3-1.5v12h16v-12l3 1.5 2-6-5-3q-8 4-16 0z" style={T(3, 320, 250)} />
+          <path class="a pop f-fg" d="M226 206c-6-5-10-8-10-12a5 5 0 0 1 10-2 5 5 0 0 1 10 2c0 4-4 7-10 12z" style={T(3, 550, 300)} />
+          <g class="a pop" style={T(3, 700, 300)}>
+            <rect class="f-surface s-strong" x="248" y="186" width="38" height="22" rx="7" />
+            <path class="f-surface s-strong" d="M256 208l-2 7 8-7" />
+            <rect class="f-line" x="255" y="194" width="22" height="4" rx="2" />
+          </g>
+          {/* 4 [R] Delivered through hostel dorms: the parcel travels, windows light, a tick on the roof */}
+          <g class="a move" style={`${T(4, 0, 650)};--x0:-100px;--y0:0px`}>
+            <rect class="f-raised s-accent" x="358" y="300" width="30" height="26" rx="4" />
+            <rect class="f-accent" x="371" y="300" width="4" height="26" />
+          </g>
+          {[
+            [376, 146],
+            [416, 146],
+            [376, 188],
+            [416, 188],
+          ].map(([x, y], i) => (
+            <rect class="a fade f-accent" x={x} y={y} width="20" height="18" rx="3" style={T(4, 700 + i * 80, 250)} />
+          ))}
+          <g class="a pop" style={T(4, 1100, 400)}>
+            <circle class="f-accent" cx="406" cy="76" r="14" />
+            <path class="s-ink" d="M399 76l5 5 9-10" stroke-width="2.5" />
+          </g>
+        </>
+      )
+    }
+    {
+      id === 'sonicengine-ai' && (
+        <>
+          <g class="a fade" style={T(1, 0, 250)}>
+            <rect class="f-surface s-strong" x="8" y="8" width="304" height="204" rx="12" />
+            <circle class="f-strong" cx="22" cy="20" r="3" />
+            <circle class="f-strong" cx="32" cy="20" r="3" />
+            <circle class="f-strong" cx="42" cy="20" r="3" />
+            <rect class="f-raised s-line" x="20" y="30" width="280" height="26" rx="8" />
+          </g>
+          {/* 1 Describe the game: the prompt types in, the caret blinks twice */}
+          <rect class="a gx f-strong" x="30" y="40" width="60" height="6" rx="3" style={T(1, 100, 200)} />
+          <rect class="a gx f-strong" x="96" y="40" width="40" height="6" rx="3" style={T(1, 280, 150)} />
+          <rect class="a gx f-strong" x="142" y="40" width="72" height="6" rx="3" style={T(1, 420, 250)} />
+          <rect class="a blink f-fg" x="220" y="36" width="2.5" height="14" rx="1" style={T(1, 200, 600)} />
+          {/* 2 AI builds it (the scene lifts 8px in beat 3) */}
+          <g class="a lift" style={T(3, 150, 400)}>
+            <rect class="f-bg s-line" x="20" y="72" width="176" height="128" rx="8" />
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <rect class="a drop f-raised s-strong" x={28 + i * 27} y="176" width="24" height="14" rx="3" style={T(2, i * 60, 300)} />
+            ))}
+            <rect class="a up f-raised s-strong" x="104" y="138" width="56" height="10" rx="3" style={T(2, 420, 300)} />
+            <rect class="a squash f-fg" x="44" y="152" width="14" height="24" rx="4" style={T(2, 560, 400)} />
+            <circle class="a pop s-strong" cx="132" cy="120" r="6" style={T(2, 780, 300)} />
+            <circle class="f-line" cx="184" cy="84" r="4" />
+            <circle class="a fade f-accent" cx="184" cy="84" r="4" style={T(3, 350, 200)} />
+          </g>
+          {/* 3 [R] Launch in a click */}
+          <g class="a press" style={T(3, 0, 250)}>
+            <rect class="f-raised s-strong" x="212" y="170" width="84" height="26" rx="13" />
+            <rect class="a fade f-accent" x="212" y="170" width="84" height="26" rx="13" style={T(3, 120, 200)} />
+            <path class="a draw s-ink" pathLength="1" d="M254 190v-14m-5 5 5-5 5 5" stroke-width="2.5" style={T(3, 250, 300)} />
+          </g>
+          {/* 4 [R] Creators earn from it: coins arc from a player to a creator; the creator's bar fills */}
+          <g class="s-fg">
+            <circle cx="222" cy="102" r="6" />
+            <path d="M212 122a10 10 0 0 1 20 0" />
+            <circle cx="270" cy="102" r="6" />
+            <path d="M260 122a10 10 0 0 1 20 0" />
+            <path d="M270 88l2 3h3l-2.5 2 1 3-3.5-2-3.5 2 1-3-2.5-2h3z" />
+          </g>
+          <rect class="f-line" x="288" y="86" width="8" height="40" rx="4" />
+          <rect class="a gy f-accent" x="288" y="86" width="8" height="40" rx="4" style={T(4, 500, 450)} />
+          {[0, 1, 2].map((i) => (
+            <circle class="a coin f-accent" cx="226" cy="98" r="4" style={`${T(4, i * 120, 520)};--cx:40px;--cy:-4px`} />
+          ))}
+        </>
+      )
+    }
+    {
+      id === 'dressup' && (
+        <>
+          <g class="a fade" style={T(1, 0, 250)}>
+            <rect class="f-surface s-strong" x="8" y="8" width="292" height="204" rx="12" />
+            <rect class="f-raised s-strong" x="296" y="150" width="10" height="24" rx="3" />
+          </g>
+          {/* 1 A shopper searches */}
+          <rect class="a fade f-raised" x="22" y="28" width="180" height="26" rx="13" style={T(1, 100, 250)} />
+          <path class="a draw s-strong" pathLength="1" d="M35 28h154a13 13 0 0 1 0 26h-154a13 13 0 0 1 0-26z" style={T(1, 0, 400)} />
+          <g class="a fade" style={T(1, 250, 250)}>
+            <circle class="s-sub" cx="36" cy="41" r="5" />
+            <path class="s-sub" d="M40 45l4 4" />
+            <rect class="f-line" x="50" y="38" width="70" height="6" rx="3" />
+          </g>
+          <g class="a pop" style={T(1, 400, 300)}>
+            <rect class="f-raised s-strong" x="212" y="28" width="76" height="26" rx="13" />
+            <circle class="f-strong" cx="226" cy="41" r="6" />
+            <circle class="f-fg" cx="244" cy="41" r="4" />
+            <circle class="f-sub" cx="256" cy="41" r="4" />
+            <circle class="f-strong s-sub" cx="268" cy="41" r="4" stroke-width="1.5" />
+          </g>
+          {/* 2 Results personalised to them: FLIP, the two matching tiles move to the first slots */}
+          {[
+            { x: 22, y: 66, fx: 0, fy: 62, match: true, t: 100 },
+            { x: 92, y: 66, fx: 70, fy: 0, match: true, t: 160 },
+            { x: 22, y: 128, fx: 0, fy: -62, match: false, t: 220 },
+            { x: 162, y: 66, fx: -70, fy: 0, match: false, t: 280 },
+            { x: 92, y: 128, fx: 0, fy: 0, match: false, t: -1 },
+            { x: 162, y: 128, fx: 0, fy: 0, match: false, t: -1 },
+          ].map((tile, i) => (
+            <g transform={`translate(${tile.x} ${tile.y})`}>
+              <g class="a fade" style={T(1, 300 + i * 40, 250)}>
+                <g class={tile.t >= 0 ? 'a flip' : undefined} style={tile.t >= 0 ? `${T(2, tile.t, 500)};--fx:${tile.fx}px;--fy:${tile.fy}px` : undefined}>
+                  <rect class="f-raised s-line" width="60" height="52" rx="8" />
+                  <rect class="f-line" x="8" y="8" width="44" height="24" rx="5" />
+                  <rect class="f-line" x="8" y="39" width="22" height="5" rx="2.5" />
+                  {tile.match && (
+                    <g class="a fade" style={T(2, 750, 250)}>
+                      <circle class="f-fg" cx="38" cy="41.5" r="3" />
+                      <circle class="f-sub" cx="45" cy="41.5" r="3" />
+                      <circle class="f-strong s-sub" cx="52" cy="41.5" r="3" stroke-width="1" />
+                    </g>
+                  )}
+                </g>
+              </g>
+            </g>
+          ))}
+          {/* 3 [R] A search bar for brands: a storefront badge attaches, an accent underline draws */}
+          <g class="a drop" style={`${T(3, 0, 350)};--dy:-10px`}>
+            <circle class="f-accent" cx="196" cy="30" r="10" />
+            <path class="s-ink" d="M189 28h14M190 28l1.5-5h9l1.5 5M191 28v6h10v-6" stroke-width="1.75" />
+          </g>
+          <path class="a draw s-accent" pathLength="1" d="M28 62h168" stroke-width="2.5" style={T(3, 250, 400)} />
+          {/* 4 [R] Ready for Shopify stores: a generic plug clicks into the window's socket; a glow line draws */}
+          <g class="a slide" style={T(4, 0, 350)}>
+            <g class="a click" style={T(4, 350, 200)}>
+              <path class="s-accent" d="M306 158h-4M306 166h-4" stroke-width="2.5" />
+              <rect class="f-raised s-accent" x="306" y="152" width="12" height="20" rx="3" />
+            </g>
+          </g>
+          <path class="a draw s-accent" pathLength="1" d="M292 162h-56" stroke-width="2.5" style={T(4, 450, 350)} />
+        </>
+      )
+    }
+  </svg>
+</div>
+
+<style>
+  .scene svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* Colour tokens only */
+  .f-raised {
+    fill: var(--color-raised);
+  }
+  .f-surface {
+    fill: var(--color-surface);
+  }
+  .f-bg {
+    fill: var(--color-bg);
+  }
+  .f-line {
+    fill: var(--color-line);
+  }
+  .f-strong {
+    fill: var(--color-line-strong);
+  }
+  .f-sub {
+    fill: var(--color-fg-subtle);
+  }
+  .f-fg {
+    fill: var(--color-fg);
+  }
+  .f-accent {
+    fill: var(--color-accent);
+  }
+  .f-accent-soft {
+    fill: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+  .s-strong {
+    stroke: var(--color-line-strong);
+  }
+  .s-line {
+    stroke: var(--color-line);
+  }
+  .s-sub {
+    stroke: var(--color-fg-subtle);
+  }
+  .s-fg {
+    stroke: var(--color-fg);
+  }
+  .s-bg {
+    stroke: var(--color-bg);
+  }
+  .s-accent {
+    stroke: var(--color-accent);
+  }
+  .s-ink {
+    stroke: var(--color-accent-ink);
+  }
+
+  /* Final frame (also the reduced-motion and no-JavaScript view) */
+  .a {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .draw {
+    stroke-dasharray: 1;
+  }
+  .gx {
+    transform-origin: left center;
+  }
+  .gy {
+    transform-origin: center bottom;
+  }
+  .fan {
+    transform-origin: 50% 100%;
+    transform: rotate(var(--rot));
+  }
+  .stamp {
+    transform: rotate(-3deg);
+  }
+  .lift {
+    transform: translateY(-8px);
+  }
+  .squash {
+    transform-origin: center bottom;
+  }
+  .sway {
+    transform-box: view-box;
+    transform-origin: 92px 54px;
+  }
+  .swing {
+    transform-box: view-box;
+    transform-origin: 126px 112px;
+  }
+  .ripple,
+  .coin {
+    opacity: 0;
+  }
+
+  /* Armed (paused on the first frame) and playing: set by ProductShowcase's script */
+  @media (prefers-reduced-motion: no-preference) {
+    .scene[data-armed] .a {
+      animation-duration: var(--d, 400ms);
+      animation-delay: var(--t, 0ms);
+      animation-fill-mode: both;
+      animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+      animation-play-state: paused;
+    }
+    .scene[data-armed][data-playing] .a {
+      animation-play-state: running;
+    }
+    .scene[data-armed] .fade {
+      animation-name: s-fade;
+    }
+    .scene[data-armed] .up {
+      animation-name: s-up;
+    }
+    .scene[data-armed] .drop {
+      animation-name: s-drop;
+    }
+    .scene[data-armed] .pop {
+      animation-name: s-pop;
+    }
+    .scene[data-armed] .draw {
+      animation-name: s-draw;
+    }
+    .scene[data-armed] .gx,
+    .scene[data-armed] .gc {
+      animation-name: s-gx;
+    }
+    .scene[data-armed] .gy {
+      animation-name: s-gy;
+    }
+    .scene[data-armed] .move {
+      animation-name: s-move;
+    }
+    .scene[data-armed] .ripple {
+      animation-name: s-ripple;
+      animation-fill-mode: none;
+    }
+    .scene[data-armed] .glide {
+      animation-name: s-glide;
+    }
+    .scene[data-armed] .sway {
+      animation-name: s-sway;
+    }
+    .scene[data-armed] .swing {
+      animation-name: s-swing;
+    }
+    .scene[data-armed] .stamp {
+      animation-name: s-stamp;
+    }
+    .scene[data-armed] .press {
+      animation-name: s-press;
+    }
+    .scene[data-armed] .fan {
+      animation-name: s-fan;
+    }
+    .scene[data-armed] .squash {
+      animation-name: s-squash;
+    }
+    .scene[data-armed] .lift {
+      animation-name: s-lift;
+    }
+    .scene[data-armed] .blink {
+      animation-name: s-blink;
+      animation-timing-function: steps(1, end);
+    }
+    .scene[data-armed] .coin {
+      animation-name: s-coin;
+      animation-fill-mode: none;
+    }
+    .scene[data-armed] .flip {
+      animation-name: s-flip;
+    }
+    .scene[data-armed] .slide {
+      animation-name: s-slide;
+    }
+    .scene[data-armed] .click {
+      animation-name: s-click;
+    }
+  }
+  @keyframes s-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes s-up {
+    from {
+      opacity: 0;
+      transform: translateY(var(--dy, 12px));
+    }
+  }
+  @keyframes s-drop {
+    from {
+      opacity: 0;
+      transform: translateY(var(--dy, -14px));
+    }
+  }
+  @keyframes s-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    70% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+  }
+  @keyframes s-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  @keyframes s-gx {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  @keyframes s-gy {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  @keyframes s-move {
+    0% {
+      opacity: 0;
+      transform: translate(var(--x0), var(--y0));
+    }
+    15% {
+      opacity: 1;
+    }
+  }
+  @keyframes s-ripple {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+  }
+  @keyframes s-glide {
+    0% {
+      opacity: 0;
+      transform: translateX(-50px) rotate(0deg);
+    }
+    20% {
+      opacity: 1;
+    }
+    55% {
+      transform: translateX(-18px) rotate(-6deg);
+    }
+  }
+  @keyframes s-sway {
+    0% {
+      transform: rotate(4deg);
+    }
+    50% {
+      transform: rotate(-3deg);
+    }
+  }
+  @keyframes s-swing {
+    0% {
+      opacity: 0;
+      transform: rotate(8deg);
+    }
+    60% {
+      opacity: 1;
+      transform: rotate(-2deg);
+    }
+  }
+  @keyframes s-stamp {
+    from {
+      opacity: 0;
+      transform: scale(1.15) rotate(-6deg);
+    }
+  }
+  @keyframes s-press {
+    40% {
+      transform: scale(0.94);
+    }
+  }
+  @keyframes s-fan {
+    from {
+      opacity: 0;
+      transform: rotate(0deg);
+    }
+  }
+  @keyframes s-squash {
+    0% {
+      opacity: 0;
+      transform: translateY(-18px);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(0) scaleY(0.9);
+    }
+  }
+  @keyframes s-lift {
+    from {
+      transform: translateY(0);
+    }
+  }
+  @keyframes s-blink {
+    25% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+    }
+  }
+  @keyframes s-coin {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0);
+    }
+    15% {
+      opacity: 1;
+    }
+    50% {
+      transform: translate(calc(var(--cx) / 2), -18px);
+    }
+    90% {
+      opacity: 1;
+      transform: translate(var(--cx), var(--cy));
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--cx), var(--cy));
+    }
+  }
+  @keyframes s-flip {
+    from {
+      transform: translate(var(--fx), var(--fy));
+    }
+  }
+  @keyframes s-slide {
+    from {
+      opacity: 0;
+      transform: translateX(14px);
+    }
+  }
+  @keyframes s-click {
+    from {
+      transform: scale(1.06);
+    }
+  }
+</style>

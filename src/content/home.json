@@ -3,7 +3,7 @@
   "hero": {
     "eyebrow": "Product & Growth · Fintech · SaaS",
     "headline": "I turn early products into revenue.",
-    "subline": "5+ years across fintech and SaaS. PKR 25 Cr+ in sales closed. Took AsaanBill from launch to $1.8M+ in monthly transaction volume.",
+    "subline": "5+ years across fintech and SaaS, from pre-selling a prototype to taking a regulated payments product from launch to scale.",
     "roleLine": "Manager, Product & Growth at Evamp & Saanga",
     "image": "about/2024-airtech.webp",
     "imagePosition": "22% 35%",
@@ -19,7 +19,8 @@
       "label": "Download CV",
       "_note": "Shown only once public/cv.pdf exists."
     },
-    "_imageNote": "Interim until a headshot exists: Raja at the podium, AirTech'24 closing ceremony (no watermark). The NUML photo carries the photographer's credit, so it isn't used here."
+    "_imageNote": "Interim until a headshot exists: Raja at the podium, AirTech'24 closing ceremony (no watermark). The NUML photo carries the photographer's credit, so it isn't used here.",
+    "_sublineDraft": "Draft (Phase 13): the numbers moved out of the subline because the stat bar sits directly underneath. For Raja to revise."
   },
   "proof": {
     "heading": "Proof in numbers",
@@ -37,19 +38,199 @@
     ]
   },
   "products": {
-    "heading": "Five products, one method",
-    "intro": "From a marketplace and a text-to-game engine to regulated payments: what each product does and what I did there.",
+    "heading": "The work",
+    "intro": "Three products I built or led, and two I helped shape.",
     "draft": true,
-    "_draftNote": "Heading and intro are new wording for Raja to revise.",
-    "order": [
-      "dressup",
+    "_draftNote": "Heading, intro and the step texts are draft wording (Phase 13) for Raja to revise.",
+    "featured": [
       "asaanbill",
-      "sonicengine-ai",
       "tapit",
       "ladenza"
     ],
-    "_orderNote": "Reorder the products by reordering these ids (site.json → ventures ids). Name, role, line and metric come from site.json → ventures; each id needs a drawing in src/components/ProductArt.astro.",
-    "storyLink": "Read the story"
+    "alsoWorkedOn": [
+      "sonicengine-ai",
+      "dressup"
+    ],
+    "_orderNote": "Reorder by reordering these ids. featured = the sticky-stage blocks (480×360 scenes); alsoWorkedOn = the compact cards (320×220 scenes). Each id needs an entry in items and a scene in src/components/ProductScene.astro. The Ventures menu keeps its own order (site.json → nav).",
+    "stepsHeading": "How it works",
+    "stepsKey": "Highlighted: my part",
+    "myPartLabel": "My part",
+    "storyLink": "Read the story",
+    "alsoHeading": "Also worked on",
+    "otherLink": {
+      "label": "Other ventures",
+      "href": "/ventures/other/"
+    },
+    "_itemsNote": "One entry per product. steps: the 4 beats of its scene; \"at\" is the beat start in ms (the scene and the step list share these times), \"mine\": true marks Raja's part (accent). myPart: lines copied word for word from cv.json or the venture MDX (featured only). _sources: the research behind the scene, never rendered.",
+    "items": [
+      {
+        "id": "asaanbill",
+        "duration": 4200,
+        "steps": [
+          {
+            "text": "Bill created or synced from an ERP",
+            "at": 0,
+            "mine": true
+          },
+          {
+            "text": "Sent to the customer",
+            "at": 700,
+            "mine": false
+          },
+          {
+            "text": "Paid by PSID, QR or Request to Pay",
+            "at": 1500,
+            "mine": true
+          },
+          {
+            "text": "Confirmed and reconciled",
+            "at": 2900,
+            "mine": false
+          }
+        ],
+        "myPart": [
+          "Led AsaanBill's 0→1 launch on the 1Bill aggregator approval (Nov 2024).",
+          "Drive the Raast P2M go-to-market; AsaanBill received Raast approval through the State Bank in June 2026."
+        ],
+        "_sources": {
+          "source": "Evamp & Saanga's product page, https://evampsaanga.com/asaan-bill/ (tagline \"Digital Payments Simplified\")",
+          "flow": "Create an invoice → it reaches the customer by email or mobile → payment in real time via 1LINK (1-LINK Bill Payment in banking apps, and Raast P2M) → track and reconcile. Invoices can also sync from an ERP or CRM.",
+          "rajasPart": "cv.json: 0→1 launch on the 1Bill aggregator approval, Raast P2M go-to-market, 15+ ERP partnerships opening the restaurant vertical. Payment types: PSID, QR and Request to Pay."
+        }
+      },
+      {
+        "id": "tapit",
+        "duration": 4000,
+        "steps": [
+          {
+            "text": "Tap the card on a phone",
+            "at": 0,
+            "mine": false
+          },
+          {
+            "text": "The profile opens",
+            "at": 900,
+            "mine": false
+          },
+          {
+            "text": "Contact saved",
+            "at": 2000,
+            "mine": false
+          },
+          {
+            "text": "Rolled out to whole teams",
+            "at": 2800,
+            "mine": true
+          }
+        ],
+        "myPart": [
+          "Led growth, brand, product development and the sales funnel.",
+          "Built an organic following of 40K."
+        ],
+        "_sources": {
+          "source": "https://thetapitcard.com/ (tagline \"Revolutionizing networking and contact sharing with JUST A TAP!\")",
+          "product": "A tap opens a profile with social links, WhatsApp and \"Save vCard\", plus services with an enquiry button. The Enterprise plan covers 5 vCards.",
+          "rajasPart": "cv.json: pre-sold the prototype, grew to 3,000+ customers mostly through B2B sales to corporates, led growth, brand and the sales funnel. The technology was led by Haziq Farooq (CTO)."
+        }
+      },
+      {
+        "id": "ladenza",
+        "duration": 4200,
+        "steps": [
+          {
+            "text": "Branded clothes at a fair price",
+            "at": 0,
+            "mine": false
+          },
+          {
+            "text": "Hygiene and convenience handled",
+            "at": 900,
+            "mine": false
+          },
+          {
+            "text": "Sold online",
+            "at": 1700,
+            "mine": false
+          },
+          {
+            "text": "Delivered through hostel dorms",
+            "at": 2700,
+            "mine": true
+          }
+        ],
+        "myPart": [
+          "During COVID I started Ladenza Clothing as an online thrift store to close that gap."
+        ],
+        "_sources": {
+          "source": "No public page was found.",
+          "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales.",
+          "myPartNote": "Every Ladenza line in ladenza.mdx overlaps its one line or metric; this one (ladenza.mdx → stages.ideaFit) adds that he started it to close the gap shown in steps 1-2."
+        }
+      },
+      {
+        "id": "sonicengine-ai",
+        "duration": 3600,
+        "steps": [
+          {
+            "text": "Describe the game",
+            "at": 0,
+            "mine": false
+          },
+          {
+            "text": "AI builds it",
+            "at": 800,
+            "mine": false
+          },
+          {
+            "text": "Launch in a click",
+            "at": 1900,
+            "mine": true
+          },
+          {
+            "text": "Creators earn from it",
+            "at": 2600,
+            "mine": true
+          }
+        ],
+        "myPart": [],
+        "_sources": {
+          "sources": "Company profiles on Dealigence (https://dealigence.vc/company/sonic-ai-engine) and Lucidity Insights (https://lucidityinsights.com/startups/sonic-ai-20850)",
+          "whatTheySay": "A no-code, AI-powered game engine that lets creators \"build, deploy, and monetize games\", with text-prompt game generation and one-click deployment. Founded 2024.",
+          "rajasPart": "cv.json: Product Owner, March to November 2024. Owned user experience and game deployment, designed the game economy, ran go-to-market with studios and indie developers."
+        }
+      },
+      {
+        "id": "dressup",
+        "duration": 3400,
+        "steps": [
+          {
+            "text": "A shopper searches",
+            "at": 0,
+            "mine": false
+          },
+          {
+            "text": "Results personalised to them",
+            "at": 700,
+            "mine": false
+          },
+          {
+            "text": "A search bar for brands",
+            "at": 2000,
+            "mine": true
+          },
+          {
+            "text": "Ready for Shopify stores",
+            "at": 2700,
+            "mine": true
+          }
+        ],
+        "myPart": [],
+        "_sources": {
+          "source": "No matching public page was found.",
+          "rajasWords": "A hyper-personalised marketplace. As Product Consultant he explored the B2B side, a personalised search bar for brands, and got it ready for Shopify integration."
+        }
+      }
+    ]
   },
   "playbook": {
     "heading": "How I grow products",
@@ -59,15 +240,22 @@
         "id": "product-idea-fit",
         "name": "Product-Idea Fit",
         "question": "Is the problem worth solving, and for whom?",
-        "proof": "Led AsaanBill's 0→1 launch and pre-sold Tapit on a prototype.",
-        "links": [
+        "principles": [
+          "Start with the ideal customer.",
+          "Pilot before scaling."
+        ],
+        "seenAt": [
           {
             "label": "AsaanBill",
             "href": "/ventures/asaanbill/#product-idea-fit"
           },
           {
-            "label": "Tapit",
+            "label": "TapitCard",
             "href": "/ventures/tapit/#product-idea-fit"
+          },
+          {
+            "label": "Other ventures (HOMS)",
+            "href": "/ventures/other/#homs-inc"
           }
         ]
       },
@@ -75,14 +263,16 @@
         "id": "product-market-fit",
         "name": "Product-Market Fit",
         "question": "Will customers pay and come back?",
-        "proof": "Onboarded AsaanBill's first 50 business customers; took Tapit to 3,000+ customers.",
-        "links": [
+        "principles": [
+          "Build the funnel before the campaign."
+        ],
+        "seenAt": [
           {
             "label": "AsaanBill",
             "href": "/ventures/asaanbill/#product-market-fit"
           },
           {
-            "label": "Tapit",
+            "label": "TapitCard",
             "href": "/ventures/tapit/#product-market-fit"
           }
         ]
@@ -91,21 +281,26 @@
         "id": "scale",
         "name": "Scale",
         "question": "Can it grow without breaking, and legally?",
-        "proof": "15+ ERP partnerships, the Raast P2M go-to-market and $1.8M+ in monthly volume.",
-        "links": [
+        "principles": [
+          "Grow through partners."
+        ],
+        "seenAt": [
           {
             "label": "AsaanBill",
             "href": "/ventures/asaanbill/#scale"
           }
         ]
       }
-    ]
+    ],
+    "howLabel": "How I do it",
+    "seenAtLabel": "Seen at",
+    "_principlesNote": "principles must match work-with-me.json → howIWork.items[].principle word for word (the build checks)."
   },
   "ventures": {
     "heading": "Ventures",
     "intro": "Three markets, one method.",
     "cardLink": "Read the journey",
-    "description": "Dressup, AsaanBill, SonicEngine AI, TapitCard, Ladenza Clothing and other ventures by Raja Shaharyar Ali, with the stage each reached.",
+    "description": "Dressup, AsaanBill, Sonic AI Engine, TapitCard, Ladenza Clothing and other ventures by Raja Shaharyar Ali, with the stage each reached.",
     "_descriptionDraft": "The /ventures meta description is new wording (the list of ventures changed): for Raja to revise.",
     "yoursNext": {
       "heading": "Yours next?",

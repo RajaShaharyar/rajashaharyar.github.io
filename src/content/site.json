@@ -22,8 +22,8 @@
     "booking": { "href": "", "todo": "TODO: booking link (e.g. Calendly or Cal.com)" },
     "form": {
       "_howTo": "Contact form provider. WEB3FORMS (recommended, free, no account): paste the access key from web3forms.com into web3formsKey, set provider to \"web3forms\", rebuild and push. FORMSPREE (alternative): paste the form ID (the part after formspree.io/f/) into formspreeId and set provider to \"formspree\". Empty provider = the form opens the visitor's email app (mailto).",
-      "provider": "",
-      "web3formsKey": "",
+      "provider": "web3forms",
+      "web3formsKey": "f6b73140-eaef-4b79-a64c-f8b407700a76",
       "formspreeId": ""
     }
   },

@@ -1,0 +1,43 @@
+---
+/**
+ * "Yours next?": the closing invitation on /ventures (id="yours-next", the
+ * last item of the Ventures menu) and at the end of /ventures/other/.
+ * Copy: home.json → ventures.yoursNext (the line is draft wording).
+ */
+import ArrowLink from './ArrowLink.astro';
+import home from '../content/home.json';
+
+interface Props {
+  /** Set on /ventures, where the menu's "Yours next?" link points */
+  id?: string;
+}
+
+const { id } = Astro.props;
+const copy = home.ventures.yoursNext;
+const headingId = `${id ?? 'yours-next-cta'}-heading`;
+---
+
+<section id={id} class="wrap pt-16 pb-4 md:pt-20" aria-labelledby={headingId}>
+  <div class="yours-next" data-reveal>
+    <h2 id={headingId} class="text-display-md">{copy.heading}</h2>
+    <p class="lead mt-4 max-w-prose">{copy.line}</p>
+    <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+      <a href={copy.primary.href} class="btn btn-primary">{copy.primary.label}</a>
+      <ArrowLink href={copy.secondary.href}>{copy.secondary.label}</ArrowLink>
+    </div>
+  </div>
+</section>
+
+<style>
+  .yours-next {
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  @media (width >= 48rem) {
+    .yours-next {
+      padding: 3rem;
+    }
+  }
+</style>

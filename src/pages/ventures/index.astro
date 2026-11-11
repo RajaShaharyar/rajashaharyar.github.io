@@ -1,19 +1,20 @@
 ---
 /**
- * Ventures overview (/ventures): the same four cards as the homepage
- * (VentureCard + site.json → ventures), a legend for the stage badges (each
- * with the playbook question from home.json) and "Let's talk".
+ * Ventures overview (/ventures): a card per venture in menu order, Other
+ * ventures last (VentureCard + site.json → ventures), a legend for the stage
+ * badges (each with the playbook question from home.json; ventures without a
+ * stage show no badge) and "Yours next?" (id="yours-next", the menu's last item).
  */
 import Base from '../../layouts/Base.astro';
 import SubPageHeader from '../../components/SubPageHeader.astro';
 import VentureCard from '../../components/VentureCard.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
+import YoursNext from '../../components/YoursNext.astro';
 import home from '../../content/home.json';
 import { site } from '../../lib/site';
 
 const { ventures, playbook } = home;
-const description =
-  "AsaanBill (fintech), Tapit (SaaS), Ladenza Clothing (consumer) and Raja Shaharyar Ali's consulting and product roles, each with the stage it reached.";
+const { description } = ventures;
 ---
 
 <Base title={ventures.heading} description={description}>
@@ -48,9 +49,7 @@ const description =
     </dl>
   </section>
 
-  <section class="wrap pt-12 pb-4 md:pt-16" aria-label="Get in touch">
-    <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>
-  </section>
+  <YoursNext id="yours-next" />
 </Base>
 
 <style>

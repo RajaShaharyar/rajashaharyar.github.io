@@ -1,8 +1,11 @@
 ---
 /**
- * Top of a page inside a menu (About, Recognition): a row of tabs for the
+ * Top of a page inside a menu (Ventures, Recognition): a row of tabs for the
  * pages in that menu (handy on phones, where the main menu is folded away),
- * the eyebrow, the H1 and an optional intro line.
+ * the eyebrow, the H1, an optional intro line and optional facts (a venture's
+ * role, dates and location). Recognition is no longer in the top bar; its tabs
+ * come from site.json → recognitionMenu. Menu items that are anchors on another
+ * page ("Yours next?") are not tabs.
  */
 import { site, withSlash } from '../lib/site';
 
@@ -13,11 +16,14 @@ interface Props {
   intro?: string;
   /** Add a first tab for the menu's overview page (when it isn't one of the menu's children) */
   overviewLabel?: string;
+  /** Label/value pairs shown under the intro (empty values are left out) */
+  facts?: { label: string; value: string | null | undefined }[];
 }
 
-const { section, title, intro, overviewLabel } = Astro.props;
-const menu = site.nav.find((item) => item.href === section);
-const children = menu?.children ?? [];
+const { section, title, intro, overviewLabel, facts = [] } = Astro.props;
+const menu = [...site.nav, site.recognitionMenu].find((item) => item.href === section);
+const children = (menu?.children ?? []).filter((c) => !c.href.includes('#'));
+const shownFacts = facts.filter((f): f is { label: string; value: string } => Boolean(f.value));
 const pages = overviewLabel && !children.some((c) => withSlash(c.href) === withSlash(section)) ? [{ label: overviewLabel, href: section }, ...children] : children;
 const path = withSlash(Astro.url.pathname);
 ---
@@ -39,9 +45,39 @@ const path = withSlash(Astro.url.pathname);
   <p class="eyebrow mt-10 md:mt-14">{menu?.label}</p>
   <h1 class="mt-4 max-w-4xl text-display-lg">{title}</h1>
   {intro && <p class="lead mt-6 max-w-prose">{intro}</p>}
+  {
+    shownFacts.length > 0 && (
+      <dl class="header-facts">
+        {shownFacts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
 </header>
 
 <style>
+  .header-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin-top: 1.75rem;
+  }
+  .header-facts dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .header-facts dd {
+    margin-top: 0.25rem;
+    font-size: 1.0625rem;
+    color: var(--color-fg);
+  }
   .sub-tab {
     display: inline-flex;
     align-items: center;

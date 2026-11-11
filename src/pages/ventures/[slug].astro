@@ -1,8 +1,9 @@
 ---
 /**
  * One route for every venture: each published MDX file in src/content/ventures
- * becomes /ventures/<file-name>/. Case studies (kind: case-study) render with
- * VentureLayout; Consulting & product roles (kind: roles) with RolesLayout.
+ * becomes /ventures/<file-name>/. Case studies (kind: case-study) and role
+ * stories (kind: role-story) render with VentureLayout; Other ventures (kind:
+ * roles) with RolesLayout.
  * A file marked status: draft is not built.
  */
 import type { InferGetStaticPropsType } from 'astro';
@@ -21,4 +22,4 @@ const { entry } = Astro.props;
 const { data } = entry;
 ---
 
-{data.kind === 'case-study' ? <VentureLayout id={entry.id} data={data} /> : <RolesLayout data={data} />}
+{data.kind === 'roles' ? <RolesLayout data={data} /> : <VentureLayout id={entry.id} data={data} />}

@@ -69,7 +69,7 @@
         "id": "sonicengine-ai",
         "company": "SonicEngine AI",
         "location": "Islamabad, Pakistan",
-        "href": "/ventures/consulting/",
+        "href": "/ventures/sonicengine-ai/",
         "product": "A text-to-game engine",
         "summary": "User experience, game deployment on the platform and the game economy.",
         "roles": [
@@ -89,7 +89,7 @@
         "id": "gameotivity",
         "company": "Gameotivity",
         "location": "TODO: location",
-        "href": "/ventures/consulting/",
+        "href": "/ventures/other/",
         "product": "A time-based web3 reward engine",
         "summary": "Internal economy design, on-ramp pipelines and protocols.",
         "roles": [
@@ -109,7 +109,7 @@
         "id": "dressup",
         "company": "Dressup",
         "location": "TODO: location",
-        "href": "/ventures/consulting/",
+        "href": "/ventures/dressup/",
         "product": "A hyper-personalised marketplace",
         "summary": "Explored the B2B side: personalised search for brands and Shopify integration readiness.",
         "roles": [
@@ -129,7 +129,7 @@
         "id": "homs-inc",
         "company": "HOMS Inc.",
         "location": "Islamabad, Pakistan",
-        "href": "/ventures/consulting/",
+        "href": "/ventures/other/",
         "product": "A hostel-management app",
         "summary": "Piloted the app in 3 NUST hostels, fed the feedback into the product and signed the first contract with a hostel chain.",
         "roles": [
@@ -195,7 +195,7 @@
         "role": "Founder & Operations Head",
         "dates": "TODO: founding date",
         "text": "First project in F-8 Islamabad provides a livelihood; MOU with Human Care Foundation.",
-        "href": "/about/beyond-work/"
+        "href": "/about/#beyond-work"
       }
     ]
   },

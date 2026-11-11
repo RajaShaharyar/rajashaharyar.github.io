@@ -7,13 +7,14 @@ export interface NavLink {
   children?: NavLink[];
 }
 
-/** A venture card (homepage and /ventures). The case study itself lives in src/content/ventures/<id>.mdx. */
+/** A venture card (/ventures, and the homepage product section). The page itself lives in src/content/ventures/<id>.mdx. */
 export interface Venture {
   id: string;
   name: string;
   href: string;
-  footer: boolean;
   meta: string;
+  /** Raja's role, shown in the homepage product section */
+  role?: string;
   badge?: string;
   metric?: { value: string; label: string };
   line: string;
@@ -70,7 +71,10 @@ export interface Site {
   /** The CV: web page, PDF and the file name a download is saved as */
   cv: { pageHref: string; pdfHref: string; downloadName: string };
   cta: { label: string; href: string };
+  /** Top bar: Home · Ventures ▾ · Work With Me · About · CV (then the cta button) */
   nav: NavLink[];
+  /** The Recognition pages: no longer in the top bar; used for their tabs and the footer */
+  recognitionMenu: NavLink & { children: NavLink[] };
   ventures: Venture[];
   stats: Stat[];
   offers: Offer[];

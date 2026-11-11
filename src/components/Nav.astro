@@ -1,7 +1,8 @@
 ---
 /**
- * Main navigation, exactly as the blueprint orders it:
- * Home · Ventures ▾ · Work With Me · Recognition ▾ · About ▾ · CV · [Let's talk]
+ * Main navigation, as the sitemap (Consultation Website.pdf) orders it:
+ * Home · Ventures ▾ · Work With Me · About · CV · [Let's talk]
+ * Any item with children in site.json → nav becomes a dropdown.
  *
  * Desktop (>= 1024px): menus open on mouse hover and on keyboard focus;
  *   the chevron button toggles on click/tap; Escape closes.
@@ -16,8 +17,8 @@ const path = withSlash(Astro.url.pathname);
 const isCurrent = (href: string) => withSlash(href) === path;
 const inSection = (href: string) => href !== '/' && path.startsWith(withSlash(href));
 const menuId = (label: string) => `menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-// The right-most dropdown opens leftwards so it never runs off-screen.
-const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
+// A dropdown near the right end of the bar opens leftwards so it never runs off-screen.
+const alignEnd = (index: number) => index >= site.nav.length - 2;
 ---
 
 <header class="site-header" data-site-header>
@@ -49,7 +50,7 @@ const lastMenuIndex = site.nav.findLastIndex((item) => item.children);
                 class="nav-item has-menu"
                 data-menu
                 data-section-active={inSection(item.href) || undefined}
-                data-align-end={index === lastMenuIndex || undefined}
+                data-align-end={alignEnd(index) || undefined}
               >
                 <div class="nav-row">
                   <a

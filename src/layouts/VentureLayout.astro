@@ -1,11 +1,16 @@
 ---
 /**
- * The venture case-study template (AsaanBill, Tapit, Ladenza), fed by one MDX
- * file's frontmatter (schema: src/content.config.ts). Blocks, in order, each
- * with an anchor id and rendered only when it has data:
+ * The venture page template, fed by one MDX file's frontmatter (schema:
+ * src/content.config.ts). Two kinds share this look:
+ * - kind: case-study (AsaanBill, TapitCard, Ladenza). Blocks, in order:
  *   snapshot · problem · product-idea-fit · product-market-fit · scale ·
  *   approvals · journey · terms · limitations · team · results · lessons ·
  *   evidence · next
+ * - kind: role-story (Dressup, SonicEngine AI), built from one cv.json
+ *   experience entry: the header carries Raja's role, dates and location; then
+ *   product · what-i-did · problem · limitations · results · lessons ·
+ *   evidence · next, and a closing call to action. No stage badge, no metric.
+ * Each block has an anchor id and renders only when it has data.
  * A value that is still "TODO: …" counts as missing, so its block or field is
  * simply left out: no empty headings, no placeholders.
  * Desktop: a sticky "On this page" list of the rendered blocks.
@@ -21,51 +26,74 @@ import ArrowLink from '../components/ArrowLink.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import home from '../content/home.json';
 import { site, filled } from '../lib/site';
+import { bulletText, getExperience, roleDates } from '../lib/cv';
 import { getRecognition, photosOf } from '../lib/recognition';
-import { preSalesText, type CaseStudy } from '../lib/ventures';
+import { preSalesText, type CaseStudy, type RoleStory } from '../lib/ventures';
 
 interface Props {
   id: string;
-  data: CaseStudy;
+  data: CaseStudy | RoleStory;
 }
 
 const { id, data } = Astro.props;
+const cs = data.kind === 'case-study' ? data : undefined;
+const rs = data.kind === 'role-story' ? data : undefined;
 const card = site.ventures.find((v) => v.id === id);
+
+// Role story: everything about the role comes from cv.json → experience
+const experience = rs ? getExperience(rs.experienceId) : undefined;
+const role = experience?.roles[0];
+const headerFacts = role
+  ? [
+      { label: 'Role', value: role.title },
+      { label: 'Dates', value: roleDates(role) },
+      { label: 'Location', value: filled(experience?.location) },
+    ]
+  : [];
 
 // External link only once its href is real (Ladenza's Instagram is still a TODO)
 const external = data.external && filled(data.external.href)?.startsWith('http') ? data.external : undefined;
 
-// Stages, with the homepage playbook's question for each
-const preSales = preSalesText(data.preSales);
-const stageBlocks = [
-  { id: 'product-idea-fit', name: 'Product-Idea Fit', stage: data.stages.ideaFit },
-  { id: 'product-market-fit', name: 'Product-Market Fit', stage: data.stages.marketFit },
-  { id: 'scale', name: 'Scale', stage: data.stages.scale },
-].map((b, i) => ({
-  ...b,
-  number: String(i + 1).padStart(2, '0'),
-  question: home.playbook.stages.find((s) => s.id === b.id)?.question,
-  text: preSales && b.stage.textWithPreSales ? b.stage.textWithPreSales.replace('{preSales}', preSales) : b.stage.text,
-  reached: data.snapshot.stage === b.name,
-}));
+// Stages (case studies), with the homepage playbook's question for each
+const preSales = preSalesText(cs?.preSales);
+const stageBlocks = cs
+  ? [
+      { id: 'product-idea-fit', name: 'Product-Idea Fit', stage: cs.stages.ideaFit },
+      { id: 'product-market-fit', name: 'Product-Market Fit', stage: cs.stages.marketFit },
+      { id: 'scale', name: 'Scale', stage: cs.stages.scale },
+    ].map((b, i) => ({
+      ...b,
+      number: String(i + 1).padStart(2, '0'),
+      question: home.playbook.stages.find((s) => s.id === b.id)?.question,
+      text: preSales && b.stage.textWithPreSales ? b.stage.textWithPreSales.replace('{preSales}', preSales) : b.stage.text,
+      reached: cs.snapshot.stage === b.name,
+    }))
+  : [];
 
-const pain = filled(data.problem.pain);
-const journey = data.journey;
+const problemText = filled(data.problem?.text);
+const pain = filled(cs?.problem.pain);
+const spotlight = cs?.spotlight;
+const journey = cs?.journey;
+const glossary = cs?.glossary ?? [];
+const contributions = cs?.contributions ?? [];
+const press = cs?.press ?? [];
 const evidence = data.evidenceIds.map(getRecognition).flatMap((item) => photosOf(item).map((p) => ({ image: p.file, caption: p.caption })));
 const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
 
 const blocks = [
-  { id: 'snapshot', label: 'Snapshot', show: true },
-  { id: 'problem', label: 'The problem', show: Boolean(filled(data.problem.text)) },
+  { id: 'snapshot', label: 'Snapshot', show: Boolean(cs) },
+  { id: 'product', label: 'The product', show: Boolean(rs) },
+  { id: 'what-i-did', label: 'What I did', show: Boolean(role) },
+  { id: 'problem', label: 'The problem', show: Boolean(problemText) },
   ...stageBlocks.map((b) => ({ id: b.id, label: b.name, show: Boolean(filled(b.text)) })),
-  { id: 'approvals', label: 'Approvals', show: Boolean(data.spotlight) },
+  { id: 'approvals', label: 'Approvals', show: Boolean(spotlight) },
   { id: 'journey', label: 'Journey', show: Boolean(journey) },
-  { id: 'terms', label: 'Terms', show: data.glossary.length > 0 },
+  { id: 'terms', label: 'Terms', show: glossary.length > 0 },
   { id: 'limitations', label: 'Limitations', show: data.limitations.length > 0 },
-  { id: 'team', label: 'Who did what', show: data.contributions.length > 0 },
+  { id: 'team', label: 'Who did what', show: contributions.length > 0 },
   { id: 'results', label: 'Results', show: Boolean(data.results) },
   { id: 'lessons', label: 'Lessons', show: data.lessons.length > 0 },
-  { id: 'evidence', label: 'Evidence', show: evidence.length > 0 || data.press.length > 0 },
+  { id: 'evidence', label: 'Evidence', show: evidence.length > 0 || press.length > 0 },
   { id: 'next', label: 'Next', show: true },
 ];
 const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
@@ -73,7 +101,13 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 
 <Base title={data.title} description={data.summary}>
   <ReadingProgress />
-  <SubPageHeader section="/ventures/" overviewLabel="Overview" title={data.title} intro={card?.line} />
+  <SubPageHeader
+    section="/ventures/"
+    overviewLabel="Overview"
+    title={experience?.company ?? data.title}
+    intro={rs ? experience?.product : card?.line}
+    facts={headerFacts}
+  />
 
   <div class="wrap venture">
     <nav class="toc" aria-label="On this page" data-toc>
@@ -95,33 +129,34 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 
     <div class="venture-body">
       <!-- Snapshot -->
+      {cs && (
       <section id="snapshot" class="block snapshot" aria-labelledby="snapshot-heading" data-block data-reveal>
         <div class="snapshot-top">
           <h2 id="snapshot-heading" class="snapshot-title">Snapshot</h2>
-          <p class="badge">Stage reached: {data.snapshot.stage}</p>
+          <p class="badge">Stage reached: {cs.snapshot.stage}</p>
         </div>
         <dl class="snapshot-facts">
           <div>
             <dt>Role</dt>
-            <dd>{data.snapshot.role}</dd>
+            <dd>{cs.snapshot.role}</dd>
           </div>
           <div>
             <dt>Dates</dt>
-            <dd>{data.snapshot.dates}</dd>
+            <dd>{cs.snapshot.dates}</dd>
           </div>
           {
-            filled(data.snapshot.team) && (
+            filled(cs.snapshot.team) && (
               <div>
                 <dt>Team</dt>
-                <dd>{data.snapshot.team}</dd>
+                <dd>{cs.snapshot.team}</dd>
               </div>
             )
           }
         </dl>
         {
-          data.snapshot.metrics.length > 0 && (
+          cs.snapshot.metrics.length > 0 && (
             <ul class="snapshot-metrics">
-              {data.snapshot.metrics.map((m) => (
+              {cs.snapshot.metrics.map((m) => (
                 <li>
                   <span class="snapshot-value">{m.value}</span> <span class="snapshot-label">{m.label}</span>
                 </li>
@@ -129,7 +164,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
             </ul>
           )
         }
-        <p class="snapshot-outcome">{data.snapshot.outcome}</p>
+        <p class="snapshot-outcome">{cs.snapshot.outcome}</p>
         {
           external && (
             <a href={external.href} class="btn btn-secondary mt-6" target="_blank" rel="noopener">
@@ -139,6 +174,40 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
           )
         }
       </section>
+      )}
+
+      <!-- Role story: the product and what Raja did there (cv.json → experience) -->
+      {
+        rs && experience && (
+          <section id="product" class="block snapshot" aria-labelledby="product-heading" data-block data-reveal>
+            <h2 id="product-heading" class="block-title">
+              The product
+            </h2>
+            {experience.product && <p class="block-lead">{experience.product}</p>}
+            {experience.summary && <p class="block-text">{experience.summary}</p>}
+            {external && (
+              <a href={external.href} class="btn btn-secondary mt-6" target="_blank" rel="noopener">
+                {external.label} <span aria-hidden="true">↗</span>
+                <span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
+          </section>
+        )
+      }
+      {
+        rs && role && (
+          <section id="what-i-did" class="block" aria-labelledby="what-i-did-heading" data-block data-reveal>
+            <h2 id="what-i-did-heading" class="block-title">
+              What I did
+            </h2>
+            <ul class="block-bullets">
+              {role.bullets.map((bullet) => (
+                <li>{bulletText(bullet)}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
 
       <!-- The problem and the market -->
       {
@@ -148,11 +217,11 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
               The problem and the market
             </h2>
             {pain && <p class="block-lead">{pain}</p>}
-            <p class="block-text">{data.problem.text}</p>
-            {data.problem.source && (
+            <p class="block-text">{problemText}</p>
+            {cs?.problem.source && (
               <p class="block-source">
-                <a href={data.problem.source.href} class="link" target="_blank" rel="noopener">
-                  {data.problem.source.label}
+                <a href={cs.problem.source.href} class="link" target="_blank" rel="noopener">
+                  {cs.problem.source.label}
                   <span class="sr-only"> (opens in a new tab)</span> ↗
                 </a>
               </p>
@@ -161,9 +230,10 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
         )
       }
 
-      <!-- The three stages, on the Idea → Fit → Scale spine -->
+      <!-- The three stages, on the Idea → Fit → Scale spine (case studies) -->
+      {cs && (
       <div class="block stages">
-        <StageSpine reached={data.snapshot.stage} anchors={['product-idea-fit', 'product-market-fit', 'scale']} />
+        <StageSpine reached={cs.snapshot.stage} anchors={['product-idea-fit', 'product-market-fit', 'scale']} />
         {
           stageBlocks
             .filter((b) => shown.has(b.id))
@@ -196,9 +266,9 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
                   </p>
                 )}
 
-                {b.id === 'scale' && data.verticals.length > 0 && (
+                {b.id === 'scale' && cs.verticals.length > 0 && (
                   <ul class="verticals" aria-label="Verticals entered">
-                    {data.verticals.map((v) => (
+                    {cs.verticals.map((v) => (
                       <li class="vertical">
                         <p class="vertical-name">{v.name}</p>
                         <p class="vertical-text">{v.text}</p>
@@ -206,11 +276,11 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
                     ))}
                   </ul>
                 )}
-                {b.id === 'scale' && data.clients && (
+                {b.id === 'scale' && cs.clients && (
                   <p class="block-source">
-                    {data.clients.text}{' '}
-                    <a href={data.clients.source.href} class="link" target="_blank" rel="noopener">
-                      {data.clients.source.label}
+                    {cs.clients.text}{' '}
+                    <a href={cs.clients.source.href} class="link" target="_blank" rel="noopener">
+                      {cs.clients.source.label}
                       <span class="sr-only"> (opens in a new tab)</span> ↗
                     </a>
                   </p>
@@ -219,25 +289,26 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
             ))
         }
       </div>
+      )}
 
       <!-- Payments and approvals spotlight (AsaanBill) -->
       {
-        data.spotlight && (
+        spotlight && (
           <section id="approvals" class="block" aria-labelledby="approvals-heading" data-block data-reveal>
             <h2 id="approvals-heading" class="block-title">
-              {data.spotlight.heading}
+              {spotlight.heading}
             </h2>
-            <p class="block-text">{data.spotlight.intro}</p>
+            <p class="block-text">{spotlight.intro}</p>
             <div class="mt-8">
               <DataTable
-                caption={data.spotlight.heading}
+                caption={spotlight.heading}
                 columns={[
                   { key: 'item', label: 'Item' },
                   { key: 'when', label: 'When' },
                   { key: 'means', label: 'What it means' },
                   { key: 'source', label: 'Source' },
                 ]}
-                rows={data.spotlight.rows.map((r) => ({
+                rows={spotlight.rows.map((r) => ({
                   item: r.item,
                   when: r.when,
                   means: r.means,
@@ -265,13 +336,13 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 
       <!-- Terms used on this page -->
       {
-        data.glossary.length > 0 && (
+        glossary.length > 0 && (
           <section id="terms" class="block terms" aria-labelledby="terms-heading" data-block data-reveal>
             <h2 id="terms-heading" class="terms-title">
               Terms used on this page
             </h2>
             <dl class="terms-list">
-              {data.glossary.map((g) => (
+              {glossary.map((g) => (
                 <div>
                   <dt>{g.term}:</dt> <dd>{g.definition}</dd>
                 </div>
@@ -307,7 +378,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 
       <!-- Who did what -->
       {
-        data.contributions.length > 0 && (
+        contributions.length > 0 && (
           <section id="team" class="block" aria-labelledby="team-heading" data-block data-reveal>
             <h2 id="team-heading" class="block-title">
               Who did what
@@ -320,7 +391,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
                   { key: 'raja', label: 'Raja' },
                   { key: 'others', label: 'Team and partners' },
                 ]}
-                rows={data.contributions}
+                rows={contributions}
               />
             </div>
           </section>
@@ -377,11 +448,11 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
                 />
               </div>
             )}
-            {data.press.length > 0 && (
+            {press.length > 0 && (
               <div class="press">
                 <h3 class="press-title">In the press</h3>
                 <ul class="mt-3 flex flex-col gap-2">
-                  {data.press.map((p) => (
+                  {press.map((p) => (
                     <li>
                       <a href={p.href} class="link" target="_blank" rel="noopener">
                         {p.label}
@@ -407,9 +478,23 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
               </ArrowLink>
             )
           }
-          <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>
+          {cs && <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>}
         </div>
       </section>
+
+      <!-- Role story: closing call to action -->
+      {
+        rs && (
+          <section class="block role-cta" aria-labelledby="role-cta-heading" data-reveal>
+            <h2 id="role-cta-heading" class="text-display-md">
+              {rs.cta.heading}
+            </h2>
+            <ArrowLink href={rs.cta.link.href} class="text-lg">
+              {rs.cta.link.label}
+            </ArrowLink>
+          </section>
+        )
+      }
     </div>
   </div>
 </Base>
@@ -770,6 +855,13 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     justify-content: space-between;
     gap: 1.25rem 2rem;
     margin-top: 0.75rem;
+  }
+  .role-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem 2rem;
   }
   .next-row :global(.next-link) {
     font-family: var(--font-display);

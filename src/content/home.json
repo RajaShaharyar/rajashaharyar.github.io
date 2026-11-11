@@ -60,7 +60,21 @@
       }
     ]
   },
-  "ventures": { "heading": "Ventures", "intro": "Three markets, one method.", "cardLink": "Read the journey" },
+  "ventures": {
+    "heading": "Ventures",
+    "intro": "Three markets, one method.",
+    "cardLink": "Read the journey",
+    "description": "Dressup, AsaanBill, SonicEngine AI, TapitCard, Ladenza Clothing and other ventures by Raja Shaharyar Ali, with the stage each reached.",
+    "_descriptionDraft": "The /ventures meta description is new wording (the list of ventures changed): for Raja to revise.",
+    "yoursNext": {
+      "heading": "Yours next?",
+      "line": "Building something that needs its first customers, a sales engine or a payments launch? Tell me where it stands.",
+      "draft": true,
+      "primary": { "label": "Let's talk", "href": "/contact/?reason=growth-help" },
+      "secondary": { "label": "How I work", "href": "/work-with-me/" },
+      "_note": "Shown at /ventures/#yours-next and at the end of /ventures/other/. The line is draft wording for Raja to revise."
+    }
+  },
   "hardWins": {
     "heading": "Things that aren't easy",
     "intro": "Payments in Pakistan are regulated, gated and slow to open. These are the gates AsaanBill got through.",

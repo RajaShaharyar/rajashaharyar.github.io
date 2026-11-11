@@ -25,6 +25,12 @@ const stage = z.object({
   source: link.optional(),
 });
 
+/** Shared by case studies and role stories */
+const limitations = z
+  .array(z.object({ constraint: z.string(), whyItMattered: z.string(), tried: z.string(), worked: z.string(), result: z.string() }))
+  .default([]);
+const results = z.object({ tiles: z.array(metric).min(1), definition: z.string().optional() }).optional();
+
 /**
  * A case study (AsaanBill, Tapit, Ladenza), rendered by VentureLayout. Every
  * optional block renders only when it has data; a value that is still a
@@ -75,11 +81,9 @@ const caseStudy = z.object({
     })
     .optional(),
   glossary: z.array(z.object({ term: z.string(), definition: z.string() })).default([]),
-  limitations: z
-    .array(z.object({ constraint: z.string(), whyItMattered: z.string(), tried: z.string(), worked: z.string(), result: z.string() }))
-    .default([]),
+  limitations,
   contributions: z.array(z.object({ area: z.string(), raja: z.string(), others: z.string() })).default([]),
-  results: z.object({ tiles: z.array(metric).min(1), definition: z.string().optional() }).optional(),
+  results,
   lessons: z.array(z.string()).default([]),
   /** recognition.json ids whose photos make the evidence gallery */
   evidenceIds: z.array(z.string()).default([]),
@@ -87,15 +91,43 @@ const caseStudy = z.object({
   next: link.optional(),
 });
 
-/** A page of role cards (Consulting & product roles), built from cv.json. */
+/**
+ * A lighter venture page (Dressup, SonicEngine AI), rendered by VentureLayout
+ * in the same look as a case study. Company, product, summary, Raja's role,
+ * dates, location and "What I did" all come from one cv.json experience entry.
+ * The optional blocks render only once they are filled in (not "TODO: …").
+ * No stage badge and no metric: none exists for these products.
+ */
+const roleStory = z.object({
+  ...base,
+  kind: z.literal('role-story'),
+  /** cv.json → experience id */
+  experienceId: z.string(),
+  /** Product link, shown under "The product" once the href is real */
+  external: link.optional(),
+  problem: z.object({ text: z.string(), draft: z.boolean().default(false) }).optional(),
+  limitations,
+  results,
+  lessons: z.array(z.string()).default([]),
+  /** recognition.json ids whose photos make the evidence gallery */
+  evidenceIds: z.array(z.string()).default([]),
+  next: link.optional(),
+  cta: z.object({ heading: z.string(), link }),
+});
+
+/** A page of role cards (Other ventures), built from cv.json. */
 const roles = z.object({
   ...base,
   kind: z.literal('roles'),
   intro: z.string(),
   /** cv.json experience ids, in display order; the first is the wide featured card */
   roles: z.array(z.string()).min(1),
+  /** cv.json → otherVentures ids, shown as cards after the roles (e.g. Mustahiq) */
+  otherVentures: z.array(z.string()).default([]),
   featuredNote: z.string().optional(),
-  cta: z.object({ heading: z.string(), link }),
+  /** Closing call to action; or yoursNext: true for the shared "Yours next?" block (home.json → ventures.yoursNext) */
+  cta: z.object({ heading: z.string(), link }).optional(),
+  yoursNext: z.boolean().default(false),
 });
 
 /**
@@ -105,7 +137,7 @@ const roles = z.object({
  */
 const ventures = defineCollection({
   loader: glob({ pattern: '*.mdx', base: './src/content/ventures' }),
-  schema: z.discriminatedUnion('kind', [caseStudy, roles]),
+  schema: z.discriminatedUnion('kind', [caseStudy, roleStory, roles]),
 });
 
 /** Pages that can list a Recognition-log item (the log's "Shown on" column). */

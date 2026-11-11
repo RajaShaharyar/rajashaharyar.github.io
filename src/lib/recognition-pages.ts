@@ -5,10 +5,10 @@ import { countBadge, type Badge } from './recognition';
 /** Copy for /recognition and its sub-pages (src/content/recognition-pages.json). */
 export const recognitionCopy = copy;
 
-/** A Recognition sub-page's menu entry (label = H1, description = intro), from site.json → nav. */
+/** A Recognition sub-page's menu entry (label = H1, description = intro), from site.json → recognitionMenu. */
 export function recognitionMenuEntry(href: string): { label: string; href: string; description: string } {
-  const entry = site.nav.find((item) => item.href === '/recognition/')?.children?.find((c) => c.href === href);
-  if (!entry) throw new Error(`"${href}" is not in the Recognition menu in site.json.`);
+  const entry = site.recognitionMenu.children.find((c) => c.href === href);
+  if (!entry) throw new Error(`"${href}" is not in site.json → recognitionMenu.`);
   return { label: entry.label, href: entry.href, description: entry.description ?? '' };
 }
 

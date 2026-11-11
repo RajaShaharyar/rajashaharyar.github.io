@@ -34,83 +34,87 @@
     "_note": "Every Download CV link (home hero, footer, /cv header) points at pdfHref with this download name, and appears once public/cv.pdf exists. Regenerate it with npm run cv:pdf after editing cv.json."
   },
   "cta": { "label": "Let's talk", "href": "/contact/" },
+  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About · CV · then the cta button. Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
   "nav": [
     { "label": "Home", "href": "/" },
     {
       "label": "Ventures",
       "href": "/ventures/",
       "children": [
+        { "label": "Dressup", "href": "/ventures/dressup/", "description": "Product consultant: a hyper-personalised marketplace" },
         { "label": "AsaanBill", "href": "/ventures/asaanbill/", "description": "Regulated fintech, from 0→1 to scale" },
-        { "label": "Tapit", "href": "/ventures/tapit/", "description": "Founder story: from idea to 3,000+ customers" },
-        { "label": "Ladenza Clothing", "href": "/ventures/ladenza/", "description": "Consumer selling and acquisition" },
-        {
-          "label": "Consulting & product roles",
-          "href": "/ventures/consulting/",
-          "description": "HOMS, Dressup, Gameotivity and SonicEngine AI"
-        }
+        { "label": "SonicEngine AI", "href": "/ventures/sonicengine-ai/", "description": "Product owner: a text-to-game engine" },
+        { "label": "TapitCard", "href": "/ventures/tapit/", "description": "Founder story: from idea to 3,000+ customers" },
+        { "label": "Ladenza", "href": "/ventures/ladenza/", "description": "Consumer selling and acquisition" },
+        { "label": "Other ventures", "href": "/ventures/other/", "description": "HOMS, Gameotivity and Mustahiq" },
+        { "label": "Yours next?", "href": "/ventures/#yours-next", "description": "Your product could be the next story" }
       ]
     },
     { "label": "Work With Me", "href": "/work-with-me/" },
-    {
-      "label": "Recognition",
-      "href": "/recognition/",
-      "children": [
-        {
-          "label": "Competitions & awards",
-          "href": "/recognition/competitions-awards/",
-          "description": "Wins, a top-3 finish and awards, with photos"
-        },
-        {
-          "label": "Programmes & incubation",
-          "href": "/recognition/programmes/",
-          "description": "NIC Peshawar, K2prenuer, Founder Institute"
-        },
-        {
-          "label": "Partnerships & MOUs",
-          "href": "/recognition/partnerships/",
-          "description": "MOU signings and partnership counts"
-        },
-        {
-          "label": "Speaking & events",
-          "href": "/recognition/speaking-events/",
-          "description": "Guest talks, the podcast, events and media"
-        }
-      ]
-    },
-    {
-      "label": "About",
-      "href": "/about/",
-      "children": [
-        { "label": "My story", "href": "/about/", "description": "The story, career timeline and 2024 in review" },
-        {
-          "label": "Education",
-          "href": "/about/education/",
-          "description": "Degree, courses and the final-year project prize"
-        },
-        { "label": "Skills & tools", "href": "/about/skills/", "description": "The grouped toolkit and how I work" },
-        { "label": "Beyond work", "href": "/about/beyond-work/", "description": "NGO Mustahiq and the K2 trek" }
-      ]
-    },
+    { "label": "About", "href": "/about/" },
     { "label": "CV", "href": "/cv/" }
   ],
+  "recognitionMenu": {
+    "label": "Recognition",
+    "href": "/recognition/",
+    "children": [
+      {
+        "label": "Competitions & awards",
+        "href": "/recognition/competitions-awards/",
+        "description": "Wins, a top-3 finish and awards, with photos"
+      },
+      {
+        "label": "Programmes & incubation",
+        "href": "/recognition/programmes/",
+        "description": "NIC Peshawar, K2prenuer, Founder Institute"
+      },
+      {
+        "label": "Partnerships & MOUs",
+        "href": "/recognition/partnerships/",
+        "description": "MOU signings and partnership counts"
+      },
+      {
+        "label": "Speaking & events",
+        "href": "/recognition/speaking-events/",
+        "description": "Guest talks, the podcast, events and media"
+      }
+    ]
+  },
+  "_venturesNote": "Venture cards, in menu order (the /ventures overview, and the homepage product section reads its line and metric from here). No badge or metric where none exists.",
   "ventures": [
+    {
+      "id": "dressup",
+      "name": "Dressup",
+      "href": "/ventures/dressup/",
+      "meta": "Product Consultant · Marketplace",
+      "role": "Product Consultant",
+      "line": "A hyper-personalised marketplace"
+    },
     {
       "id": "asaanbill",
       "name": "AsaanBill",
       "href": "/ventures/asaanbill/",
-      "footer": true,
       "meta": "Fintech · Evamp & Saanga · 2024–present",
+      "role": "Product Owner (Growth), then Manager, Product & Growth",
       "badge": "Scale",
       "metric": { "value": "$1.8M+", "label": "monthly volume" },
       "line": "Invoicing and payment collection for Pakistani businesses, approved on 1Bill and Raast.",
       "image": { "src": "recognition/mou-asaanbill-najoomi.webp", "fit": "contain" }
     },
     {
+      "id": "sonicengine-ai",
+      "name": "SonicEngine AI",
+      "href": "/ventures/sonicengine-ai/",
+      "meta": "Product Owner · Game tech · 2024",
+      "role": "Product Owner",
+      "line": "A text-to-game engine"
+    },
+    {
       "id": "tapit",
-      "name": "Tapit",
+      "name": "TapitCard",
       "href": "/ventures/tapit/",
-      "footer": true,
       "meta": "Co-Founder & Head of Growth · 2022–present",
+      "role": "Co-Founder & Head of Growth",
       "badge": "Product-Market Fit",
       "metric": { "value": "3,000+", "label": "customers" },
       "line": "A digital contact card, pre-sold on a prototype and sold mostly to corporates.",
@@ -120,19 +124,19 @@
       "id": "ladenza",
       "name": "Ladenza Clothing",
       "href": "/ventures/ladenza/",
-      "footer": true,
       "meta": "Founder · Consumer",
+      "role": "Founder",
       "badge": "Product-Market Fit",
       "metric": { "value": "PKR 1 Cr", "label": "in sales" },
       "line": "An online thrift store for branded clothes, started during COVID and sold through hostel dorms."
     },
     {
-      "id": "consulting",
-      "name": "Consulting & product roles",
-      "href": "/ventures/consulting/",
-      "footer": false,
-      "meta": "HOMS · Dressup · Gameotivity · SonicEngine AI",
-      "line": "Growth and product roles across hostel tech, marketplaces, web3 and game tech."
+      "id": "other",
+      "name": "Other ventures",
+      "href": "/ventures/other/",
+      "meta": "HOMS · Gameotivity · Mustahiq",
+      "line": "Growth and product roles in hostel tech and web3, and the NGO Mustahiq.",
+      "_draft": "line is new wording (the old one also covered Dressup and SonicEngine AI, which now have their own pages): for Raja to revise."
     }
   ],
   "stats": [

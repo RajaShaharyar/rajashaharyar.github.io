@@ -1,17 +1,21 @@
 ---
 /**
- * Consulting & product roles (/ventures/consulting): not a case study, a page
- * of role cards. Order and copy come from src/content/ventures/consulting.mdx;
- * each card's facts come from src/content/cv.json → experience (company, role,
- * dates, what they built, what Raja did), so the CV and this page never
- * disagree. The first role is the wide featured card. Dates that are still a
- * TODO are hidden; an outcome shows only where one exists.
+ * Other ventures (/ventures/other): not a case study, a page of cards. Order
+ * and copy come from src/content/ventures/other.mdx; each role card's facts
+ * come from src/content/cv.json → experience (company, role, dates, what they
+ * built, what Raja did), so the CV and this page never disagree. The first role
+ * is the wide featured card. Cards for cv.json → otherVentures (Mustahiq)
+ * follow, each linking to where it is told. Dates that are still a TODO are
+ * hidden; an outcome shows only where one exists. The page ends with the
+ * shared "Yours next?" block (yoursNext: true) or its own call to action.
  */
 import Base from './Base.astro';
 import SubPageHeader from '../components/SubPageHeader.astro';
 import ArrowLink from '../components/ArrowLink.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
-import { bulletText, getExperience, roleDates } from '../lib/cv';
+import YoursNext from '../components/YoursNext.astro';
+import { bulletText, cv, getExperience, roleDates } from '../lib/cv';
+import { filled } from '../lib/site';
 import type { RolesPage } from '../lib/ventures';
 
 interface Props {
@@ -31,6 +35,13 @@ const cards = data.roles.map((id, i) => {
     featured: i === 0,
   };
 });
+const others = data.otherVentures.map((id) => {
+  const item = cv.otherVentures.items.find((v) => v.id === id);
+  if (!item) throw new Error(`"${id}" is not in cv.json → otherVentures.`);
+  return { ...item, meta: [item.role, filled(item.dates)].filter(Boolean).join(' · ') };
+});
+// The page an "other venture" is told on (Mustahiq: About → Beyond work)
+const linkLabel = (href: string) => (href.includes('#beyond-work') ? 'Beyond work' : 'Read more');
 ---
 
 <Base title={data.title} description={data.summary}>
@@ -57,15 +68,38 @@ const cards = data.roles.map((id, i) => {
           </li>
         ))
       }
+      {
+        others.map((o) => (
+          <li id={o.id} class="role">
+            <div class="role-head">
+              <h2 class="role-company">{o.name}</h2>
+              <p class="role-meta">{o.meta}</p>
+            </div>
+            <div class="role-body">
+              <p class="role-text">{o.text}</p>
+              <ArrowLink href={o.href} srContext={o.name} class="mt-3">
+                {linkLabel(o.href)}
+              </ArrowLink>
+            </div>
+          </li>
+        ))
+      }
     </ul>
   </section>
 
-  <section class="wrap pt-16 pb-4 md:pt-20" aria-labelledby="roles-cta-heading">
-    <div class="roles-cta">
-      <h2 id="roles-cta-heading" class="text-display-md">{data.cta.heading}</h2>
-      <ArrowLink href={data.cta.link.href} class="text-lg">{data.cta.link.label}</ArrowLink>
-    </div>
-  </section>
+  {data.yoursNext && <YoursNext />}
+  {
+    data.cta && (
+      <section class="wrap pt-16 pb-4 md:pt-20" aria-labelledby="roles-cta-heading">
+        <div class="roles-cta">
+          <h2 id="roles-cta-heading" class="text-display-md">{data.cta.heading}</h2>
+          <ArrowLink href={data.cta.link.href} class="text-lg">
+            {data.cta.link.label}
+          </ArrowLink>
+        </div>
+      </section>
+    )
+  }
 </Base>
 
 <style>
@@ -102,6 +136,9 @@ const cards = data.roles.map((id, i) => {
   }
   .role-bullets li::marker {
     color: var(--color-accent);
+  }
+  .role-text {
+    color: var(--color-fg-muted);
   }
   .role-outcome {
     margin-top: 1.25rem;

@@ -25,3 +25,12 @@ pnpm-debug.log*
 
 # editor
 .idea/
+
+# Blender: backup saves and local renders (renders belong in %LOCALAPPDATA%\raja-3d\renders, outside the repo)
+*.blend1
+*.blend2
+tools/**/renders/
+
+# Claude Code: machine-specific MCP registration and local settings
+.mcp.json
+.claude/settings.local.json

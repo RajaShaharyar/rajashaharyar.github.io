@@ -14,9 +14,12 @@ export default defineConfig({
   redirects: {
     '/ventures/earlier-roles': '/ventures/other/',
     '/ventures/consulting': '/ventures/other/',
+    '/about/education': '/about/#education',
+    '/about/beyond-work': '/about/#beyond-work',
+    '/about/skills': '/cv/#skills',
   },
   // Sitemap: every page except the 404, the contact thank-you page and the redirects.
-  integrations: [mdx(), sitemap({ filter: (page) => !['/404', '/contact/thanks', '/ventures/earlier-roles', '/ventures/consulting'].some((p) => new URL(page).pathname.replace(/\/$/, '') === p) })],
+  integrations: [mdx(), sitemap({ filter: (page) => !['/404', '/contact/thanks', '/ventures/earlier-roles', '/ventures/consulting', '/about/education', '/about/beyond-work', '/about/skills'].some((p) => new URL(page).pathname.replace(/\/$/, '') === p) })],
   vite: {
     plugins: [tailwindcss()],
   },

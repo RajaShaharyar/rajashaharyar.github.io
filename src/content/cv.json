@@ -342,7 +342,7 @@
     "section": 11,
     "title": "Skills and tools",
     "menuLabel": "Skills",
-    "_note": "Also shown on /about/skills as grouped chips (no percentage bars or ratings).",
+    "_note": "Shown on /cv as grouped chips (no percentage bars or ratings). /about/skills/ redirects to /cv/#skills.",
     "groups": [
       { "name": "Sales", "items": ["HubSpot", "Salesforce", "Apollo", "LinkedIn Sales Navigator", "Jeeva AI"] },
       { "name": "Marketing", "items": ["Meta Suite", "Performance marketing", "Illustrator"] },

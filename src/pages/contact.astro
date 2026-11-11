@@ -1,7 +1,9 @@
 ---
 /**
- * Contact: reason picker (Hiring / Growth help / Speaking / Other), the form,
- * and the direct channels (email, WhatsApp, LinkedIn, booking link).
+ * Let's talk (/contact/), in the sitemap's order: What's this about? (the
+ * reason picker: Hiring / Growth help / Speaking / Other) · Your details (name,
+ * email, phone or WhatsApp, company) · Message and send · Contact details (the
+ * direct channels: beside the form on wide screens, after it on phones).
  *
  * ── HOW THE FORM SENDS (site.json → contact.form) ────────────────────────
  * provider "web3forms": posts to Web3Forms, which emails Raja at the address
@@ -80,7 +82,9 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
             <p class="field-error" id="cf-reason-error" data-error-for="reason" hidden></p>
           </fieldset>
 
-          <div class="mt-8 grid gap-6 sm:grid-cols-2">
+          <fieldset class="mt-8">
+            <legend class="field-label">Your details</legend>
+          <div class="mt-3 grid gap-6 sm:grid-cols-2">
             <div data-field="name">
               <label for="cf-name" class="field-label">Your name</label>
               <input id="cf-name" name="name" type="text" autocomplete="name" required class="field" />
@@ -108,6 +112,7 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
               <input id="cf-company" name="company" type="text" autocomplete="organization" class="field" />
             </div>
           </div>
+          </fieldset>
 
           <div class="mt-6" data-field="message">
             <label for="cf-message" class="field-label">Message</label>

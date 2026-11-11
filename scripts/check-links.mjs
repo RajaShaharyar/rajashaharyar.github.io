@@ -8,7 +8,9 @@
  *   - a #anchor doesn't exist on its target page,
  *   - an <img> has no alt (decorative images must be aria-hidden),
  *   - visible text contains "TODO", "Coming soon", "being written", "undefined" or "NaN",
- *   - a JSON-LD block doesn't parse.
+ *   - a JSON-LD block doesn't parse,
+ *   - a redirect stub (Astro's meta-refresh page for an old address) points at a page or
+ *     #anchor that doesn't exist, or at another redirect (no chains).
  * Then requests every external link once and lists the ones that fail. External
  * failures are reported but never fail the run: many sites answer bots with 403/429.
  * Pass --no-external to skip the network part.
@@ -33,12 +35,28 @@ let internalLinks = 0;
 let anchors = 0;
 let images = 0;
 let jsonLd = 0;
+const redirects = [];
+const isRedirect = (key) => {
+  const file = join(DIST, key, 'index.html');
+  return existsSync(file) && /http-equiv="refresh"/.test(readFileSync(file, 'utf8'));
+};
 const forbidden = ['TODO', 'Coming soon', 'being written', 'undefined', 'NaN'];
 
 for (const f of pages) {
   const html = readFileSync(f, 'utf8');
   const page = urlOf(f);
-  if (/http-equiv="refresh"/.test(html)) continue; // redirect stubs
+  const refresh = html.match(/http-equiv="refresh" content="\d+;url=([^"]+)"/);
+  if (refresh) {
+    // Redirect stub: its target page and anchor must exist, and must not be another redirect.
+    const target = refresh[1].replace(SITE, '');
+    const [path, hash] = target.split('#');
+    const key = path.endsWith('/') ? path : `${path}/`;
+    redirects.push(`${page} → ${target}`);
+    if (!ids.has(key)) problems.push(`${page}: redirects to missing page ${target}`);
+    else if (isRedirect(key)) problems.push(`${page}: redirects to another redirect (${target})`);
+    else if (hash && !ids.get(key)?.has(decodeURIComponent(hash))) problems.push(`${page}: redirects to missing anchor ${target}`);
+    continue;
+  }
 
   const text = html
     .replace(/<script[\s\S]*?<\/script>/g, ' ')
@@ -89,7 +107,9 @@ for (const f of pages) {
   }
 }
 
-console.log(`${pages.length} pages: ${internalLinks} internal links (${anchors} with anchors), ${images} images, ${jsonLd} JSON-LD blocks`);
+console.log(`${pages.length - redirects.length} pages: ${internalLinks} internal links (${anchors} with anchors), ${images} images, ${jsonLd} JSON-LD blocks`);
+console.log(`${redirects.length} redirects:`);
+for (const r of redirects) console.log(`  ${r}`);
 console.log(problems.length ? problems.map((p) => `✗ ${p}`).join('\n') : '✓ No internal problems');
 
 if (checkExternal) {

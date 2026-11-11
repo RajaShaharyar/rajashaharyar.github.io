@@ -1,43 +1,145 @@
 {
-  "_rules": "Copy for the four About pages, first person, as Raja would say it. CV facts (roles, the degree, programmes, skills, languages) live in cv.json and are referenced here by id, so these pages, the CV page (Phase 4) and the PDF never disagree. Photos are keys of images.json; captions come from there unless an item gives its own. draft: true marks wording Raja should revise (it is published as is). Missing data is a TODO and is hidden on the site.",
-
+  "_rules": "Copy for the About page (/about/, one page with eight sections), first person, as Raja would say it. CV facts (roles, the degree, programmes, honours, leadership) live in cv.json and are referenced here by id, so this page, the CV page and the PDF never disagree. Photos are keys of images.json; captions come from there unless an item gives its own. draft: true marks wording Raja should revise (it is published as is). Missing data is a TODO and is hidden on the site.",
+  "page": {
+    "title": "About",
+    "description": "How Raja Shaharyar Ali went from a game-development degree to co-founding TapitCard and driving product and growth for AsaanBill.",
+    "onThisPage": "On this page",
+    "sections": [
+      {
+        "id": "intro",
+        "label": "Intro"
+      },
+      {
+        "id": "career",
+        "label": "Career timeline"
+      },
+      {
+        "id": "recognition",
+        "label": "Recognition"
+      },
+      {
+        "id": "education",
+        "label": "Education"
+      },
+      {
+        "id": "courses",
+        "label": "Courses"
+      },
+      {
+        "id": "distinctions",
+        "label": "Distinctions"
+      },
+      {
+        "id": "beyond-work",
+        "label": "Beyond work"
+      },
+      {
+        "id": "speaking",
+        "label": "Speaking"
+      }
+    ],
+    "_sectionsNote": "The \"On this page\" row, in page order. Labels follow the sitemap (Consultation Website.pdf)."
+  },
   "story": {
     "title": "My story",
-    "description": "How Raja Shaharyar Ali went from a game-development degree to co-founding TapitCard and driving product and growth for AsaanBill.",
     "paragraphs": [
       "I studied Computer Game Development at Air University and started selling before I graduated. During COVID I ran Ladenza Clothing, an online thrift store that sold branded clothes through hostel dorms and reached PKR 1 Cr in sales.",
       "In January 2022 I co-founded TapitCard, a digital contact card. I pre-sold the prototype before it was built, then grew it to 3,000+ customers, mostly through B2B sales to corporates. Along the way TapitCard won startup competitions, went through NIC Peshawar's incubator and was picked for K2prenuer.",
       "Since November 2024 I've driven product and growth for AsaanBill at Evamp & Saanga: from the 0→1 launch on 1Bill to Raast approval, 15+ ERP partnerships and $1.8M+ in monthly transaction volume. I've also worked on growth and product for HOMS, Dressup, Gameotivity and SonicEngine AI."
     ],
     "closing": "I'm working towards becoming the go-to deal closer in any room.",
-
     "timeline": {
       "heading": "Career timeline",
       "_order": "Oldest first, as listed. dateISO (YYYY-MM or YYYY) is used only to place the automatic entries below; null keeps an entry where it is.",
       "items": [
-        { "date": "During COVID", "dateISO": null, "text": "Started Ladenza Clothing, an online thrift store" },
-        { "date": "Sep 2020", "dateISO": "2020-09", "text": "Started BS Computer Game Development, Air University" },
-        { "date": "Jan 2022", "dateISO": "2022-01", "text": "Co-founded TapitCard" },
-        { "date": "Mar 2023", "dateISO": "2023-03", "text": "Joined NIC Peshawar Cohort-11 and Founder Institute Core" },
-        { "date": "May 2023", "dateISO": "2023-05", "text": "1st prize at PGDC 2023 for MetaBite" },
-        { "date": "Jun 2023", "dateISO": "2023-06", "text": "Won the Zindigi Prize Islamabad Regionals" },
-        { "date": "Jul 2023", "dateISO": "2023-07", "text": "Growth Consultant at HOMS" },
-        { "date": "Jan 2024", "dateISO": "2024-01", "text": "Won the Startup Pitching League at NIC Peshawar" },
-        { "date": "Mar 2024", "dateISO": "2024-03", "text": "Product Owner at SonicEngine AI" },
-        { "date": "Apr 2024", "dateISO": "2024-04", "text": "Opened TapitCard's office at AUBIC" },
-        { "date": "Jun 2024", "dateISO": "2024-06", "text": "Graduated from Air University" },
-        { "date": "2024", "dateISO": "2024", "text": "Selected for K2prenuer; launched Mustahiq's first project" },
-        { "date": "Nov 2024", "dateISO": "2024-11", "text": "Joined Evamp & Saanga; launched AsaanBill on 1Bill" },
-        { "date": "Oct 2025", "dateISO": "2025-10", "text": "Manager, Product & Growth" },
-        { "date": "Jun 2026", "dateISO": "2026-06", "text": "AsaanBill's Raast approval" }
+        {
+          "date": "During COVID",
+          "dateISO": null,
+          "text": "Started Ladenza Clothing, an online thrift store"
+        },
+        {
+          "date": "Sep 2020",
+          "dateISO": "2020-09",
+          "text": "Started BS Computer Game Development, Air University"
+        },
+        {
+          "date": "Jan 2022",
+          "dateISO": "2022-01",
+          "text": "Co-founded TapitCard"
+        },
+        {
+          "date": "Mar 2023",
+          "dateISO": "2023-03",
+          "text": "Joined NIC Peshawar Cohort-11 and Founder Institute Core"
+        },
+        {
+          "date": "May 2023",
+          "dateISO": "2023-05",
+          "text": "1st prize at PGDC 2023 for MetaBite"
+        },
+        {
+          "date": "Jun 2023",
+          "dateISO": "2023-06",
+          "text": "Won the Zindigi Prize Islamabad Regionals"
+        },
+        {
+          "date": "Jul 2023",
+          "dateISO": "2023-07",
+          "text": "Growth Consultant at HOMS"
+        },
+        {
+          "date": "Jan 2024",
+          "dateISO": "2024-01",
+          "text": "Won the Startup Pitching League at NIC Peshawar"
+        },
+        {
+          "date": "Mar 2024",
+          "dateISO": "2024-03",
+          "text": "Product Owner at SonicEngine AI"
+        },
+        {
+          "date": "Apr 2024",
+          "dateISO": "2024-04",
+          "text": "Opened TapitCard's office at AUBIC"
+        },
+        {
+          "date": "Jun 2024",
+          "dateISO": "2024-06",
+          "text": "Graduated from Air University"
+        },
+        {
+          "date": "2024",
+          "dateISO": "2024",
+          "text": "Selected for K2prenuer; launched Mustahiq's first project"
+        },
+        {
+          "date": "Nov 2024",
+          "dateISO": "2024-11",
+          "text": "Joined Evamp & Saanga; launched AsaanBill on 1Bill"
+        },
+        {
+          "date": "Oct 2025",
+          "dateISO": "2025-10",
+          "text": "Manager, Product & Growth"
+        },
+        {
+          "date": "Jun 2026",
+          "dateISO": "2026-06",
+          "text": "AsaanBill's Raast approval"
+        }
       ],
       "fromExperience": [
-        { "experienceId": "dressup", "text": "Product Consultant at Dressup" },
-        { "experienceId": "gameotivity", "text": "Product Owner at Gameotivity" }
+        {
+          "experienceId": "dressup",
+          "text": "Product Consultant at Dressup"
+        },
+        {
+          "experienceId": "gameotivity",
+          "text": "Product Owner at Gameotivity"
+        }
       ],
       "_fromExperienceNote": "Each joins the timeline automatically, in date order, once its start date in cv.json → experience is filled in as YYYY-MM. Until then it is left off."
     },
-
     "review": {
       "heading": "2024 in review",
       "label": "2024 in review photos",
@@ -56,17 +158,21 @@
         "about/2024-k2prenuer-premiere.webp"
       ]
     },
-
-    "links": {
-      "next": { "label": "Education", "href": "/about/education/" },
-      "cta": { "label": "Let's talk", "href": "/contact/" }
+    "_note": "Intro section: heading = title. The career timeline ends with \"2024 in review\" (review)."
+  },
+  "recognition": {
+    "heading": "Recognition",
+    "highlightsLabel": "Wins",
+    "maxHighlights": 6,
+    "_highlightsNote": "Up to 6 cards: competition results (Winner, Top 3) that have a photo, in the homepage carousel order (home.json → recognition.slides). Counters are the /recognition counters (recognition-pages.json), computed from recognition.json.",
+    "allLink": {
+      "label": "All recognition",
+      "href": "/recognition/"
     }
   },
-
   "education": {
     "title": "Education",
     "intro": "A game-development degree, then founder training on the job.",
-    "description": "A game-development degree from Air University, then founder training on the job: Founder Institute, NIC Peshawar and NUST.",
     "degree": {
       "cvId": "bs-computer-game-development",
       "_cvIdNote": "Degree, institution, city and dates come from cv.json → education.",
@@ -84,70 +190,73 @@
       "heading": "Courses and programmes",
       "coveredLabel": "What it covered",
       "certificateLabel": "View certificate",
-      "cvIds": ["founder-institute-core", "nic-peshawar-incubation", "nust-sustainable-innovation"],
+      "cvIds": [
+        "founder-institute-core",
+        "nic-peshawar-incubation",
+        "nust-sustainable-innovation"
+      ],
       "_cvIdsNote": "Shown as cards in date order. Provider, programme, dates and photo come from cv.json → programmes; 'covered' and 'certificate' appear only once filled in there."
-    },
-    "campus": {
-      "heading": "On campus",
-      "label": "On-campus photos",
-      "items": [
-        { "text": "Director Marketing, AirTech'24", "image": "about/2024-airtech.webp" },
-        {
-          "text": "Major Contributor Award from the Registrar",
-          "image": "about/2024-major-contributor-award.webp",
-          "_note": "Uses the 2024 Unwrapped photo of the award plaque. The Registrar office photo (recognition/award-air-university-registrar.webp) shows the Startup Pitching League 2024 trophy instead, so it isn't captioned as this award."
-        },
-        { "text": "Recognised by the VC for TapitCard's Zindigi Prize win", "image": "recognition/zindigi-win-air-university-vc.webp" },
-        { "text": "TapitCard's office at Air University's incubation centre (AUBIC), April 2024", "image": "about/2024-tapitcard-office.webp" }
-      ]
     },
     "closing": {
       "text": "Game development taught me to build things people come back to: the question behind every venture since.",
       "draft": true
-    }
-  },
-
-  "skills": {
-    "title": "Skills & tools",
-    "description": "How Raja Shaharyar Ali works, with proof for each principle, plus his sales, marketing and product toolkit and languages.",
-    "howIWork": {
-      "heading": "How I work",
-      "proofLabel": "Proof",
-      "items": [
-        { "principle": "Start with the ideal customer.", "proof": "Defined AsaanBill's ideal customer profiles before launch." },
-        { "principle": "Pilot before scaling.", "proof": "Piloted HOMS in 3 hostels and pre-sold Tapit's prototype before building it." },
-        { "principle": "Grow through partners.", "proof": "15+ ERP partnerships and 6 strategic partnerships across Karachi, Lahore and Islamabad." },
-        { "principle": "Build the funnel before the campaign.", "proof": "Built go-to-market funnels at AsaanBill and SonicEngine AI." }
-      ]
     },
-    "toolkit": {
-      "heading": "Toolkit",
-      "_from": "cv.json → skills.groups (chips only: no percentage bars or ratings)"
-    },
-    "languages": {
-      "heading": "Languages",
-      "_from": "cv.json → languages"
-    }
+    "_note": "Education section: the degree card, final-year project and degree photos. Courses section: programmes. The On campus photos moved: AirTech'24 and the Major Contributor Award are Distinctions; the TapitCard office photo is in 2024 in review; the VC photo is on Competitions & awards."
   },
-
+  "distinctions": {
+    "heading": "Distinctions",
+    "label": "Distinction photos",
+    "recognitionIds": [
+      "award-entrepreneur-of-the-year-2024",
+      "award-major-contributor",
+      "event-airtech-24",
+      "event-us-delegation"
+    ],
+    "_note": "Individual honours and roles not counted under the Recognition wins. Text comes from cv.json → honours / leadership (matched by recognition id), the photo from recognition.json. The heading is the sitemap's label."
+  },
   "beyondWork": {
     "title": "Beyond work",
-    "description": "Raja Shaharyar Ali outside his day job: founding the NGO Mustahiq, and trekking to K2 with the K2prenuer cohort.",
     "sections": [
       {
         "id": "mustahiq",
         "heading": "Mustahiq (NGO)",
         "text": "Founder & Operations Head. Mustahiq's first project, in F-8 Islamabad, provides a livelihood. It has since signed an MOU with Human Care Foundation at NICAT.",
         "label": "Mustahiq photos",
-        "images": ["about/2024-mustahiq-first-project.webp", "recognition/mou-humancare-mustahiq.webp"]
+        "images": [
+          "about/2024-mustahiq-first-project.webp",
+          "recognition/mou-humancare-mustahiq.webp"
+        ]
       },
       {
         "id": "k2",
         "heading": "K2",
         "text": "TapitCard joined K2prenuer as its youngest startup, in the top 10 of 3,000+ applicants. Then I trekked to K2, the world's second-highest mountain, with the cohort.",
         "label": "K2 photos",
-        "images": ["about/2024-k2-trek.webp", "recognition/k2prenuer-youngest-startup.webp"]
+        "images": [
+          "about/2024-k2-trek.webp",
+          "recognition/k2prenuer-youngest-startup.webp"
+        ]
       }
     ]
+  },
+  "speaking": {
+    "heading": "On stage",
+    "line": "Invited to speak at Air University, NUST EME, NUML and HITEC University, and host of the AsaanBill podcast.",
+    "label": "Speaking photos",
+    "images": [
+      "speaking/talk-air-university.webp",
+      "speaking/talk-nust-eme.webp",
+      "speaking/talk-hitec-hibis-2025.webp",
+      "speaking/podcast-asaanbill.webp"
+    ],
+    "button": {
+      "label": "Invite me to speak",
+      "href": "/contact/?reason=speaking"
+    },
+    "link": {
+      "label": "Speaking & events",
+      "href": "/recognition/speaking-events/"
+    },
+    "_note": "Moved from the homepage (On stage). The line and the button keep their wording."
   }
 }

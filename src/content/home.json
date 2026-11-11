@@ -7,9 +7,18 @@
     "roleLine": "Manager, Product & Growth at Evamp & Saanga",
     "image": "about/2024-airtech.webp",
     "imagePosition": "22% 35%",
-    "primary": { "label": "Let's talk", "href": "/contact/" },
-    "secondary": { "label": "See the work", "href": "#products" },
-    "cvButton": { "label": "Download CV", "_note": "Shown only once public/cv.pdf exists." },
+    "primary": {
+      "label": "Let's talk",
+      "href": "/contact/"
+    },
+    "secondary": {
+      "label": "See the work",
+      "href": "#products"
+    },
+    "cvButton": {
+      "label": "Download CV",
+      "_note": "Shown only once public/cv.pdf exists."
+    },
     "_imageNote": "Interim until a headshot exists: Raja at the podium, AirTech'24 closing ceremony (no watermark). The NUML photo carries the photographer's credit, so it isn't used here."
   },
   "proof": {
@@ -32,7 +41,13 @@
     "intro": "From a marketplace and a text-to-game engine to regulated payments: what each product does and what I did there.",
     "draft": true,
     "_draftNote": "Heading and intro are new wording for Raja to revise.",
-    "order": ["dressup", "asaanbill", "sonicengine-ai", "tapit", "ladenza"],
+    "order": [
+      "dressup",
+      "asaanbill",
+      "sonicengine-ai",
+      "tapit",
+      "ladenza"
+    ],
     "_orderNote": "Reorder the products by reordering these ids (site.json → ventures ids). Name, role, line and metric come from site.json → ventures; each id needs a drawing in src/components/ProductArt.astro.",
     "storyLink": "Read the story"
   },
@@ -46,8 +61,14 @@
         "question": "Is the problem worth solving, and for whom?",
         "proof": "Led AsaanBill's 0→1 launch and pre-sold Tapit on a prototype.",
         "links": [
-          { "label": "AsaanBill", "href": "/ventures/asaanbill/#product-idea-fit" },
-          { "label": "Tapit", "href": "/ventures/tapit/#product-idea-fit" }
+          {
+            "label": "AsaanBill",
+            "href": "/ventures/asaanbill/#product-idea-fit"
+          },
+          {
+            "label": "Tapit",
+            "href": "/ventures/tapit/#product-idea-fit"
+          }
         ]
       },
       {
@@ -56,8 +77,14 @@
         "question": "Will customers pay and come back?",
         "proof": "Onboarded AsaanBill's first 50 business customers; took Tapit to 3,000+ customers.",
         "links": [
-          { "label": "AsaanBill", "href": "/ventures/asaanbill/#product-market-fit" },
-          { "label": "Tapit", "href": "/ventures/tapit/#product-market-fit" }
+          {
+            "label": "AsaanBill",
+            "href": "/ventures/asaanbill/#product-market-fit"
+          },
+          {
+            "label": "Tapit",
+            "href": "/ventures/tapit/#product-market-fit"
+          }
         ]
       },
       {
@@ -65,7 +92,12 @@
         "name": "Scale",
         "question": "Can it grow without breaking, and legally?",
         "proof": "15+ ERP partnerships, the Raast P2M go-to-market and $1.8M+ in monthly volume.",
-        "links": [{ "label": "AsaanBill", "href": "/ventures/asaanbill/#scale" }]
+        "links": [
+          {
+            "label": "AsaanBill",
+            "href": "/ventures/asaanbill/#scale"
+          }
+        ]
       }
     ]
   },
@@ -79,8 +111,14 @@
       "heading": "Yours next?",
       "line": "Building something that needs its first customers, a sales engine or a payments launch? Tell me where it stands.",
       "draft": true,
-      "primary": { "label": "Let's talk", "href": "/contact/?reason=growth-help" },
-      "secondary": { "label": "How I work", "href": "/work-with-me/" },
+      "primary": {
+        "label": "Let's talk",
+        "href": "/contact/?reason=growth-help"
+      },
+      "secondary": {
+        "label": "How I work",
+        "href": "/work-with-me/"
+      },
       "_note": "Shown at /ventures/#yours-next and at the end of /ventures/other/. The line is draft wording for Raja to revise."
     }
   },
@@ -100,25 +138,28 @@
       "award-major-contributor"
     ],
     "links": [
-      { "label": "All recognition", "href": "/recognition/" },
-      { "label": "Speaking & events", "href": "/recognition/speaking-events/" }
+      {
+        "label": "All recognition",
+        "href": "/recognition/"
+      },
+      {
+        "label": "Speaking & events",
+        "href": "/recognition/speaking-events/"
+      }
     ]
   },
-  "speaking": {
-    "heading": "On stage",
-    "line": "Invited to speak at Air University, NUST EME, NUML and HITEC University, and host of the AsaanBill podcast.",
-    "images": [
-      "speaking/talk-air-university.webp",
-      "speaking/talk-nust-eme.webp",
-      "speaking/talk-hitec-hibis-2025.webp",
-      "speaking/podcast-asaanbill.webp"
-    ],
-    "link": { "label": "Invite me to speak", "href": "/contact/?reason=speaking" }
+  "help": {
+    "heading": "How I can help",
+    "link": {
+      "label": "Work with me",
+      "href": "/work-with-me/"
+    }
   },
-  "help": { "heading": "How I can help", "link": { "label": "Work with me", "href": "/work-with-me/" } },
   "testimonials": {
     "heading": "In their words",
     "_note": "Section is hidden until site.json has at least one testimonial."
   },
-  "finalCta": { "heading": "Have a product that needs its next 1,000 customers?" }
+  "finalCta": {
+    "heading": "Have a product that needs its next 1,000 customers?"
+  }
 }

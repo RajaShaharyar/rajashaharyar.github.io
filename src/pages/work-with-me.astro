@@ -1,8 +1,11 @@
 ---
 /**
- * Work With Me (/work-with-me): the four offers (site.json → offers), each
- * with a proof link into a venture page, then how we'd work, engagement
- * models, an FAQ and a call to action that preselects "Growth help".
+ * Work With Me (/work-with-me), in the sitemap's order:
+ * Services (#services: the four offers from site.json → offers, each with a
+ * proof link into a venture page) · Working process (#process: the steps,
+ * then How I work, moved from the old Skills page) · FAQ (#faq: the last
+ * answer lists the four engagement models) · the closing call to action,
+ * which preselects "Growth help".
  * Copy: src/content/work-with-me.json · CTA heading: home.json → finalCta
  */
 import Base from '../layouts/Base.astro';
@@ -22,10 +25,10 @@ const sectionY = 'py-16 md:py-20';
     <p class="lead mt-6 max-w-prose">{copy.intro}</p>
   </header>
 
-  <!-- Offers -->
-  <section class="wrap pt-12 pb-16 md:pt-16 md:pb-20" aria-labelledby="offers-heading">
-    <SectionHeader id="offers-heading" heading={copy.offersHeading} hidden />
-    <ul class="grid gap-4 md:grid-cols-2 md:gap-6" data-reveal-stagger>
+  <!-- 1. Services -->
+  <section id="services" class="wrap pt-12 pb-16 md:pt-16 md:pb-20" aria-labelledby="services-heading">
+    <SectionHeader id="services-heading" heading={copy.offersHeading} />
+    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {
         site.offers.map((offer, i) => (
           <li id={offer.id}>
@@ -36,9 +39,9 @@ const sectionY = 'py-16 md:py-20';
     </ul>
   </section>
 
-  <!-- How we'd work -->
-  <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="steps-heading">
-    <SectionHeader id="steps-heading" heading={copy.steps.heading} />
+  <!-- 2. Working process: the steps, then how I work -->
+  <section id="process" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="process-heading">
+    <SectionHeader id="process-heading" heading={copy.steps.heading} />
     <ol class="steps mt-8 md:mt-10" data-reveal-stagger>
       {
         copy.steps.items.map((step, i) => (
@@ -51,18 +54,28 @@ const sectionY = 'py-16 md:py-20';
         ))
       }
     </ol>
+
+    <h3 id="how-i-work" class="mt-16 text-2xl md:mt-20 md:text-[1.75rem]">{copy.howIWork.heading}</h3>
+    <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:gap-6" data-reveal-stagger>
+      {
+        copy.howIWork.items.map((item, i) => (
+          <li class="flex flex-col rounded-card border border-line bg-surface p-6 md:p-8">
+            <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h4 class="mt-4 font-display text-2xl leading-tight font-semibold tracking-tight md:text-[1.75rem]">{item.principle}</h4>
+            <div class="mt-6 border-t border-line pt-5">
+              <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{copy.howIWork.proofLabel}</p>
+              <p class="mt-2 text-fg-muted">{item.proof}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </section>
 
-  <!-- Engagement models -->
-  <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="models-heading">
-    <SectionHeader id="models-heading" heading={copy.models.heading} />
-    <ul class="mt-8 flex flex-wrap gap-2 md:mt-10">
-      {copy.models.items.map((m) => <li class="chip">{m}</li>)}
-    </ul>
-  </section>
-
-  <!-- FAQ -->
-  <section class:list={['wrap border-t border-line', sectionY]} aria-labelledby="faq-heading">
+  <!-- 3. FAQ -->
+  <section id="faq" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="faq-heading">
     <SectionHeader id="faq-heading" heading={copy.faq.heading} />
     <div class="faq mt-8 md:mt-10">
       {
@@ -74,14 +87,21 @@ const sectionY = 'py-16 md:py-20';
                 <path d="M4 6l4 4 4-4" />
               </svg>
             </summary>
-            <p class="faq-a">{item.a}</p>
+            {'a' in item && item.a && <p class="faq-a">{item.a}</p>}
+            {'models' in item && item.models && (
+              <ul class="faq-a faq-models">
+                {item.models.map((m) => (
+                  <li class="chip">{m}</li>
+                ))}
+              </ul>
+            )}
           </details>
         ))
       }
     </div>
   </section>
 
-  <!-- Call to action: preselects "Growth help" on the contact form -->
+  <!-- 4. Closing call to action: preselects "Growth help" on the contact form -->
   <section class="wrap pt-4 pb-4" aria-labelledby="wwm-cta-heading">
     <CTA heading={home.finalCta.heading} href={copy.cta.href} label={copy.cta.label} headingId="wwm-cta-heading" />
   </section>
@@ -160,5 +180,10 @@ const sectionY = 'py-16 md:py-20';
     padding: 0 0 1.25rem;
     max-width: var(--container-prose);
     color: var(--color-fg-muted);
+  }
+  .faq-models {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 </style>

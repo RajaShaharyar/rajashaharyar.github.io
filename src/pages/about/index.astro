@@ -1,28 +1,94 @@
 ---
 /**
- * About ▾ My story (/about): the story, a career timeline and 2024 in review.
- * Copy: src/content/about.json → story · timeline extras: cv.json → experience
- * Photos and captions: images.json
+ * About (/about/): one page, eight sections, in the sitemap's order
+ * (Consultation Website.pdf), with an "On this page" row under the header:
+ *   #intro · #career · #recognition · #education · #courses · #distinctions ·
+ *   #beyond-work · #speaking
+ * One H1, an H2 per section, H3s inside. Old addresses redirect here:
+ * /about/education/ → #education, /about/beyond-work/ → #beyond-work
+ * (and /about/skills/ → /cv/#skills).
+ * Copy: about.json · CV facts: cv.json · wins and counters: recognition.json
+ * (+ recognition-pages.json) · photos and captions: images.json
  */
 import Base from '../../layouts/Base.astro';
-import AboutHeader from '../../components/AboutHeader.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Timeline from '../../components/Timeline.astro';
 import Gallery from '../../components/Gallery.astro';
+import Counter from '../../components/Counter.astro';
+import Media from '../../components/Media.astro';
+import SpeakingStrip from '../../components/SpeakingStrip.astro';
 import ArrowLink from '../../components/ArrowLink.astro';
+import home from '../../content/home.json';
 import { about, buildTimeline } from '../../lib/about';
+import { cv, getEducation, getProgramme } from '../../lib/cv';
+import { formatMonth, formatRange, isIsoDate } from '../../lib/dates';
+import { badgeText, getRecognition, photosOf } from '../../lib/recognition';
+import { badgeCounter, pageFor, recognitionCopy } from '../../lib/recognition-pages';
+import { filled, site } from '../../lib/site';
 
-const { story } = about;
+const { page, story, education, distinctions, beyondWork, speaking } = about;
 const timeline = buildTimeline();
+
+// Recognition: the /recognition counters, then up to 6 wins that have a photo
+const counters = recognitionCopy.overview.counters.map((c) => badgeCounter(c.badge));
+const wins = home.recognition.slides
+  .map(getRecognition)
+  .filter((item) => (item.badge === 'Winner' || item.badge === 'Top 3') && photosOf(item).length > 0)
+  .slice(0, about.recognition.maxHighlights)
+  .map((item) => ({ ...item, photo: photosOf(item)[0], href: `${pageFor(item.badge)}#${item.id}`, badge: badgeText(item) }));
+const recognitionPages = site.recognitionMenu.children;
+
+// Education
+const degree = getEducation(education.degree.cvId);
+const programmes = education.programmes.cvIds
+  .map(getProgramme)
+  .filter((p) => isIsoDate(p.start))
+  .sort((a, b) => a.start.localeCompare(b.start) || (a.end ?? '9999').localeCompare(b.end ?? '9999'))
+  .map((p) => ({
+    ...p,
+    title: p.mode ? `${p.name}, ${p.mode}` : p.name,
+    dates: formatRange(p.start, isIsoDate(p.end) ? p.end : null),
+    covered: filled(p.covered),
+    certificate: filled(p.certificate),
+    image: filled(p.image),
+  }));
+
+// Distinctions: text from cv.json (honours or leadership), photo from recognition.json
+const distinctionItems = distinctions.recognitionIds.map((id) => {
+  const honour = cv.honours.items.find((h) => h.recognitionId === id);
+  const role = cv.leadership.items.find((l) => l.recognitionIds.includes(id));
+  const text = honour?.title ?? role?.text;
+  if (!text) throw new Error(`about.json → distinctions: "${id}" is not in cv.json honours or leadership.`);
+  const date = honour ? honour.date : role?.date;
+  const photo = photosOf(getRecognition(id))[0];
+  return { image: photo.file, caption: date ? `${text} (${date})` : text };
+});
+
 const sectionY = 'py-16 md:py-24';
 ---
 
-<Base title={story.title} description={story.description} ogType="profile">
-  <AboutHeader title={story.title} />
+<Base title={page.title} description={page.description} ogType="profile">
+  <header class="wrap pt-12 md:pt-20">
+    <h1 class="text-display-lg">{page.title}</h1>
+    <nav class="on-this-page mt-8" aria-label={page.onThisPage}>
+      <ul>
+        {
+          page.sections.map((s) => (
+            <li>
+              <a href={`#${s.id}`} class="otp-link">
+                {s.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </header>
 
-  <!-- The story -->
-  <section class="wrap pt-8 pb-16 md:pt-10 md:pb-24" aria-label="The story">
-    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+  <!-- 1. Intro: the story -->
+  <section id="intro" class="wrap pt-12 pb-16 md:pt-16 md:pb-24" aria-labelledby="intro-heading">
+    <h2 id="intro-heading" class="text-display-md">{story.title}</h2>
+    <div class="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-14">
       <div class="story flex flex-col gap-6 lg:col-span-7">
         {story.paragraphs.map((text) => <p>{text}</p>)}
       </div>
@@ -30,18 +96,14 @@ const sectionY = 'py-16 md:py-24';
     </div>
   </section>
 
-  <!-- Career timeline -->
-  <section id="timeline" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="timeline-heading">
-    <SectionHeader id="timeline-heading" heading={story.timeline.heading} />
+  <!-- 2. Career timeline, ending with 2024 in review -->
+  <section id="career" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="career-heading">
+    <SectionHeader id="career-heading" heading={story.timeline.heading} />
     <div class="mt-10 md:mt-12">
       <Timeline items={timeline} />
     </div>
-  </section>
-
-  <!-- 2024 in review -->
-  <section id="review-2024" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="review-heading">
-    <SectionHeader id="review-heading" heading={story.review.heading} />
-    <div class="mt-10 md:mt-12">
+    <h3 id="review-2024" class="mt-16 text-2xl md:mt-20 md:text-[1.75rem]">{story.review.heading}</h3>
+    <div class="mt-8">
       <Gallery
         label={story.review.label}
         items={story.review.images.map((image) => ({ image }))}
@@ -51,16 +113,191 @@ const sectionY = 'py-16 md:py-24';
     </div>
   </section>
 
-  <!-- Where next -->
-  <section class="wrap border-t border-line pt-12 pb-4 md:pt-16" aria-label="Where next">
-    <div class="flex flex-wrap items-center gap-x-8 gap-y-5">
-      <ArrowLink href={story.links.next.href} class="text-lg">{story.links.next.label}</ArrowLink>
-      <a href={story.links.cta.href} class="btn btn-primary">{story.links.cta.label}</a>
+  <!-- 3. Recognition: counters, wins with photos, the four detail pages -->
+  <section id="recognition" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
+    <SectionHeader id="recognition-heading" heading={about.recognition.heading} />
+    <ul
+      class="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:mt-12 md:grid-cols-3 lg:grid-cols-6"
+      aria-label={recognitionCopy.overview.countersLabel}
+      data-reveal-stagger="inner"
+    >
+      {counters.map((c) => <Counter value={c.value} label={c.label} />)}
+    </ul>
+
+    <h3 class="mt-12 text-xl font-semibold tracking-tight">{about.recognition.highlightsLabel}</h3>
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
+      {
+        wins.map((w) => (
+          <li class="win lift-card">
+            <Media image={w.photo.file} fit="contain" sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" class="card-media-top aspect-[4/3] border-b border-line" />
+            <div class="flex flex-1 flex-col gap-2 p-5">
+              {w.badge && <p class="badge w-fit">{w.badge}</p>}
+              <h4 class="mt-1 text-lg leading-snug font-semibold">
+                <a href={w.href} class="win-link">
+                  {w.title}
+                </a>
+              </h4>
+              <p class="text-sm text-fg-muted">{w.date}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <ul class="recognition-pages mt-10">
+      {
+        recognitionPages.map((p) => (
+          <li>
+            <ArrowLink href={p.href}>{p.label}</ArrowLink>
+            {p.description && <p class="text-sm text-fg-muted">{p.description}</p>}
+          </li>
+        ))
+      }
+    </ul>
+    <ArrowLink href={about.recognition.allLink.href} class="mt-6">{about.recognition.allLink.label}</ArrowLink>
+  </section>
+
+  <!-- 4. Education: the degree, the final-year project and the degree photos -->
+  <section id="education" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="education-heading">
+    <SectionHeader id="education-heading" heading={education.title} intro={education.intro} />
+    <article class="mt-10 rounded-card border border-line bg-surface p-6 sm:p-8 md:mt-12 md:p-10">
+      <h3 class="text-display-md">{degree.degree}</h3>
+      <p class="mt-3 text-lg text-fg-muted">
+        <span class="whitespace-nowrap">{degree.institution}, {degree.city}</span>{' '}
+        <span aria-hidden="true" class="px-1 text-fg-subtle">·</span>{' '}
+        <span class="whitespace-nowrap"
+          ><time datetime={degree.start}>{formatMonth(degree.start)}</time>{' – '}<time datetime={degree.end}>{formatMonth(degree.end)}</time></span
+        >
+      </p>
+      <div class="mt-8 max-w-prose border-t border-line pt-6">
+        <h4 class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{education.degree.fypLabel}</h4>
+        <p class="mt-3 text-lg leading-relaxed">{education.degree.fyp}</p>
+      </div>
+      <div class="mt-10">
+        <Gallery
+          label={education.degree.label}
+          items={education.degree.images.map((image) => ({ image }))}
+          columns="grid-cols-2 lg:grid-cols-4"
+          sizes="(min-width: 1024px) 260px, 45vw"
+        />
+      </div>
+    </article>
+    <p class="pull-line mt-12 max-w-3xl md:mt-16">{education.closing.text}</p>
+  </section>
+
+  <!-- 5. Courses and programmes -->
+  <section id="courses" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="courses-heading">
+    <SectionHeader id="courses-heading" heading={education.programmes.heading} />
+    <ol class="mt-10 flex flex-col gap-4 md:mt-12" data-reveal-stagger>
+      {
+        programmes.map((p) => (
+          <li class="programme rounded-card border border-line bg-surface p-6 sm:p-8">
+            <div class="flex flex-col gap-2">
+              <p class="text-sm font-semibold tracking-[0.06em] text-accent uppercase">{p.provider}</p>
+              <h3 class="text-2xl md:text-[1.75rem]">{p.title}</h3>
+              <p class="text-fg-muted">{p.dates}</p>
+              {p.covered && (
+                <p class="mt-2 max-w-prose">
+                  <span class="text-fg-subtle">{education.programmes.coveredLabel}: </span>
+                  {p.covered}
+                </p>
+              )}
+              {p.certificate && (
+                <ArrowLink href={p.certificate} srContext={p.title} class="mt-2 w-fit">
+                  {education.programmes.certificateLabel}
+                </ArrowLink>
+              )}
+            </div>
+            {p.image && (
+              <div class="programme-photo">
+                <Gallery label={`${p.provider} photo`} items={[{ image: p.image }]} columns="grid-cols-1" aspect="aspect-[4/5]" sizes="(min-width: 640px) 180px, 90vw" />
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- 6. Distinctions: individual honours and roles -->
+  <section id="distinctions" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="distinctions-heading">
+    <SectionHeader id="distinctions-heading" heading={distinctions.heading} />
+    <div class="mt-10 md:mt-12">
+      <Gallery
+        label={distinctions.label}
+        items={distinctionItems}
+        columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+        sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <!-- 7. Beyond work: Mustahiq and K2 -->
+  <section id="beyond-work" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="beyond-work-heading">
+    <SectionHeader id="beyond-work-heading" heading={beyondWork.title} />
+    {
+      beyondWork.sections.map((s) => (
+        <div id={s.id} class="mt-12 grid gap-8 md:mt-14 lg:grid-cols-12 lg:gap-14">
+          <div class="lg:col-span-5">
+            <h3 class="text-2xl md:text-[1.75rem]">{s.heading}</h3>
+            <p class="lead mt-4 max-w-prose">{s.text}</p>
+          </div>
+          <div class="lg:col-span-7">
+            <Gallery label={s.label} items={s.images.map((image) => ({ image }))} columns="grid-cols-1 sm:grid-cols-2" sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw" />
+          </div>
+        </div>
+      ))
+    }
+  </section>
+
+  <!-- 8. Speaker CTA -->
+  <section id="speaking" class:list={['wrap border-t border-line pt-16 pb-4 md:pt-24', 'defer-render']} aria-labelledby="speaking-heading">
+    <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
+    <div class="mt-10 md:mt-12">
+      <SpeakingStrip images={speaking.images} />
+    </div>
+    <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+      <a href={speaking.button.href} class="btn btn-primary">{speaking.button.label}</a>
+      <ArrowLink href={speaking.link.href}>{speaking.link.label}</ArrowLink>
     </div>
   </section>
 </Base>
 
 <style>
+  /* "On this page": wraps on wider screens; on phones one row that scrolls sideways within itself */
+  .on-this-page ul {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+  @media (width >= 48rem) {
+    .on-this-page ul {
+      flex-wrap: wrap;
+      overflow-x: visible;
+    }
+  }
+  .otp-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    transition:
+      color 0.15s,
+      border-color 0.15s;
+  }
+  .otp-link:hover {
+    color: var(--color-fg);
+    border-color: var(--color-line-strong);
+  }
   .story p {
     max-width: var(--container-prose);
     font-size: var(--text-lead);
@@ -69,5 +306,53 @@ const sectionY = 'py-16 md:py-24';
   }
   .story p:first-child {
     color: var(--color-fg);
+  }
+  .win {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+  }
+  .win-link {
+    text-decoration: none;
+  }
+  .win-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+  }
+  .win-link:focus-visible {
+    outline: none;
+  }
+  .win-link:focus-visible::after {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .recognition-pages {
+    display: grid;
+    gap: 1rem 2rem;
+  }
+  @media (width >= 48rem) {
+    .recognition-pages {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .programme {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (width >= 40rem) {
+    .programme:has(.programme-photo) {
+      grid-template-columns: 1fr 10rem;
+      align-items: start;
+    }
+  }
+  @media (width >= 64rem) {
+    .programme:has(.programme-photo) {
+      grid-template-columns: 1fr 11rem;
+    }
   }
 </style>

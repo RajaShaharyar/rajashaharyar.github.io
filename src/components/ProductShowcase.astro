@@ -445,7 +445,9 @@ const also = await Promise.all(copy.alsoWorkedOn.map(product));
     );
     features.forEach((f) => middle.observe(f));
 
-    if (motionOk) {
+    // Arm the scenes (hundreds of paused animations) only when the section comes near the screen,
+    // not while the page loads.
+    const prepare = () => {
       for (const item of stageItems.values()) arm(sceneIn(item));
       const stage = root.querySelector('.stage');
       if (stage) {
@@ -496,6 +498,17 @@ const also = await Promise.all(copy.alsoWorkedOn.map(product));
           else play(sceneIn(button.closest('.own, .also-art')), listFor(button.dataset.replay));
         });
       }
+    };
+    if (motionOk) {
+      const near = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          near.disconnect();
+          prepare();
+        },
+        { rootMargin: '50% 0px' },
+      );
+      near.observe(root);
     }
   }
 </script>

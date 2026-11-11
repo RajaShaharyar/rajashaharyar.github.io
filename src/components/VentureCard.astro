@@ -1,9 +1,12 @@
 ---
 /**
- * Homepage section 4: one venture. The whole card is clickable through its
+ * One venture card (/ventures). The whole card is clickable through its
  * single "Read the journey →" link (no duplicate links for screen readers).
+ * Ventures without a photo but with art: true show their schematic drawing
+ * (ProductArt, final frame, decorative) in the photo slot.
  */
 import Media from './Media.astro';
+import ProductArt from './ProductArt.astro';
 import type { Venture } from '../lib/site';
 
 interface Props {
@@ -24,6 +27,13 @@ const { venture: v, linkLabel } = Astro.props;
         sizes="(min-width: 768px) 600px, 100vw"
         class="card-media-top aspect-video border-b border-line"
       />
+    )
+  }
+  {
+    !v.image && v.art && (
+      <div class="card-media-top venture-art aspect-video border-b border-line" aria-hidden="true">
+        <ProductArt id={v.id} />
+      </div>
     )
   }
   <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">
@@ -60,6 +70,18 @@ const { venture: v, linkLabel } = Astro.props;
 </article>
 
 <style>
+  .venture-art {
+    display: grid;
+    place-items: center;
+    padding: 1rem 1.5rem;
+    overflow: hidden;
+    background-color: var(--color-raised);
+  }
+  .venture-art :global(svg) {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+  }
   /* Hover and focus lift: .lift-card in global.css. Stretch the link over the whole card */
   .card-link::after {
     content: '';

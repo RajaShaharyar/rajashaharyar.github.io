@@ -26,34 +26,73 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 - A page title or description changed: rerun `npm run og` and commit `public/og/`.
 - `cv.json` (or the stats/contact details) changed: rerun `npm run cv:pdf` and commit `public/cv.pdf`.
 - Before pushing a bigger change: `npm run check`, `npm run build`, `npm run check:links`, `npm run check:a11y`.
-- `sitemap-index.xml` is generated on every build (`@astrojs/sitemap`); `/404`, `/contact/thanks/` and the old
-  `/ventures/earlier-roles` redirect are left out. `public/robots.txt` points to it.
+- `sitemap-index.xml` is generated on every build (`@astrojs/sitemap`); `/404`, `/contact/thanks/` and the
+  redirects (see Site structure) are left out. `public/robots.txt` points to it.
 - Analytics are off. To switch on a cookie-free option, set `site.json → analytics.provider`
   (`goatcounter`, `cloudflare` or `plausible`) and its `id`. GA4 is left out: it would need a cookie banner.
+
+## Site structure
+
+The structure follows the sitemap in `_source/Consultation Website.pdf`.
+
+| Page | Sections (anchor) |
+| ---- | ----------------- |
+| Top bar | Home · Ventures ▾ · Work With Me · About · CV · Let's talk (`site.json → nav`, `cta`) |
+| `/` | Hero · `#proof` · `#credibility` · `#products` · `#playbook` · `#help` · `#recognition` · `#testimonials` · closing CTA |
+| `/ventures/` | Cards in menu order (Other ventures last) · stage legend · `#yours-next` |
+| `/ventures/dressup/`, `/ventures/sonicengine-ai/` | Role stories: header (role, dates, location) · `#product` · `#what-i-did` · optional blocks · `#next` · CTA |
+| `/ventures/asaanbill/`, `/ventures/tapit/`, `/ventures/ladenza/` | Case studies (snapshot, problem, stages, approvals, journey… next) |
+| `/ventures/other/` | HOMS Inc. (featured), Gameotivity, Mustahiq · "Yours next?" |
+| `/work-with-me/` | `#services` · `#process` (steps, then How I work) · `#faq` · closing CTA |
+| `/about/` | "On this page" row · `#intro` · `#career` · `#recognition` · `#education` · `#courses` · `#distinctions` · `#beyond-work` · `#speaking` |
+| `/contact/` | What's this about? · Your details · Message · contact details |
+| `/recognition/` and its four pages | Unchanged; not in the top bar. Linked from About → Recognition, the homepage and the footer (`site.json → recognitionMenu`). |
+| `/cv/` | Unchanged. |
+
+**Redirects** (`astro.config.mjs → redirects`; static meta-refresh pages, noindex, left out of the sitemap, each
+pointing straight at the final address): `/ventures/consulting/` and `/ventures/earlier-roles/` → `/ventures/other/`;
+`/about/education/` → `/about/#education`; `/about/beyond-work/` → `/about/#beyond-work`; `/about/skills/` →
+`/cv/#skills`. `npm run check:links` fails if a redirect's page or anchor is missing or it points at another redirect.
+
+**Reorder the homepage products:** edit the id list in `home.json → products.order` (ids from
+`site.json → ventures`). Name, role, line and metric come from `site.json → ventures`; each id needs a drawing in
+`src/components/ProductArt.astro` (an inline SVG with steps marked `k k-up` etc. and a `--d` delay).
+
+**Add a testimonial:** add `{ "quote": "...", "name": "...", "role": "...", "company": "..." }` to
+`site.json → testimonials`. The homepage Testimonials section (`#testimonials`) appears as soon as there is one.
+Only real quotes, with the person's permission.
+
+**Add a venture:** a new file in `src/content/ventures/`, an entry in `site.json → ventures` and a menu item in
+`site.json → nav`. Use `kind: case-study` when there is a full story, `kind: role-story` when the facts are one
+`cv.json → experience` entry (no stage badge, no metric), or add it to `other.mdx` (`kind: roles`).
 
 ## Where things live
 
 ```
 src/
   content/
-    site.json          name, title, contact, nav, headline stats, venture cards, offers (home: true = on the
-                       homepage too), testimonials
-    work-with-me.json  copy for /work-with-me (steps, engagement models, FAQ, call to action)
-    home.json          homepage copy, section by section (carousel order: recognition.slides)
-    about.json         copy for the four About pages; points into cv.json by id for CV facts
+    site.json          name, title, contact, nav (top bar), recognitionMenu, headline stats, venture cards (menu
+                       order), offers (home: true = on the homepage too), testimonials
+    work-with-me.json  copy for /work-with-me (services heading, steps, how I work, FAQ, call to action)
+    home.json          homepage copy, section by section (products order, carousel order: recognition.slides),
+                       plus the /ventures heading and the shared "Yours next?" block
+    about.json         copy for the one About page (sections, story, recognition, education, distinctions,
+                       beyond work, speaking); points into cv.json by id for CV facts
     images.json        every published photo: size (prevents layout shift), alt text, caption
     recognition.json   the Recognition log: one item per win, award, programme, MOU, talk… (badge, title,
                        organiser, venue, date, prize, venture, photos; "shownOn" decides which pages list it)
     recognition-pages.json  copy for /recognition and its four sub-pages (counter labels, headings, topics)
     cv.json            all 14 CV sections: the one source for roles, degree, programmes, skills, languages
-    ventures/*.mdx     one file per venture: a case study (kind: case-study → layouts/VentureLayout) or the
-                       Consulting & product roles page (kind: roles → layouts/RolesLayout, cards from cv.json)
+    ventures/*.mdx     one file per venture: a case study (kind: case-study) or a role story (kind:
+                       role-story, built from one cv.json entry), both → layouts/VentureLayout; or Other
+                       ventures (kind: roles → layouts/RolesLayout, cards from cv.json)
   content.config.ts    schemas: the build fails if recognition.json or a venture file is malformed
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
   layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
-  components/          Nav, Footer, homepage sections, AboutHeader, Timeline, Gallery (photo grid + lightbox)
-  pages/               one file per route in the blueprint's URL table
+  components/          Nav, Footer, homepage sections (ProductShowcase + ProductArt), Timeline, Gallery (photo
+                       grid + lightbox), YoursNext
+  pages/               one file per route (see Site structure)
 public/images/         ventures/, recognition/, speaking/, about/, education/
 ```
 
@@ -79,16 +118,22 @@ iPhone HEIC files are decoded with `heic-convert` first (sharp can't read HEVC),
 "2024 in review" photos come out of *2024 Unwrapped.pdf* without the slide's text and stickers.
 A typo in an image path fails the build. Everything except the hero image is lazy-loaded.
 
-## About pages
+## About page
 
-- **My story** timeline: entries in `about.json → story.timeline.items`, oldest first. Dressup and Gameotivity
+- One page, eight sections, with an "On this page" row (`about.json → page.sections`).
+- **Career timeline**: entries in `about.json → story.timeline.items`, oldest first. Dressup and Gameotivity
   join it automatically, in date order, once their start dates in `cv.json → experience` are filled in (`YYYY-MM`).
-- **Education** reads the degree and programmes from `cv.json`; a programme's "what it covered" and certificate
-  link appear only once they are filled in there. The closing line is flagged `draft: true` for Raja to revise.
+  "2024 in review" closes the section.
+- **Recognition**: the /recognition counters, then up to 6 wins (Winner or Top 3) that have a photo, in the
+  homepage carousel order, then links to the four Recognition pages.
+- **Education** and **Courses** read the degree and programmes from `cv.json`; a programme's "what it covered" and
+  certificate link appear only once they are filled in there. The closing line is flagged `draft: true`.
+- **Distinctions**: `about.json → distinctions.recognitionIds`; the text comes from `cv.json → honours` or
+  `leadership`, the photo from `recognition.json`.
 - Every photo group is a `Gallery`: a lazy-loaded grid whose photos open in an accessible lightbox
   (Enter or click opens, ←/→ step, Tab stays inside, Escape closes, focus returns to the photo).
 
-## Venture case studies
+## Venture pages
 
 Each venture is one file in `src/content/ventures/`: its frontmatter holds the whole case study (snapshot,
 problem, the three stages, approvals spotlight, journey, glossary, limitations, who did what, results, lessons,
@@ -96,6 +141,13 @@ evidence ids, press, next), validated by the schema in `src/content.config.ts`. 
 renders every case study the same way and leaves out any block with no data, so adding a limitation or a lesson
 later is a data edit. Case-study facts live only there (the CV reads Tapit's pre-sales from `tapit.mdx`).
 A file marked `status: draft` shows a stub until it is published.
+
+Dressup and SonicEngine AI are role stories (`kind: role-story`): the header and the "The product" and "What I
+did" blocks come from their `cv.json → experience` entry. The problem, limitations, results, lessons, evidence
+photos and product link render only once filled in; their `todo` lists say what is missing. Other ventures
+(`other.mdx`, `kind: roles`) lists cv.json roles (`roles`) and other ventures (`otherVentures`, e.g. Mustahiq,
+linking to About → Beyond work). Next links run Dressup → AsaanBill → SonicEngine AI → TapitCard → Ladenza →
+Other ventures.
 
 ## Recognition pages
 
@@ -121,17 +173,15 @@ birth, gender, nationality or home address.
 
 ## Contact form
 
-The form at `/contact/` emails Raja through **Web3Forms** (free, no account) once its access key is set:
-
-1. Get a key at web3forms.com for rajasali2002@gmail.com.
-2. Paste it into `src/content/site.json` → `contact.form.web3formsKey` and set `contact.form.provider` to `"web3forms"`.
-3. Rebuild and push.
+The form at `/contact/` emails Raja through **Web3Forms** (free, no account). It is switched on:
+`src/content/site.json` → `contact.form.provider` is `"web3forms"` and `web3formsKey` holds the access key
+(Web3Forms keys are designed to sit in public page source). To change the key, paste the new one there, rebuild
+and push. Setting `provider` to `""` switches the form back to opening the visitor's email app (mailto).
 
 Messages arrive at the address the key belongs to, with Reply-To set to the sender's email. With JavaScript the
 form sends in the page and shows a confirmation (or an error with email-app and WhatsApp fallbacks); without it,
 the form posts normally and Web3Forms redirects to `/contact/thanks/`. Formspree also works: put the form ID in
-`contact.form.formspreeId` and set `provider` to `"formspree"`. Until a provider is set, the form opens the
-visitor's email app with the message ready (mailto).
+`contact.form.formspreeId` and set `provider` to `"formspree"`.
 Links can preselect a reason, e.g. `/contact/?reason=speaking` (`hiring`, `growth-help`, `speaking`, `other`).
 
 ## Motion
@@ -145,6 +195,10 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
   hard wins, counters): the items' contents fade instead of the items. Elements on screen at load never
   fade, and nothing is hidden without JavaScript or in print.
 - **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades.
+- **Homepage products** (`ProductShowcase.astro`, `ProductArt.astro`): on wide screens a sticky stage crossfades
+  to the product crossing the middle of the viewport and plays its drawing once; on phones (and without
+  JavaScript) each drawing sits above its text and plays once in view. Each drawing finishes within 1.6 s,
+  moves at most 24px and never loops; reduced motion or no JavaScript shows the final frame.
 - **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
   into view. The HTML holds the final values and screen readers only hear those.
 - **Hover and focus**: cards that are one big link get `.lift-card` (lift 2px, a soft shadow that fades in,

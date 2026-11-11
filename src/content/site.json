@@ -88,7 +88,9 @@
       "href": "/ventures/dressup/",
       "meta": "Product Consultant · Marketplace",
       "role": "Product Consultant",
-      "line": "A hyper-personalised marketplace"
+      "line": "A hyper-personalised marketplace",
+      "art": true,
+      "_artNote": "No photo yet: the card shows the product's schematic drawing (ProductArt) instead. Replace with an image once there is one."
     },
     {
       "id": "asaanbill",
@@ -107,7 +109,8 @@
       "href": "/ventures/sonicengine-ai/",
       "meta": "Product Owner · Game tech · 2024",
       "role": "Product Owner",
-      "line": "A text-to-game engine"
+      "line": "A text-to-game engine",
+      "art": true
     },
     {
       "id": "tapit",

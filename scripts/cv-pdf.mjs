@@ -61,6 +61,10 @@ try {
   const page = await browser.newPage();
   await page.emulateMedia({ media: 'print' });
   await page.goto(`http://127.0.0.1:${PORT}/cv/`, { waitUntil: 'networkidle' });
+  // Links inside the PDF must point at the live site, not at this local preview server.
+  await page.evaluate((site) => {
+    for (const a of document.querySelectorAll('a[href^="/"]')) a.setAttribute('href', new URL(a.getAttribute('href'), site).href);
+  }, 'https://rajashaharyar.github.io');
   pdfBytes = await page.pdf({ format: 'A4', preferCSSPageSize: true, printBackground: false, tagged: true });
 } finally {
   await browser.close();

@@ -22,14 +22,16 @@ interface Props {
   steps: Step[];
   heading: string;
   keyLabel: string;
+  /** "scroll": the list follows a scroll scene (ScrollScene sets data-state on each step). */
+  sync?: 'scroll';
 }
-const { id, steps, heading, keyLabel } = Astro.props;
+const { id, steps, heading, keyLabel, sync } = Astro.props;
 const headingId = `${id}-steps`;
 ---
 
 <div class="how">
   <p class="how-label" id={headingId}>{heading}</p>
-  <ol class="steps" data-steps={id} aria-labelledby={headingId}>
+  <ol class="steps" data-steps={id} data-sync={sync} aria-labelledby={headingId}>
     {
       steps.map((s) => (
         <li class="step" style={`--t:${s.at}ms;--len:${s.len}ms`}>
@@ -150,6 +152,28 @@ const headingId = `${id}-steps`;
     .steps[data-armed][data-playing] .step-text,
     .steps[data-armed][data-playing] .step::before {
       animation-play-state: running;
+    }
+  }
+  /* Scroll-synced (sync="scroll", driven by ScrollScene): each step is done, active or upcoming
+     as the scene scrubs, with the same visuals as the played states above. Without data-state
+     (no JavaScript, reduced motion, data saver) every step shows complete. */
+  .steps[data-sync='scroll'] .step[data-state='upcoming'] .mark-on {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  .steps[data-sync='scroll'] .step[data-state='upcoming'] .step-text {
+    opacity: 0.62;
+  }
+  .steps[data-sync='scroll'] .step[data-state='active']::before {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .steps[data-sync='scroll'] .mark-on,
+    .steps[data-sync='scroll'] .step-text,
+    .steps[data-sync='scroll'] .step::before {
+      transition:
+        opacity 180ms linear,
+        transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
   }
   @keyframes step-on {

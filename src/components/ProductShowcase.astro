@@ -8,6 +8,10 @@
  * that are still TODO are hidden. Steps, "My part" and the research behind
  * each scene: home.json → products.items.
  *
+ * Scroll scenes (home.json → products.scrollScenes; ScrollScene): rendered 3D image sequences,
+ * scrubbed by scrolling, with the product's text pinned beside them on wide screens. Frames and
+ * manifest: public/scenes/<id>/ (tools/3d/). The products that follow stay on the sticky stage.
+ *
  * Playback (scenes: ProductScene; step lists: ProductSteps)
  * - Wide screens with JavaScript: the featured block crossing the middle of the
  *   viewport is active; the stage crossfades to its scene (280 ms) and plays it
@@ -18,9 +22,12 @@
  * - Reduced motion: final frames, all steps complete, no Replay buttons.
  *   Without JavaScript: final frames (each featured block shows its own scene).
  */
+import fs from 'node:fs';
+import path from 'node:path';
 import { getEntry } from 'astro:content';
 import SectionHeader from './SectionHeader.astro';
 import ProductScene from './ProductScene.astro';
+import ScrollScene from './ScrollScene.astro';
 import ProductSteps from './ProductSteps.astro';
 import ArrowLink from './ArrowLink.astro';
 import home from '../content/home.json';
@@ -45,20 +52,84 @@ async function product(id: string) {
     dates = roleDates(r) ?? undefined;
   }
   const steps = story.steps.map((s, i, all) => ({ ...s, len: (all[i + 1]?.at ?? story.duration) - s.at }));
-  return { ...venture, role, dates, steps, myPart: story.myPart, replay: `Replay the ${venture.name} animation` };
+  const scene = 'scene' in story ? story.scene : undefined;
+  return { ...venture, role, dates, steps, myPart: story.myPart, scene, replay: `Replay the ${venture.name} animation` };
 }
-const featured = await Promise.all(copy.featured.map(product));
+const all = await Promise.all(copy.featured.map(product));
 const also = await Promise.all(copy.alsoWorkedOn.map(product));
+
+// Scroll scenes: manifests written by tools/3d/encode_frames.py (read at build time; public/ is
+// copied as-is, so it is not imported through the bundler)
+function manifestFor(id: string) {
+  const file = path.join(process.cwd(), 'public', 'scenes', id, 'manifest.json');
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf-8')) : undefined;
+}
+const sceneIds: string[] = (copy.scrollScenes ?? []).filter((id: string) => manifestFor(id));
+const scenes = all.filter((p) => sceneIds.includes(p.id));
+const featured = all.filter((p) => !sceneIds.includes(p.id));
 ---
 
-<section id="products" class="wrap defer-render py-14 md:py-16" aria-labelledby="products-heading" style="--defer-size: 150rem">
+<section id="products" class="wrap defer-render py-14 md:py-16" aria-labelledby="products-heading" style="--defer-size: 330rem">
   <SectionHeader id="products-heading" heading={copy.heading} intro={copy.intro} />
+
+  {
+    scenes.map((p) => (
+      <div class="scroll-scene">
+        <ScrollScene
+          id={p.id}
+          manifest={manifestFor(p.id)}
+          alt={p.scene!.alt}
+          caption={p.scene!.caption}
+          skipLabel={p.scene!.skipLabel}
+          skipTo={featured[0] ? `#product-${featured[0].id}` : '#playbook'}
+        >
+          <Fragment slot="intro">
+            <h3 class="feature-name">{p.name}</h3>
+            <div class="feature-meta">
+              <p class="feature-role">
+                {p.role}
+                {p.dates && <span class="text-fg-muted"> · {p.dates}</span>}
+              </p>
+              {p.badge && (
+                <p class="badge">
+                  <span class="sr-only">Stage reached: </span>
+                  {p.badge}
+                </p>
+              )}
+            </div>
+            <p class="feature-line">{p.line}</p>
+            {p.metric && (
+              <p class="feature-metric">
+                <span class="feature-metric-value">{p.metric.value}</span> {p.metric.label}
+              </p>
+            )}
+          </Fragment>
+          <ProductSteps slot="steps" id={p.id} steps={p.steps} heading={copy.stepsHeading} keyLabel={copy.stepsKey} sync="scroll" />
+          <Fragment slot="outro">
+            {p.myPart.length > 0 && (
+              <div>
+                <p class="how-label">{copy.myPartLabel}</p>
+                <ul class="my-part">
+                  {p.myPart.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <ArrowLink href={p.href} srContext={p.name}>
+              {copy.storyLink}
+            </ArrowLink>
+          </Fragment>
+        </ScrollScene>
+      </div>
+    ))
+  }
 
   <div class="showcase mt-8 md:mt-10" data-showcase>
     <ol class="features">
       {
         featured.map((p, i) => (
-          <li class="feature" data-feature={p.id} data-active={i === 0 || undefined}>
+          <li class="feature" id={`product-${p.id}`} tabindex="-1" data-feature={p.id} data-active={i === 0 || undefined}>
             <div class="own">
               <div class="frame">
                 <ProductScene id={p.id} />
@@ -159,6 +230,17 @@ const also = await Promise.all(copy.alsoWorkedOn.map(product));
 </section>
 
 <style>
+  .scroll-scene {
+    margin-top: 2rem;
+  }
+  @media (width >= 48rem) {
+    .scroll-scene {
+      margin-top: 2.5rem;
+    }
+  }
+  .feature:focus {
+    outline: none; /* focus arrives here from the scene's skip link */
+  }
   .showcase {
     display: grid;
   }

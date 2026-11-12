@@ -52,6 +52,10 @@
       "dressup"
     ],
     "_orderNote": "Reorder by reordering these ids. featured = the sticky-stage blocks (480×360 scenes); alsoWorkedOn = the compact cards (320×220 scenes). Each id needs an entry in items and a scene in src/components/ProductScene.astro. The Ventures menu keeps its own order (site.json → nav).",
+    "scrollScenes": [
+      "asaanbill"
+    ],
+    "_scrollScenesNote": "Featured products shown as a scroll-scrubbed 3D scene (ScrollScene; frames in public/scenes/<id>/, built by tools/3d/). The rest stay on the SVG sticky stage.",
     "stepsHeading": "How it works",
     "stepsKey": "Highlighted: my part",
     "myPartLabel": "My part",
@@ -96,6 +100,13 @@
           "source": "Evamp & Saanga's product page, https://evampsaanga.com/asaan-bill/ (tagline \"Digital Payments Simplified\")",
           "flow": "Create an invoice → it reaches the customer by email or mobile → payment in real time via 1LINK (1-LINK Bill Payment in banking apps, and Raast P2M) → track and reconcile. Invoices can also sync from an ERP or CRM.",
           "rajasPart": "cv.json: 0→1 launch on the 1Bill aggregator approval, Raast P2M go-to-market, 15+ ERP partnerships opening the restaurant vertical. Payment types: PSID, QR and Request to Pay."
+        },
+        "scene": {
+          "alt": "AsaanBill's merchant portal: creating an invoice, tracking settlement and the dashboard",
+          "caption": "AsaanBill merchant portal, demo account",
+          "draft": true,
+          "_draftNote": "Caption waits on Raja's confirmation that \"Rehman Enterprises\" is a demo account with dummy names, PSIDs and amounts, and that Evamp & Saanga are happy for these screens to be shown.",
+          "skipLabel": "Skip the AsaanBill animation"
         }
       },
       {

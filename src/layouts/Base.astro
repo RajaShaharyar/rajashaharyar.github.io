@@ -91,6 +91,9 @@ const analytics = site.analytics;
     <link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
     <script is:inline>
       document.documentElement.classList.add('js');
+      // Data saver or a 2G connection: scroll scenes show their poster only (set before first paint).
+      var c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) document.documentElement.classList.add('save-data');
     </script>
 
     <title>{fullTitle}</title>

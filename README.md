@@ -96,10 +96,13 @@ src/
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
   layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
-  components/          Nav, Footer, homepage sections (ProductShowcase + ProductScene + ProductSteps), Timeline, Gallery (photo
-                       grid + lightbox), YoursNext
+  components/          Nav, Footer, homepage sections (ProductShowcase + ScrollScene + ProductScene + ProductSteps),
+                       Timeline, Gallery (photo grid + lightbox), YoursNext
+  scripts/             reveal, scroll-scene (the scroll-scrubbed 3D scene player)
   pages/               one file per route (see Site structure)
 public/images/         ventures/, recognition/, speaking/, about/, education/
+public/scenes/<id>/    scroll-scene frames (desktop/, phone/), posters and manifest.json, from tools/3d/
+tools/3d/              Blender scripts for the 3D scenes and the frame encoder (see tools/3d/README.md)
 ```
 
 ## Content rules
@@ -219,6 +222,23 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
     crossing the middle of the viewport drives a sticky stage (crossfade, then play; scrolling back replays).
     Phones and the compact cards: play once in view. Every scene has a Replay button (hidden with reduced
     motion). Transform, opacity and stroke-dashoffset only; each scene lasts at most 4.2 s.
+- **AsaanBill scroll scene** (`ScrollScene.astro`, `src/scripts/scroll-scene.ts`): a rendered 3D scene (144
+  frames, tablet and laptop with AsaanBill's real portal screens) on a canvas, scrubbed by scrolling: scrolling
+  down plays it forward, up plays it backwards, with no easing on top of the scroll.
+  - *Which products:* `home.json → products.scrollScenes`; each needs a `scene` block in its `products.items`
+    entry (alt text, caption, skip-link label) and frames in `public/scenes/<id>/` (see `tools/3d/README.md`).
+    The other featured products stay on the SVG sticky stage.
+  - *Layout:* from 1024px the product's whole text column and the 4:3 stage pin below the header for 280svh of
+    scroll; narrower, the intro scrolls normally and the stage with a compact step list pins for 220svh, then
+    My part and the story link follow. A skip link at the start jumps to the next product.
+  - *Steps* follow the scroll: each "How it works" step is done, active or upcoming by the manifest's beat frames
+    (`ProductSteps` with `sync="scroll"`; still a plain list, no aria-live).
+  - *Loading:* nothing until the visitor scrolls or interacts and the scene is within 1.5 viewports; then the
+    phone set (stage width x devicePixelRatio <= 900px) or the desktop set, every 8th frame first, at most 6
+    requests at a time. Frames stay compressed in memory and only those around the current one are decoded.
+    Until a frame arrives the nearest one is drawn; the poster (the final frame) shows until then.
+  - *Reduced motion, no JavaScript, data saver or 2G* (the `save-data` class is set in the head): no pin, the
+    poster only, every step complete.
 - **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
   into view. The HTML holds the final values and screen readers only hear those.
 - **Hover and focus**: cards that are one big link get `.lift-card` (lift 2px, a soft shadow that fades in,

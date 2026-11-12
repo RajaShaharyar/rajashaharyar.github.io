@@ -54,10 +54,9 @@ pointing straight at the final address): `/ventures/consulting/` and `/ventures/
 `/about/education/` → `/about/#education`; `/about/beyond-work/` → `/about/#beyond-work`; `/about/skills/` →
 `/cv/#skills`. `npm run check:links` fails if a redirect's page or anchor is missing or it points at another redirect.
 
-**Reorder the homepage products:** edit `home.json → products.featured` (the sticky-stage blocks: AsaanBill,
-TapitCard, Ladenza) and `products.alsoWorkedOn` (the compact cards: Sonic AI Engine, Dressup). Ids are
-`site.json → ventures` ids; moving an id between the two lists also needs its scene redrawn at the other size
-(featured scenes are 480×360, compact ones 320×220). The Ventures menu keeps its own order (`site.json → nav`).
+**Reorder the homepage products:** edit `home.json → products.cards` (the deck, one card per venture; ids are
+`site.json → ventures` ids, each with a `products.items` entry). The Ventures menu keeps its own order
+(`site.json → nav`).
 
 **Same-page menu links** (About's items on `/about/`, "Yours next?" on `/ventures/`): the nav script closes the
 dropdown or the mobile panel first, the browser then scrolls (smoothly unless reduced motion is on) to the
@@ -79,7 +78,8 @@ src/
     site.json          name, title, contact, nav (top bar), recognitionMenu, headline stats, venture cards (menu
                        order), offers (home: true = on the homepage too), testimonials
     work-with-me.json  copy for /work-with-me (services heading, steps, how I work, FAQ, call to action)
-    home.json          homepage copy, section by section (products: featured / alsoWorkedOn and each story's
+    home.json          homepage copy, section by section (products: the deck's cards, each card's label,
+                       headline, colour, steps and sources
                        steps and sources; carousel order: recognition.slides),
                        plus the /ventures heading and the shared "Yours next?" block
     about.json         copy for the one About page (sections, story, recognition, education, distinctions,
@@ -96,12 +96,12 @@ src/
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
   layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
-  components/          Nav, Footer, homepage sections (ProductShowcase + ScrollScene + ProductScene + ProductSteps),
+  components/          Nav, Footer, homepage sections (VentureDeck + AsaanBillBoard + ProductScene + ProductSteps),
                        Timeline, Gallery (photo grid + lightbox), YoursNext
-  scripts/             reveal, scroll-scene (the scroll-scrubbed 3D scene player)
+  scripts/             reveal, deck (the venture card deck), asaanbill-board (the AsaanBill card's timeline)
   pages/               one file per route (see Site structure)
 public/images/         ventures/, recognition/, speaking/, about/, education/
-public/scenes/<id>/    scroll-scene frames (desktop/, phone/), posters and manifest.json, from tools/3d/
+public/fonts/          Plus Jakarta Sans, Latin subset 500-800 (OFL), for the AsaanBill card only
 tools/3d/              Blender scripts for the 3D scenes and the frame encoder (see tools/3d/README.md)
 ```
 
@@ -204,41 +204,47 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
   hard wins, counters): the items' contents fade instead of the items. Elements on screen at load never
   fade, and nothing is hidden without JavaScript or in print.
 - **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades.
-- **Homepage products, "The work"** (`ProductShowcase`, `ProductScene`, `ProductSteps`): one short brand story
-  per product, in 4 beats, with Raja's part in the accent colour.
-  - *Data:* `home.json → products.items[]`: `steps` (text, `at` = beat start in ms, `mine` = Raja's part),
-    `duration`, `myPart` (lines copied from cv.json or the venture MDX) and `_sources` (the research behind each
-    scene; never rendered).
-  - *Scenes* (`ProductScene.astro`): inline SVG in the colour tokens, no words, numbers or logos. The beat
-    starts become `--b1`…`--b4` on the scene; every animated element has class `a`, an animation class (`fade`,
-    `up`, `draw`, `pop`, `move`, …) and `--t: calc(var(--bN) + offset)` (plus `--d` for its duration). The
-    element's default style is its final frame, so no-JavaScript and reduced-motion visitors see a complete
-    illustration.
-  - *Step list* (`ProductSteps.astro`): a real `<ol>`; each step has the same `--t`, so it lights up (accent
-    tick, full-contrast text) when its beat starts. Raja's steps have an accent dot and "(my part)" for screen
-    readers, with the key "Highlighted: my part".
-  - *Playback:* the script only sets `data-armed` (paused on the first frame) and `data-playing` on a scene and
-    its list together; a replay removes both, forces a reflow and sets both again. Wide screens: the block
-    crossing the middle of the viewport drives a sticky stage (crossfade, then play; scrolling back replays).
-    Phones and the compact cards: play once in view. Every scene has a Replay button (hidden with reduced
-    motion). Transform, opacity and stroke-dashoffset only; each scene lasts at most 4.2 s.
-- **AsaanBill scroll scene** (`ScrollScene.astro`, `src/scripts/scroll-scene.ts`): a rendered 3D scene (144
-  frames, tablet and laptop with AsaanBill's real portal screens) on a canvas, scrubbed by scrolling: scrolling
-  down plays it forward, up plays it backwards, with no easing on top of the scroll.
-  - *Which products:* `home.json → products.scrollScenes`; each needs a `scene` block in its `products.items`
-    entry (alt text, caption, skip-link label) and frames in `public/scenes/<id>/` (see `tools/3d/README.md`).
-    The other featured products stay on the SVG sticky stage.
-  - *Layout:* from 1024px the product's whole text column and the 4:3 stage pin below the header for 280svh of
-    scroll; narrower, the intro scrolls normally and the stage with a compact step list pins for 220svh, then
-    My part and the story link follow. A skip link at the start jumps to the next product.
-  - *Steps* follow the scroll: each "How it works" step is done, active or upcoming by the manifest's beat frames
-    (`ProductSteps` with `sync="scroll"`; still a plain list, no aria-live).
-  - *Loading:* nothing until the visitor scrolls or interacts and the scene is within 1.5 viewports; then the
-    phone set (stage width x devicePixelRatio <= 900px) or the desktop set, every 8th frame first, at most 6
-    requests at a time. Frames stay compressed in memory and only those around the current one are decoded.
-    Until a frame arrives the nearest one is drawn; the poster (the final frame) shows until then.
-  - *Reduced motion, no JavaScript, data saver or 2G* (the `save-data` class is set in the head): no pin, the
-    poster only, every step complete.
+- **Homepage products, "The work"** (`VentureDeck.astro`, `src/scripts/deck.ts`): a pinned deck, one card per
+  venture (`home.json → products.cards`), Paymo-style.
+  - *Wide screens* (1024 px and up, 600 px tall): the left column holds the heading, a progress rail (one line
+    per card; the active one is longer, with the venture's name; each line is a button that scrolls to its
+    card) and the active venture's text (role · stage badge, headline, line, metric, "How it works", My part,
+    the story link; My part hides between 720 and 800 px). The right column holds the deck: a square card in
+    the venture's colour with a faint watermark label, a dark inner panel and one pause/play button.
+  - *Switching:* each card gets 70svh of scroll; active = floor(progress × N). The new card rises over the
+    stack (650 ms); earlier cards peek out underneath, rotated −4° / +5° and darkened; the text crossfades.
+    Scrolling up reverses it. It is time-based, never scrubbed.
+  - *Narrow screens:* at least 640 px tall, the heading, the active text (no My part), the steps as numbered
+    dots with the active label, and the card (the largest square that fits above the "Let's talk" dock) pin.
+    Shorter: a plain list, each card playing while in view.
+  - *Autoplay:* only the active card runs, from beat 1 when it becomes active, looping after a 1.5 s hold;
+    paused off-screen, in a hidden tab or by the button. Inactive cards show their first frame. The steps
+    (`ProductSteps` with `sync="state"`) show done, active or upcoming with the card's beats.
+  - *Accessibility:* every venture's text stays in the DOM and the accessibility tree (inactive ones are only
+    visually hidden; focusing a link in one brings its card forward). Cards are aria-hidden; the watermark is
+    drawn from `data-label`. "Skip the ventures" jumps to the playbook. Reduced motion and no JavaScript get a
+    plain list of cards in their final state, with every step complete.
+- **The AsaanBill card** (`AsaanBillBoard.astro`, `src/scripts/asaanbill-board.ts`): AsaanBill's real portal UI
+  rebuilt as live HTML/CSS from Raja's AsaanBill screenshots (kept in `_source/`, never committed): same wording,
+  values, colours and radii; Inter for text, Plus Jakarta Sans for headings and figures. Every value appears in those
+  screenshots; the story follows one real Reports row (Maintenance Charges – Oct, Ayesha Khan, Rs 166,800).
+  - *Board and camera:* the pieces (collection tiles, invoice with How to pay, the Reports row, the stepper, the
+    Disbursement card, the donut) sit on one board in screenshot pixels; the panel is a camera that pans and
+    zooms it to one readable focus area per beat (`RESTS`, with phone values). Scales are set by legibility: at
+    rest no text is under 13 px on desktop (11 px on phones) and the beat's key number is 16 px or more.
+    `will-change` is only on during a move, so the text re-rasterises sharp at rest.
+  - *Timeline (14.7 s):* PSID selected, the invoice rises in and fills in, the amount counts up (beat 1); the
+    PSID resolves group by group (2); Unpaid → Pending → Settled and the Reports row slides in (3); the
+    stepper's active pill moves along, Disbursement, the donut draws to 45% (4); hold, then a 400 ms dip back
+    to the start. Only states the screenshots show; no toasts, cursors or invented screens.
+  - The markup is the final state (no JavaScript and reduced motion show it); the font is only applied, and so
+    only downloaded, once the deck is near.
+- **The other cards** reuse their SVG scenes (`ProductScene.astro`; also on `/ventures` cards): inline SVG in the
+  colour tokens, no words, numbers or logos. Beat starts (`home.json → products.items[].steps[].at`) become
+  `--b1`…`--b4`; every animated element has class `a`, an animation class and `--t: calc(var(--bN) + offset)`.
+  The element's default style is its final frame. The deck sets `data-armed` (paused on the first frame) and
+  `data-playing`; a restart removes both, forces a reflow and sets both again. Placeholders until each
+  venture's real-material phase.
 - **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
   into view. The HTML holds the final values and screen readers only hear those.
 - **Hover and focus**: cards that are one big link get `.lift-card` (lift 2px, a soft shadow that fades in,

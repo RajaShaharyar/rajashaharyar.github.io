@@ -9,11 +9,11 @@
  *   are set on the root as --b1…--b4. Every animated element has class "a", an
  *   animation class (fade, up, draw, pop, …) and its start as
  *   --t: calc(var(--bN) + offset), with an optional duration --d. The step list
- *   in ProductShowcase uses the same --t values, so drawing and list stay in sync.
+ *   (ProductSteps) uses the same beat starts, so drawing and list stay in sync.
  * - The default (unanimated) state of every element IS the final frame: that is
  *   what visitors without JavaScript or with reduced motion see.
- * - ProductShowcase's script only sets data-armed (paused on the first frame) and
- *   data-playing (run). Replaying = removing both, reflow, setting both again.
+ * - The deck's script (deck.ts) only sets data-armed (paused on the first frame) and
+ *   data-playing (run). Restarting = removing both, reflow, setting both again.
  * - Only transform, opacity and stroke-dashoffset animate. Travel stays within
  *   ~50 viewBox units (one hand-off per scene: ~100), rotation within 8°, one
  *   overshoot to 1.08. No words, numbers or logos in the drawings.
@@ -467,7 +467,7 @@ const T = (beat: number, offset = 0, dur?: number) => `--t:calc(var(--b${beat}) 
     opacity: 0;
   }
 
-  /* Armed (paused on the first frame) and playing: set by ProductShowcase's script */
+  /* Armed (paused on the first frame) and playing: set by the deck's script (deck.ts) */
   @media (prefers-reduced-motion: no-preference) {
     .scene[data-armed] .a {
       animation-duration: var(--d, 400ms);

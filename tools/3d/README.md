@@ -38,11 +38,16 @@ Claude Code can drive a running Blender through the official Blender Lab MCP ser
 
 `.mcp.json` holds a machine-specific path, so it is git-ignored; each machine registers its own.
 
-## The AsaanBill scroll scene (`asaanbill/`)
+## The AsaanBill scroll scene (`asaanbill/`): retired
 
-A 144-frame scene, scrubbed by scrolling on the homepage (`src/components/ScrollScene.astro`). The Python
-scripts are the source of truth; `asaanbill.blend` is their output (texture paths relative, no local user
-name, saved uncompressed so that is easy to check).
+**Retired in Phase 15.** The rendered frames were too small and soft to read, so the homepage now shows
+AsaanBill's real UI rebuilt as live HTML (`src/components/AsaanBillBoard.astro`); the scroll-scene player and
+its frames were removed. The scripts and `asaanbill.blend` stay here as a reference for later scenes (such as
+TapitCard's physical card). The notes below describe how it was built.
+
+A 144-frame scene that was scrubbed by scrolling on the homepage. The Python scripts are the source of truth;
+`asaanbill.blend` is their output (texture paths relative, no local user name, saved uncompressed so that is
+easy to check).
 
 | Script | Does |
 |---|---|
@@ -66,7 +71,7 @@ EEVEE takes ~10 s a frame on this laptop (~25 min for 144); Cycles (96 adaptive 
 CPU) ~220-250 s a frame (~9 h), so render it in the background. To redo part of a render, delete those frames
 and run the same command again. Then build the site and check the scene at 390, 1280 and 1440 px.
 
-## Adding the next scene (TapitCard, Ladenza)
+## Adding a rendered scene later (e.g. TapitCard's card)
 
 1. Put the source material in `_source/animation-assets/<scene>/` and list it in that folder's README.
 2. Copy `asaanbill/` to `tools/3d/<scene>/` and adapt `prepare_textures.py` (crops) and the configuration
@@ -74,6 +79,6 @@ and run the same command again. Then build the site and check the scene at 390, 
    works" steps in `home.json`.
 3. Build, run `checks.py` until nothing is over 1.25x, render, then run
    `python tools/3d/encode_frames.py <scene> --frames-dir <frames> --engine <eevee|cycles>`.
-4. Add the product's id to `home.json → products.scrollScenes` and give its `products.items` entry a `scene`
-   block (`alt`, `caption`, `skipLabel`). `ProductShowcase` then renders it with `ScrollScene` instead of the
-   SVG stage; nothing else changes.
+4. The homepage no longer has a scroll-scrubbed player (it was removed with the AsaanBill scene in Phase 15).
+   A rendered scene would go inside that venture's card in the deck (`VentureDeck.astro`), as a short clip or
+   frames playing on the card's own clock, like the other cards.

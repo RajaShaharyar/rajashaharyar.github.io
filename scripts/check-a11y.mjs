@@ -6,7 +6,8 @@
  * Serves dist/ with Astro's preview server, opens each page in Playwright's
  * Chromium, scrolls through it (so lazy images and scroll reveals settle),
  * then runs axe (WCAG 2.x A/AA rules plus best practices). Exits 1 on any
- * violation. Redirect pages are skipped.
+ * violation. Redirect pages are skipped. Pictures of real product UI skip only
+ * the colour-contrast rule (see PICTURES).
  */
 import { preview } from 'astro';
 import { chromium } from 'playwright';
@@ -15,6 +16,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const PORT = 4330;
+const PICTURES = '[data-ab]';
 const WIDTHS = [390, 1280];
 
 const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
@@ -44,9 +46,15 @@ try {
       });
       // Long enough for the last scroll reveals (500 ms + up to 420 ms stagger) to finish.
       await page.waitForTimeout(1300);
-      const results = await new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'])
-        .analyze();
+      const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
+      const results = await new AxeBuilder({ page }).withTags(tags).exclude(PICTURES).analyze();
+      // Pictures of real product UI (the homepage's AsaanBill card: aria-hidden, colours sampled from
+      // AsaanBill's screens) get every rule except colour contrast, which WCAG 1.4.3 exempts for text
+      // that is part of a picture.
+      if (await page.locator(PICTURES).count()) {
+        const pictures = await new AxeBuilder({ page }).withTags(tags).include(PICTURES).disableRules(['color-contrast']).analyze();
+        results.violations.push(...pictures.violations);
+      }
       for (const v of results.violations) {
         violations += v.nodes.length;
         console.log(`✗ ${width}px ${path}  [${v.id}] ${v.help} (${v.nodes.length})`);

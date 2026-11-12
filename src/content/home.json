@@ -39,36 +39,38 @@
   },
   "products": {
     "heading": "The work",
-    "intro": "Three products I built or led, and two I helped shape.",
+    "intro": "Products I've built, led or helped shape.",
     "draft": true,
-    "_draftNote": "Heading, intro and the step texts are draft wording (Phase 13) for Raja to revise.",
-    "featured": [
+    "_draftNote": "Intro and the five card headlines are drafts (Phase 15) for Raja to revise.",
+    "cards": [
       "asaanbill",
       "tapit",
-      "ladenza"
-    ],
-    "alsoWorkedOn": [
+      "ladenza",
       "sonicengine-ai",
       "dressup"
     ],
-    "_orderNote": "Reorder by reordering these ids. featured = the sticky-stage blocks (480×360 scenes); alsoWorkedOn = the compact cards (320×220 scenes). Each id needs an entry in items and a scene in src/components/ProductScene.astro. The Ventures menu keeps its own order (site.json → nav).",
-    "scrollScenes": [
-      "asaanbill"
-    ],
-    "_scrollScenesNote": "Featured products shown as a scroll-scrubbed 3D scene (ScrollScene; frames in public/scenes/<id>/, built by tools/3d/). The rest stay on the SVG sticky stage.",
+    "_cardsNote": "Card order in the deck (one card per venture). Name, line, metric, stage badge and link come from site.json → ventures; role and dates from the venture file or cv.json; steps and My part from items below.",
+    "railLabel": "Venture cards",
+    "skipLabel": "Skip the ventures",
+    "pauseLabel": "Pause animations",
+    "playLabel": "Play animations",
     "stepsHeading": "How it works",
     "stepsKey": "Highlighted: my part",
     "myPartLabel": "My part",
     "storyLink": "Read the story",
-    "alsoHeading": "Also worked on",
     "otherLink": {
       "label": "Other ventures",
       "href": "/ventures/other/"
     },
-    "_itemsNote": "One entry per product. steps: the 4 beats of its scene; \"at\" is the beat start in ms (the scene and the step list share these times), \"mine\": true marks Raja's part (accent). myPart: lines copied word for word from cv.json or the venture MDX (featured only). _sources: the research behind the scene, never rendered.",
+    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline and color (color2 = a gradient's second stop) are drafts. steps[].at drives the SVG scenes (TapitCard, Ladenza, Sonic AI Engine, Dressup, and AsaanBill's /ventures card); AsaanBill's deck card is live UI with its own beats (src/scripts/asaanbill-board.ts). _sources: the research behind each scene, never rendered.",
     "items": [
       {
         "id": "asaanbill",
+        "label": "AsaanBill",
+        "headline": "Bill it. Get paid.",
+        "color": "#2456D2",
+        "draft": true,
+        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: AsaanBill's own primary blue, sampled from the screenshots: the Generate Invoice button (#2757CD) and the selected PSID tile's border (#2154D8).",
         "duration": 4200,
         "steps": [
           {
@@ -100,17 +102,16 @@
           "source": "Evamp & Saanga's product page, https://evampsaanga.com/asaan-bill/ (tagline \"Digital Payments Simplified\")",
           "flow": "Create an invoice → it reaches the customer by email or mobile → payment in real time via 1LINK (1-LINK Bill Payment in banking apps, and Raast P2M) → track and reconcile. Invoices can also sync from an ERP or CRM.",
           "rajasPart": "cv.json: 0→1 launch on the 1Bill aggregator approval, Raast P2M go-to-market, 15+ ERP partnerships opening the restaurant vertical. Payment types: PSID, QR and Request to Pay."
-        },
-        "scene": {
-          "alt": "AsaanBill's merchant portal: creating an invoice, tracking settlement and the dashboard",
-          "caption": "AsaanBill merchant portal, demo account",
-          "draft": true,
-          "_draftNote": "Caption waits on Raja's confirmation that \"Rehman Enterprises\" is a demo account with dummy names, PSIDs and amounts, and that Evamp & Saanga are happy for these screens to be shown.",
-          "skipLabel": "Skip the AsaanBill animation"
         }
       },
       {
         "id": "tapit",
+        "label": "TapitCard",
+        "headline": "Tap it. Save it.",
+        "color": "#C983FF",
+        "color2": "#1BD6FF",
+        "draft": true,
+        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: The purple-to-cyan of the T mark on the TapitCard card artwork (sampled #C983FF and #1BD6FF).",
         "duration": 4000,
         "steps": [
           {
@@ -146,6 +147,11 @@
       },
       {
         "id": "ladenza",
+        "label": "Ladenza",
+        "headline": "Thrift it. Deliver it.",
+        "color": "#F2D6B8",
+        "draft": true,
+        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: A light sand.",
         "duration": 4200,
         "steps": [
           {
@@ -180,6 +186,11 @@
       },
       {
         "id": "sonicengine-ai",
+        "label": "Sonic AI Engine",
+        "headline": "Prompt it. Play it.",
+        "color": "#D3CEFF",
+        "draft": true,
+        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: A light lilac.",
         "duration": 3600,
         "steps": [
           {
@@ -212,6 +223,11 @@
       },
       {
         "id": "dressup",
+        "label": "Dressup",
+        "headline": "Search it. Find yours.",
+        "color": "#F7CAD6",
+        "draft": true,
+        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: A light blush.",
         "duration": 3400,
         "steps": [
           {

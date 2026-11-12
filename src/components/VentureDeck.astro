@@ -1,0 +1,703 @@
+---
+/**
+ * Homepage #products, "The work": a pinned deck with one card per venture (home.json →
+ * products.cards). Name, line, metric, stage badge and link: site.json → ventures; role: the
+ * venture's MDX (case studies) or cv.json (role stories); steps, My part, label, headline and
+ * card colour: home.json → products.items.
+ *
+ * - From 1024 px (and 600 px tall): the left column holds the heading, the progress rail and the
+ *   active venture's text; the right column holds the deck. Each card gets 70svh of scroll; the
+ *   next card rises over the stack, earlier cards peek out underneath.
+ * - Narrower and at least 640 px tall: heading, the active text, the steps as numbered dots and the
+ *   card, pinned. Shorter: a plain list, each card playing while it is in view.
+ * - Reduced motion and no JavaScript: a plain list of cards in their final state, steps complete.
+ * - Every text block stays in the DOM and the accessibility tree (inactive ones are only visually
+ *   hidden); the animations are aria-hidden. Behaviour: src/scripts/deck.ts.
+ * - AsaanBill's card is its real portal UI rebuilt as live HTML (AsaanBillBoard); the other four
+ *   reuse their SVG scenes (ProductScene) until their real-material phases.
+ */
+import { getEntry } from 'astro:content';
+import ProductScene from './ProductScene.astro';
+import ProductSteps from './ProductSteps.astro';
+import AsaanBillBoard from './AsaanBillBoard.astro';
+import ArrowLink from './ArrowLink.astro';
+import home from '../content/home.json';
+import { site } from '../lib/site';
+import { getExperience } from '../lib/cv';
+
+const copy = home.products;
+
+/** The watermark label: the card colour about 8% darker (lighter on dark cards). */
+function labelColour(hex: string) {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return `color-mix(in oklab, ${hex} 92%, ${lum < 0.45 ? 'white' : 'black'})`;
+}
+
+async function card(id: string, i: number) {
+  const venture = site.ventures.find((v) => v.id === id);
+  const story = copy.items.find((s) => s.id === id);
+  const entry = await getEntry('ventures', id);
+  if (!venture || !story || !entry) throw new Error(`home.json → products: "${id}" needs a site.json venture, a products.items entry and a venture file.`);
+  let role: string | undefined;
+  if (entry.data.kind === 'case-study') role = entry.data.snapshot.role;
+  else if (entry.data.kind === 'role-story') role = getExperience(entry.data.experienceId).roles[0].title;
+  const steps = story.steps.map((s, k, all) => ({ ...s, len: (all[k + 1]?.at ?? story.duration) - s.at }));
+  const color2 = 'color2' in story ? (story.color2 as string) : undefined;
+  const bg = color2 ? `linear-gradient(135deg, ${story.color}, ${color2})` : story.color;
+  return { ...venture, i, role, steps, myPart: story.myPart, label: story.label, headline: story.headline, duration: story.duration, bg, labelColour: labelColour(story.color) };
+}
+const cards = await Promise.all(copy.cards.map(card));
+const N = cards.length;
+---
+
+<section id="products" class="deck-section defer-render" aria-labelledby="products-heading" style={`--defer-size: ${100 + N * 70}svh`}>
+  <a class="deck-skip" href="#playbook">{copy.skipLabel}</a>
+  <div class="deck wrap" data-deck style={`--n: ${N}`}>
+    <div class="deck-pin">
+      <header class="deck-head">
+        <h2 id="products-heading" class="deck-title">{copy.heading}</h2>
+        <p class="deck-intro">{copy.intro}</p>
+      </header>
+
+      <nav class="deck-rail" aria-label={copy.railLabel}>
+        <ol>
+          {
+            cards.map((c, i) => (
+              <li>
+                <button type="button" data-rail aria-label={`Show ${c.name}`} aria-current={i === 0 ? 'true' : undefined}>
+                  <span class="deck-rail-line" />
+                  <span class="deck-rail-name" aria-hidden="true">
+                    {c.label}
+                  </span>
+                </button>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+
+      <div class="deck-texts">
+        {
+          cards.map((c, i) => (
+            <article class:list={['deck-text', i === 0 && 'is-active']} data-card-text id={`work-${c.id}`} aria-labelledby={`work-${c.id}-h`} style={`--row-m:${2 * i + 2};--row-d:${i + 2}`}>
+              <p class="deck-eyebrow">
+                <span>{c.role}</span>
+                {c.badge && (
+                  <span class="badge">
+                    <span class="sr-only">Stage reached: </span>
+                    {c.badge}
+                  </span>
+                )}
+              </p>
+              <h3 class="deck-headline" id={`work-${c.id}-h`}>
+                <span class="sr-only">{c.name}: </span>
+                {c.headline}
+              </h3>
+              <p class="deck-line">{c.line}</p>
+              {c.metric && (
+                <p class="deck-metric">
+                  <span class="deck-metric-value">{c.metric.value}</span> {c.metric.label}
+                </p>
+              )}
+              <div class="deck-steps">
+                <ProductSteps id={c.id} steps={c.steps} heading={copy.stepsHeading} keyLabel={copy.stepsKey} sync="state" />
+              </div>
+              {c.myPart.length > 0 && (
+                <div class="deck-mypart">
+                  <p class="deck-mypart-label">{copy.myPartLabel}</p>
+                  <ul>
+                    {c.myPart.map((line) => (
+                      <li>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <ArrowLink href={c.href} srContext={c.name} class="deck-link">
+                {copy.storyLink}
+              </ArrowLink>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="deck-stack">
+        {
+          cards.map((c, i) => (
+            <div
+              class="deck-card"
+              data-card={c.id}
+              data-duration={c.duration}
+              data-pos={i === 0 ? 'active' : 'future'}
+              style={`--card-bg:${c.bg};--label:${c.labelColour};--row-mc:${2 * i + 3};--row-d:${i + 2};z-index:${i + 1}`}
+            >
+              <span class="deck-label" aria-hidden="true" data-label={c.label} />
+              <div class="deck-panel">{c.id === 'asaanbill' ? <AsaanBillBoard /> : <ProductScene id={c.id} />}</div>
+            </div>
+          ))
+        }
+        <button type="button" class="deck-toggle" data-deck-toggle aria-label={copy.pauseLabel} data-pause={copy.pauseLabel} data-play={copy.playLabel} hidden>
+          <svg class="deck-icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9" /></svg>
+          <svg class="deck-icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.5 8z" /></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <ArrowLink href={copy.otherLink.href} class="mt-6 md:mt-8">{copy.otherLink.label}</ArrowLink>
+  </div>
+</section>
+
+<script>
+  import { initDeck } from '../scripts/deck';
+  initDeck();
+</script>
+
+<style>
+  .deck-section {
+    --hh: calc(4rem + 1px);
+    position: relative;
+    padding-block: 3.5rem;
+  }
+  .deck-skip {
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem;
+    z-index: 20;
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-control);
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.5rem);
+  }
+  .deck-skip:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  /* ------------------------------------------------------------ text */
+  .deck-title {
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
+  }
+  .deck-intro {
+    margin-top: 0.5rem;
+    color: var(--color-fg-muted);
+    font-size: var(--text-lead);
+  }
+  .deck-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+  .deck-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+  .deck-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  .deck-line {
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--color-fg-muted);
+    max-width: 34rem;
+  }
+  .deck-metric {
+    color: var(--color-fg-muted);
+  }
+  .deck-metric-value {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .deck-steps {
+    width: 100%;
+  }
+  .deck-mypart-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .deck-mypart ul {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--color-fg-muted);
+  }
+
+  /* ------------------------------------------------------------ cards */
+  .deck-card {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 1;
+    border-radius: 40px;
+    background: var(--card-bg);
+    overflow: hidden;
+  }
+  .deck-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* The watermark is pure decoration (drawn from data-label, outside the accessibility tree) */
+  .deck-label::before {
+    content: attr(data-label);
+  }
+  .deck-label {
+    position: absolute;
+    left: 6%;
+    top: 3.5%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 10.5cqw;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+    color: var(--label);
+    user-select: none;
+  }
+  .deck-panel {
+    position: absolute;
+    left: 5.5%;
+    right: 5.5%;
+    top: 19%;
+    bottom: 5.5%;
+    border-radius: min(28px, 4.5cqw);
+    background-color: #0f1114;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  .deck-panel :global(.scene) {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 6%;
+  }
+  .deck-panel :global(.scene svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .deck-toggle {
+    position: absolute;
+    right: 2.2%;
+    bottom: 2.2%;
+    z-index: 30;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background-color: rgb(11 12 14 / 0.82);
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-fg);
+    cursor: pointer;
+  }
+  .deck-toggle[hidden] {
+    display: none;
+  }
+  .deck-toggle:hover {
+    color: var(--color-accent);
+  }
+  .deck-toggle svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .deck-icon-play {
+    display: none;
+    fill: currentColor !important;
+    stroke-width: 1 !important;
+  }
+  .deck-toggle[data-paused] .deck-icon-pause {
+    display: none;
+  }
+  .deck-toggle[data-paused] .deck-icon-play {
+    display: block;
+  }
+
+  /* ------------------------------------------------------------ plain list (default) */
+  .deck-pin {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+  .deck-head {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+  }
+  .deck-rail {
+    display: none;
+  }
+  .deck-texts,
+  .deck-stack {
+    display: contents;
+  }
+  .deck-text {
+    grid-row: var(--row-m);
+  }
+  .deck-card {
+    grid-row: var(--row-mc);
+    width: min(100%, 36rem);
+    margin-bottom: 1.75rem;
+  }
+  .deck-toggle {
+    display: none;
+  }
+  @media (width >= 64rem) {
+    .deck-pin {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+      gap: 3rem 3.5rem;
+    }
+    .deck-text {
+      grid-column: 1;
+      grid-row: var(--row-d);
+      align-self: center;
+    }
+    .deck-card {
+      grid-column: 2;
+      grid-row: var(--row-d);
+      width: min(100%, 34rem);
+      margin-bottom: 0;
+      justify-self: center;
+    }
+  }
+
+  /* ------------------------------------------------------------ pinned deck (shared) */
+  @media (prefers-reduced-motion: no-preference) and (width >= 64rem) and (height >= 37.5rem),
+    (prefers-reduced-motion: no-preference) and (width < 64rem) and (height >= 40rem) {
+    :global(html.js) .deck-section {
+      padding-block: 0 3rem;
+    }
+    :global(html.js) .deck {
+      height: calc(100svh - var(--hh) + var(--n) * 70svh);
+    }
+    :global(html.js) .deck-pin {
+      position: sticky;
+      top: var(--hh);
+      height: calc(100svh - var(--hh));
+      overflow: clip;
+    }
+    :global(html.js) .deck-texts {
+      display: grid;
+    }
+    :global(html.js) .deck-text {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition:
+        opacity 150ms linear,
+        transform 150ms linear;
+    }
+    :global(html.js) .deck-text.is-active {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      transition:
+        opacity 250ms var(--ease-out-quart) 150ms,
+        transform 250ms var(--ease-out-quart) 150ms;
+    }
+    :global(html.js) .deck-stack {
+      display: block;
+      position: relative;
+      aspect-ratio: 1;
+    }
+    :global(html.js) .deck-card {
+      position: absolute;
+      inset: 0;
+      width: auto;
+      margin: 0;
+      transition: transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    :global(html.js) .deck-card::after {
+      transition: opacity 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    /* below the viewport: at least a full pinned height down (110% alone can peek on tall screens) */
+    :global(html.js) .deck-card[data-pos='future'] {
+      transform: translateY(max(110%, calc(100svh - var(--hh) + 3rem))) rotate(8deg);
+      pointer-events: none;
+    }
+    :global(html.js) .deck-card[data-pos='past'] {
+      transform: translateY(calc(var(--depth) * -14px)) rotate(-4deg) scale(0.97);
+      pointer-events: none;
+    }
+    :global(html.js) .deck-card[data-pos='past']::after {
+      opacity: 0.3;
+    }
+    :global(html.js) .deck-card[data-pos='past'][data-depth='2'],
+    :global(html.js) .deck-card[data-pos='past'][data-depth='4'] {
+      transform: translateY(calc(var(--depth) * -14px)) rotate(5deg) scale(0.97);
+    }
+    :global(html.js) .deck-toggle {
+      display: grid;
+    }
+    :global(html.js) .deck-toggle[hidden] {
+      display: none;
+    }
+  }
+
+  /* ------------------------------------------------------------ pinned: wide screens */
+  @media (prefers-reduced-motion: no-preference) and (width >= 64rem) and (height >= 37.5rem) {
+    :global(html.js) .deck-pin {
+      grid-template-columns: 2.25rem minmax(0, 4fr) minmax(0, 6fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      column-gap: 1.25rem;
+      row-gap: 1.25rem;
+      align-items: center;
+      padding-block: 2rem;
+    }
+    :global(html.js) .deck-head {
+      grid-column: 1 / 3;
+      grid-row: 1;
+      align-self: start;
+      margin: 0;
+    }
+    :global(html.js) .deck-rail {
+      display: block;
+      grid-column: 1;
+      grid-row: 2;
+      align-self: center;
+    }
+    :global(html.js) .deck-texts {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: center;
+    }
+    :global(html.js) .deck-stack {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      justify-self: center;
+      width: min(640px, 46vw, calc(100svh - var(--hh) - 4rem));
+    }
+  }
+  /* The rail: one short line per card; the active one is longer, with the venture's name */
+  .deck-rail ol {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: center;
+  }
+  .deck-rail button {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    width: 2.25rem;
+    padding: 0.375rem 0;
+    cursor: pointer;
+    color: var(--color-fg-subtle);
+  }
+  .deck-rail-line {
+    width: 3px;
+    height: 1.25rem;
+    border-radius: 3px;
+    background-color: var(--color-line-strong);
+    transition:
+      height 300ms var(--ease-out-quart),
+      background-color 300ms;
+  }
+  .deck-rail-name {
+    display: none;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-fg);
+  }
+  .deck-rail button:hover .deck-rail-line {
+    background-color: var(--color-fg-muted);
+  }
+  .deck-rail button[aria-current] .deck-rail-line {
+    height: 3rem;
+    background-color: var(--color-accent);
+  }
+  .deck-rail button[aria-current] .deck-rail-name {
+    display: block;
+  }
+  /* Short wide screens (720-800 px): My part is on the venture page */
+  @media (prefers-reduced-motion: no-preference) and (width >= 64rem) and (height < 50rem) {
+    :global(html.js) .deck-mypart {
+      display: none;
+    }
+    :global(html.js) .deck-text {
+      gap: 0.625rem;
+    }
+  }
+
+  /* ------------------------------------------------------------ pinned: phones and tablets */
+  @media (prefers-reduced-motion: no-preference) and (width < 64rem) and (height >= 40rem) {
+    /* the "Let's talk" dock covers the bottom 4.75rem on small screens */
+    :global(html.js) .deck {
+      height: calc(100svh - var(--hh) - 4.75rem - env(safe-area-inset-bottom) + var(--n) * 70svh);
+    }
+    :global(html.js) .deck-pin {
+      height: calc(100svh - var(--hh) - 4.75rem - env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-block: 0.75rem;
+    }
+    :global(html.js) .deck-title {
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+    :global(html.js) .deck-intro,
+    :global(html.js) .deck-mypart {
+      display: none;
+    }
+    :global(html.js) .deck-text {
+      gap: 0.375rem;
+    }
+    :global(html.js) .deck-eyebrow {
+      flex-wrap: nowrap;
+      max-width: 100%;
+      font-size: 0.8125rem;
+    }
+    :global(html.js) .deck-eyebrow > span:first-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    :global(html.js) .deck-eyebrow .badge {
+      flex: none;
+    }
+    :global(html.js) .deck-headline {
+      font-size: 1.625rem;
+    }
+    :global(html.js) .deck-line {
+      font-size: 0.9375rem;
+      line-height: 1.4;
+    }
+    :global(html.js) .deck-metric-value {
+      font-size: 1.25rem;
+    }
+    :global(html.js) .deck-link {
+      order: 5;
+    }
+    :global(html.js) .deck-steps {
+      order: 6;
+      margin-top: 0.25rem;
+    }
+    /* the deck takes the height that is left; the card is the largest square that fits */
+    :global(html.js) .deck-stack {
+      flex: 1 1 0;
+      min-height: 11rem;
+      width: 100%;
+      aspect-ratio: auto;
+      container-type: size;
+    }
+    :global(html.js) .deck-card {
+      inset: auto;
+      top: 0;
+      left: calc((100cqw - min(100cqw, 100cqh)) / 2);
+      width: min(100cqw, 100cqh);
+      height: min(100cqw, 100cqh);
+    }
+    :global(html.js) .deck-toggle {
+      right: calc((100cqw - min(100cqw, 100cqh)) / 2 + 8px);
+      bottom: calc(100cqh - min(100cqw, 100cqh) + 8px);
+    }
+    /* Steps: a row of 4 numbered dots; the active step's label on one line below */
+    :global(html.js) .deck-steps :global(.how-label),
+    :global(html.js) .deck-steps :global(.how-key),
+    :global(html.js) .deck-steps :global(.mine),
+    :global(html.js) .deck-steps :global(.mark) {
+      display: none;
+    }
+    :global(html.js) .deck-steps :global(.steps) {
+      position: relative;
+      display: flex;
+      gap: 0.625rem;
+      margin: 0 0 1.4rem;
+      counter-reset: deck-step;
+    }
+    :global(html.js) .deck-steps :global(.step) {
+      position: static;
+      counter-increment: deck-step;
+      width: 1.75rem;
+      height: 1.75rem;
+      margin: 0;
+      padding: 0;
+      justify-content: center;
+      border: 2px solid var(--color-line-strong);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-fg-muted);
+    }
+    :global(html.js) .deck-steps :global(.step::before) {
+      display: none;
+    }
+    :global(html.js) .deck-steps :global(.step::after) {
+      content: counter(deck-step);
+    }
+    :global(html.js) .deck-steps :global(.step[data-state='done']) {
+      border-color: var(--color-accent);
+      background-color: var(--color-accent);
+      color: var(--color-accent-ink);
+    }
+    :global(html.js) .deck-steps :global(.step[data-state='active']) {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+    :global(html.js) .deck-steps :global(.step-text) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    :global(html.js) .deck-steps :global(.step[data-state='active'] .step-text) {
+      left: 0;
+      right: 0;
+      top: calc(100% + 0.375rem);
+      width: auto;
+      height: auto;
+      overflow: hidden;
+      clip-path: none;
+      text-overflow: ellipsis;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--color-fg);
+      opacity: 1;
+    }
+  }
+</style>

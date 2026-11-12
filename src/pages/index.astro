@@ -12,7 +12,7 @@ import Hero from '../components/Hero.astro';
 import StatBar from '../components/StatBar.astro';
 import NameStrip from '../components/NameStrip.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-import ProductShowcase from '../components/ProductShowcase.astro';
+import VentureDeck from '../components/VentureDeck.astro';
 import PlaybookStages from '../components/PlaybookStages.astro';
 import RecognitionCarousel from '../components/RecognitionCarousel.astro';
 import OfferCard from '../components/OfferCard.astro';
@@ -44,10 +44,10 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 4. Products: what each does and what Raja did ("See the work" scrolls here) -->
-  <ProductShowcase />
+  <VentureDeck />
 
   <!-- 5. Methodologies: the playbook -->
-  <section id="playbook" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="playbook-heading">
+  <section id="playbook" tabindex="-1" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="playbook-heading">
     <SectionHeader id="playbook-heading" heading={playbook.heading} intro={playbook.intro} />
     <div class="mt-10 md:mt-12">
       <PlaybookStages stages={playbook.stages} />

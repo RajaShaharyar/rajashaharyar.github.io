@@ -4,7 +4,11 @@
     "eyebrow": "Product & Growth · Fintech · SaaS",
     "headline": "I turn early products into revenue.",
     "headlineLead": "I turn early products into",
-    "rotatingWords": ["traction.", "businesses.", "revenue."],
+    "rotatingWords": [
+      "traction.",
+      "businesses.",
+      "revenue."
+    ],
     "_rotatingWordsNote": "Draft (Phase 17): the hero's last word rotates through these once, in the same place, and stops on the last one; headline must equal headlineLead + the last word (screen readers hear only headline; the build checks). Reduced motion and no JavaScript show the last word only.",
     "subline": "5+ years across fintech and SaaS, from pre-selling a prototype to taking a regulated payments product from launch to scale.",
     "roleLine": "Manager, Product & Growth at Evamp & Saanga",
@@ -40,7 +44,7 @@
     "heading": "The work",
     "intro": "Products I've built, led or helped shape.",
     "draft": true,
-    "_draftNote": "Intro, the five card headlines, TapitCard's steps (Phase 16) and Ladenza's My part line (Phase 16) are drafts for Raja to revise.",
+    "_draftNote": "Intro and the five taglines (items[].headline) are drafts for Raja to revise. Since Phase 17 the deck shows only the name, tagline, line, metric and \"Read the story\"; the details are on the venture pages.",
     "cards": [
       "asaanbill",
       "tapit",
@@ -48,19 +52,17 @@
       "sonicengine-ai",
       "dressup"
     ],
-    "_cardsNote": "Card order in the deck (one card per venture). Name, line, metric, stage badge and link come from site.json → ventures; role and dates from the venture file or cv.json; steps and My part from items below.",
+    "_cardsNote": "Card order in the deck (one card per venture). Name, line, metric and link come from site.json → ventures; the tagline (headline), watermark label and card colour from items below.",
     "railLabel": "Venture cards",
     "skipLabel": "Skip the ventures",
     "pauseLabel": "Pause animations",
     "playLabel": "Play animations",
-    "stepsHeading": "How it works",
-    "myPartLabel": "My part",
     "storyLink": "Read the story",
     "otherLink": {
       "label": "Other ventures",
       "href": "/ventures/other/"
     },
-    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline is a draft. color is a colour TOKEN name from global.css (accent, accent-2, fg, accent-strong, accent-2-soft), so a token change updates the cards; the order alternates lime / violet / warm off-white so neighbouring cards in the stack always differ. steps[].at drives the SVG scenes (Ladenza, Sonic AI Engine, Dressup, and the /ventures cards); AsaanBill's and TapitCard's deck cards are live UI with their own beats (src/scripts/asaanbill-board.ts, src/scripts/tapitcard-board.ts). _sources: the research behind each card, never rendered.",
+    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline = the tagline under the name on the homepage (a draft). color is a colour TOKEN name from global.css (accent, accent-2, fg, accent-strong, accent-2-soft), so a token change updates the cards; the order alternates lime / violet / warm off-white so neighbouring cards in the stack always differ. steps[] are no longer shown as text (Phase 17): their .at times drive the SVG scenes' beats (Ladenza, Sonic AI Engine, Dressup, and the /ventures cards) and .mine marks Raja's part in the drawing; AsaanBill's and TapitCard's cards are live UI with their own beats (src/scripts/asaanbill-board.ts, src/scripts/tapitcard-board.ts). _sources: the research behind each card, never rendered.",
     "items": [
       {
         "id": "asaanbill",
@@ -68,7 +70,7 @@
         "headline": "Bill it. Get paid.",
         "color": "accent",
         "draft": true,
-        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent (lime), from the site palette (Phase 16).",
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-accent (lime), from the site palette (Phase 16).",
         "duration": 4200,
         "steps": [
           {
@@ -92,10 +94,6 @@
             "mine": false
           }
         ],
-        "myPart": [
-          "Led AsaanBill's 0→1 launch on the 1Bill aggregator approval (Nov 2024).",
-          "Drive the Raast P2M go-to-market; AsaanBill received Raast approval through the State Bank in June 2026."
-        ],
         "_sources": {
           "source": "Evamp & Saanga's product page, https://evampsaanga.com/asaan-bill/ (tagline \"Digital Payments Simplified\")",
           "flow": "Create an invoice → it reaches the customer by email or mobile → payment in real time via 1LINK (1-LINK Bill Payment in banking apps, and Raast P2M) → track and reconcile. Invoices can also sync from an ERP or CRM.",
@@ -108,7 +106,7 @@
         "headline": "Tap it. Save it.",
         "color": "accent-2",
         "draft": true,
-        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent-2 (violet; the card artwork carries TapitCard's own colours), from the site palette (Phase 16). The four steps are drafts (Phase 16), from TapitCard's own \"How it works\" copy; step 4 is Raja's part (B2B sales to corporates).",
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-accent-2 (violet; the card artwork carries TapitCard's own colours), from the site palette (Phase 16). The four steps (Phase 16, from TapitCard's own \"How it works\" copy) time the card's beats; they are no longer shown as text.",
         "duration": 13600,
         "steps": [
           {
@@ -132,10 +130,6 @@
             "mine": true
           }
         ],
-        "myPart": [
-          "Led growth, brand, product development and the sales funnel.",
-          "Built an organic following of 40K."
-        ],
         "_sources": {
           "source": "https://thetapitcard.com/ (tagline \"Revolutionizing networking and contact sharing with JUST A TAP!\")",
           "product": "A tap opens a profile with social links, WhatsApp and \"Save vCard\", plus services with an enquiry button. The Enterprise plan covers 5 vCards.",
@@ -149,7 +143,7 @@
         "headline": "Thrift it. Deliver it.",
         "color": "fg",
         "draft": true,
-        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-fg (warm off-white), from the site palette (Phase 16). My part is a draft (Phase 16) that stands on its own on the homepage; the Ladenza venture page keeps its own text.",
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-fg (warm off-white), from the site palette (Phase 16).",
         "duration": 4200,
         "steps": [
           {
@@ -173,13 +167,9 @@
             "mine": true
           }
         ],
-        "myPart": [
-          "I started it during COVID to take the hygiene and convenience worries out of buying branded clothes second-hand."
-        ],
         "_sources": {
           "source": "No public page was found.",
-          "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales.",
-          "myPartNote": "Phase 16 draft from Raja's words: started during COVID; hygiene and convenience held buyers back. The old line (\"...to close that gap\") referred to something the homepage never said."
+          "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales."
         }
       },
       {
@@ -188,7 +178,7 @@
         "headline": "Prompt it. Play it.",
         "color": "accent-strong",
         "draft": true,
-        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent-strong (light lime), from the site palette (Phase 16).",
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-accent-strong (light lime), from the site palette (Phase 16).",
         "duration": 3600,
         "steps": [
           {
@@ -212,7 +202,6 @@
             "mine": true
           }
         ],
-        "myPart": [],
         "_sources": {
           "sources": "Company profiles on Dealigence (https://dealigence.vc/company/sonic-ai-engine) and Lucidity Insights (https://lucidityinsights.com/startups/sonic-ai-20850)",
           "whatTheySay": "A no-code, AI-powered game engine that lets creators \"build, deploy, and monetize games\", with text-prompt game generation and one-click deployment. Founded 2024.",
@@ -225,7 +214,7 @@
         "headline": "Search it. Find yours.",
         "color": "accent-2-soft",
         "draft": true,
-        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent-2-soft (light violet), from the site palette (Phase 16).",
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-accent-2-soft (light violet), from the site palette (Phase 16).",
         "duration": 3400,
         "steps": [
           {
@@ -249,7 +238,6 @@
             "mine": true
           }
         ],
-        "myPart": [],
         "_sources": {
           "source": "No matching public page was found.",
           "rajasWords": "A hyper-personalised marketplace. As Product Consultant he explored the B2B side, a personalised search bar for brands, and got it ready for Shopify integration."

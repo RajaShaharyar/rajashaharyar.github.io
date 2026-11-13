@@ -16,7 +16,6 @@ import type { Board } from './board-camera';
 
 interface Player {
   cycle: number;
-  beats: number[];
   first(): void;
   start(): void;
   pause(): void;
@@ -27,7 +26,7 @@ interface Player {
 
 const HOLD = 1500;
 
-function svgPlayer(scene: HTMLElement, beats: number[], duration: number): Player {
+function svgPlayer(scene: HTMLElement, duration: number): Player {
   const arm = (play: boolean) => {
     if (scene.hasAttribute('data-armed')) {
       scene.removeAttribute('data-playing');
@@ -39,7 +38,6 @@ function svgPlayer(scene: HTMLElement, beats: number[], duration: number): Playe
   };
   return {
     cycle: duration + HOLD,
-    beats,
     first: () => arm(false),
     start: () => arm(true),
     pause: () => scene.removeAttribute('data-playing'),
@@ -50,7 +48,7 @@ function svgPlayer(scene: HTMLElement, beats: number[], duration: number): Playe
 
 /** A live board (AsaanBill, TapitCard): render(t) is pure, so the clock is all there is. */
 function boardPlayer(b: Board, ready?: () => boolean): Player {
-  return { cycle: b.cycle, beats: b.beats, first: () => b.render(0), start: () => b.render(0), pause() {}, resume() {}, tick: (t) => b.render(t), ready };
+  return { cycle: b.cycle, first: () => b.render(0), start: () => b.render(0), pause() {}, resume() {}, tick: (t) => b.render(t), ready };
 }
 
 /** TapitCard's card images: 700w when the panel is at most 800 device px wide, else 1400w. */
@@ -104,7 +102,6 @@ export function initDeck() {
   const toggle = root.querySelector<HTMLButtonElement>('[data-deck-toggle]')!;
   const N = cards.length;
   const pinned = matchMedia('(width >= 64rem) and (height >= 37.5rem), (width < 64rem) and (height >= 40rem)');
-  const steps = texts.map((t) => Array.from(t.querySelectorAll<HTMLElement>('.step')));
   let players: Player[] = [];
   let active = -1;
   let elapsed = 0;
@@ -114,14 +111,6 @@ export function initDeck() {
   let onScreen = false;
   const inView = new Set<number>(); // list mode
   const clocks = new Map<number, number>();
-
-  const syncSteps = (i: number, t: number) => {
-    const b = players[i].beats;
-    steps[i].forEach((el, k) => {
-      const state = t >= (b[k + 1] ?? Infinity) ? 'done' : t >= b[k] ? 'active' : 'upcoming';
-      if (el.dataset.state !== state) el.dataset.state = state;
-    });
-  };
 
   const running = () => !paused && onScreen && !document.hidden;
   const loop = (now: number) => {
@@ -142,7 +131,6 @@ export function initDeck() {
       if (pinned.matches) elapsed = t;
       else clocks.set(i, t);
       p.tick(t);
-      syncSteps(i, t);
     }
     raf = requestAnimationFrame(loop);
   };
@@ -187,7 +175,6 @@ export function initDeck() {
     players[i].start();
     if (paused) players[i].pause();
     players[i].tick(0);
-    syncSteps(i, 0);
     wake();
   };
 
@@ -202,7 +189,7 @@ export function initDeck() {
 
   // ---------------------------------------------------------------- set up when the deck is near
   const setup = () => {
-    players = cards.map((c, i) => {
+    players = cards.map((c) => {
       const ab = c.querySelector<HTMLElement>('[data-ab]');
       if (ab) {
         let filled = false;
@@ -210,12 +197,10 @@ export function initDeck() {
       }
       const tc = c.querySelector<HTMLElement>('[data-tc]');
       if (tc) return boardPlayer(createTapit(tc));
-      const beats = steps[i].map((s) => Number(s.dataset.at));
-      return svgPlayer(c.querySelector<HTMLElement>('.scene')!, beats, Number(c.dataset.duration));
+      return svgPlayer(c.querySelector<HTMLElement>('.scene')!, Number(c.dataset.duration));
     });
     // Cards still to come are off-screen; each is armed when it becomes active (or passed). In the
     // list, every card shows its first frame until it plays.
-    players.forEach((_, i) => syncSteps(i, 0));
     if (!pinned.matches) players.forEach((p) => p.first());
     root.classList.add('is-live');
     toggle.hidden = false;
@@ -287,7 +272,6 @@ export function initDeck() {
       seek(t: number) {
         elapsed = t;
         players[active]?.tick(t);
-        syncSteps(active, t);
       },
     },
   });

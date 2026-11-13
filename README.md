@@ -96,8 +96,8 @@ src/
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
   layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
-  components/          Nav, Footer, homepage sections (VentureDeck + AsaanBillBoard + TapitCardBoard + ProductScene +
-                       ProductSteps, PlaybookStages),
+  components/          Nav, Footer, homepage sections (VentureDeck + AsaanBillBoard + TapitCardBoard + ProductScene,
+                       PlaybookStages),
                        Timeline, Gallery (photo grid + lightbox), YoursNext
   scripts/             reveal, deck (the venture card deck), asaanbill-board (the AsaanBill card's timeline)
   pages/               one file per route (see Site structure)
@@ -210,8 +210,10 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
   venture (`home.json → products.cards`), Paymo-style.
   - *Wide screens* (1024 px and up, 600 px tall): the left column holds the heading, a progress rail (one line
     per card; the active one is longer, with the venture's name; each line is a button that scrolls to its
-    card) and the active venture's text (role · stage badge, headline, line, metric, "How it works", My part,
-    the story link; My part hides between 720 and 800 px). The right column holds the deck: a square card in
+    card) and the active venture's text, kept minimal (Phase 17; the details live on the venture pages): the
+    name (an H3 at display-lg, the largest text on the left), the tagline in violet (`products.items[].headline`,
+    a draft), the one line (muted, at most two lines), the metric if there is one (a lime number) and "Read the
+    story →" as a secondary button. The right column holds the deck: a square card in
     the venture's colour with a faint watermark label, a dark inner panel and one pause/play button (a
     two-tone focus ring, near-black inside and off-white outside, so it shows on every card colour).
   - *Card colours:* palette tokens, named in `home.json → products.items[].color` (so a token change updates
@@ -222,22 +224,18 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
   - *Edge fade:* every inner panel's content (`.deck-view`) fades out over 20-26 px on all four sides, so
     pieces around a focus area fade instead of being cut mid-word; every rest keeps its focus inside the
     unfaded area.
-  - *"How it works":* Raja's steps have a lime tick and an outlined "My part" tag right after the text, in the
-    same list item (screen readers hear "(my part)"); other steps get a neutral tick. Lime means my part only,
-    on the phone step dots too.
   - *Switching:* each card gets 70svh of scroll; active = floor(progress × N). The new card rises over the
     stack (650 ms); earlier cards peek out underneath, rotated −4° / +5° and darkened; the text crossfades.
     Scrolling up reverses it. It is time-based, never scrubbed.
-  - *Narrow screens:* at least 640 px tall, the heading, the active text (no My part), the steps as numbered
-    dots with the active label, and the card (the largest square that fits above the "Let's talk" dock) pin.
+  - *Narrow screens:* at least 640 px tall, the heading, the active text (the same minimal set) and the card
+    (the largest square that fits above the "Let's talk" dock) pin.
     Shorter: a plain list, each card playing while in view.
   - *Autoplay:* only the active card runs, from beat 1 when it becomes active, looping after a 1.5 s hold;
-    paused off-screen, in a hidden tab or by the button. Inactive cards show their first frame. The steps
-    (`ProductSteps` with `sync="state"`) show done, active or upcoming with the card's beats.
+    paused off-screen, in a hidden tab or by the button. Inactive cards show their first frame.
   - *Accessibility:* every venture's text stays in the DOM and the accessibility tree (inactive ones are only
     visually hidden; focusing a link in one brings its card forward). Cards are aria-hidden; the watermark is
     drawn from `data-label`. "Skip the ventures" jumps to the playbook. Reduced motion and no JavaScript get a
-    plain list of cards in their final state, with every step complete.
+    plain list of cards in their final state.
 - **The AsaanBill card** (`AsaanBillBoard.astro`, `src/scripts/asaanbill-board.ts`): AsaanBill's real portal UI
   rebuilt as live HTML/CSS from Raja's AsaanBill screenshots (kept in `_source/`, never committed): same wording,
   values, colours and radii; Inter for text, Plus Jakarta Sans for headings and figures. Every value appears in those

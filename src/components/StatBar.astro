@@ -11,8 +11,15 @@
  * aria-hidden). No count-up with reduced motion, and none if a figure is already
  * fully on screen at load. A hidden copy of the final number holds each number's width,
  * so the counting digits never move anything.
+ * tone="violet" (Phase 17, the homepage): huge numbers in ink on the violet band, labels in muted
+ * ink, thin ink separators.
  */
 import { site } from '../lib/site';
+
+interface Props {
+  tone?: 'dark' | 'violet';
+}
+const { tone = 'dark' } = Astro.props;
 
 function splitValue(value: string) {
   const m = value.match(/^([A-Z]{2,4})\s+(.+)$/);
@@ -39,16 +46,16 @@ const stats = site.stats.map((stat) => {
 });
 ---
 
-<ul class="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line md:grid-cols-3" data-reveal-stagger="inner" data-countup-bar>
+<ul class:list={['stats grid grid-cols-2 gap-px overflow-hidden md:grid-cols-3', tone === 'violet' ? 'stats-violet' : 'rounded-card border border-line bg-line']} data-reveal-stagger="inner" data-countup-bar>
   {
     stats.map((stat) => (
-      <li class="flex flex-col gap-2 bg-bg px-3 py-4 min-[360px]:px-4 sm:p-6 md:p-8">
+      <li class:list={['flex flex-col gap-2 px-3 py-4 min-[360px]:px-4 sm:p-6 md:p-8', tone === 'violet' ? 'stat-cell' : 'bg-bg']}>
         <p class="stat-value">
           <span class="sr-only">{stat.value}</span>
           {/* One line on purpose: line breaks here would render as spaces ("$ 1.8"). */}
           <span aria-hidden="true">{stat.code && <><span class="stat-prefix">{stat.code}</span>{' '}</>}{stat.before}{stat.number && <span class="stat-number"><span class="stat-ghost">{stat.number}</span><span class="stat-live" data-countup data-to={stat.to} data-decimals={stat.decimals} data-grouping={stat.grouping ? 'true' : 'false'}>{stat.number}</span></span>}{stat.after}</span>
         </p>
-        <p class="text-sm leading-snug text-fg-muted sm:text-base">{stat.label}</p>
+        <p class="stat-label text-sm leading-snug sm:text-base">{stat.label}</p>
       </li>
     ))
   }
@@ -71,6 +78,26 @@ const stats = site.stats.map((stat) => {
     letter-spacing: 0.02em;
     vertical-align: 0.95em;
     color: var(--color-accent);
+  }
+  .stat-label {
+    color: var(--color-fg-muted);
+  }
+  /* On the violet band: ink, bigger, thin ink separators */
+  .stats-violet {
+    background-color: rgb(21 15 38 / 0.2);
+  }
+  .stat-cell {
+    background-color: var(--color-accent-2);
+  }
+  .stats-violet .stat-value {
+    font-size: clamp(2.125rem, 0.9rem + 5.4vw, 5.5rem);
+    color: var(--color-accent-2-ink);
+  }
+  .stats-violet .stat-prefix {
+    color: var(--color-accent-2-ink-muted);
+  }
+  .stats-violet .stat-label {
+    color: var(--color-accent-2-ink-muted);
   }
   /* The ghost (final number, invisible) and the live digits share one grid cell. */
   .stat-number {

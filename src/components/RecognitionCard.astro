@@ -38,7 +38,7 @@ const credits = [...new Set(photos.map((p) => getImage(p.file).credit).filter(Bo
 const links = item.links ?? [];
 ---
 
-<article id={item.id} class="rcard">
+<article id={item.id} class="rcard" data-spotlight>
   {
     photos.length > 0 && (
       <Gallery

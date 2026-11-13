@@ -4,6 +4,9 @@
  * hero · quick proof (#proof) · credibility strip (#credibility) · products
  * (#products) · methodologies (#playbook) · how I can help (#help) ·
  * recognition (#recognition) · testimonials (#testimonials) · closing CTA.
+ * Rhythm (Phase 17): full-bleed bands, never two colour blocks next to each other: hero (near-black,
+ * aurora) · proof (violet) · credibility (near-black) · the work (near-black, violet glow) · playbook
+ * (deep violet) · help (lime) · recognition (near-black) · closing CTA (brand gradient) · footer.
  * Copy: src/content/home.json · numbers, ventures, offers, testimonials: site.json
  * Photos and alt text: images.json · Recognition carousel: recognition.json
  */
@@ -30,14 +33,16 @@ const sectionY = 'py-16 md:py-24';
   <!-- 1. Hero -->
   <Hero />
 
-  <!-- 2. Quick proof: the numbers -->
-  <section id="proof" class="wrap pb-14 md:pb-20" aria-labelledby="proof-heading">
-    <SectionHeader id="proof-heading" heading={proof.heading} hidden />
-    <StatBar />
+  <!-- 2. Quick proof: the numbers, huge, in ink on a violet band -->
+  <section id="proof" class="band band-violet py-10 md:py-14" aria-labelledby="proof-heading">
+    <div class="wrap">
+      <SectionHeader id="proof-heading" heading={proof.heading} hidden />
+      <StatBar tone="violet" />
+    </div>
   </section>
 
-  <!-- 3. Credibility strip: a full-width band -->
-  <section id="credibility" class="border-y border-line bg-surface/40 py-10 md:py-12" aria-labelledby="credibility-heading">
+  <!-- 3. Credibility strip: near-black, violet separators -->
+  <section id="credibility" class="credibility py-10 md:py-12" aria-labelledby="credibility-heading">
     <div class="wrap" data-reveal>
       <NameStrip id="credibility-heading" title={proof.nameStripTitle} names={proof.names} />
     </div>
@@ -46,33 +51,37 @@ const sectionY = 'py-16 md:py-24';
   <!-- 4. Products: what each does and what Raja did ("See the work" scrolls here) -->
   <VentureDeck />
 
-  <!-- 5. Methodologies: the playbook -->
-  <section id="playbook" tabindex="-1" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="playbook-heading">
-    <SectionHeader id="playbook-heading" heading={playbook.heading} intro={playbook.intro} />
-    <div class="mt-10 md:mt-12">
-      <PlaybookStages stages={playbook.stages} />
+  <!-- 5. Methodologies: the playbook, on a deep-violet band -->
+  <section id="playbook" tabindex="-1" class:list={['band band-deep', sectionY, 'defer-render']} aria-labelledby="playbook-heading">
+    <div class="wrap">
+      <SectionHeader id="playbook-heading" heading={playbook.heading} intro={playbook.intro} />
+      <div class="mt-10 md:mt-12">
+        <PlaybookStages stages={playbook.stages} />
+      </div>
     </div>
   </section>
 
-  <!-- 6. How I can help: the four offers -->
-  <section id="help" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="help-heading">
-    <SectionHeader id="help-heading" heading={help.heading} />
-    <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 lg:gap-6 xl:grid-cols-4" data-reveal-stagger>
-      {
-        site.offers
-          .filter((offer) => offer.home)
-          .map((offer, i) => (
-            <li>
-              <OfferCard offer={offer} index={i} />
-            </li>
-          ))
-      }
-    </ul>
-    <ArrowLink href={help.link.href} class="mt-8">{help.link.label}</ArrowLink>
+  <!-- 6. How I can help: the four offers, near-black cards on a lime band -->
+  <section id="help" class:list={['band band-lime', sectionY, 'defer-render']} aria-labelledby="help-heading">
+    <div class="wrap">
+      <SectionHeader id="help-heading" heading={help.heading} />
+      <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 lg:gap-6 xl:grid-cols-4" data-reveal-stagger>
+        {
+          site.offers
+            .filter((offer) => offer.home)
+            .map((offer, i) => (
+              <li>
+                <OfferCard offer={offer} index={i} button={offer.id === 'talks-workshops' ? help.cardButtonSpeaking : help.cardButton} />
+              </li>
+            ))
+        }
+      </ul>
+      <a href={help.link.href} class="btn btn-dark mt-8">{help.link.label} <span aria-hidden="true">→</span></a>
+    </div>
   </section>
 
-  <!-- 7. Recognition -->
-  <section id="recognition" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
+  <!-- 7. Recognition: near-black, violet accents -->
+  <section id="recognition" class:list={['wrap', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
     <SectionHeader id="recognition-heading" heading={recognition.heading} intro={recognition.line} />
     <div class="mt-8 md:mt-10" data-reveal>
       <RecognitionCarousel label={recognition.carouselLabel} order={recognition.slides} />
@@ -98,8 +107,6 @@ const sectionY = 'py-16 md:py-24';
     )
   }
 
-  <!-- 9. Closing call to action (the footer follows) -->
-  <section class="wrap defer-render pt-8 pb-4 md:pt-12" aria-labelledby="cta-heading">
-    <CTA heading={finalCta.heading} />
-  </section>
+  <!-- 9. Closing call to action: a full-bleed brand-gradient block (the footer follows) -->
+  <CTA heading={finalCta.heading} />
 </Base>

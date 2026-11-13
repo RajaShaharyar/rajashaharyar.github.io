@@ -2,7 +2,8 @@
 /**
  * Vertical career timeline, oldest first (My story). One line per entry:
  * date, then what happened. The rail and dots are decorative; the order of
- * the list carries the meaning. The newest entry's dot is filled.
+ * the list carries the meaning. The line and dots are violet; the newest entry, the current one, is a
+ * filled lime marker (Phase 17).
  *
  * Motion (Phases 10-11): items fade in one after another with their dots
  * (data-reveal-stagger), and the rail draws down (scaleY 0 → 1) when the list
@@ -51,7 +52,7 @@ const { items, label } = Astro.props;
     left: calc(var(--rail-x) - 1px);
     width: 2px;
     border-radius: 2px;
-    background-color: var(--color-line);
+    background-color: var(--color-accent-2-strong);
     transform-origin: top;
   }
   @media (prefers-reduced-motion: no-preference) {
@@ -77,11 +78,12 @@ const { items, label } = Astro.props;
     left: calc(var(--rail-x) - 0.4375rem);
     width: 0.875rem;
     height: 0.875rem;
-    border: 2px solid var(--color-accent);
+    border: 2px solid var(--color-accent-2-strong);
     border-radius: 999px;
     background-color: var(--color-bg);
   }
   .timeline-item[data-latest] .timeline-dot {
+    border-color: var(--color-accent);
     background-color: var(--color-accent);
     box-shadow: 0 0 0 4px rgb(190 242 100 / 0.18);
   }
@@ -89,7 +91,7 @@ const { items, label } = Astro.props;
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.01em;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
     font-variant-numeric: tabular-nums;
   }
   .timeline-text {

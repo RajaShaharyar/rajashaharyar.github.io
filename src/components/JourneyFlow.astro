@@ -101,12 +101,12 @@ const { label, steps, goesLiveWith = [], caption } = Astro.props;
     color: var(--color-fg-muted);
   }
   .journey-step[data-accent] {
-    border-color: var(--color-accent);
-    background-color: color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
+    border-color: var(--color-accent-2-strong);
+    background-color: color-mix(in srgb, var(--color-accent-2-strong) 12%, var(--color-surface));
   }
   .journey-step[data-accent] .journey-num,
   .journey-step[data-accent] .journey-owner {
-    color: var(--color-accent);
+    color: var(--color-accent-2);
     font-weight: 600;
   }
 

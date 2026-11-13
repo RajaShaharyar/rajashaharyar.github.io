@@ -209,7 +209,41 @@ Messages arrive at the address the key belongs to, with Reply-To set to the send
 form sends in the page and shows a confirmation (or an error with email-app and WhatsApp fallbacks); without it,
 the form posts normally and Web3Forms redirects to `/contact/thanks/`. Formspree also works: put the form ID in
 `contact.form.formspreeId` and set `provider` to `"formspree"`.
-Links can preselect a reason, e.g. `/contact/?reason=speaking` (`hiring`, `growth-help`, `speaking`, `other`).
+Links can preselect a reason, e.g. `/contact/?reason=speaking` (`growth-help`, `speaking`, `other`; the old
+`hiring` preselects Other). The reasons and their hints are in `src/content/contact.json`.
+
+## Colour and bands
+
+Near-black with warm off-white text, and two colours with fixed roles (tokens and computed contrast ratios in
+`src/styles/global.css`):
+
+- **Lime** (`accent`) = action and proof: primary buttons, key numbers, the current or active state (nav, the
+  deck rail, the reached stage, the timeline's "current" marker, the growth line).
+- **Violet** (`accent-2`, `accent-2-soft`, `accent-2-strong` for borders and glows, `accent-2-deep` for bands) =
+  identity and atmosphere: eyebrows, taglines, tags and badges, link underlines and hover states, highlights,
+  gradients, glows and section bands. `::selection` is violet with ink text.
+- Text on a lime or violet fill uses the ink tokens (`accent-ink`, `accent-ink-muted`, `accent-2-ink`,
+  `accent-2-ink-muted`, all at least 4.5:1 on their fills). Buttons on a band are near-black with lime text
+  (`.btn-dark`). Focus rings are lime on dark and near-black on fills: a band sets `--focus-ring`, and a dark
+  card inside a band (`.on-dark`) sets it back.
+- **Bands** (`.band` + `.band-violet`, `.band-lime`, `.band-deep`, `.band-brand`, or `.band-fill` with
+  `--band-bg`/`--ink`/`--ink-muted`): full-bleed sections. Never two colour blocks next to each other.
+  Homepage: hero (near-black, drifting aurora and grain) · proof (violet, ink numbers) · credibility
+  (near-black, violet separators) · the work (near-black, a soft violet glow behind the deck) · playbook (deep
+  violet; nodes violet until reached) · help (lime, near-black cards with lime buttons) · recognition
+  (near-black) · closing CTA (the brand gradient, violet to lime, display-xl ink) · footer (near-black, a
+  lime→violet hairline, the name large in outline).
+- **Inner pages**: every page header has a violet-led aurora with grain (`Aurora.astro`; static there, drifting
+  only in the hero); a venture page's header is a band in that venture's deck colour with ink text and its live
+  card. Work With Me: Services on violet, the process on near-black with violet step numbers, the FAQ, the
+  gradient CTA. About: a violet timeline with a lime "current" marker, Recognition on deep violet, Along the way
+  on near-black. Recognition pages: violet badges, counters on deep violet. Let's talk: aurora, the selected
+  reason violet with ink, the submit button lime.
+- **Signature details**: cards marked `data-spotlight` (service, venture, recognition, stage) get a lime→violet
+  gradient border on hover and keyboard focus, and on fine pointers a soft violet glow that follows the pointer
+  (`src/scripts/ambient.ts`, transform only, off with reduced motion). Headings use `text-wrap: balance`,
+  paragraphs `text-wrap: pretty`.
+- No background images: gradients are CSS, the grain is one small inline SVG (`feTurbulence`).
 
 ## Motion
 
@@ -221,7 +255,10 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
   Use `data-reveal-stagger="inner"` for grids whose 1px dividers are the list's background (proof bar,
   hard wins, counters): the items' contents fade instead of the items. Elements on screen at load never
   fade, and nothing is hidden without JavaScript or in print.
-- **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades.
+- **Hero**: the text fades and rises once on load (`.hero-intro`); the photo never fades. The last word of the
+  headline rotates once ("traction." → "businesses." → "revenue.", `src/scripts/hero-word.ts`), ending within 5 s
+  and replaying when the hero comes back into view (at most every 10 s). The aurora drifts on 42-56 s cycles
+  (transform only), paused off-screen and in a hidden tab, static with reduced motion.
 - **Homepage products, "The work"** (`VentureDeck.astro`, `src/scripts/deck.ts`): a pinned deck, one card per
   venture (`home.json → products.cards`), Paymo-style.
   - *Wide screens* (1024 px and up, 600 px tall): the left column holds the heading, a progress rail (one line

@@ -1,8 +1,10 @@
 ---
 /**
- * Final call to action on the one accent colour (homepage, Work With Me).
- * The button defaults to site.json → cta; pass href (e.g. with ?reason=…) to
- * preselect a reason on the contact form.
+ * The closing call to action (homepage, Work With Me, the About pages): a full-bleed block in the
+ * brand gradient, violet to lime, with display-xl ink type and a near-black button (lime text).
+ * It renders its own section; place it straight in the page, not inside .wrap. The button defaults
+ * to site.json → cta; pass href (e.g. with ?reason=…) to preselect a reason on the contact form.
+ * Contrast: ink on the gradient is 10.6:1 at its worst point (the violet end).
  */
 import { site } from '../lib/site';
 
@@ -10,20 +12,26 @@ interface Props {
   heading: string;
   href?: string;
   label?: string;
-  /** id of the heading, for aria-labelledby on the surrounding section */
+  /** id of the heading, for aria-labelledby on the section */
   headingId?: string;
 }
 
 const { heading, href = site.cta.href, label = site.cta.label, headingId = 'cta-heading' } = Astro.props;
 ---
 
-<div class="cta relative overflow-hidden rounded-[1.5rem] bg-accent px-6 py-14 text-accent-ink sm:px-10 md:px-16 md:py-20">
-  <h2 id={headingId} class="max-w-3xl text-display-lg text-accent-ink">{heading}</h2>
-  <a href={href} class="btn btn-dark mt-8">{label}</a>
-</div>
+<section class="cta band band-brand defer-render" aria-labelledby={headingId}>
+  <div class="wrap py-20 md:py-28 lg:py-32">
+    <h2 id={headingId} class="max-w-4xl text-display-xl">{heading}</h2>
+    <a href={href} class="btn btn-dark mt-10">{label} <span aria-hidden="true">→</span></a>
+  </div>
+</section>
 
 <style>
-  .cta :focus-visible {
-    outline-color: var(--color-accent-ink);
+  .cta {
+    --defer-size: 30rem;
+  }
+  /* Violet on the left to lime on the right: the brand gradient, mirrored */
+  .cta::before {
+    transform: scaleX(-1);
   }
 </style>

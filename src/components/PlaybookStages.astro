@@ -66,7 +66,7 @@ const segments = [
       stages.map((stage, i) => (
         <li class="stage" id={`stage-${stage.id}`} data-stage data-seg={i + 1}>
           <span class="growth-node" data-node aria-hidden="true" />
-          <div class="stage-card">
+          <div class="stage-card" data-spotlight>
             <div class="stage-in stage-label" style="--k:0">
               <span class="stage-num" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
@@ -126,7 +126,7 @@ const segments = [
     stroke-linejoin: round;
   }
   .growth-track {
-    stroke: var(--color-line);
+    stroke: rgb(167 139 250 / 0.28);
   }
   .growth-line {
     stroke: var(--color-accent);
@@ -191,9 +191,9 @@ const segments = [
     flex-direction: column;
     height: 100%;
     padding: 1.5rem;
-    border: 1px solid var(--color-line);
+    border: 1px solid rgb(167 139 250 / 0.24);
     border-radius: var(--radius-card);
-    background-color: var(--color-surface);
+    background-color: color-mix(in oklab, var(--color-accent-2-deep) 82%, var(--color-accent-2-strong));
     transition: transform 300ms var(--ease-out-quart);
   }
   .stage-label {
@@ -205,7 +205,7 @@ const segments = [
     font-family: var(--font-mono);
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   .stage-name {
     font-size: 1.125rem;
@@ -227,7 +227,7 @@ const segments = [
   .stage-rule {
     height: 1px;
     margin-bottom: 1.25rem;
-    background-color: var(--color-line);
+    background-color: rgb(167 139 250 / 0.24);
     transform-origin: left;
   }
   .stage-kicker {
@@ -305,7 +305,7 @@ const segments = [
       position: absolute;
       left: calc(var(--rail) - 1.25px);
       width: 2.5px;
-      background-color: var(--color-line);
+      background-color: rgb(167 139 250 / 0.28);
     }
     .growth-idea::before {
       top: calc(0.3125rem + var(--node) / 2);
@@ -379,9 +379,10 @@ const segments = [
 
   /* ------------------------------------------------------------ scroll states (playbook.ts sets them) */
   @media (prefers-reduced-motion: no-preference) {
+    /* Not reached yet: violet; reached: lime */
     :global(html.js) .growth.is-live :not([data-lit]) > .growth-node {
-      border-color: var(--color-line-strong);
-      background-color: var(--color-bg);
+      border-color: var(--color-accent-2-strong);
+      background-color: var(--color-accent-2-deep);
       box-shadow: none;
     }
     :global(html.js) .growth.is-live .stage-card,

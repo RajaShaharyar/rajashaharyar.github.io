@@ -20,11 +20,11 @@ const venturesMenu = site.nav.find((item) => item.href === '/ventures/');
 const recognition = site.recognitionMenu;
 ---
 
-<footer class="defer-render mt-20 border-t border-line bg-surface md:mt-24" style="--defer-size: 30rem">
+<footer class="site-footer defer-render" style="--defer-size: 36rem">
   <div class="wrap grid gap-12 py-14 sm:grid-cols-2 md:py-16 lg:grid-cols-[1.35fr_1.15fr_0.7fr_0.9fr_1fr] lg:gap-10">
     <div>
       <p class="font-display text-2xl font-bold tracking-tight">
-        {site.name}<span class="text-accent" aria-hidden="true">.</span>
+        {site.name}<span class="text-accent-2" aria-hidden="true">.</span>
       </p>
       <p class="mt-2 text-fg-muted">{site.title}, {site.company}</p>
       <p class="text-fg-muted">{site.location.display}</p>
@@ -108,9 +108,50 @@ const recognition = site.recognitionMenu;
   <div class="wrap border-t border-line py-6 text-sm text-fg-subtle">
     <p>© {year} {site.name}. Based in {site.location.display}.</p>
   </div>
+  <!-- The name, set large in an outline: decoration (the name is already read out above). SVG text, so it
+       scales to the width exactly (viewBox = its measured size at 100 px: 728 × 100). -->
+  <svg class="footer-name" viewBox="-4 -86 736 112" aria-hidden="true" focusable="false">
+    <text x="0" y="0" textLength="728" lengthAdjust="spacingAndGlyphs">{site.name}</text>
+  </svg>
 </footer>
 
 <style>
+  /* Near-black, with a lime → violet hairline at the top */
+  .site-footer {
+    position: relative;
+    margin-top: 5rem;
+    overflow: hidden;
+    background-color: var(--color-bg);
+  }
+  /* Straight after a page's closing gradient block, no gap */
+  :global(main:has(> .cta:last-child)) + .site-footer {
+    margin-top: 0;
+  }
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background-image: var(--gradient-brand);
+  }
+  .footer-name {
+    display: block;
+    width: min(100% - 2rem, var(--container-page) - 4rem);
+    margin: 0 auto 0.75rem;
+    overflow: visible;
+    opacity: 0.6;
+    user-select: none;
+  }
+  .footer-name text {
+    font-family: var(--font-display);
+    font-size: 100px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    fill: none;
+    stroke: var(--color-accent-2-strong);
+    stroke-width: 1.2px;
+    vector-effect: non-scaling-stroke;
+  }
   .footer-heading {
     font-family: var(--font-sans);
     font-size: 0.8125rem;
@@ -149,7 +190,7 @@ const recognition = site.recognitionMenu;
     transition: color 0.15s;
   }
   .footer-link:hover {
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   .footer-key {
     flex-basis: 100%; /* label above its value, in every row */

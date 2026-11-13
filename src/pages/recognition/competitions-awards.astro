@@ -21,10 +21,12 @@ const counters = sections.map((s) => badgeCounter(s.badges[0]));
 <Base title={page.label} description={competitions.description}>
   <SubPageHeader section="/recognition/" overviewLabel="Overview" title={page.label} intro={`${page.description}.`} />
 
-  <section class="wrap pt-10 md:pt-14" aria-label="Results in numbers">
-    <ul class="grid grid-cols-3 gap-px overflow-hidden rounded-card border border-line bg-line md:max-w-3xl" data-reveal-stagger="inner">
-      {counters.map((c) => <Counter value={c.value} label={c.label} />)}
-    </ul>
+  <section class="band band-deep py-10 md:py-14" aria-label="Results in numbers">
+    <div class="wrap">
+      <ul class="counters-deep grid grid-cols-3 gap-px overflow-hidden rounded-card border md:max-w-3xl" data-reveal-stagger="inner">
+        {counters.map((c) => <Counter value={c.value} label={c.label} />)}
+      </ul>
+    </div>
   </section>
 
   {

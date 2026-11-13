@@ -89,7 +89,8 @@ const evidenceFiles = new Set(evidence.map((e) => e.image));
 const pictures = data.pictures.filter((key) => !evidenceFiles.has(key)).map((image) => ({ image }));
 // The header: the logo lockup and the live card (every venture with a homepage deck card has one)
 const logo = data.logo ? { main: getImage(data.logo.image), by: data.logo.by ? getImage(data.logo.by) : undefined } : undefined;
-const hasCard = home.products.items.some((item) => item.id === id);
+const deckItem = home.products.items.find((item) => item.id === id);
+const hasCard = Boolean(deckItem);
 const copy = home.products;
 const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
 
@@ -121,6 +122,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     title={experience?.company ?? data.title}
     intro={rs ? experience?.product : card?.line}
     facts={headerFacts}
+    band={deckItem?.color}
   >
     {
       logo && (
@@ -588,7 +590,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     height: 1.125rem;
   }
   .venture {
-    padding-top: 2.5rem;
+    padding-top: 0.5rem;
     padding-bottom: 1rem;
   }
   @media (width >= 64rem) {
@@ -597,7 +599,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
       grid-template-columns: 11rem minmax(0, 1fr);
       gap: 4rem;
       align-items: start;
-      padding-top: 3.5rem;
+      padding-top: 1rem;
     }
   }
   .venture-body {
@@ -727,7 +729,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   .snapshot-facts {
     display: grid;
@@ -815,7 +817,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     font-family: var(--font-mono);
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   .verticals {
     display: grid;

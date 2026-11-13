@@ -203,7 +203,9 @@ const N = cards.length;
   }
 
   /* ------------------------------------------------------------ plain list (default) */
+  /* A large soft violet glow behind the cards (static) */
   .deck-pin {
+    background-image: radial-gradient(48% 52% at 50% 70%, rgb(167 139 250 / 0.16), rgb(167 139 250 / 0) 72%);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
@@ -327,6 +329,7 @@ const N = cards.length;
   /* ------------------------------------------------------------ pinned: wide screens */
   @media (prefers-reduced-motion: no-preference) and (width >= 64rem) and (height >= 37.5rem) {
     :global(html.js) .deck-pin {
+      background-image: radial-gradient(38% 58% at 72% 55%, rgb(167 139 250 / 0.17), rgb(167 139 250 / 0) 72%);
       grid-template-columns: 2.25rem minmax(0, 4fr) minmax(0, 6fr);
       grid-template-rows: auto minmax(0, 1fr);
       column-gap: 1.25rem;

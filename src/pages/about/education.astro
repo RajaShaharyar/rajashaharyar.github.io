@@ -126,9 +126,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 4. Call to action -->
-  <section class="wrap defer-render pt-4 pb-4 md:pt-8" aria-labelledby="cta-heading">
-    <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
-  </section>
+  <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
 </Base>
 
 <style>
@@ -141,7 +139,7 @@ const sectionY = 'py-16 md:py-24';
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   @media (width >= 40rem) {
     .programme:has(.programme-photo) {

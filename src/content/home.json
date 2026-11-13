@@ -363,6 +363,15 @@
   },
   "help": {
     "heading": "How I can help",
+    "cardButton": {
+      "label": "Let's talk",
+      "href": "/contact/?reason=growth-help"
+    },
+    "cardButtonSpeaking": {
+      "label": "Let's talk",
+      "href": "/contact/?reason=speaking"
+    },
+    "_cardButtonNote": "Phase 17: each offer card on the homepage lime band has a lime button (the site's \"Let's talk\" wording); Talks & workshops preselects Speaking, the others Growth help.",
     "link": {
       "label": "Work with me",
       "href": "/work-with-me/"

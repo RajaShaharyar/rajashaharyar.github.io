@@ -1,0 +1,92 @@
+---
+/**
+ * The aurora behind a band's content (Phase 17), with a fine static grain. Put it first inside an
+ * element with class "band" (it sits at z-index -1 in the band's stacking context).
+ * - variant="drift" (the homepage hero): three soft shapes, violet and lime at low alpha, drifting on
+ *   42-56 s cycles. Transform only; paused off-screen and in a hidden tab (src/scripts/ambient.ts);
+ *   static with reduced motion.
+ * - variant="static" (inner page headers, Let's talk, 404): the --gradient-aurora token, violet-led.
+ * The grain is one small inline SVG (feTurbulence): CSS and SVG only, no image files.
+ * Strength: the shapes peak at 12% violet and 7% lime, so even where two overlap, fg-subtle text
+ * keeps 4.5:1 (the numbers are in global.css).
+ */
+interface Props {
+  variant?: 'drift' | 'static';
+  /** Unique per page: the grain's SVG filter id */
+  id?: string;
+}
+
+const { variant = 'static', id = 'grain' } = Astro.props;
+---
+
+<div class:list={['aurora', variant === 'static' && 'aurora-static']} aria-hidden="true" data-aurora={variant === 'drift' ? '' : undefined}>
+  {
+    variant === 'drift' && (
+      <>
+        <span class="aurora-blob aurora-1" />
+        <span class="aurora-blob aurora-2" />
+        <span class="aurora-blob aurora-3" />
+      </>
+    )
+  }
+  <svg class="grain" focusable="false" preserveAspectRatio="none">
+    <filter id={id} x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"></feTurbulence>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -0.62"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter={`url(#${id})`}></rect>
+  </svg>
+</div>
+
+<style>
+  .aurora-1 {
+    left: -12%;
+    top: -35%;
+    width: 62%;
+    aspect-ratio: 1;
+    background-image: radial-gradient(circle, rgb(167 139 250 / 0.12), rgb(167 139 250 / 0) 70%);
+  }
+  .aurora-2 {
+    right: -10%;
+    top: -5%;
+    width: 46%;
+    aspect-ratio: 1;
+    background-image: radial-gradient(circle, rgb(190 242 100 / 0.07), rgb(190 242 100 / 0) 70%);
+  }
+  .aurora-3 {
+    left: 30%;
+    bottom: -45%;
+    width: 55%;
+    aspect-ratio: 1;
+    background-image: radial-gradient(circle, rgb(167 139 250 / 0.1), rgb(167 139 250 / 0) 70%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .aurora-1 {
+      animation: aurora-a 48s ease-in-out infinite alternate;
+    }
+    .aurora-2 {
+      animation: aurora-b 56s ease-in-out infinite alternate;
+    }
+    .aurora-3 {
+      animation: aurora-c 42s ease-in-out infinite alternate;
+    }
+    [data-aurora][data-paused] .aurora-blob {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes aurora-a {
+    to {
+      transform: translate(18%, 14%) scale(1.12);
+    }
+  }
+  @keyframes aurora-b {
+    to {
+      transform: translate(-22%, 18%) scale(0.9);
+    }
+  }
+  @keyframes aurora-c {
+    to {
+      transform: translate(-16%, -20%) scale(1.15);
+    }
+  }
+</style>

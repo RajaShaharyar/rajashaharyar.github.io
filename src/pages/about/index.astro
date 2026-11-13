@@ -61,11 +61,11 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 3. Recognition: counters, wins with photos, the four detail pages -->
-  <section id="recognition" class:list={['about-recognition border-t border-line', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
+  <section id="recognition" class:list={['band band-deep', sectionY, 'defer-render']} aria-labelledby="recognition-heading">
     <div class="wrap">
       <SectionHeader id="recognition-heading" heading={about.recognition.heading} />
       <ul
-        class="counters mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-card md:mt-12 md:grid-cols-3 lg:grid-cols-6"
+        class="counters-deep mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-card border md:mt-12 md:grid-cols-3 lg:grid-cols-6"
         aria-label={recognitionCopy.overview.countersLabel}
         data-reveal-stagger="inner"
       >
@@ -76,7 +76,7 @@ const sectionY = 'py-16 md:py-24';
       <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6" data-reveal-stagger>
         {
           wins.map((w) => (
-            <li class="win lift-card">
+            <li class="win lift-card" data-spotlight>
               <Media image={w.photo.file} fit="contain" sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw" class="card-media-top aspect-[4/3] border-b border-line" />
               <div class="flex flex-1 flex-col gap-2 p-5">
                 {w.badge && <p class="badge w-fit">{w.badge}</p>}
@@ -106,8 +106,8 @@ const sectionY = 'py-16 md:py-24';
     </div>
   </section>
 
-  <!-- 4. Along the way: the photos of the year in date order (was "2024 in review") -->
-  <section id="along-the-way" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="along-the-way-heading">
+  <!-- 4. Along the way: the photos of the year in date order (was "2024 in review"), on near-black -->
+  <section id="along-the-way" class:list={['wrap', sectionY, 'defer-render']} aria-labelledby="along-the-way-heading">
     <SectionHeader id="along-the-way-heading" heading={story.alongTheWay.heading} />
     <div class="mt-10 md:mt-12">
       <Gallery
@@ -120,9 +120,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 5. Call to action -->
-  <section class="wrap defer-render pt-4 pb-4 md:pt-8" aria-labelledby="cta-heading">
-    <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
-  </section>
+  <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
 </Base>
 
 <script is:inline>
@@ -153,17 +151,13 @@ const sectionY = 'py-16 md:py-24';
   .story p:first-child {
     color: var(--color-fg);
   }
-  .counters {
-    border: 1px solid var(--color-line);
-    background-color: var(--color-line);
-  }
   .win {
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--color-line);
+    border: 1px solid rgb(167 139 250 / 0.24);
     border-radius: var(--radius-card);
-    background-color: var(--color-surface);
+    background-color: color-mix(in oklab, var(--color-accent-2-deep) 82%, var(--color-accent-2-strong));
   }
   .win-link {
     text-decoration: none;

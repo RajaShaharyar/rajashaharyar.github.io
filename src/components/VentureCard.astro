@@ -17,7 +17,7 @@ interface Props {
 const { venture: v, linkLabel } = Astro.props;
 ---
 
-<article class="venture-card lift-card flex h-full flex-col rounded-card border border-line bg-surface">
+<article class="venture-card lift-card flex h-full flex-col rounded-card border border-line bg-surface" data-spotlight>
   {
     v.image && (
       <Media

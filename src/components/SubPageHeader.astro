@@ -9,7 +9,10 @@
  * the About menu) is not.
  * Slots: "logos" (under the H1: a venture's logo lockup) and "aside" (a venture's live card: on
  * the right from 1024 px, below the header text on narrower screens).
+ * Phase 17: a full-bleed band. By default near-black with a violet-led aurora and grain; with band
+ * (a colour token name: a venture's deck colour) a solid band in that colour with ink text.
  */
+import Aurora from './Aurora.astro';
 import { site, withSlash } from '../lib/site';
 
 interface Props {
@@ -21,9 +24,16 @@ interface Props {
   overviewLabel?: string;
   /** Label/value pairs shown under the intro (empty values are left out) */
   facts?: { label: string; value: string | null | undefined }[];
+  /** A colour token name (accent, accent-2, fg, accent-strong, accent-2-soft): a solid band with ink text */
+  band?: string;
 }
 
-const { section, title, intro, overviewLabel, facts = [] } = Astro.props;
+const { section, title, intro, overviewLabel, facts = [], band } = Astro.props;
+// Ink on a band: lime fills take the lime inks, violet and off-white fills the violet inks (all >= 4.5:1).
+const limeFill = band === 'accent' || band === 'accent-strong';
+const bandStyle = band
+  ? `--band-bg:var(--color-${band});--ink:var(--color-${limeFill ? 'accent-ink' : 'accent-2-ink'});--ink-muted:var(--color-${limeFill ? 'accent-ink-muted' : 'accent-2-ink-muted'})`
+  : undefined;
 const menu = [...site.nav, site.recognitionMenu].find((item) => item.href === section);
 const children = (menu?.children ?? []).filter((c) => !c.href.includes('#') && withSlash(c.href).startsWith(withSlash(section)));
 const shownFacts = facts.filter((f): f is { label: string; value: string } => Boolean(f.value));
@@ -32,8 +42,9 @@ const path = withSlash(Astro.url.pathname);
 const hasAside = Astro.slots.has('aside');
 ---
 
-<header class:list={['page-header', hasAside && 'has-aside']}>
-  <div class="wrap pt-8 md:pt-12">
+<header class:list={['page-header band', band ? 'band-fill' : 'page-header-aurora', hasAside && 'has-aside']} style={bandStyle} data-band={band}>
+  {!band && <Aurora id="grain-header" />}
+  <div class="wrap pt-8 pb-12 md:pt-12 md:pb-16">
     <nav aria-label={`${menu?.label ?? ''} pages`}>
       <ul class="flex flex-wrap gap-2">
         {
@@ -94,6 +105,31 @@ const hasAside = Astro.slots.has('aside');
       width: 100%;
       margin-top: 2.5rem;
     }
+  }
+  /* On a colour band: ink text, ink tabs, and a shadow so the live card reads on its own colour */
+  .band-fill .header-facts dt {
+    color: var(--ink-muted);
+  }
+  .band-fill .header-facts dd {
+    color: var(--ink);
+  }
+  .band-fill .sub-tab {
+    color: var(--ink);
+    border-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+  .band-fill .sub-tab:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+  .band-fill .sub-tab[aria-current='page'] {
+    color: var(--band-bg);
+    border-color: var(--ink);
+    background-color: var(--ink);
+  }
+  .band-fill .page-header-aside :global(.deck-card) {
+    box-shadow:
+      0 0 0 1px rgb(11 12 14 / 0.12),
+      0 40px 80px -36px rgb(11 12 14 / 0.55);
   }
   .header-facts {
     display: flex;

@@ -18,6 +18,7 @@ import { tapitPreSales } from '../lib/ventures';
 import { formatRange } from '../lib/dates';
 import { publicFileExists } from '../lib/public-files';
 import { assertRecognitionIds } from '../lib/recognition';
+import Aurora from '../components/Aurora.astro';
 
 // Every recognition id cv.json points at must exist in recognition.json (fails the build otherwise).
 assertRecognitionIds(
@@ -66,41 +67,44 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
 
 <Base title="CV" description={description} ogType="profile">
   <!-- 1. Header -->
-  <header id="header" class="cv-header wrap" aria-labelledby="cv-name" data-cv-section>
-    <p class="eyebrow cv-tagline">{header.tagline}</p>
-    <h1 id="cv-name" class="cv-name">{header.name}</h1>
-    <p class="cv-headline">{header.headline}</p>
-    <ul class="cv-contact">
-      <li>{header.location}</li>
-      <li>
-        <span class="cv-key">Email</span>{' '}
-        <a href={`mailto:${contact.email}`}>{contact.email}</a>
-      </li>
-      <li>
-        <span class="cv-key">WhatsApp</span>{' '}
-        <a href={contact.whatsapp.href}>{contact.whatsapp.display}</a>
-      </li>
-      <li>
-        <span class="cv-key">LinkedIn</span>{' '}
-        <a href={contact.linkedin.href}>{contact.linkedin.display}</a>
-      </li>
-      <li>
-        <span class="cv-key">Website</span>{' '}
-        <a href={header.website.href}>{header.website.display}</a>
-      </li>
-    </ul>
-    <div class="cv-actions">
-      {
-        hasPdf && (
-          <a href={site.cv.pdfHref} download={site.cv.downloadName} class="btn btn-primary cv-download">
-            {header.downloadLabel}
-          </a>
-        )
-      }
-      <!-- Contact call to action: preselects "Other" on the contact form -->
-      <a href={header.contactCta.href} class="btn btn-secondary cv-contact-cta">{header.contactCta.label}</a>
-    </div>
-  </header>
+  <div class="band">
+    <Aurora id="grain-cv" />
+    <header id="header" class="cv-header wrap" aria-labelledby="cv-name" data-cv-section>
+      <p class="eyebrow cv-tagline">{header.tagline}</p>
+      <h1 id="cv-name" class="cv-name">{header.name}</h1>
+      <p class="cv-headline">{header.headline}</p>
+      <ul class="cv-contact">
+        <li>{header.location}</li>
+        <li>
+          <span class="cv-key">Email</span>{' '}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        </li>
+        <li>
+          <span class="cv-key">WhatsApp</span>{' '}
+          <a href={contact.whatsapp.href}>{contact.whatsapp.display}</a>
+        </li>
+        <li>
+          <span class="cv-key">LinkedIn</span>{' '}
+          <a href={contact.linkedin.href}>{contact.linkedin.display}</a>
+        </li>
+        <li>
+          <span class="cv-key">Website</span>{' '}
+          <a href={header.website.href}>{header.website.display}</a>
+        </li>
+      </ul>
+      <div class="cv-actions">
+        {
+          hasPdf && (
+            <a href={site.cv.pdfHref} download={site.cv.downloadName} class="btn btn-primary cv-download">
+              {header.downloadLabel}
+            </a>
+          )
+        }
+        <!-- Contact call to action: preselects "Other" on the contact form -->
+        <a href={header.contactCta.href} class="btn btn-secondary cv-contact-cta">{header.contactCta.label}</a>
+      </div>
+    </header>
+  </div>
 
   <div class="wrap cv-layout">
     <nav class="cv-menu" aria-label="CV sections" data-cv-menu>
@@ -382,7 +386,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     overflow-wrap: anywhere;
   }
   .cv-contact a:hover {
-    text-decoration-color: var(--color-accent);
+    text-decoration-color: var(--color-accent-2);
   }
   .cv-key {
     margin-right: 0.25rem;
@@ -542,7 +546,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     text-underline-offset: 0.2em;
   }
   .cv-inline-link:hover {
-    text-decoration-color: var(--color-accent);
+    text-decoration-color: var(--color-accent-2);
   }
 
   .cv-numbers {
@@ -663,7 +667,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
   .xp-bullets li::marker,
   .cv-bullets li::marker {
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   .journey-link {
     margin-top: 1rem;

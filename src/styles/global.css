@@ -44,15 +44,27 @@
    border-accent, font-display, text-display-xl, max-w-page, ...).
    Change a value here and it changes everywhere.
 
-   Direction (blueprint): dark, editorial, numbers-forward. Two primary colours,
-   near-black (bg) and lime (accent), with warm off-white text (fg).
-   A third colour is planned: violet (accent-2, accent-2-soft). Lime sits at
-   hue 82 and violet at about 252, almost opposite on the colour wheel, so they
-   set each other off and both stand out on near-black. Only the homepage deck
-   uses them so far (card colours); don't use them anywhere else yet.
-   Contrast (WCAG 2.2): fg / fg-muted / fg-subtle / accent all pass AA
-   (>= 4.5:1) on bg, surface and raised; accent-2 is 10.6:1 and accent-2-soft
-   14:1 on bg. line-strong is >= 3:1 for form borders; line is decorative only.
+   Direction (blueprint): dark, editorial, numbers-forward. Near-black (bg) with
+   warm off-white text (fg), and two colours with fixed roles (Phase 17):
+   - LIME (accent) = action and proof: primary buttons, key numbers, the current
+     or active state.
+   - VIOLET (accent-2) = identity and atmosphere: eyebrows, taglines, tags and
+     badges, link underlines and hover states, highlights, gradients, glows and
+     section bands.
+   Lime sits at hue 82 and violet at about 252, almost opposite on the colour
+   wheel, so they set each other off and both stand out on near-black.
+   Text on a lime or violet fill always uses the ink tokens; focus rings are lime
+   on dark and near-black on lime and violet fills (--focus-ring, set by the bands).
+   Contrast (WCAG 2.2, computed): on bg, fg 17.2, fg-muted 8.8, fg-subtle 6.2,
+   accent 15.0, accent-2 10.6, accent-2-soft 14.1, accent-2-strong 7.2:1. On the
+   deep-violet band (accent-2-deep): fg 16.3, fg-muted 8.3, fg-subtle 5.9, accent
+   14.3, accent-2 10.1:1. Inks: accent-ink on accent 15.0 (on accent-strong 16.8);
+   accent-ink-muted on accent 7.3 (on accent-strong 8.2); accent-2-ink on accent-2
+   10.1 (on accent-2-soft 13.4); accent-2-ink-muted on accent-2 5.05 (on
+   accent-2-soft 6.7, on fg 8.2). The brand gradient's worst point for accent-ink
+   is its violet end, 10.6:1. The aurora tops out at 12% violet and 7% lime over
+   bg; where both overlap fg-subtle is still 4.56:1. line-strong is >= 3:1 for
+   form borders; line is decorative only.
    ========================================================================== */
 @theme static {
   /* Colour: reset Tailwind's palette so only these tokens exist */
@@ -67,9 +79,23 @@
   --color-fg-subtle: #8c929b; /* captions, meta (6.2:1 on bg) */
   --color-accent: #bef264; /* the one accent (15:1 on bg) */
   --color-accent-strong: #d9f99d; /* accent hover */
-  --color-accent-ink: #0b0c0e; /* text on accent fills */
-  --color-accent-2: #c4b5fd; /* planned third colour (violet), 10.6:1 on bg. Deck only for now. */
+  --color-accent-ink: #0b0c0e; /* text on lime fills (15:1) */
+  --color-accent-ink-muted: #3d4a1f; /* muted text on lime fills (7.3:1) */
+  --color-accent-2: #c4b5fd; /* violet: identity and atmosphere (10.6:1 on bg) */
   --color-accent-2-soft: #ddd6fe; /* light violet */
+  --color-accent-2-strong: #a78bfa; /* violet borders, outlines and glows on dark (7.2:1 on bg) */
+  --color-accent-2-deep: #150f26; /* deep-violet section bands */
+  --color-accent-2-ink: #150f26; /* text on violet fills (10.1:1) */
+  --color-accent-2-ink-muted: #4b3f72; /* muted text on violet fills (5.05:1) */
+
+  /* Gradients. brand: lime → violet (a block can mirror it: the closing CTA runs violet → lime);
+     aurora: layered radial gradients of violet and lime at low alpha (the static form of the hero's
+     drifting aurora, used behind inner page headers). */
+  --gradient-brand: linear-gradient(100deg, var(--color-accent), var(--color-accent-2));
+  --gradient-aurora:
+    radial-gradient(42% 70% at 12% 18%, rgb(167 139 250 / 0.12), transparent 70%),
+    radial-gradient(34% 60% at 88% 10%, rgb(167 139 250 / 0.09), transparent 70%),
+    radial-gradient(30% 55% at 70% 95%, rgb(190 242 100 / 0.06), transparent 70%);
 
   /* Type: clean sans for body, stronger display face for headings */
   --font-sans: "Inter Variable", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -159,13 +185,18 @@
     text-wrap: balance;
   }
 
-  ::selection {
-    background-color: var(--color-accent);
-    color: var(--color-accent-ink);
+  p {
+    text-wrap: pretty;
   }
 
+  ::selection {
+    background-color: var(--color-accent-2);
+    color: var(--color-accent-2-ink);
+  }
+
+  /* Lime on dark; a band with a lime or violet fill sets --focus-ring to near-black */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--focus-ring, var(--color-accent));
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -189,7 +220,7 @@
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
 
   .lead {
@@ -234,10 +265,10 @@
     border-color: var(--color-fg);
     background-color: var(--color-raised);
   }
-  /* For use on an accent-coloured background */
+  /* On a lime, violet or gradient band: near-black with lime text */
   .btn-dark {
     background-color: var(--color-accent-ink);
-    color: var(--color-fg);
+    color: var(--color-accent);
   }
   .btn-dark:hover,
   .btn-dark:focus-visible {
@@ -253,16 +284,19 @@
     font-weight: 600;
     color: var(--color-fg);
     text-decoration: underline;
-    text-decoration-color: var(--color-accent);
+    text-decoration-color: var(--color-accent-2-strong);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.3em;
+    transition: color 150ms;
   }
   .arrow-link:hover {
+    color: var(--color-accent-2);
+    text-decoration-color: var(--color-accent-2);
     text-decoration-thickness: 2px;
   }
   .arrow-link .arrow {
     display: inline-block; /* so it can move */
-    color: var(--color-accent);
+    color: var(--color-accent-2);
     text-decoration: none;
     transition: transform 180ms var(--ease-out-quart);
   }
@@ -350,10 +384,10 @@
     align-items: center;
     width: fit-content;
     padding: 0.25rem 0.625rem;
-    border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+    border: 1px solid var(--color-accent-2-strong);
     border-radius: 999px;
-    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
-    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent-2-strong) 12%, transparent);
+    color: var(--color-accent-2);
     font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1.2;
@@ -408,7 +442,7 @@
 
   /* A line set apart from the text around it (My story, Education) */
   .pull-line {
-    border-left: 3px solid var(--color-accent);
+    border-left: 3px solid var(--color-accent-2-strong);
     padding-left: 1.25rem;
     font-family: var(--font-display);
     font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
@@ -422,13 +456,210 @@
   .link {
     color: var(--color-fg);
     text-decoration: underline;
-    text-decoration-color: var(--color-accent);
+    text-decoration-color: var(--color-accent-2-strong);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
-    transition: text-decoration-thickness 0.15s;
+    transition:
+      color 0.15s,
+      text-decoration-thickness 0.15s;
   }
   .link:hover {
+    color: var(--color-accent-2);
+    text-decoration-color: var(--color-accent-2);
     text-decoration-thickness: 2px;
+  }
+
+  /* ------------------------------------------------------------------------
+     BANDS (Phase 17): full-bleed sections. Never two colour blocks next to each
+     other. Each sets its text and the focus-ring colour for what is inside.
+     ------------------------------------------------------------------------ */
+  .band {
+    position: relative;
+    isolation: isolate;
+  }
+  .band-violet {
+    --focus-ring: var(--color-accent-ink);
+    --ink: var(--color-accent-2-ink);
+    --ink-muted: var(--color-accent-2-ink-muted);
+    background-color: var(--color-accent-2);
+    color: var(--ink);
+  }
+  .band-lime {
+    --focus-ring: var(--color-accent-ink);
+    --ink: var(--color-accent-ink);
+    --ink-muted: var(--color-accent-ink-muted);
+    background-color: var(--color-accent);
+    color: var(--ink);
+  }
+  .band-brand {
+    --focus-ring: var(--color-accent-ink);
+    --ink: var(--color-accent-ink);
+    --ink-muted: var(--color-accent-ink-muted);
+    color: var(--ink);
+  }
+  /* The gradient is drawn on its own layer, so a band can mirror it (scaleX(-1)) */
+  .band-brand::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--gradient-brand);
+  }
+  .band-deep {
+    background-color: var(--color-accent-2-deep);
+  }
+  /* Counters on a deep-violet band: cells in the band's colour, violet separators */
+  .counters-deep {
+    --counter-bg: var(--color-accent-2-deep);
+    border-color: rgb(167 139 250 / 0.28);
+    background-color: rgb(167 139 250 / 0.28);
+  }
+  /* Any fill colour (a venture's header band): set --band-bg, --ink and --ink-muted */
+  .band-fill {
+    --focus-ring: var(--color-accent-ink);
+    background-color: var(--band-bg);
+    color: var(--ink);
+  }
+  /* Dark cards inside a lime or violet band go back to lime rings */
+  .band-violet .on-dark,
+  .band-lime .on-dark,
+  .band-brand .on-dark,
+  .band-fill .on-dark {
+    --focus-ring: var(--color-accent);
+    color: var(--color-fg);
+  }
+  /* ...and their links, eyebrows and leads are the dark-surface ones again */
+  .band-violet .on-dark .arrow-link,
+  .band-lime .on-dark .arrow-link,
+  .band-brand .on-dark .arrow-link,
+  .band-fill .on-dark .arrow-link {
+    color: var(--color-fg);
+    text-decoration-color: var(--color-accent-2-strong);
+  }
+  .band-violet .on-dark .arrow-link .arrow,
+  .band-lime .on-dark .arrow-link .arrow,
+  .band-brand .on-dark .arrow-link .arrow,
+  .band-fill .on-dark .arrow-link .arrow {
+    color: var(--color-accent-2);
+  }
+  .band-violet .on-dark .lead,
+  .band-lime .on-dark .lead,
+  .band-brand .on-dark .lead,
+  .band-fill .on-dark .lead {
+    color: var(--color-fg-muted);
+  }
+  .band-violet .on-dark .eyebrow,
+  .band-lime .on-dark .eyebrow,
+  .band-brand .on-dark .eyebrow,
+  .band-fill .on-dark .eyebrow {
+    color: var(--color-accent-2);
+  }
+  .band-violet .lead,
+  .band-lime .lead,
+  .band-brand .lead,
+  .band-fill .lead {
+    color: var(--ink-muted);
+  }
+  .band-violet .eyebrow,
+  .band-lime .eyebrow,
+  .band-brand .eyebrow,
+  .band-fill .eyebrow {
+    color: var(--ink-muted);
+  }
+  .band-violet .arrow-link,
+  .band-lime .arrow-link,
+  .band-brand .arrow-link,
+  .band-fill .arrow-link,
+  .band-violet .arrow-link .arrow,
+  .band-lime .arrow-link .arrow,
+  .band-brand .arrow-link .arrow,
+  .band-fill .arrow-link .arrow {
+    color: var(--ink);
+    text-decoration-color: var(--ink);
+  }
+
+  /* Aurora: 2-3 soft violet and lime shapes behind a band's content (Aurora.astro). The hero's
+     drift slowly (transform only, 40-60 s); inner page headers use the static --gradient-aurora. */
+  .aurora {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .aurora-static {
+    background-image: var(--gradient-aurora);
+  }
+  .aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  /* The fine static grain: one small inline SVG (feTurbulence), on that band only */
+  .grain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  /* Signature details on cards (service, venture, recognition, stage): a gradient border
+     (lime → violet) fades in on hover and keyboard focus, and on fine pointers a soft violet
+     glow follows the pointer inside the card (spotlight.ts adds .spot; transform only). */
+  [data-spotlight] {
+    position: relative;
+    isolation: isolate;
+  }
+  [data-spotlight]::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: 2;
+    padding: 1px;
+    border-radius: inherit;
+    background-image: var(--gradient-brand);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out-quart);
+    pointer-events: none;
+  }
+  [data-spotlight]:hover::after,
+  [data-spotlight]:has(:focus-visible)::after {
+    opacity: 1;
+  }
+  .spot {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 250ms var(--ease-out-quart);
+    pointer-events: none;
+  }
+  .spot::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22rem;
+    height: 22rem;
+    margin: -11rem 0 0 -11rem;
+    border-radius: 50%;
+    background-image: radial-gradient(circle, rgb(167 139 250 / 0.16), rgb(167 139 250 / 0) 65%);
+    transform: translate(var(--sx, -50rem), var(--sy, -50rem));
+    will-change: transform;
+  }
+  [data-spotlight]:hover > .spot {
+    opacity: 1;
   }
 
 }

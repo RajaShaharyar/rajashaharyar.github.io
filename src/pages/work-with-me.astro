@@ -6,12 +6,15 @@
  * then How I work, moved from the old Skills page) · FAQ (#faq: the last
  * answer lists the engagement models) · the closing call to action,
  * which preselects "Growth help".
+ * Phase 17: an aurora header; Services on a violet band (near-black cards); the working process on
+ * near-black with violet step numbers; the FAQ; a brand-gradient closing block.
  * Copy: src/content/work-with-me.json · CTA heading: home.json → finalCta
  */
 import Base from '../layouts/Base.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import OfferCard from '../components/OfferCard.astro';
 import CTA from '../components/CTA.astro';
+import Aurora from '../components/Aurora.astro';
 import copy from '../content/work-with-me.json';
 import home from '../content/home.json';
 import { site } from '../lib/site';
@@ -20,27 +23,32 @@ const sectionY = 'py-16 md:py-20';
 ---
 
 <Base title={copy.title} description={copy.description}>
-  <header class="wrap pt-12 md:pt-20">
-    <h1 class="max-w-4xl text-display-lg">{copy.title}</h1>
-    <p class="lead mt-6 max-w-prose">{copy.intro}</p>
+  <header class="band">
+    <Aurora id="grain-wwm" />
+    <div class="wrap pt-12 pb-14 md:pt-20 md:pb-20">
+      <h1 class="max-w-4xl text-display-lg">{copy.title}</h1>
+      <p class="lead mt-6 max-w-prose">{copy.intro}</p>
+    </div>
   </header>
 
-  <!-- 1. Services -->
-  <section id="services" class="wrap pt-12 pb-16 md:pt-16 md:pb-20" aria-labelledby="services-heading">
-    <SectionHeader id="services-heading" heading={copy.offersHeading} />
-    <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
-      {
-        site.offers.map((offer, i) => (
-          <li id={offer.id}>
-            <OfferCard offer={offer} index={i} variant="full" />
-          </li>
-        ))
-      }
-    </ul>
+  <!-- 1. Services, on a violet band -->
+  <section id="services" class="band band-violet py-16 md:py-20" aria-labelledby="services-heading">
+    <div class="wrap">
+      <SectionHeader id="services-heading" heading={copy.offersHeading} />
+      <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
+        {
+          site.offers.map((offer, i) => (
+            <li id={offer.id}>
+              <OfferCard offer={offer} index={i} variant="full" />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </section>
 
   <!-- 2. Working process: the steps, then how I work -->
-  <section id="process" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="process-heading">
+  <section id="process" class:list={['wrap', sectionY]} aria-labelledby="process-heading">
     <SectionHeader id="process-heading" heading={copy.steps.heading} />
     <ol class="steps mt-8 md:mt-10" data-reveal-stagger>
       {
@@ -60,7 +68,7 @@ const sectionY = 'py-16 md:py-20';
       {
         copy.howIWork.items.map((item, i) => (
           <li class="flex flex-col rounded-card border border-line bg-surface p-6 md:p-8">
-            <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">
+            <span class="font-mono text-sm font-bold text-accent-2" aria-hidden="true">
               {String(i + 1).padStart(2, '0')}
             </span>
             <h4 class="mt-4 font-display text-2xl leading-tight font-semibold tracking-tight md:text-[1.75rem]">{item.principle}</h4>
@@ -102,9 +110,7 @@ const sectionY = 'py-16 md:py-20';
   </section>
 
   <!-- 4. Closing call to action: preselects "Growth help" on the contact form -->
-  <section class="wrap pt-4 pb-4" aria-labelledby="wwm-cta-heading">
-    <CTA heading={home.finalCta.heading} href={copy.cta.href} label={copy.cta.label} headingId="wwm-cta-heading" />
-  </section>
+  <CTA heading={home.finalCta.heading} href={copy.cta.href} label={copy.cta.label} headingId="wwm-cta-heading" />
 </Base>
 
 <style>
@@ -131,7 +137,7 @@ const sectionY = 'py-16 md:py-20';
     font-family: var(--font-mono);
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--color-accent);
+    color: var(--color-accent-2);
   }
   .step-label {
     font-family: var(--font-display);

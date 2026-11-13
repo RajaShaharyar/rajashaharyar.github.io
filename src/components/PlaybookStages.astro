@@ -1,9 +1,19 @@
 ---
 /**
- * Homepage methodologies: Idea → Fit → Scale. Each card: the question it
- * answers, "How I do it" (the matching principles, worded exactly as in Work
- * With Me → How I work) and "Seen at" links into the venture pages.
+ * Homepage methodologies as a growth path: Idea → Product-Idea Fit → Product-Market Fit → Scale.
+ * Each card: the question it answers, "How I do it" (the matching principles, worded exactly as in
+ * Work With Me → How I work) and "Seen at" links into the venture pages.
  * Copy: home.json → playbook (the principles are checked against work-with-me.json).
+ *
+ * - From 1024 px: a line rises from the "Idea" node (bottom left) to the top right, ending in an
+ *   arrowhead; the three cards sit along it like rising steps (offsets 160, 80 and 0 px), each card's
+ *   top-left corner on a node. Columns are percentages of the width, so the path (viewBox 1000 wide,
+ *   stretched to the width; y in px) meets the corners at every width.
+ * - Narrower: a vertical timeline, the line down a left rail with a node at the top of each card.
+ * - Scroll (src/scripts/playbook.ts, no pinning, reversible): the line draws with the scroll, the
+ *   nodes light up, and each card enters when its node lights. The cards are always an ordered list
+ *   in the DOM and the accessibility tree; hidden only means opacity and transform.
+ * - Reduced motion and no JavaScript: the line fully drawn, every node lit, every card visible.
  */
 import ArrowLink from './ArrowLink.astro';
 import home from '../content/home.json';
@@ -27,60 +37,386 @@ for (const s of Astro.props.stages) {
     if (!known.has(p)) throw new Error(`home.json → playbook: "${p}" is not a principle in work-with-me.json → howIWork.`);
   }
 }
-const { howLabel, seenAtLabel } = home.playbook;
-
+const { howLabel, seenAtLabel, startLabel } = home.playbook;
 const { stages } = Astro.props;
+
+/* Path geometry (desktop): x in thousandths of the width, y in px. Nodes: Idea, then each card's
+   top-left corner (columns at 12.5%, 42.5% and 72.5%; tops at 216, 136 and 56 px). */
+const segments = [
+  'M15 268C55 268 85 226 125 216',
+  'M125 216C225 196 325 160 425 136',
+  'M425 136C525 112 625 80 725 56',
+  'M725 56C825 32 905 20 978 12',
+];
 ---
 
-<ol class="stages grid gap-4 lg:grid-cols-3 lg:gap-8" data-reveal-stagger>
-  {
-    stages.map((stage, i) => (
-      <li class="stage flex flex-col rounded-card border border-line bg-surface p-6 md:p-8" id={`stage-${stage.id}`}>
-        <div class="flex items-center gap-3">
-          <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">
-            {String(i + 1).padStart(2, '0')}
-          </span>
-          <h3 class="text-lg font-semibold tracking-tight">{stage.name}</h3>
-        </div>
-        <p class="mt-5 font-display text-2xl leading-tight font-semibold tracking-tight md:text-[1.75rem]">
-          {stage.question}
-        </p>
-        <div class="min-h-8 flex-1" aria-hidden="true" />
-        <div class="border-t border-line pt-5">
-          <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{howLabel}</p>
-          <ul class="mt-2 flex flex-col gap-1">
-            {stage.principles.map((p) => (
-              <li class="font-medium text-fg">{p}</li>
-            ))}
-          </ul>
-          <p class="mt-4 text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{seenAtLabel}</p>
-          <ul class="flex flex-wrap gap-x-5">
-            {stage.seenAt.map((link) => (
-              <li>
-                <ArrowLink href={link.href}>{link.label}</ArrowLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </li>
-    ))
-  }
-</ol>
+<div class="growth" data-growth>
+  <svg class="growth-path" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden="true">
+    <path class="growth-track" d={segments.join('')}></path>
+    {segments.map((d, k) => <path class="growth-line" data-seg={k} pathLength="1" d={d} />)}
+    <path class="growth-line growth-arrow" data-seg="3" d="M962 7L986 11L966 26"></path>
+  </svg>
+  <p class="growth-idea" data-seg="0" aria-hidden="true">
+    <span class="growth-node" data-node></span>
+    <span class="growth-idea-label">{startLabel}</span>
+  </p>
+
+  <ol class="stages">
+    {
+      stages.map((stage, i) => (
+        <li class="stage" id={`stage-${stage.id}`} data-stage data-seg={i + 1}>
+          <span class="growth-node" data-node aria-hidden="true" />
+          <div class="stage-card">
+            <div class="stage-in stage-label" style="--k:0">
+              <span class="stage-num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 class="stage-name">{stage.name}</h3>
+            </div>
+            <p class="stage-in stage-q" style="--k:1">
+              {stage.question}
+            </p>
+            <div class="stage-fill" aria-hidden="true" />
+            <div class="stage-rule" style="--k:2" aria-hidden="true" />
+            <div class="stage-in" style="--k:3">
+              <p class="stage-kicker">{howLabel}</p>
+              <ul class="stage-how">
+                {stage.principles.map((p) => (
+                  <li>{p}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="stage-in" style="--k:4">
+              <p class="stage-kicker stage-kicker-seen">{seenAtLabel}</p>
+              <ul class="stage-seen">
+                {stage.seenAt.map((link) => (
+                  <li>
+                    <ArrowLink href={link.href}>{link.label}</ArrowLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<script>
+  import { initPlaybook } from '../scripts/playbook';
+  initPlaybook();
+</script>
 
 <style>
-  /* Arrow between stages on wide screens: Idea → Fit → Scale */
-  @media (width >= 64rem) {
-    .stage {
-      position: relative;
+  .growth {
+    --node: 10px;
+    --rail: 0.6875rem;
+    position: relative;
+  }
+  /* ------------------------------------------------------------ the line and its nodes */
+  .growth-path {
+    display: none;
+  }
+  .growth-track,
+  .growth-line {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .growth-track {
+    stroke: var(--color-line);
+  }
+  .growth-line {
+    stroke: var(--color-accent);
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - var(--seg, 1));
+  }
+  .growth-arrow {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    opacity: calc((var(--seg, 1) - 0.9) * 10);
+  }
+  .growth-node {
+    position: absolute;
+    z-index: 2;
+    width: var(--node);
+    height: var(--node);
+    border-radius: 999px;
+    border: 2px solid var(--color-line-strong);
+    background-color: var(--color-bg);
+    transition:
+      background-color 300ms,
+      border-color 300ms,
+      box-shadow 300ms;
+  }
+  /* Lit: lime, with a soft halo (no JavaScript and reduced motion: always lit) */
+  .growth-node {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgb(190 242 100 / 0.16);
+  }
+  .growth-idea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+  }
+  .growth-idea .growth-node {
+    left: calc(var(--rail) - var(--node) / 2);
+    top: 0.3125rem;
+  }
+  .growth-idea-label {
+    display: block;
+    padding-left: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.25rem;
+    color: var(--color-fg-subtle);
+  }
+
+  /* ------------------------------------------------------------ the cards */
+  .stages {
+    display: grid;
+    gap: 1rem;
+  }
+  .stage {
+    position: relative;
+  }
+  .stage-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    transition: transform 300ms var(--ease-out-quart);
+  }
+  .stage-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .stage-num {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .stage-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .stage-q {
+    margin-top: 1.25rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .stage-fill {
+    flex: 1;
+    min-height: 2rem;
+  }
+  .stage-rule {
+    height: 1px;
+    margin-bottom: 1.25rem;
+    background-color: var(--color-line);
+    transform-origin: left;
+  }
+  .stage-kicker {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+  .stage-kicker-seen {
+    margin-top: 1rem;
+  }
+  .stage-how {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+  .stage-seen {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+  }
+  /* Hover or keyboard focus: the card lifts 2 px and its node glows */
+  .stage:hover .stage-card,
+  .stage:focus-within .stage-card {
+    transform: translateY(-2px);
+  }
+  .stage:hover > .growth-node,
+  .stage:focus-within > .growth-node {
+    box-shadow:
+      0 0 0 4px rgb(190 242 100 / 0.22),
+      0 0 14px 2px rgb(190 242 100 / 0.55);
+  }
+
+  /* ------------------------------------------------------------ phones and tablets: a left rail */
+  @media (width < 64rem) {
+    .growth {
+      padding-top: 2.25rem;
+      padding-left: 2rem;
     }
-    .stage:not(:last-child)::after {
-      content: '→';
+    .stage > .growth-node {
+      left: calc(var(--rail) - 2rem - var(--node) / 2);
+      top: 1.6rem;
+    }
+    /* the rail: one segment from each node down to the next (the last to its card's foot) */
+    .growth-idea::after,
+    .stage::after {
+      content: '';
       position: absolute;
-      top: 2.1rem;
-      right: -1.6rem;
-      color: var(--color-accent);
-      font-size: 1.25rem;
-      line-height: 1;
+      left: calc(var(--rail) - 1.25px);
+      width: 2.5px;
+      border-radius: 2px;
+      background-color: var(--color-accent);
+      transform-origin: top;
+      transform: scaleY(var(--seg, 1));
+    }
+    .growth-idea::after {
+      top: calc(0.3125rem + var(--node) / 2);
+      height: calc(2.25rem - 0.3125rem + 1.6rem);
+    }
+    .stage::after {
+      left: calc(var(--rail) - 2rem - 1.25px);
+      top: calc(1.6rem + var(--node) / 2);
+      height: calc(100% + 1rem);
+      z-index: 1;
+    }
+    .stage:last-child::after {
+      height: calc(100% - 1.6rem - var(--node) / 2);
+    }
+    .growth-idea::before,
+    .stage::before {
+      content: '';
+      position: absolute;
+      left: calc(var(--rail) - 1.25px);
+      width: 2.5px;
+      background-color: var(--color-line);
+    }
+    .growth-idea::before {
+      top: calc(0.3125rem + var(--node) / 2);
+      height: calc(2.25rem - 0.3125rem + 1.6rem);
+    }
+    .stage::before {
+      left: calc(var(--rail) - 2rem - 1.25px);
+      top: calc(1.6rem + var(--node) / 2);
+      height: calc(100% + 1rem);
+    }
+    .stage:last-child::before {
+      height: calc(100% - 1.6rem - var(--node) / 2);
+    }
+  }
+
+  /* ------------------------------------------------------------ from 1024 px: rising steps */
+  @media (width >= 64rem) {
+    .growth-path {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 320px;
+      overflow: visible;
+    }
+    .growth-idea {
+      left: 1.5%;
+      top: 268px;
+    }
+    .growth-idea .growth-node {
+      left: calc(var(--node) / -2);
+      top: calc(var(--node) / -2);
+    }
+    .growth-idea-label {
+      position: absolute;
+      left: -0.25rem;
+      top: 0.75rem;
+      padding: 0;
+    }
+    /* columns as percentages of the width: 12.5% gutter for the Idea node, then cards of 27.5% */
+    .stages {
+      grid-template-columns: 12.5% 27.5% 2.5% 27.5% 2.5% 27.5%;
+      gap: 0;
+      align-items: start;
+      min-height: 600px;
+    }
+    .stage:nth-child(1) {
+      grid-column: 2;
+      margin-top: 216px;
+    }
+    .stage:nth-child(2) {
+      grid-column: 4;
+      margin-top: 136px;
+    }
+    .stage:nth-child(3) {
+      grid-column: 6;
+      margin-top: 56px;
+    }
+    .stage > .growth-node {
+      left: calc(var(--node) / -2);
+      top: calc(var(--node) / -2);
+    }
+    .stage-card {
+      padding: 1.5rem 1.375rem;
+    }
+    .stage-q {
+      font-size: clamp(1.3125rem, 0.6rem + 1.1vw, 1.625rem);
+    }
+  }
+
+  /* ------------------------------------------------------------ scroll states (playbook.ts sets them) */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .growth.is-live :not([data-lit]) > .growth-node {
+      border-color: var(--color-line-strong);
+      background-color: var(--color-bg);
+      box-shadow: none;
+    }
+    :global(html.js) .growth.is-live .stage-card,
+    :global(html.js) .growth.is-live .stage-in,
+    :global(html.js) .growth.is-live .stage-rule {
+      transition:
+        opacity 250ms linear,
+        transform 250ms var(--ease-out-quart);
+    }
+    :global(html.js) .growth.is-live .stage:not([data-lit]) .stage-card {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+    }
+    :global(html.js) .growth.is-live .stage:not([data-lit]) .stage-in {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    :global(html.js) .growth.is-live .stage:not([data-lit]) .stage-rule {
+      transform: scaleX(0);
+    }
+    /* Entering: the card over 500 ms, then its contents 70 ms apart */
+    :global(html.js) .growth.is-live .stage[data-lit] .stage-card {
+      transition:
+        opacity 500ms var(--ease-reveal),
+        transform 500ms var(--ease-reveal);
+    }
+    :global(html.js) .growth.is-live .stage[data-lit] .stage-in,
+    :global(html.js) .growth.is-live .stage[data-lit] .stage-rule {
+      transition:
+        opacity 350ms var(--ease-reveal) calc(150ms + var(--k) * 70ms),
+        transform 350ms var(--ease-reveal) calc(150ms + var(--k) * 70ms);
+    }
+    :global(html.js) .growth.is-live .stage[data-instant] *,
+    :global(html.js) .growth.is-live .stage[data-instant] {
+      transition: none !important;
     }
   }
 </style>

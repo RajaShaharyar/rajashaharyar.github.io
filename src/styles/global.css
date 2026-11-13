@@ -44,10 +44,15 @@
    border-accent, font-display, text-display-xl, max-w-page, ...).
    Change a value here and it changes everywhere.
 
-   Direction (blueprint): dark, editorial, numbers-forward, ONE accent colour.
+   Direction (blueprint): dark, editorial, numbers-forward. Two primary colours,
+   near-black (bg) and lime (accent), with warm off-white text (fg).
+   A third colour is planned: violet (accent-2, accent-2-soft). Lime sits at
+   hue 82 and violet at about 252, almost opposite on the colour wheel, so they
+   set each other off and both stand out on near-black. Only the homepage deck
+   uses them so far (card colours); don't use them anywhere else yet.
    Contrast (WCAG 2.2): fg / fg-muted / fg-subtle / accent all pass AA
-   (>= 4.5:1) on bg, surface and raised. line-strong is >= 3:1 for form
-   borders; line is decorative only.
+   (>= 4.5:1) on bg, surface and raised; accent-2 is 10.6:1 and accent-2-soft
+   14:1 on bg. line-strong is >= 3:1 for form borders; line is decorative only.
    ========================================================================== */
 @theme static {
   /* Colour: reset Tailwind's palette so only these tokens exist */
@@ -63,6 +68,8 @@
   --color-accent: #bef264; /* the one accent (15:1 on bg) */
   --color-accent-strong: #d9f99d; /* accent hover */
   --color-accent-ink: #0b0c0e; /* text on accent fills */
+  --color-accent-2: #c4b5fd; /* planned third colour (violet), 10.6:1 on bg. Deck only for now. */
+  --color-accent-2-soft: #ddd6fe; /* light violet */
 
   /* Type: clean sans for body, stronger display face for headings */
   --font-sans: "Inter Variable", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;

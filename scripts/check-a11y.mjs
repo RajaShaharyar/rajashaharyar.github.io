@@ -16,7 +16,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const PORT = 4330;
-const PICTURES = '[data-ab]';
+const PICTURES = '[data-picture]';
 const WIDTHS = [390, 1280];
 
 const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
@@ -48,8 +48,8 @@ try {
       await page.waitForTimeout(1300);
       const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
       const results = await new AxeBuilder({ page }).withTags(tags).exclude(PICTURES).analyze();
-      // Pictures of real product UI (the homepage's AsaanBill card: aria-hidden, colours sampled from
-      // AsaanBill's screens) get every rule except colour contrast, which WCAG 1.4.3 exempts for text
+      // Pictures of real product UI (the homepage deck's AsaanBill and TapitCard cards, [data-picture]: aria-hidden, colours from
+      // the products' own screens) get every rule except colour contrast, which WCAG 1.4.3 exempts for text
       // that is part of a picture.
       if (await page.locator(PICTURES).count()) {
         const pictures = await new AxeBuilder({ page }).withTags(tags).include(PICTURES).disableRules(['color-contrast']).analyze();

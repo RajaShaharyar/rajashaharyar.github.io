@@ -7,9 +7,12 @@
  * Autoplay: only the active card runs, from beat 1 when it becomes active, looping after its hold;
  * paused off-screen, in a hidden tab or by the pause button. Others show their first frame.
  * List (narrow and short): each card plays while it is in view.
- * Reduced motion or no JavaScript: CSS shows a plain list in final frames; nothing here runs.
+ * Reduced motion or no JavaScript: CSS shows a plain list in final frames; nothing here runs
+ * except loading what the static cards need (fonts, the TapitCard images, AsaanBill's pieces).
  */
 import { createBoard } from './asaanbill-board';
+import { createTapit } from './tapitcard-board';
+import type { Board } from './board-camera';
 
 interface Player {
   cycle: number;
@@ -45,19 +48,18 @@ function svgPlayer(scene: HTMLElement, beats: number[], duration: number): Playe
   };
 }
 
-function boardPlayer(el: HTMLElement): Player {
-  const b = createBoard(el);
-  let filled = false;
-  return {
-    cycle: b.cycle,
-    beats: b.beats,
-    first: () => b.render(0),
-    start: () => b.render(0),
-    pause() {},
-    resume() {},
-    tick: (t) => b.render(t),
-    ready: () => (filled ||= !el.querySelector('[data-ab-board] > :not([data-shown])')),
-  };
+/** A live board (AsaanBill, TapitCard): render(t) is pure, so the clock is all there is. */
+function boardPlayer(b: Board, ready?: () => boolean): Player {
+  return { cycle: b.cycle, beats: b.beats, first: () => b.render(0), start: () => b.render(0), pause() {}, resume() {}, tick: (t) => b.render(t), ready };
+}
+
+/** TapitCard's card images: 700w when the panel is at most 800 device px wide, else 1400w. */
+function loadCardImages(root: HTMLElement) {
+  const imgs = Array.from(root.querySelectorAll<HTMLImageElement>('img[data-tc-src]'));
+  if (!imgs.length || imgs[0].src) return;
+  const panel = imgs[0].closest<HTMLElement>('.deck-panel') ?? root;
+  const w = panel.clientWidth * devicePixelRatio <= 800 ? 700 : 1400;
+  for (const im of imgs) im.src = `/media/tapitcard/tapitcard-${im.dataset.tcSrc}-${w}.webp`;
 }
 
 export function initDeck() {
@@ -81,6 +83,19 @@ export function initDeck() {
     },
     { rootMargin: '50% 0px' },
   ).observe(root);
+  // The card images: once the deck is within one viewport, but never on first paint (so only after
+  // the visitor scrolls), or as soon as it is actually on screen.
+  const images = (margin: string) =>
+    new IntersectionObserver(
+      (entries, io) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        loadCardImages(root);
+      },
+      { rootMargin: margin },
+    ).observe(root);
+  images('0px');
+  addEventListener('scroll', () => images('100% 0px'), { once: true, passive: true });
   if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
   const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-card]'));
   const texts = Array.from(root.querySelectorAll<HTMLElement>('[data-card-text]'));
@@ -188,8 +203,13 @@ export function initDeck() {
   // ---------------------------------------------------------------- set up when the deck is near
   const setup = () => {
     players = cards.map((c, i) => {
-      const board = c.querySelector<HTMLElement>('[data-ab]');
-      if (board) return boardPlayer(board);
+      const ab = c.querySelector<HTMLElement>('[data-ab]');
+      if (ab) {
+        let filled = false;
+        return boardPlayer(createBoard(ab), () => (filled ||= !ab.querySelector('[data-ab-board] > :not([data-shown])')));
+      }
+      const tc = c.querySelector<HTMLElement>('[data-tc]');
+      if (tc) return boardPlayer(createTapit(tc));
       const beats = steps[i].map((s) => Number(s.dataset.at));
       return svgPlayer(c.querySelector<HTMLElement>('.scene')!, beats, Number(c.dataset.duration));
     });
@@ -252,7 +272,7 @@ export function initDeck() {
     wake();
   });
 
-  // For tests: the active card, its clock, and seeking it (the AsaanBill card renders any time).
+  // For tests: the active card, its clock, and seeking it (the live boards render any time).
   Object.assign(root, {
     deck: {
       get active() {

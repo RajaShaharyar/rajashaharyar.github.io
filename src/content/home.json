@@ -41,7 +41,7 @@
     "heading": "The work",
     "intro": "Products I've built, led or helped shape.",
     "draft": true,
-    "_draftNote": "Intro and the five card headlines are drafts (Phase 15) for Raja to revise.",
+    "_draftNote": "Intro, the five card headlines, TapitCard's steps (Phase 16) and Ladenza's My part line (Phase 16) are drafts for Raja to revise.",
     "cards": [
       "asaanbill",
       "tapit",
@@ -55,22 +55,21 @@
     "pauseLabel": "Pause animations",
     "playLabel": "Play animations",
     "stepsHeading": "How it works",
-    "stepsKey": "Highlighted: my part",
     "myPartLabel": "My part",
     "storyLink": "Read the story",
     "otherLink": {
       "label": "Other ventures",
       "href": "/ventures/other/"
     },
-    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline and color (color2 = a gradient's second stop) are drafts. steps[].at drives the SVG scenes (TapitCard, Ladenza, Sonic AI Engine, Dressup, and AsaanBill's /ventures card); AsaanBill's deck card is live UI with its own beats (src/scripts/asaanbill-board.ts). _sources: the research behind each scene, never rendered.",
+    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline is a draft. color is a colour TOKEN name from global.css (accent, accent-2, fg, accent-strong, accent-2-soft), so a token change updates the cards; the order alternates lime / violet / warm off-white so neighbouring cards in the stack always differ. steps[].at drives the SVG scenes (Ladenza, Sonic AI Engine, Dressup, and the /ventures cards); AsaanBill's and TapitCard's deck cards are live UI with their own beats (src/scripts/asaanbill-board.ts, src/scripts/tapitcard-board.ts). _sources: the research behind each card, never rendered.",
     "items": [
       {
         "id": "asaanbill",
         "label": "AsaanBill",
         "headline": "Bill it. Get paid.",
-        "color": "#2456D2",
+        "color": "accent",
         "draft": true,
-        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: AsaanBill's own primary blue, sampled from the screenshots: the Generate Invoice button (#2757CD) and the selected PSID tile's border (#2154D8).",
+        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent (lime), from the site palette (Phase 16).",
         "duration": 4200,
         "steps": [
           {
@@ -108,30 +107,29 @@
         "id": "tapit",
         "label": "TapitCard",
         "headline": "Tap it. Save it.",
-        "color": "#C983FF",
-        "color2": "#1BD6FF",
+        "color": "accent-2",
         "draft": true,
-        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: The purple-to-cyan of the T mark on the TapitCard card artwork (sampled #C983FF and #1BD6FF).",
-        "duration": 4000,
+        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent-2 (violet; the card artwork carries TapitCard's own colours), from the site palette (Phase 16). The four steps are drafts (Phase 16), from TapitCard's own \"How it works\" copy; step 4 is Raja's part (B2B sales to corporates).",
+        "duration": 13600,
         "steps": [
           {
-            "text": "Tap the card on a phone",
+            "text": "Create your digital card",
             "at": 0,
             "mine": false
           },
           {
-            "text": "The profile opens",
-            "at": 900,
+            "text": "Add your links and details",
+            "at": 3400,
             "mine": false
           },
           {
-            "text": "Contact saved",
-            "at": 2000,
+            "text": "Share it with a tap or QR",
+            "at": 6800,
             "mine": false
           },
           {
             "text": "Rolled out to whole teams",
-            "at": 2800,
+            "at": 10200,
             "mine": true
           }
         ],
@@ -142,16 +140,17 @@
         "_sources": {
           "source": "https://thetapitcard.com/ (tagline \"Revolutionizing networking and contact sharing with JUST A TAP!\")",
           "product": "A tap opens a profile with social links, WhatsApp and \"Save vCard\", plus services with an enquiry button. The Enterprise plan covers 5 vCards.",
-          "rajasPart": "cv.json: pre-sold the prototype, grew to 3,000+ customers mostly through B2B sales to corporates, led growth, brand and the sales funnel. The technology was led by Haziq Farooq (CTO)."
+          "rajasPart": "cv.json: pre-sold the prototype, grew to 3,000+ customers mostly through B2B sales to corporates, led growth, brand and the sales funnel. The technology was led by Haziq Farooq (CTO).",
+          "howItWorks": "thetapitcard.com \"How it works?\": \"Create, Login, Add up your Social Links and Start NETWORKING!\" and \"Register a new account, create your own digital business card, Add up your details and start sharing your contact with a TAP or QR.\""
         }
       },
       {
         "id": "ladenza",
         "label": "Ladenza",
         "headline": "Thrift it. Deliver it.",
-        "color": "#F2D6B8",
+        "color": "fg",
         "draft": true,
-        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: A light sand.",
+        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-fg (warm off-white), from the site palette (Phase 16). My part is a draft (Phase 16) that stands on its own on the homepage; the Ladenza venture page keeps its own text.",
         "duration": 4200,
         "steps": [
           {
@@ -176,21 +175,21 @@
           }
         ],
         "myPart": [
-          "During COVID I started Ladenza Clothing as an online thrift store to close that gap."
+          "I started it during COVID to take the hygiene and convenience worries out of buying branded clothes second-hand."
         ],
         "_sources": {
           "source": "No public page was found.",
           "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales.",
-          "myPartNote": "Every Ladenza line in ladenza.mdx overlaps its one line or metric; this one (ladenza.mdx → stages.ideaFit) adds that he started it to close the gap shown in steps 1-2."
+          "myPartNote": "Phase 16 draft from Raja's words: started during COVID; hygiene and convenience held buyers back. The old line (\"...to close that gap\") referred to something the homepage never said."
         }
       },
       {
         "id": "sonicengine-ai",
         "label": "Sonic AI Engine",
         "headline": "Prompt it. Play it.",
-        "color": "#D3CEFF",
+        "color": "accent-strong",
         "draft": true,
-        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: A light lilac.",
+        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent-strong (light lime), from the site palette (Phase 16).",
         "duration": 3600,
         "steps": [
           {
@@ -225,9 +224,9 @@
         "id": "dressup",
         "label": "Dressup",
         "headline": "Search it. Find yours.",
-        "color": "#F7CAD6",
+        "color": "accent-2-soft",
         "draft": true,
-        "_draftNote": "Headline and card colour are drafts for Raja to revise. Colour: A light blush.",
+        "_draftNote": "Headline is a draft for Raja to revise. Card colour: --color-accent-2-soft (light violet), from the site palette (Phase 16).",
         "duration": 3400,
         "steps": [
           {
@@ -262,6 +261,8 @@
   "playbook": {
     "heading": "How I grow products",
     "intro": "The same three stages, every time.",
+    "startLabel": "Idea",
+    "_startLabelNote": "Draft (Phase 16): the start node of the growth path, from the site's Idea → Product-Idea Fit → Product-Market Fit → Scale spine.",
     "stages": [
       {
         "id": "product-idea-fit",

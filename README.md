@@ -96,12 +96,15 @@ src/
   lib/                 typed access to the data (site, cv, about, images, recognition) and date formatting
   styles/global.css    design tokens (colour, type, radius, layout): the one place to change the look
   layouts/Base.astro   SEO (title template, canonical, Open Graph, Person JSON-LD), font preloads, nav, footer
-  components/          Nav, Footer, homepage sections (VentureDeck + AsaanBillBoard + ProductScene + ProductSteps),
+  components/          Nav, Footer, homepage sections (VentureDeck + AsaanBillBoard + TapitCardBoard + ProductScene +
+                       ProductSteps, PlaybookStages),
                        Timeline, Gallery (photo grid + lightbox), YoursNext
   scripts/             reveal, deck (the venture card deck), asaanbill-board (the AsaanBill card's timeline)
   pages/               one file per route (see Site structure)
 public/images/         ventures/, recognition/, speaking/, about/, education/
-public/fonts/          Plus Jakarta Sans, Latin subset 500-800 (OFL), for the AsaanBill card only
+public/fonts/          Plus Jakarta Sans (Latin, 500-800) for the AsaanBill card; Jost (Latin, 400 and 700) for the
+                       TapitCard card; both OFL, licences alongside
+public/media/tapitcard/  the TapitCard card artwork, front and back, WebP at 1400w and 700w (metadata stripped)
 tools/3d/              Blender scripts for the 3D scenes and the frame encoder (see tools/3d/README.md)
 ```
 
@@ -210,7 +213,19 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
     per card; the active one is longer, with the venture's name; each line is a button that scrolls to its
     card) and the active venture's text (role · stage badge, headline, line, metric, "How it works", My part,
     the story link; My part hides between 720 and 800 px). The right column holds the deck: a square card in
-    the venture's colour with a faint watermark label, a dark inner panel and one pause/play button.
+    the venture's colour with a faint watermark label, a dark inner panel and one pause/play button (a
+    two-tone focus ring, near-black inside and off-white outside, so it shows on every card colour).
+  - *Card colours:* palette tokens, named in `home.json → products.items[].color` (so a token change updates
+    the cards): AsaanBill `accent` (lime), TapitCard `accent-2` (violet), Ladenza `fg` (warm off-white),
+    Sonic AI Engine `accent-strong` (light lime), Dressup `accent-2-soft` (light violet). Two hues and one warm
+    neutral, alternating, so neighbouring cards in the stack always differ. The watermark is the card colour
+    80% of the way to `#0b0c0e`.
+  - *Edge fade:* every inner panel's content (`.deck-view`) fades out over 20-26 px on all four sides, so
+    pieces around a focus area fade instead of being cut mid-word; every rest keeps its focus inside the
+    unfaded area.
+  - *"How it works":* Raja's steps have a lime tick and an outlined "My part" tag right after the text, in the
+    same list item (screen readers hear "(my part)"); other steps get a neutral tick. Lime means my part only,
+    on the phone step dots too.
   - *Switching:* each card gets 70svh of scroll; active = floor(progress × N). The new card rises over the
     stack (650 ms); earlier cards peek out underneath, rotated −4° / +5° and darkened; the text crossfades.
     Scrolling up reverses it. It is time-based, never scrubbed.
@@ -239,12 +254,43 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
     to the start. Only states the screenshots show; no toasts, cursors or invented screens.
   - The markup is the final state (no JavaScript and reduced motion show it); the font is only applied, and so
     only downloaded, once the deck is near.
+- **The TapitCard card** (`TapitCardBoard.astro`, `src/scripts/tapitcard-board.ts`): the real card artwork (from
+  Raja's files in `_source/`, never committed; exported to `public/media/tapitcard/`) as a physical card in CSS
+  3D (perspective 1200 px, a 2 px edge, a contact shadow, a sheen that sweeps as it tilts or flips; tilts of
+  18° or less; a flip is one 180° turn over 900 ms), and the four "How it works" feature cards from
+  thetapitcard.com rebuilt in HTML/CSS with their published wording and line breaks, plus the "Start
+  NETWORKING!" chip and a caption chip in the site's words. Century Gothic on the site; Jost here.
+  - *Timeline (about 14 s, then a hold to 15 s and a 400 ms crossfade):* the front rises in at an angle with a
+    sheen, Customize Design slides in (1); Add Social Links and Business Hours come in and tick, Unlimited
+    Changes peeks in (2); back to the card, it flips, zoom to the QR, a scan frame closes in, NFC waves, the
+    caption chip (3); pull back, flip to the front, a fan of five cards, Start NETWORKING! (4).
+  - *Camera:* the same code as AsaanBill's (`src/scripts/board-camera.ts`). At rest rebuilt text is at least
+    13 px on desktop (11 px on phones), and the card's printed logo and URL at least 11 px (10 px) at the beats
+    that focus on them.
+  - *Loading:* the images only when the deck is within one viewport, and never on first paint (only after the
+    visitor scrolls, or once the deck is on screen); 700w when the panel is at most 800 device px wide, else
+    1400w. The font only once the deck is near.
+  - *Reduced motion and no JavaScript:* a static overview: the card front, the four feature cards and both chips.
 - **The other cards** reuse their SVG scenes (`ProductScene.astro`; also on `/ventures` cards): inline SVG in the
   colour tokens, no words, numbers or logos. Beat starts (`home.json → products.items[].steps[].at`) become
   `--b1`…`--b4`; every animated element has class `a`, an animation class and `--t: calc(var(--bN) + offset)`.
   The element's default style is its final frame. The deck sets `data-armed` (paused on the first frame) and
   `data-playing`; a restart removes both, forces a reflow and sets both again. Placeholders until each
   venture's real-material phase.
+- **"How I grow products", a growth path** (`PlaybookStages.astro`, `src/scripts/playbook.ts`): no boxed block;
+  the three stage cards appear one by one along a rising line.
+  - *From 1024 px:* a line rises from the "Idea" node (bottom left) to the top right, ending in an arrowhead;
+    the cards sit along it like rising steps (offsets 160, 80 and 0 px), each card's top-left corner on a
+    10 px node. Columns are percentages of the width and the SVG is stretched to the width (y in px), so the
+    line meets the corners at every width.
+  - *Narrower:* a vertical timeline: the line runs down a left rail, a node at the top of each card.
+  - *Scroll (no pinning, reversible):* p = clamp((0.85 × viewport height − section top) / (0.9 × section
+    height)). The line draws in four segments between the node thresholds (0.08 Idea, 0.30, 0.55, 0.80, then
+    the arrowhead), so it reaches each node as it lights; a card enters (500 ms, then its contents 70 ms apart)
+    when its node lights and leaves (250 ms) 0.04 below its threshold. Hover or focus lifts a card 2 px and
+    makes its node glow. Focus on a link in a hidden card reveals it at once.
+  - The cards stay an ordered list, always in the DOM and the accessibility tree (hidden = opacity and
+    transform only). Reduced motion and no JavaScript: the finished path, every card visible.
 - **Proof bar count-up** (`StatBar.astro`): the number part counts up once over 1.2 s when the bar scrolls
   into view. The HTML holds the final values and screen readers only hear those.
 - **Hover and focus**: cards that are one big link get `.lift-card` (lift 2px, a soft shadow that fades in,

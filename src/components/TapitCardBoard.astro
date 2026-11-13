@@ -1,0 +1,379 @@
+---
+/**
+ * TapitCard's card in the deck: the real card artwork (front and back, public/media/tapitcard/,
+ * exported from Raja's files) as a physical card in CSS 3D, and the four "How it works" feature
+ * cards from thetapitcard.com rebuilt in HTML/CSS with their published wording, plus the
+ * "Start NETWORKING!" chip and a caption chip in the site's own words. Pieces sit on one board in
+ * "board px"; the panel is a camera that pans and zooms it (src/scripts/tapitcard-board.ts, with
+ * the camera shared with AsaanBill's card).
+ *
+ * Feature cards: 1 board px = 1/5.714 of the 8000 px screenshot (263 x 272.3 per card); each
+ * card's tile, title and text sit where the screenshot has them (they differ by a few px), with the
+ * published line breaks. Their typeface is Century Gothic on the site; this uses Jost (OFL, Latin
+ * subset, 400 and 700), the closest open font with a bold weight at the same widths, applied once
+ * the deck is near.
+ *
+ * The markup is a static overview (no JavaScript, reduced motion): the card front, the four
+ * feature cards and both chips. The card images load only when the deck is within one viewport
+ * (deck.ts); without JavaScript the <noscript> front loads. Decorative: aria-hidden.
+ */
+/* Wording and line breaks as published; at: [tile x, tile y, title x, title top, text x, text top] */
+const feats = [
+  { id: 'cd', title: 'Customize Design', lines: ['You can design your card', 'according to your preference,', 'just explain it to team Tapit and', 'they will design for you.'], at: [12.1, 34.6, 11.8, 118.5, 12.6, 165.9] },
+  { id: 'asl', title: 'Add Social Links', lines: ['You can add all social links', 'including Facebook, whatsApp,', 'Instagram, TikTok, Linkedin,', 'Snapchat and much more.'], at: [14.2, 31, 14.8, 117.1, 12.6, 160.2] },
+  { id: 'bh', title: 'Business Hours', lines: ['You can add business hours', 'and day offs according to your', 'schedule for better clearance', 'to the customers.'], at: [14.2, 34.6, 14.2, 120.2, 14.4, 168.2] },
+  { id: 'uc', title: 'Unlimited Changes', lines: ['If any of your information', 'changes, you can login and', 'edit your card by your own', 'Unlimited times.'], at: [14.7, 35.7, 14.2, 116.8, 13.7, 158.9] },
+];
+const place = (a: number[]) => `--tx:${a[0]}px;--ty:${a[1]}px;--hx:${a[2]}px;--hy:${a[3]}px;--bx:${a[4]}px;--by:${a[5]}px`;
+const img = (face: 'front' | 'back') => `/media/tapitcard/tapitcard-${face}-700.webp`;
+---
+
+<div class="tc" aria-hidden="true" data-tc data-picture>
+  <div class="tc-board" data-tc-board>
+    <p class="tc-chip tc-net" data-tc-net>Start <span>NETWORKING!</span></p>
+
+    <div class="tc-stage">
+      <i class="tc-shadow" data-tc-shadow></i>
+      {[0, 1, 2, 3].map(() => <img class="tc-fan" data-tc-fan data-tc-src="front" alt="" decoding="async" />)}
+      <div class="tc-card" data-tc-card>
+        <i class="tc-edge"></i>
+        <div class="tc-face tc-front">
+          <img data-tc-src="front" alt="" decoding="async" />
+          <noscript><img src={img('front')} alt="" /></noscript>
+          <i class="tc-sheen"></i>
+        </div>
+        <div class="tc-face tc-back">
+          <img data-tc-src="back" alt="" decoding="async" />
+          <i class="tc-sheen"></i>
+          <i class="tc-qr" data-tc-qr></i>
+          <span class="tc-brs" data-tc-brs><i></i><i></i><i></i><i></i></span>
+          <svg class="tc-waves" viewBox="0 0 60 100">
+            <path class="tc-wave" data-tc-wave d="M14 30a28 28 0 0 1 0 40"></path>
+            <path class="tc-wave" data-tc-wave d="M26 16a46 46 0 0 1 0 68"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <p class="tc-chip tc-cap" data-tc-cap>Start sharing your contact<br />with a TAP or QR</p>
+
+    {
+      feats.map((f) => (
+        <div class="tc-feat" data-tc-feat={f.id} style={place(f.at)}>
+          <span class="tc-tile">
+            <svg viewBox="0 0 66 66">
+              <path class="tc-check" pathLength="1" d="M21.5 33.6l6.8 7.4 16-16.4" />
+            </svg>
+          </span>
+          <h4>{f.title}</h4>
+          <p>
+            {f.lines.map((l, i) => (
+              <>
+                {i > 0 && <br />}
+                {l}
+              </>
+            ))}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  @font-face {
+    font-family: 'Jost TC';
+    src: url('/fonts/jost-latin-400.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Jost TC';
+    src: url('/fonts/jost-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
+  .tc {
+    /* the feature cards' typeface is only applied, and so only downloaded, once the deck is near */
+    --tc-font: 'Inter Variable', 'Inter Fallback', sans-serif;
+    --tc-orange: #f8a01a;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    container-type: size;
+    font-family: var(--tc-font);
+    -webkit-font-smoothing: antialiased;
+  }
+  :global(html:not(.js)) .tc,
+  :global([data-near]) .tc {
+    --tc-font: 'Jost TC', 'Inter Variable', 'Inter Fallback', sans-serif;
+  }
+  .tc p,
+  .tc h4 {
+    margin: 0;
+    font-family: inherit;
+  }
+  /* The board (board px). Without JavaScript: an overview of every piece. */
+  .tc-board {
+    --s: 0.2;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1400px;
+    height: 640px;
+    transform-origin: 0 0;
+    transform: translate(calc(50cqw - 694px * var(--s)), calc(50cqh - 314px * var(--s))) scale(var(--s));
+  }
+  @container (width >= 360px) {
+    .tc-board {
+      --s: 0.25;
+    }
+  }
+  @container (width >= 440px) {
+    .tc-board {
+      --s: 0.32;
+    }
+  }
+  @container (width >= 540px) {
+    .tc-board {
+      --s: 0.38;
+    }
+  }
+  .tc-board > * {
+    position: absolute;
+  }
+
+  /* ------------------------------------------------------------ the card (460 x 298.3, the front's ratio) */
+  .tc-stage {
+    left: 40px;
+    top: 130px;
+    width: 460px;
+    height: 298.3px;
+    perspective: 1200px;
+  }
+  .tc-stage > * {
+    position: absolute;
+    inset: 0;
+  }
+  .tc-shadow {
+    inset: auto 7% -30px;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(0 0 0 / 0.75), transparent);
+    filter: blur(6px);
+  }
+  .tc-fan,
+  .tc-face img,
+  .tc-edge,
+  .tc-sheen {
+    width: 100%;
+    height: 100%;
+    border-radius: 17px; /* 3.7% of the width, as on a real card */
+  }
+  .tc-fan {
+    object-fit: cover;
+    transform-origin: 50% 150%;
+    opacity: 0;
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.45);
+  }
+  .tc-card {
+    transform-style: preserve-3d;
+  }
+  .tc-card > * {
+    position: absolute;
+    inset: 0;
+  }
+  /* 2 px thick: the faces sit 1 px either side of a dark edge layer */
+  .tc-edge {
+    background: linear-gradient(135deg, #4a3f6b, #1c2236);
+  }
+  .tc-face {
+    backface-visibility: hidden;
+    transform: translateZ(1px);
+  }
+  .tc-back {
+    transform: rotateY(180deg) translateZ(1px);
+  }
+  .tc-face img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    object-fit: cover;
+    background-color: #241f3a;
+  }
+  :global(html:not(.js)) .tc [data-tc-src] {
+    display: none;
+  }
+  /* Specular sheen: a highlight band that sweeps across as the card tilts or flips (deck.ts sets --sh) */
+  .tc-sheen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 38%, rgb(255 255 255 / 0.5) 50%, transparent 62%) no-repeat;
+    background-size: 300% 100%;
+    background-position: var(--sh, 100%) 0;
+    mix-blend-mode: screen;
+    opacity: var(--sho, 0);
+  }
+  /* The QR and URL area (the camera's focus), and a generic scan frame closing in around the QR */
+  .tc-qr {
+    position: absolute;
+    left: 32%;
+    top: 22%;
+    width: 36%;
+    height: 69%;
+  }
+  .tc-brs {
+    position: absolute;
+    left: 32.1%;
+    top: 22.5%;
+    width: 35.6%;
+    height: 54.9%;
+    opacity: 0;
+    --o: 0px;
+  }
+  .tc-brs i {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border: 4px solid #fff;
+    border-radius: 3px;
+  }
+  .tc-brs i:nth-child(1) {
+    left: calc(-1 * var(--o));
+    top: calc(-1 * var(--o));
+    border-width: 4px 0 0 4px;
+  }
+  .tc-brs i:nth-child(2) {
+    right: calc(-1 * var(--o));
+    top: calc(-1 * var(--o));
+    border-width: 4px 4px 0 0;
+  }
+  .tc-brs i:nth-child(3) {
+    left: calc(-1 * var(--o));
+    bottom: calc(-1 * var(--o));
+    border-width: 0 0 4px 4px;
+  }
+  .tc-brs i:nth-child(4) {
+    right: calc(-1 * var(--o));
+    bottom: calc(-1 * var(--o));
+    border-width: 0 4px 4px 0;
+  }
+  /* NFC waves, out from the card's right edge */
+  .tc-waves {
+    position: absolute;
+    left: calc(100% + 4px);
+    top: 50%;
+    width: 60px;
+    height: 100px;
+    translate: 0 -50%;
+    overflow: visible;
+  }
+  .tc-wave {
+    fill: none;
+    stroke: #1bd6ff;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transform-box: view-box;
+    transform-origin: 0 50%;
+    opacity: 0;
+  }
+
+  /* ------------------------------------------------------------ chips */
+  .tc-chip {
+    left: 270px;
+    translate: -50% 0;
+    background: #fff;
+    color: #000;
+    white-space: nowrap;
+  }
+  .tc-net {
+    top: 40px;
+    padding: 9px 14px 9px 18px;
+    border-radius: 14px;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .tc-net span {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 0 6px;
+    font-weight: 400; /* as on the site: "Start" bold, NETWORKING! regular on the orange highlight */
+    background: var(--tc-orange);
+    color: #fff;
+  }
+  .tc-cap {
+    top: 452px;
+    padding: 10px 20px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  /* ------------------------------------------------------------ feature cards (as on thetapitcard.com) */
+  .tc-feat {
+    width: 263px;
+    height: 272.3px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 4px 4px 10px rgb(0 0 0 / 0.22);
+    color: #000;
+  }
+  .tc-feat[data-tc-feat='cd'] {
+    left: 520px;
+    top: 300px;
+  }
+  .tc-feat[data-tc-feat='asl'] {
+    left: 812px;
+    top: 20px;
+  }
+  .tc-feat[data-tc-feat='bh'] {
+    left: 812px;
+    top: 321px;
+  }
+  .tc-feat[data-tc-feat='uc'] {
+    left: 1104px;
+    top: 150px;
+  }
+  .tc-tile {
+    position: absolute;
+    left: var(--tx);
+    top: var(--ty);
+    width: 65.6px;
+    height: 65.6px;
+    border-radius: 8px;
+    background: #ffddb0;
+  }
+  .tc-tile svg {
+    width: 100%;
+    height: 100%;
+  }
+  .tc-check {
+    fill: none;
+    stroke: var(--tc-orange);
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+  }
+  /* Jost at Century Gothic's widths: titles 27 px, text 16.5 px on a 16.75 px pitch */
+  .tc-feat h4 {
+    position: absolute;
+    left: var(--hx);
+    top: var(--hy);
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .tc-feat p {
+    position: absolute;
+    left: var(--bx);
+    top: var(--by);
+    font-size: 16.5px;
+    line-height: 16.75px;
+    white-space: nowrap;
+    color: #8e8f91;
+  }
+</style>

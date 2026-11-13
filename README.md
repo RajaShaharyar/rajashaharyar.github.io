@@ -15,7 +15,6 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 | `npm run check`   | Strict TypeScript and Astro diagnostics       |
 | `npm run images`  | Convert listed photos from `_source/` into `public/images/` (see below) |
 | `npm run icons`   | Make `apple-touch-icon.png` and `favicon.ico` from `public/favicon.svg` |
-| `npm run cv:pdf`  | Build and print `/cv` to `public/cv.pdf` (max 2 pages); commit the PDF |
 | `npm run og`      | Build and render the 1200×630 share images into `public/og/` |
 | `npm run check:links` | After a build: internal links, anchors, alt text, JSON-LD, then external links |
 | `npm run check:a11y`  | After a build: axe on every page at 390px and 1280px (zero violations) |
@@ -24,7 +23,6 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 ## Launch checklist (when content changes)
 
 - A page title or description changed: rerun `npm run og` and commit `public/og/`.
-- `cv.json` (or the stats/contact details) changed: rerun `npm run cv:pdf` and commit `public/cv.pdf`.
 - Before pushing a bigger change: `npm run check`, `npm run build`, `npm run check:links`, `npm run check:a11y`.
 - `sitemap-index.xml` is generated on every build (`@astrojs/sitemap`); `/404`, `/contact/thanks/` and the
   redirects (see Site structure) are left out. `public/robots.txt` points to it.
@@ -37,7 +35,7 @@ The structure follows the sitemap in `_source/Consultation Website.pdf`.
 
 | Page | Sections (anchor) |
 | ---- | ----------------- |
-| Top bar | Home · Ventures ▾ · Work With Me · About ▾ · CV · Let's talk (`site.json → nav`, `cta`). About's eight items are sections of `/about/`. |
+| Top bar | Home · Ventures ▾ · Work With Me · About ▾ · Let's talk (`site.json → nav`, `cta`). The CV is linked only from the About dropdown. |
 | `/` | Hero · `#proof` · `#credibility` · `#products` · `#playbook` · `#help` · `#recognition` · `#testimonials` · closing CTA |
 | `/ventures/` | Cards in menu order (Other ventures last) · stage legend · `#yours-next` |
 | `/ventures/dressup/`, `/ventures/sonicengine-ai/` | Role stories: header (role, dates, location) · `#product` · `#what-i-did` · optional blocks · `#next` · CTA |
@@ -171,17 +169,16 @@ hidden. Every photo opens in the same accessible lightbox as the About pages.
 ## CV page and PDF
 
 `/cv` is built from `src/content/cv.json` (key numbers from `site.json → stats`, contact details from
-`site.json → contact`). Its print stylesheet is the PDF layout.
+`site.json → contact`). Consultation first: the CV page is linked only from the About dropdown, never from the
+top bar, the hero or the footer.
 
-**After editing cv.json (or the stats or contact details), run `npm run cv:pdf` and commit `public/cv.pdf`.**
-The script builds the site, serves it locally, prints `/cv/` to A4 in Playwright's Chromium and saves
-`public/cv.pdf`. It fails if the PDF is longer than 2 pages, sets the PDF title and author, and reads the
-text back to check it is selectable, in section order and free of personal details.
-First time on a new machine: `npx playwright install chromium`.
-
-The "Download CV" links (homepage hero, footer, `/cv` header) appear whenever `public/cv.pdf` exists and
-save as `Raja-Shaharyar-Ali-CV.pdf` (`site.json → cv.downloadName`). The PDF never holds a photo, date of
-birth, gender, nationality or home address.
+The PDF is **Raja's own 2-page Europass CV**, not generated from cv.json: `public/Raja-Shaharyar-PM.pdf`, made from
+`_source/Raja Shaharyar PM.pdf` with date of birth, nationality, gender and the home address (with its map-pin
+icon) removed by true redaction (PyMuPDF redaction annotations, applied, so the text is gone from the file, not
+covered), author "Raja Shaharyar Ali", title "Raja Shaharyar PM", no XMP. Everything else is his original wording
+and layout. Its one download link is the "Download PDF" button on `/cv/`, saved as `Raja Shaharyar PM.pdf`
+(`site.json → cv`). To replace it, redact the new original the same way, check with a text extraction that the
+four details are gone, and keep the file name.
 
 ## Contact form
 

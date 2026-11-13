@@ -1,0 +1,18 @@
+{
+  "_rules": "Copy for Let's talk (/contact/). The form's sending logic lives in src/pages/contact.astro and site.json → contact.form; only the wording is here. draft: true marks wording Raja should revise (it is published as is).",
+  "description": "Growth help, a talk or workshop, or a partnership: tell Raja Shaharyar Ali what you're building, by form, email, WhatsApp or LinkedIn.",
+  "_descriptionDraft": "Meta description rewritten consultation-first (Phase 17): a draft for Raja to revise. It used to start with \"Hiring\".",
+  "reasons": [
+    { "value": "growth-help", "label": "Growth help", "hint": "Project, advisory or fractional" },
+    { "value": "speaking", "label": "Speaking", "hint": "Talks, panels or workshops" },
+    {
+      "value": "other",
+      "label": "Other",
+      "hint": "Hiring, partnerships or anything else",
+      "draft": true,
+      "aliases": ["hiring"],
+      "_note": "The hint is a draft (Phase 17). aliases: old ?reason= values that now preselect this reason (\"Hiring\" was a reason of its own until Phase 17)."
+    }
+  ],
+  "_reasonsNote": "Consultation first (Phase 17): Growth help, Speaking and Other. A link can preselect one with /contact/?reason=<value> (or one of its aliases)."
+}

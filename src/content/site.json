@@ -29,12 +29,12 @@
   },
   "cv": {
     "pageHref": "/cv/",
-    "pdfHref": "/cv.pdf",
-    "downloadName": "Raja-Shaharyar-Ali-CV.pdf",
-    "_note": "Every Download CV link (home hero, footer, /cv header) points at pdfHref with this download name, and appears once public/cv.pdf exists. Regenerate it with npm run cv:pdf after editing cv.json."
+    "pdfHref": "/Raja-Shaharyar-PM.pdf",
+    "downloadName": "Raja Shaharyar PM.pdf",
+    "_note": "The PDF is Raja's own 2-page Europass CV (_source/Raja Shaharyar PM.pdf), with date of birth, nationality, gender and the home address redacted (true redaction with PyMuPDF: the text is removed, not covered). Its only download link is on /cv/, saved as downloadName. The CV page itself is linked only from the About dropdown (consultation first, Phase 17). To replace it, redact the new original the same way and keep the file name."
   },
   "cta": { "label": "Let's talk", "href": "/contact/" },
-  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · CV · then the cta button. About's items are sections of the one About page. Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
+  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · then the cta button. The CV is linked only from the About dropdown (consultation first, Phase 17), never from the top bar, the hero or the footer. Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
   "nav": [
     { "label": "Home", "href": "/" },
     {
@@ -44,7 +44,7 @@
         { "label": "Dressup", "href": "/ventures/dressup/", "description": "Product consultant: a hyper-personalised marketplace" },
         { "label": "AsaanBill", "href": "/ventures/asaanbill/", "description": "Regulated fintech, from 0→1 to scale" },
         { "label": "Sonic AI Engine", "href": "/ventures/sonicengine-ai/", "description": "Product owner: a text-to-game engine" },
-        { "label": "TapitCard", "href": "/ventures/tapit/", "description": "Founder story: from idea to 3,000+ customers" },
+        { "label": "TapitCard", "href": "/ventures/tapit/", "description": "Co-founder story: from idea to 3,000+ customers" },
         { "label": "Ladenza", "href": "/ventures/ladenza/", "description": "Consumer selling and acquisition" },
         { "label": "Other ventures", "href": "/ventures/other/", "description": "HOMS, Gameotivity and Mustahiq" },
         { "label": "Yours next?", "href": "/ventures/#yours-next", "description": "Your product could be the next story" }
@@ -62,10 +62,10 @@
         { "label": "Courses", "href": "/about/#courses" },
         { "label": "Distinctions", "href": "/about/#distinctions" },
         { "label": "Beyond work", "href": "/about/#beyond-work" },
-        { "label": "Invite me to speak", "href": "/about/#speaking" }
+        { "label": "Invite me to speak", "href": "/about/#speaking" },
+        { "label": "CV", "href": "/cv/", "description": "Full CV and PDF" }
       ]
-    },
-    { "label": "CV", "href": "/cv/" }
+    }
   ],
   "recognitionMenu": {
     "label": "Recognition",

@@ -1,5 +1,5 @@
 {
-  "_rules": "The CV, section by section (1-14), in the blueprint's order. One source for /cv, public/cv.pdf (npm run cv:pdf), the About pages (Education and Skills & tools read it by id) and Consulting & product roles. The six key numbers come from site.json → stats and the contact details from site.json → contact, so they are never typed twice. Missing data is a string starting with TODO: it stays here and the field is hidden on the site and in the PDF. NEVER add a photo, date of birth, gender, nationality or home address. Dates are YYYY-MM, or YYYY-MM-DD where the day is known; end: null means current. pdfLine = the one line that section prints as in the PDF. After editing, run npm run cv:pdf and commit public/cv.pdf.",
+  "_rules": "The CV, section by section (1-14), in the blueprint's order. One source for /cv, the About pages (Education and Skills & tools read it by id) and Consulting & product roles. The six key numbers come from site.json → stats and the contact details from site.json → contact, so they are never typed twice. Missing data is a string starting with TODO: it stays here and the field is hidden on the site. NEVER add a photo, date of birth, gender, nationality or home address. Dates are YYYY-MM, or YYYY-MM-DD where the day is known; end: null means current. The PDF download on /cv/ is NOT generated from this file: it is Raja's own Europass CV (public/Raja-Shaharyar-PM.pdf, see site.json → cv), with date of birth, nationality, gender and the home address redacted; it keeps his own wording and photo.",
 
   "header": {
     "section": 1,
@@ -12,7 +12,7 @@
     "contactFrom": "site.json → contact (email, whatsapp, linkedin): one source, so the CV and the footer never disagree.",
     "website": { "display": "rajashaharyar.github.io", "href": "https://rajashaharyar.github.io" },
     "downloadLabel": "Download PDF",
-    "contactCta": { "label": "Let's talk", "href": "/contact/?reason=hiring" }
+    "contactCta": { "label": "Let's talk", "href": "/contact/?reason=other" }
   },
 
   "summary": {
@@ -317,8 +317,7 @@
       { "text": "Speaker, \"Do's and don'ts in pitching\", Zindigi Prize NUML chapter", "date": "Mar 2024", "recognitionId": "talk-numl-zindigi-2024" },
       { "text": "Guest speaker, Air University Islamabad", "date": "2024", "recognitionId": "talk-air-university-2024" },
       { "text": "Guest speaker, NUST EME", "date": "2024", "recognitionId": "talk-nust-eme-2024" }
-    ],
-    "pdfLine": "Guest speaker at HITEC University, NUML, Air University and NUST EME; host of the AsaanBill podcast."
+    ]
   },
 
   "partnerships": {
@@ -334,8 +333,7 @@
     "counts": [
       { "value": "15+", "label": "ERP partnerships" },
       { "value": "6", "label": "strategic partnerships across Karachi, Lahore and Islamabad" }
-    ],
-    "pdfLine": "4 MOUs (Najoomi, The Tuitionist, Encoder Bytes, Human Care Foundation); 15+ ERP and 6 strategic partnerships."
+    ]
   },
 
   "skills": {
@@ -367,8 +365,7 @@
       { "text": "Founder & Operations Head, Mustahiq", "date": null, "recognitionIds": ["mustahiq-first-project", "mou-humancare-mustahiq"] },
       { "text": "Director Marketing, AirTech'24, Air University", "date": null, "recognitionIds": ["event-airtech-24"] },
       { "text": "Represented Pakistani startups to a US delegation", "date": "2024", "recognitionIds": ["event-us-delegation"] }
-    ],
-    "pdfLine": "Founder & Operations Head, Mustahiq; Director Marketing, AirTech'24; represented Pakistani startups to a US delegation."
+    ]
   },
 
   "references": {

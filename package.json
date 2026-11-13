@@ -12,7 +12,6 @@
     "check": "astro check",
     "images": "node scripts/images.mjs",
     "icons": "node scripts/icons.mjs",
-    "cv:pdf": "node scripts/cv-pdf.mjs",
     "astro": "astro",
     "check:a11y": "node scripts/check-a11y.mjs",
     "og": "node scripts/og.mjs",

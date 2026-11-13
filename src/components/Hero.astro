@@ -2,12 +2,8 @@
 /** Homepage section 1: who he is in one look. */
 import Media from './Media.astro';
 import home from '../content/home.json';
-import { site } from '../lib/site';
-import { publicFileExists } from '../lib/public-files';
 
 const { hero } = home;
-// "Download CV" appears only once public/cv.pdf exists.
-const showCv = publicFileExists(site.cv.pdfHref);
 ---
 
 <section class="wrap pt-10 pb-12 md:pt-16 lg:pt-20 lg:pb-16" aria-labelledby="hero-heading">
@@ -19,13 +15,6 @@ const showCv = publicFileExists(site.cv.pdfHref);
       <div class="mt-8 flex flex-wrap gap-3">
         <a href={hero.primary.href} class="btn btn-primary">{hero.primary.label}</a>
         <a href={hero.secondary.href} class="btn btn-secondary">{hero.secondary.label}</a>
-        {
-          showCv && (
-            <a href={site.cv.pdfHref} class="btn btn-secondary" download={site.cv.downloadName}>
-              {hero.cvButton.label}
-            </a>
-          )
-        }
       </div>
       <p class="mt-6 flex items-center gap-2.5 text-sm text-fg-muted">
         <span class="size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>

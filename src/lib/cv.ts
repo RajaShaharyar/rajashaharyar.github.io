@@ -111,16 +111,15 @@ export interface Cv {
   education: Section & { items: EducationItem[] };
   programmes: Section & { items: Programme[] };
   honours: Section & { items: { title: string; date: string | null; dateISO: string; recognitionId: string }[] };
-  speaking: Section & { items: { text: string; date: string | null; recognitionId: string }[]; pdfLine: string };
+  speaking: Section & { items: { text: string; date: string | null; recognitionId: string }[] };
   partnerships: Section & {
     mousLabel: string;
     mous: { text: string; recognitionId: string }[];
     counts: { value: string; label: string }[];
-    pdfLine: string;
   };
   skills: Section & { groups: SkillGroup[] };
   languages: Section & { items: Language[] };
-  leadership: Section & { items: { text: string; date: string | null; recognitionIds: string[] }[]; pdfLine: string };
+  leadership: Section & { items: { text: string; date: string | null; recognitionIds: string[] }[] };
   references: Section & { text: string };
 }
 

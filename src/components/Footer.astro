@@ -1,16 +1,14 @@
 ---
 /**
- * Footer on every page: email, WhatsApp, LinkedIn and the CV PDF, then the
- * menu mirrored from site.json → nav (pages, the Ventures dropdown) and the
- * Recognition pages (site.json → recognitionMenu), which are not in the top bar.
+ * Footer on every page: email, WhatsApp and LinkedIn, then the menu mirrored
+ * from site.json → nav (pages, the Ventures dropdown) and the Recognition pages
+ * (site.json → recognitionMenu), which are not in the top bar. No CV link: the
+ * CV is linked only from the About dropdown (consultation first).
  */
 import { site } from '../lib/site';
-import { publicFileExists } from '../lib/public-files';
 
-const { contact, cv } = site;
+const { contact } = site;
 const year = new Date().getFullYear();
-// The CV download row appears automatically once public/cv.pdf exists (hidden until then).
-const hasCvPdf = publicFileExists(cv.pdfHref);
 const pages = [...site.nav.map(({ label, href }) => ({ label, href })), site.cta];
 const venturesMenu = site.nav.find((item) => item.href === '/ventures/');
 const recognition = site.recognitionMenu;
@@ -48,16 +46,6 @@ const recognition = site.recognitionMenu;
             <span>{site.name}</span>
           </a>
         </li>
-        {
-          hasCvPdf && (
-            <li>
-              <a href={cv.pdfHref} class="footer-link" download={cv.downloadName}>
-                <span class="footer-key">CV</span>
-                <span>Download PDF</span>
-              </a>
-            </li>
-          )
-        }
       </ul>
     </div>
 

@@ -1,25 +1,19 @@
 ---
 /**
  * One numbered section of the web CV (/cv). The id is what the sticky
- * mini-menu links to; `pdfLine` sections print as a single line instead of
- * their full content (see the print stylesheet in pages/cv.astro).
+ * mini-menu links to.
  */
 interface Props {
   id: string;
   title: string;
-  /** If set, print this one line in place of the section's full content */
-  pdfLine?: string;
-  /** Leave the whole section out of the printed CV / PDF */
-  screenOnly?: boolean;
 }
 
-const { id, title, pdfLine, screenOnly = false } = Astro.props;
+const { id, title } = Astro.props;
 ---
 
-<section id={id} class:list={['cv-section', screenOnly && 'screen-only']} aria-labelledby={`${id}-heading`} data-cv-section>
+<section id={id} class="cv-section" aria-labelledby={`${id}-heading`} data-cv-section>
   <h2 id={`${id}-heading`} class="cv-h2">{title}</h2>
-  <div class:list={['cv-section-body', pdfLine && 'screen-only']}>
+  <div class="cv-section-body">
     <slot />
   </div>
-  {pdfLine && <p class="print-only">{pdfLine}</p>}
 </section>

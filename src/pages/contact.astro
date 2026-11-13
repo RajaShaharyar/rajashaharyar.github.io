@@ -1,7 +1,7 @@
 ---
 /**
  * Let's talk (/contact/), in the sitemap's order: What's this about? (the
- * reason picker: Hiring / Growth help / Speaking / Other) · Your details (name,
+ * reason picker: Growth help / Speaking / Other) · Your details (name,
  * email, phone or WhatsApp, company) · Message and send · Contact details (the
  * direct channels: beside the form on wide screens, after it on phones).
  *
@@ -16,10 +16,12 @@
  *   email app with the message ready to send (mailto).
  * ─────────────────────────────────────────────────────────────────────────
  *
- * Pre-select a reason from a link: /contact/?reason=hiring|growth-help|speaking|other
+ * Pre-select a reason from a link: /contact/?reason=growth-help|speaking|other
+ * (?reason=hiring, from older links, preselects Other). Wording: src/content/contact.json.
  */
 import Base from '../layouts/Base.astro';
 import { site, filled } from '../lib/site';
+import copy from '../content/contact.json';
 
 const { contact } = site;
 const { provider } = contact.form;
@@ -33,15 +35,10 @@ const action = mode === 'web3forms' ? 'https://api.web3forms.com/submit' : mode 
 const thanksUrl = new URL('/contact/thanks/', site.url).href;
 const serviceName = mode === 'web3forms' ? 'Web3Forms' : 'Formspree';
 
-const reasons = [
-  { value: 'hiring', label: 'Hiring', hint: 'A full-time role' },
-  { value: 'growth-help', label: 'Growth help', hint: 'Project, advisory or fractional' },
-  { value: 'speaking', label: 'Speaking', hint: 'Talks, panels or workshops' },
-  { value: 'other', label: 'Other', hint: 'Anything else' },
-];
+const reasons = copy.reasons.map((r) => ({ ...r, aliases: 'aliases' in r ? r.aliases?.join(' ') : undefined }));
 
 const title = "Let's talk";
-const description = 'Hiring, growth help or a speaking invitation: get in touch with Raja Shaharyar Ali by email, WhatsApp or LinkedIn.';
+const description = copy.description;
 ---
 
 <Base title="Contact" description={description} hideDock>
@@ -70,7 +67,7 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
               {
                 reasons.map((r, i) => (
                   <label class="reason">
-                    <input type="radio" name="reason" value={r.label} data-reason={r.value} required={i === 0} />
+                    <input type="radio" name="reason" value={r.label} data-reason={r.value} data-aliases={r.aliases} required={i === 0} />
                     <span class="flex flex-col">
                       <span class="font-semibold">{r.label}</span>
                       <span class="text-sm text-fg-muted">{r.hint}</span>
@@ -406,10 +403,11 @@ const description = 'Hiring, growth help or a speaking invitation: get in touch 
     const doneText = done.querySelector<HTMLElement>('[data-done-text]');
     const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
 
-    // Pre-select a reason from ?reason=hiring|growth-help|speaking|other
+    // Pre-select a reason from ?reason=growth-help|speaking|other (or an old alias: hiring → Other)
     const wanted = new URLSearchParams(window.location.search).get('reason');
     if (wanted) {
-      const radio = form.querySelector<HTMLInputElement>(`input[data-reason="${CSS.escape(wanted)}"]`);
+      const v = CSS.escape(wanted);
+      const radio = form.querySelector<HTMLInputElement>(`input[data-reason="${v}"], input[data-aliases~="${v}"]`);
       if (radio) radio.checked = true;
     }
     // Email-app mode ships the button disabled (it needs this script); switch it on.

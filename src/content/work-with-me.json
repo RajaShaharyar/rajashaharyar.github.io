@@ -1,5 +1,5 @@
 {
-  "_rules": "Copy for /work-with-me: Services (the offers live in site.json → offers; the homepage shows those with home: true), Working process (steps, then How I work, moved from the old Skills page), FAQ (the last answer is the four engagement models) and the closing CTA.",
+  "_rules": "Copy for /work-with-me: Services (the offers live in site.json → offers; the homepage shows those with home: true), Working process (steps, then How I work, moved from the old Skills page), FAQ (the last answer is the three engagement models; consultation first, so no full-time role since Phase 17) and the closing CTA.",
   "title": "Work With Me",
   "intro": "I help founders and teams find fit, build a sales engine and scale, especially in payments.",
   "description": "Work with Raja Shaharyar Ali: Fit Sprint, Sales & GTM Engine, Payments & Fintech Launch, and talks and workshops, each backed by proof from AsaanBill and Tapit.",
@@ -57,12 +57,11 @@
       {
         "q": "How can we work together?",
         "models": [
-          "Full-time role",
           "Fractional or advisory",
           "Fixed-scope project",
           "Talk or workshop"
         ],
-        "_note": "Answered with the four engagement models (the old Engagement models block)."
+        "_note": "Answered with the engagement models (the old Engagement models block). \"Full-time role\" was removed in Phase 17 (consultation first)."
       }
     ]
   },

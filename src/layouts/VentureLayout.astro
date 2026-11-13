@@ -1,23 +1,27 @@
 ---
 /**
- * The venture page template, fed by one MDX file's frontmatter (schema:
- * src/content.config.ts). Two kinds share this look:
- * - kind: case-study (AsaanBill, TapitCard, Ladenza). Blocks, in order:
- *   snapshot · problem · product-idea-fit · product-market-fit · scale ·
- *   approvals · journey · terms · limitations · team · results · lessons ·
- *   evidence · next
- * - kind: role-story (DressUp AI, Sonic AI Engine), built from one cv.json
- *   experience entry: the header carries Raja's role, dates and location; then
- *   product · what-i-did · problem · limitations · results · lessons ·
- *   evidence · next, and a closing call to action. No stage badge, no metric.
- * Both kinds add "In pictures" (frontmatter pictures, a gallery) after the first block, and
- * the header shows the venture's logo lockup (frontmatter logo) and its live deck card
- * (DeckCard, the same animation as on the homepage, playing on its own: src/scripts/
- * venture-card.ts) on the right; on phones the card sits below the header text.
- * Each block has an anchor id and renders only when it has data.
- * A value that is still "TODO: …" counts as missing, so its block or field is
- * simply left out: no empty headings, no placeholders.
- * Desktop: a sticky "On this page" list of the rendered blocks.
+ * The case-study template (Phase 18, from the new sitemap): every venture page (AsaanBill, TapitCard,
+ * DressUp AI, Sonic AI Engine, Ladenza), fed by one MDX file's frontmatter (schema: src/content.config.ts).
+ * Two kinds share it: case-study (AsaanBill, TapitCard, Ladenza) and role-story (DressUp AI, Sonic AI
+ * Engine, built from one cv.json experience entry). Eight sections, in order:
+ *   1 #snapshot     H1 name, logo where there is one, one line, role, dates (hidden while TODO), team, up
+ *                   to 3 key numbers, the stage reached and the product link
+ *   2 #visual       the live venture card, large and centred (DeckCard; the page's only autoplay:
+ *                   src/scripts/venture-card.ts), on a soft glow in the venture's colour
+ *   3 #challenge    the problem and the market (role stories: the product, from its own site), then any
+ *                   limitations
+ *   4 #contribution what Raja did: the Product-Idea Fit / Product-Market Fit / Scale narrative (anchors
+ *                   #product-idea-fit, #product-market-fit, #scale), Payments and approvals (#approvals),
+ *                   How a merchant goes live (#journey), Terms used (#terms), Who did what (#team); role
+ *                   stories: What I did
+ *   5 #result       the outcome line, the results grid and its definition (and lessons, once there are any)
+ *   6 #evidence     one gallery: the product screens first ("In pictures"), then events, MOUs and press,
+ *                   never the same photo twice
+ *   7 #testimonial  site.json → testimonials whose venture is this one (hidden while there are none)
+ *   8 #enabled      What this enabled (frontmatter enabled, a draft built only from facts on the page;
+ *                   hidden while missing)
+ * Then the next case study and the closing CTA panel. A section with no data is left out, and so is its
+ * entry in the sticky "On this page" list (desktop). A value that is still "TODO: …" counts as missing.
  */
 import Base from './Base.astro';
 import SubPageHeader from '../components/SubPageHeader.astro';
@@ -29,6 +33,8 @@ import Gallery from '../components/Gallery.astro';
 import ArrowLink from '../components/ArrowLink.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import DeckCard from '../components/DeckCard.astro';
+import Testimonial from '../components/Testimonial.astro';
+import CTA from '../components/CTA.astro';
 import home from '../content/home.json';
 import { getImage } from '../lib/images';
 import { site, filled } from '../lib/site';
@@ -49,79 +55,92 @@ const card = site.ventures.find((v) => v.id === id);
 // Role story: everything about the role comes from cv.json → experience
 const experience = rs ? getExperience(rs.experienceId) : undefined;
 const role = experience?.roles[0];
-const headerFacts = role
-  ? [
-      { label: 'Role', value: role.title },
-      { label: 'Dates', value: roleDates(role) },
-      { label: 'Location', value: filled(experience?.location) },
-    ]
-  : [];
 
+// 1. Snapshot: role, dates (hidden while TODO), team; up to 3 key numbers
+const snapshotFacts = cs
+  ? [
+      { label: 'Role', value: cs.snapshot.role },
+      { label: 'Dates', value: filled(cs.snapshot.dates) },
+      { label: 'Team', value: filled(cs.snapshot.team) },
+    ]
+  : [
+      { label: 'Role', value: role?.title },
+      { label: 'Dates', value: role ? filled(roleDates(role)) : undefined },
+    ];
+const keyNumbers = (cs?.snapshot.metrics ?? []).slice(0, 3);
 // External link only once its href is real (Ladenza's Instagram is still a TODO)
 const external = data.external && filled(data.external.href)?.startsWith('http') ? data.external : undefined;
+const logo = data.logo ? { main: getImage(data.logo.image), by: data.logo.by ? getImage(data.logo.by) : undefined } : undefined;
 
-// Stages (case studies), with the homepage playbook's question for each
+// 2. Visual: the live card (every venture with a homepage deck card has one)
+const deckItem = home.products.items.find((item) => item.id === id);
+const copy = home.products;
+
+// 3. Challenge
+const problemText = filled(data.problem?.text);
+const pain = filled(cs?.problem.pain);
+const about = rs?.about;
+
+// 4. Contribution: the stages (case studies), with the homepage playbook's question for each
 const preSales = preSalesText(cs?.preSales);
 const stageBlocks = cs
   ? [
       { id: 'product-idea-fit', name: 'Product-Idea Fit', stage: cs.stages.ideaFit },
       { id: 'product-market-fit', name: 'Product-Market Fit', stage: cs.stages.marketFit },
       { id: 'scale', name: 'Scale', stage: cs.stages.scale },
-    ].map((b, i) => ({
-      ...b,
-      number: String(i + 1).padStart(2, '0'),
-      question: home.playbook.stages.find((s) => s.id === b.id)?.question,
-      text: preSales && b.stage.textWithPreSales ? b.stage.textWithPreSales.replace('{preSales}', preSales) : b.stage.text,
-      reached: cs.snapshot.stage === b.name,
-    }))
+    ]
+      .map((b, i) => ({
+        ...b,
+        number: String(i + 1).padStart(2, '0'),
+        question: home.playbook.stages.find((s) => s.id === b.id)?.question,
+        text: preSales && b.stage.textWithPreSales ? b.stage.textWithPreSales.replace('{preSales}', preSales) : b.stage.text,
+        reached: cs.snapshot.stage === b.name,
+      }))
+      .filter((b) => filled(b.text))
   : [];
-
-const problemText = filled(data.problem?.text);
-const pain = filled(cs?.problem.pain);
 const spotlight = cs?.spotlight;
 const journey = cs?.journey;
 const glossary = cs?.glossary ?? [];
 const contributions = cs?.contributions ?? [];
-const press = cs?.press ?? [];
-const evidence = data.evidenceIds.map(getRecognition).flatMap((item) => photosOf(item).map((p) => ({ image: p.file, caption: p.caption })));
-// "In pictures": never a photo that is already in Evidence on this page
-const evidenceFiles = new Set(evidence.map((e) => e.image));
-const pictures = data.pictures.filter((key) => !evidenceFiles.has(key)).map((image) => ({ image }));
-// The header: the logo lockup and the live card (every venture with a homepage deck card has one)
-const logo = data.logo ? { main: getImage(data.logo.image), by: data.logo.by ? getImage(data.logo.by) : undefined } : undefined;
-const deckItem = home.products.items.find((item) => item.id === id);
-const hasCard = Boolean(deckItem);
-const copy = home.products;
-const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
 
-const blocks = [
-  { id: 'snapshot', label: 'Snapshot', show: Boolean(cs) },
-  { id: 'product', label: 'The product', show: Boolean(rs) },
-  { id: 'what-i-did', label: 'What I did', show: Boolean(role) },
-  { id: 'pictures', label: 'In pictures', show: pictures.length > 0 },
-  { id: 'problem', label: 'The problem', show: Boolean(problemText) },
-  ...stageBlocks.map((b) => ({ id: b.id, label: b.name, show: Boolean(filled(b.text)) })),
-  { id: 'approvals', label: 'Approvals', show: Boolean(spotlight) },
-  { id: 'journey', label: 'Journey', show: Boolean(journey) },
-  { id: 'terms', label: 'Terms', show: glossary.length > 0 },
-  { id: 'limitations', label: 'Limitations', show: data.limitations.length > 0 },
-  { id: 'team', label: 'Who did what', show: contributions.length > 0 },
-  { id: 'results', label: 'Results', show: Boolean(data.results) },
-  { id: 'lessons', label: 'Lessons', show: data.lessons.length > 0 },
-  { id: 'evidence', label: 'Evidence', show: evidence.length > 0 || press.length > 0 },
-  { id: 'next', label: 'Next', show: true },
+// 6. Evidence: the product screens first, then events and MOUs, then press; no photo twice
+const evidencePhotos = data.evidenceIds.map(getRecognition).flatMap((item) => photosOf(item).map((p) => ({ image: p.file, caption: p.caption })));
+const seen = new Set<string>();
+const gallery = [...data.pictures.map((image) => ({ image })), ...evidencePhotos].filter((p) => !seen.has(p.image) && Boolean(seen.add(p.image)));
+const press = cs?.press ?? [];
+
+// 7. Testimonials for this venture (site.json → testimonials[].venture)
+const testimonials = site.testimonials.filter((t) => t.venture === id);
+// 8. What this enabled
+const enabled = data.enabled;
+
+const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
+const sections = [
+  { id: 'snapshot', label: 'Snapshot', show: true },
+  { id: 'visual', label: 'Visual', show: Boolean(deckItem) },
+  { id: 'challenge', label: 'Challenge', show: Boolean(problemText || about || data.limitations.length) },
+  { id: 'contribution', label: 'Contribution', show: Boolean(stageBlocks.length || spotlight || journey || glossary.length || contributions.length || role) },
+  { id: 'result', label: 'Result', show: Boolean(data.results || cs?.snapshot.outcome || data.lessons.length) },
+  { id: 'evidence', label: 'Evidence', show: gallery.length > 0 || press.length > 0 },
+  { id: 'testimonial', label: 'Testimonial', show: testimonials.length > 0 },
+  { id: 'enabled', label: 'What this enabled', show: Boolean(enabled) },
 ];
-const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
+const shown = new Set(sections.filter((s) => s.show).map((s) => s.id));
+// The closing CTA: the role story's own heading and link; case studies the homepage's
+const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.cta.link.href } : { heading: home.finalCta.heading, label: site.cta.label, href: site.cta.href };
 ---
 
 <Base title={data.title} description={data.summary}>
   <ReadingProgress />
+
+  <!-- 1. Snapshot -->
   <SubPageHeader
+    id="snapshot"
     section="/ventures/"
     overviewLabel="Overview"
     title={experience?.company ?? data.title}
     intro={rs ? experience?.product : card?.line}
-    facts={headerFacts}
+    facts={snapshotFacts}
     accent={deckItem?.color}
   >
     {
@@ -137,9 +156,40 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
         </p>
       )
     }
-    {
-      hasCard && (
-        <div class="venture-card" data-live-card slot="aside">
+    <div slot="after" class="snapshot-after">
+      {
+        keyNumbers.length > 0 && (
+          <ul class="snapshot-metrics" aria-label="Key numbers">
+            {keyNumbers.map((m) => (
+              <li>
+                <span class="snapshot-value">{m.value}</span> <span class="snapshot-label">{m.label}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <div class="snapshot-row">
+        {cs && <p class="badge">Stage reached: {cs.snapshot.stage}</p>}
+        {
+          external && (
+            <a href={external.href} class="btn btn-secondary" target="_blank" rel="noopener">
+              {external.label} <span aria-hidden="true">↗</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </SubPageHeader>
+
+  <!-- 2. Visual: the live venture card, large and centred -->
+  {
+    deckItem && (
+      <section id="visual" class="visual wrap" aria-labelledby="visual-heading" style={`--venture: var(--color-${deckItem.color})`}>
+        <h2 id="visual-heading" class="sr-only">
+          {data.title}, the live card
+        </h2>
+        <div class="venture-card" data-live-card>
           <DeckCard id={id}>
             <button type="button" class="deck-toggle" data-card-toggle aria-label={copy.cardPauseLabel} data-pause={copy.cardPauseLabel} data-play={copy.cardPlayLabel} hidden>
               <svg class="deck-icon-pause" viewBox="0 0 16 16" aria-hidden="true">
@@ -151,21 +201,21 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
             </button>
           </DeckCard>
         </div>
-      )
-    }
-  </SubPageHeader>
+      </section>
+    )
+  }
 
   <div class="wrap venture">
     <nav class="toc" aria-label="On this page" data-toc>
       <p class="toc-title">On this page</p>
       <ol class="toc-list">
         {
-          blocks
-            .filter((b) => b.show)
-            .map((b) => (
+          sections
+            .filter((s) => s.show)
+            .map((s) => (
               <li>
-                <a href={`#${b.id}`} class="toc-link" data-toc-link={b.id}>
-                  {b.label}
+                <a href={`#${s.id}`} class="toc-link" data-toc-link={s.id}>
+                  {s.label}
                 </a>
               </li>
             ))
@@ -174,116 +224,29 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     </nav>
 
     <div class="venture-body">
-      <!-- Snapshot -->
-      {cs && (
-      <section id="snapshot" class="block snapshot" aria-labelledby="snapshot-heading" data-block data-reveal>
-        <div class="snapshot-top">
-          <h2 id="snapshot-heading" class="snapshot-title">Snapshot</h2>
-          <p class="badge">Stage reached: {cs.snapshot.stage}</p>
-        </div>
-        <dl class="snapshot-facts">
-          <div>
-            <dt>Role</dt>
-            <dd>{cs.snapshot.role}</dd>
-          </div>
-          <div>
-            <dt>Dates</dt>
-            <dd>{cs.snapshot.dates}</dd>
-          </div>
-          {
-            filled(cs.snapshot.team) && (
-              <div>
-                <dt>Team</dt>
-                <dd>{cs.snapshot.team}</dd>
-              </div>
-            )
-          }
-        </dl>
-        {
-          cs.snapshot.metrics.length > 0 && (
-            <ul class="snapshot-metrics">
-              {cs.snapshot.metrics.map((m) => (
-                <li>
-                  <span class="snapshot-value">{m.value}</span> <span class="snapshot-label">{m.label}</span>
-                </li>
-              ))}
-            </ul>
-          )
-        }
-        <p class="snapshot-outcome">{cs.snapshot.outcome}</p>
-        {
-          external && (
-            <a href={external.href} class="btn btn-secondary mt-6" target="_blank" rel="noopener">
-              {external.label} <span aria-hidden="true">↗</span>
-              <span class="sr-only"> (opens in a new tab)</span>
-            </a>
-          )
-        }
-      </section>
-      )}
-
-      <!-- Role story: the product and what Raja did there (cv.json → experience) -->
+      <!-- 3. Challenge: the problem and the market; limitations -->
       {
-        rs && experience && (
-          <section id="product" class="block snapshot" aria-labelledby="product-heading" data-block data-reveal>
-            <h2 id="product-heading" class="block-title">
-              The product
+        shown.has('challenge') && (
+          <section id="challenge" class="block" aria-labelledby="challenge-heading" data-block data-reveal>
+            <h2 id="challenge-heading" class="block-title">
+              Challenge
             </h2>
-            {experience.product && <p class="block-lead">{experience.product}</p>}
-            {experience.summary && <p class="block-text">{experience.summary}</p>}
-            {external && (
-              <a href={external.href} class="btn btn-secondary mt-6" target="_blank" rel="noopener">
-                {external.label} <span aria-hidden="true">↗</span>
-                <span class="sr-only"> (opens in a new tab)</span>
-              </a>
+            {about && (
+              <>
+                <p class="block-lead">{about.title}</p>
+                <p class="block-text">{about.text}</p>
+                {about.source && (
+                  <p class="block-source">
+                    <a href={about.source.href} class="link" target="_blank" rel="noopener">
+                      {about.source.label}
+                      <span class="sr-only"> (opens in a new tab)</span> ↗
+                    </a>
+                  </p>
+                )}
+              </>
             )}
-          </section>
-        )
-      }
-      {
-        rs && role && (
-          <section id="what-i-did" class="block" aria-labelledby="what-i-did-heading" data-block data-reveal>
-            <h2 id="what-i-did-heading" class="block-title">
-              What I did
-            </h2>
-            <ul class="block-bullets">
-              {role.bullets.map((bullet) => (
-                <li>{bulletText(bullet)}</li>
-              ))}
-            </ul>
-          </section>
-        )
-      }
-
-      <!-- In pictures -->
-      {
-        pictures.length > 0 && (
-          <section id="pictures" class="block" aria-labelledby="pictures-heading" data-block data-reveal>
-            <h2 id="pictures-heading" class="block-title">
-              In pictures
-            </h2>
-            <div class="mt-8">
-              <Gallery
-                label={`${data.title} in pictures`}
-                items={pictures}
-                columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                aspect="aspect-[16/10]"
-                sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
-              />
-            </div>
-          </section>
-        )
-      }
-
-      <!-- The problem and the market -->
-      {
-        shown.has('problem') && (
-          <section id="problem" class="block" aria-labelledby="problem-heading" data-block data-reveal>
-            <h2 id="problem-heading" class="block-title">
-              The problem and the market
-            </h2>
             {pain && <p class="block-lead">{pain}</p>}
-            <p class="block-text">{problemText}</p>
+            {problemText && <p class="block-text">{problemText}</p>}
             {cs?.problem.source && (
               <p class="block-source">
                 <a href={cs.problem.source.href} class="link" target="_blank" rel="noopener">
@@ -292,223 +255,220 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
                 </a>
               </p>
             )}
-          </section>
-        )
-      }
-
-      <!-- The three stages, on the Idea → Fit → Scale spine (case studies) -->
-      {cs && (
-      <div class="block stages">
-        <StageSpine reached={cs.snapshot.stage} anchors={['product-idea-fit', 'product-market-fit', 'scale']} />
-        {
-          stageBlocks
-            .filter((b) => shown.has(b.id))
-            .map((b) => (
-              <section id={b.id} class="stage" data-reached={b.reached || undefined} aria-labelledby={`${b.id}-heading`} data-block data-reveal>
-                <p class="stage-kicker">
-                  <span class="stage-num" aria-hidden="true">
-                    {b.number}
-                  </span>
-                  {b.question}
-                  {b.reached && <span class="badge">Stage reached</span>}
-                </p>
-                <h2 id={`${b.id}-heading`} class="block-title">
-                  {b.name}
-                </h2>
-                <p class="block-text">{b.text}</p>
-                {b.stage.bullets.length > 0 && (
-                  <ul class="block-bullets">
-                    {b.stage.bullets.map((x) => (
-                      <li>{x}</li>
-                    ))}
-                  </ul>
-                )}
-                {b.stage.source && (
-                  <p class="block-source">
-                    <a href={b.stage.source.href} class="link" target="_blank" rel="noopener">
-                      {b.stage.source.label}
-                      <span class="sr-only"> (opens in a new tab)</span> ↗
-                    </a>
-                  </p>
-                )}
-
-                {b.id === 'scale' && cs.verticals.length > 0 && (
-                  <ul class="verticals" aria-label="Verticals entered">
-                    {cs.verticals.map((v) => (
-                      <li class="vertical">
-                        <p class="vertical-name">{v.name}</p>
-                        <p class="vertical-text">{v.text}</p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {b.id === 'scale' && cs.clients && (
-                  <p class="block-source">
-                    {cs.clients.text}{' '}
-                    <a href={cs.clients.source.href} class="link" target="_blank" rel="noopener">
-                      {cs.clients.source.label}
-                      <span class="sr-only"> (opens in a new tab)</span> ↗
-                    </a>
-                  </p>
-                )}
-              </section>
-            ))
-        }
-      </div>
-      )}
-
-      <!-- Payments and approvals spotlight (AsaanBill) -->
-      {
-        spotlight && (
-          <section id="approvals" class="block" aria-labelledby="approvals-heading" data-block data-reveal>
-            <h2 id="approvals-heading" class="block-title">
-              {spotlight.heading}
-            </h2>
-            <p class="block-text">{spotlight.intro}</p>
-            <div class="mt-8">
-              <DataTable
-                caption={spotlight.heading}
-                columns={[
-                  { key: 'item', label: 'Item' },
-                  { key: 'when', label: 'When' },
-                  { key: 'means', label: 'What it means' },
-                  { key: 'source', label: 'Source' },
-                ]}
-                rows={spotlight.rows.map((r) => ({
-                  item: r.item,
-                  when: r.when,
-                  means: r.means,
-                  source: r.source ? { label: hostname(r.source), href: r.source } : undefined,
-                }))}
-              />
-            </div>
-          </section>
-        )
-      }
-
-      <!-- Customer journey -->
-      {
-        journey && (
-          <section id="journey" class="block" aria-labelledby="journey-heading" data-block data-reveal>
-            <h2 id="journey-heading" class="block-title">
-              {journey.heading}
-            </h2>
-            <div class="mt-8">
-              <JourneyFlow label={journey.heading} steps={journey.steps} goesLiveWith={journey.goesLiveWith} caption={journey.caption} />
-            </div>
-          </section>
-        )
-      }
-
-      <!-- Terms used on this page -->
-      {
-        glossary.length > 0 && (
-          <section id="terms" class="block terms" aria-labelledby="terms-heading" data-block data-reveal>
-            <h2 id="terms-heading" class="terms-title">
-              Terms used on this page
-            </h2>
-            <dl class="terms-list">
-              {glossary.map((g) => (
-                <div>
-                  <dt>{g.term}:</dt> <dd>{g.definition}</dd>
+            {data.limitations.length > 0 && (
+              <div id="limitations" class="sub">
+                <h3 class="sub-title">Limitations and solutions</h3>
+                <div class="mt-6">
+                  <DataTable
+                    caption="Limitations and solutions"
+                    columns={[
+                      { key: 'constraint', label: 'Constraint' },
+                      { key: 'whyItMattered', label: 'Why it mattered' },
+                      { key: 'tried', label: 'What we tried' },
+                      { key: 'worked', label: 'What worked' },
+                      { key: 'result', label: 'Result' },
+                    ]}
+                    rows={data.limitations}
+                  />
                 </div>
-              ))}
-            </dl>
+              </div>
+            )}
           </section>
         )
       }
 
-      <!-- Limitations and solutions -->
+      <!-- 4. Contribution: what Raja did -->
       {
-        data.limitations.length > 0 && (
-          <section id="limitations" class="block" aria-labelledby="limitations-heading" data-block data-reveal>
-            <h2 id="limitations-heading" class="block-title">
-              Limitations and solutions
+        shown.has('contribution') && (
+          <section id="contribution" class="block" aria-labelledby="contribution-heading" data-block data-reveal>
+            <h2 id="contribution-heading" class="block-title">
+              Contribution
             </h2>
-            <div class="mt-8">
-              <DataTable
-                caption="Limitations and solutions"
-                columns={[
-                  { key: 'constraint', label: 'Constraint' },
-                  { key: 'whyItMattered', label: 'Why it mattered' },
-                  { key: 'tried', label: 'What we tried' },
-                  { key: 'worked', label: 'What worked' },
-                  { key: 'result', label: 'Result' },
-                ]}
-                rows={data.limitations}
-              />
-            </div>
+
+            {role && (
+              <div id="what-i-did" class="sub">
+                <h3 class="sub-title">What I did</h3>
+                <ul class="block-bullets">
+                  {role.bullets.map((bullet) => (
+                    <li>{bulletText(bullet)}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {cs && stageBlocks.length > 0 && (
+              <div class="stages">
+                <StageSpine reached={cs.snapshot.stage} anchors={['product-idea-fit', 'product-market-fit', 'scale']} />
+                {stageBlocks.map((b) => (
+                  <section id={b.id} class="stage" data-reached={b.reached || undefined} aria-labelledby={`${b.id}-heading`}>
+                    <p class="stage-kicker">
+                      <span class="stage-num" aria-hidden="true">
+                        {b.number}
+                      </span>
+                      {b.question}
+                      {b.reached && <span class="badge">Stage reached</span>}
+                    </p>
+                    <h3 id={`${b.id}-heading`} class="sub-title">
+                      {b.name}
+                    </h3>
+                    <p class="block-text">{b.text}</p>
+                    {b.stage.bullets.length > 0 && (
+                      <ul class="block-bullets">
+                        {b.stage.bullets.map((x) => (
+                          <li>{x}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {b.stage.source && (
+                      <p class="block-source">
+                        <a href={b.stage.source.href} class="link" target="_blank" rel="noopener">
+                          {b.stage.source.label}
+                          <span class="sr-only"> (opens in a new tab)</span> ↗
+                        </a>
+                      </p>
+                    )}
+                    {b.id === 'scale' && cs.verticals.length > 0 && (
+                      <ul class="verticals" aria-label="Verticals entered">
+                        {cs.verticals.map((v) => (
+                          <li class="vertical">
+                            <p class="vertical-name">{v.name}</p>
+                            <p class="vertical-text">{v.text}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {b.id === 'scale' && cs.clients && (
+                      <p class="block-source">
+                        {cs.clients.text}{' '}
+                        <a href={cs.clients.source.href} class="link" target="_blank" rel="noopener">
+                          {cs.clients.source.label}
+                          <span class="sr-only"> (opens in a new tab)</span> ↗
+                        </a>
+                      </p>
+                    )}
+                  </section>
+                ))}
+              </div>
+            )}
+
+            {spotlight && (
+              <section id="approvals" class="sub" aria-labelledby="approvals-heading">
+                <h3 id="approvals-heading" class="sub-title">
+                  {spotlight.heading}
+                </h3>
+                <p class="block-text">{spotlight.intro}</p>
+                <div class="mt-6">
+                  <DataTable
+                    caption={spotlight.heading}
+                    columns={[
+                      { key: 'item', label: 'Item' },
+                      { key: 'when', label: 'When' },
+                      { key: 'means', label: 'What it means' },
+                      { key: 'source', label: 'Source' },
+                    ]}
+                    rows={spotlight.rows.map((r) => ({
+                      item: r.item,
+                      when: r.when,
+                      means: r.means,
+                      source: r.source ? { label: hostname(r.source), href: r.source } : undefined,
+                    }))}
+                  />
+                </div>
+              </section>
+            )}
+
+            {journey && (
+              <section id="journey" class="sub" aria-labelledby="journey-heading">
+                <h3 id="journey-heading" class="sub-title">
+                  {journey.heading}
+                </h3>
+                <div class="mt-6">
+                  <JourneyFlow label={journey.heading} steps={journey.steps} goesLiveWith={journey.goesLiveWith} caption={journey.caption} />
+                </div>
+              </section>
+            )}
+
+            {glossary.length > 0 && (
+              <section id="terms" class="sub terms" aria-labelledby="terms-heading">
+                <h3 id="terms-heading" class="terms-title">
+                  Terms used on this page
+                </h3>
+                <dl class="terms-list">
+                  {glossary.map((g) => (
+                    <div>
+                      <dt>{g.term}:</dt> <dd>{g.definition}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            )}
+
+            {contributions.length > 0 && (
+              <section id="team" class="sub" aria-labelledby="team-heading">
+                <h3 id="team-heading" class="sub-title">
+                  Who did what
+                </h3>
+                <div class="mt-6">
+                  <DataTable
+                    caption="Who did what"
+                    columns={[
+                      { key: 'area', label: 'Area' },
+                      { key: 'raja', label: 'Raja' },
+                      { key: 'others', label: 'Team and partners' },
+                    ]}
+                    rows={contributions}
+                  />
+                </div>
+              </section>
+            )}
           </section>
         )
       }
 
-      <!-- Who did what -->
+      <!-- 5. Result -->
       {
-        contributions.length > 0 && (
-          <section id="team" class="block" aria-labelledby="team-heading" data-block data-reveal>
-            <h2 id="team-heading" class="block-title">
-              Who did what
+        shown.has('result') && (
+          <section id="result" class="block" aria-labelledby="result-heading" data-block data-reveal>
+            <h2 id="result-heading" class="block-title">
+              Result
             </h2>
-            <div class="mt-8">
-              <DataTable
-                caption="Who did what"
-                columns={[
-                  { key: 'area', label: 'Area' },
-                  { key: 'raja', label: 'Raja' },
-                  { key: 'others', label: 'Team and partners' },
-                ]}
-                rows={contributions}
-              />
-            </div>
+            {cs?.snapshot.outcome && <p class="result-outcome">{cs.snapshot.outcome}</p>}
+            {data.results && (
+              <>
+                <ul class="results-grid mt-8" data-count={data.results.tiles.length}>
+                  {data.results.tiles.map((t) => (
+                    <Counter value={t.value} label={t.label} />
+                  ))}
+                </ul>
+                {data.results.definition && <p class="block-source">{data.results.definition}</p>}
+              </>
+            )}
+            {data.lessons.length > 0 && (
+              <div id="lessons" class="sub">
+                <h3 class="sub-title">What I'd do differently</h3>
+                <ul class="block-bullets">
+                  {data.lessons.map((l) => (
+                    <li>{l}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </section>
         )
       }
 
-      <!-- Results -->
-      {
-        data.results && (
-          <section id="results" class="block" aria-labelledby="results-heading" data-block data-reveal>
-            <h2 id="results-heading" class="block-title">
-              Results
-            </h2>
-            <ul class="results-grid mt-8" data-count={data.results.tiles.length}>
-              {data.results.tiles.map((t) => (
-                <Counter value={t.value} label={t.label} />
-              ))}
-            </ul>
-            {data.results.definition && <p class="block-source">{data.results.definition}</p>}
-          </section>
-        )
-      }
-
-      <!-- What I'd do differently -->
-      {
-        data.lessons.length > 0 && (
-          <section id="lessons" class="block" aria-labelledby="lessons-heading" data-block data-reveal>
-            <h2 id="lessons-heading" class="block-title">
-              What I'd do differently
-            </h2>
-            <ul class="block-bullets">
-              {data.lessons.map((l) => (
-                <li>{l}</li>
-              ))}
-            </ul>
-          </section>
-        )
-      }
-
-      <!-- Evidence -->
+      <!-- 6. Evidence: one gallery (product screens first), then press -->
       {
         shown.has('evidence') && (
           <section id="evidence" class="block" aria-labelledby="evidence-heading" data-block data-reveal>
             <h2 id="evidence-heading" class="block-title">
               Evidence
             </h2>
-            {evidence.length > 0 && (
+            {gallery.length > 0 && (
               <div class="mt-8">
                 <Gallery
-                  label={`${data.title} evidence photos`}
-                  items={evidence}
+                  label={`${data.title}: product, events and MOUs`}
+                  items={gallery}
                   columns="grid-cols-2 md:grid-cols-3"
                   sizes="(min-width: 1024px) 280px, (min-width: 768px) 33vw, 50vw"
                 />
@@ -533,9 +493,43 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
         )
       }
 
-      <!-- Next venture and call to action -->
-      <section id="next" class="block next" aria-labelledby="next-heading" data-block data-reveal>
-        <h2 id="next-heading" class="next-kicker">{data.next ? 'Next venture' : 'Next'}</h2>
+      <!-- 7. Testimonial (site.json → testimonials for this venture) -->
+      {
+        shown.has('testimonial') && (
+          <section id="testimonial" class="block" aria-labelledby="testimonial-heading" data-block data-reveal>
+            <h2 id="testimonial-heading" class="block-title">
+              Testimonial
+            </h2>
+            <ul class="mt-8 grid gap-4 md:grid-cols-2">
+              {testimonials.map((t) => (
+                <li>
+                  <Testimonial testimonial={t} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <!-- 8. What this enabled (a draft built only from facts on this page) -->
+      {
+        enabled && (
+          <section id="enabled" class="block" aria-labelledby="enabled-heading" data-block data-reveal>
+            <h2 id="enabled-heading" class="block-title">
+              What this enabled
+            </h2>
+            <ul class="enabled-list">
+              {enabled.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <!-- Next case study -->
+      <section id="next" class="block next" aria-labelledby="next-heading" data-reveal>
+        <h2 id="next-heading" class="next-kicker">{data.next && data.next.href !== '/ventures/other/' ? 'Next case study' : 'Next'}</h2>
         <div class="next-row">
           {
             data.next && (
@@ -544,25 +538,13 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
               </ArrowLink>
             )
           }
-          {cs && <a href={site.cta.href} class="btn btn-primary">{site.cta.label}</a>}
         </div>
       </section>
-
-      <!-- Role story: closing call to action -->
-      {
-        rs && (
-          <section class="block role-cta" aria-labelledby="role-cta-heading" data-reveal>
-            <h2 id="role-cta-heading" class="text-display-md">
-              {rs.cta.heading}
-            </h2>
-            <ArrowLink href={rs.cta.link.href} class="text-lg">
-              {rs.cta.link.label}
-            </ArrowLink>
-          </section>
-        )
-      }
     </div>
   </div>
+
+  <!-- Closing call to action -->
+  <CTA heading={cta.heading} label={cta.label} href={cta.href} />
 </Base>
 
 <style>
@@ -590,7 +572,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     height: 1.125rem;
   }
   .venture {
-    padding-top: 0.5rem;
+    padding-top: 1.5rem;
     padding-bottom: 1rem;
   }
   @media (width >= 64rem) {
@@ -704,60 +686,23 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     color: var(--color-fg-muted);
   }
 
-  /* Snapshot card */
-  .snapshot {
-    padding: 1.5rem;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    background-color: var(--color-surface);
-  }
-  @media (width >= 48rem) {
-    .snapshot {
-      padding: 2.25rem;
-    }
-  }
-  .snapshot-top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-  }
-  .snapshot-title {
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-accent-2);
-  }
-  .snapshot-facts {
-    display: grid;
-    gap: 0.75rem 2rem;
-    margin-top: 1.5rem;
-  }
-  @media (width >= 48rem) {
-    .snapshot-facts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .snapshot-facts dt {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-fg-subtle);
-  }
-  .snapshot-facts dd {
-    margin-top: 0.125rem;
-    color: var(--color-fg);
+  /* Snapshot (the page header's foot): key numbers, the stage reached and the product link */
+  .snapshot-after {
+    margin-top: 1.75rem;
   }
   .snapshot-metrics {
     display: grid;
     gap: 1.25rem;
-    margin-top: 1.75rem;
-    padding-top: 1.75rem;
+    max-width: 46rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--color-line);
+  }
+  .snapshot-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.5rem;
   }
   @media (width >= 40rem) {
     .snapshot-metrics {
@@ -781,8 +726,9 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
   .snapshot-label {
     color: var(--color-fg-muted);
   }
-  .snapshot-outcome {
-    margin-top: 1.75rem;
+  /* Result: the outcome line above the results grid */
+  .result-outcome {
+    margin-top: 1rem;
     max-width: 46rem;
     font-family: var(--font-display);
     font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
@@ -792,13 +738,67 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     color: var(--color-fg);
   }
 
+  /* Visual: the live card, large and centred, on a soft glow in the venture's colour (12% at most). The
+     card is min(100%, 640px): the same sizes as on the homepage deck, so the camera rests already checked
+     there hold here too. */
+  .visual {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    justify-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .visual::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: -1;
+    width: min(100%, 60rem);
+    aspect-ratio: 1.4;
+    transform: translate(-50%, -50%);
+    background-image: radial-gradient(closest-side, color-mix(in srgb, var(--venture) 12%, transparent), transparent);
+    background-image: radial-gradient(closest-side in oklch, color-mix(in oklch, var(--venture) 12%, transparent), transparent);
+    pointer-events: none;
+  }
+  .venture-card {
+    width: min(100%, 640px);
+  }
+
+  /* Subsections inside Challenge, Contribution and Result */
+  .sub {
+    margin-top: 3rem;
+    scroll-margin-top: 6rem;
+  }
+  .sub-title {
+    font-size: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .enabled-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    max-width: var(--container-prose);
+  }
+  .enabled-list li {
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--color-accent-2-strong);
+    font-size: var(--text-lead);
+    line-height: 1.5;
+    color: var(--color-fg);
+  }
+
   /* Stages */
   .stages {
     display: flex;
     flex-direction: column;
+    margin-top: 2rem;
   }
   .stage {
     margin-top: 2.5rem;
+    scroll-margin-top: 6rem;
     padding: 1.5rem 0 0 1.5rem;
     border-left: 2px solid var(--color-line);
   }
@@ -985,7 +985,7 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     },
     { rootMargin: '-20% 0px -70% 0px' },
   );
-  document.querySelectorAll('[data-block]').forEach((block) => observer.observe(block));
+  document.querySelectorAll('[data-block], #snapshot, #visual').forEach((block) => observer.observe(block));
   const atTop = () => {
     if (window.scrollY < 120) activate(first);
   };

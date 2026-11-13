@@ -203,12 +203,13 @@
       "id": "dressup",
       "name": "DressUp AI",
       "href": "/ventures/dressup/",
-      "meta": "Product Consultant · Marketplace",
+      "meta": "Product Consultant · Fashion AI",
       "role": "Product Consultant",
-      "line": "A hyper-personalised marketplace",
+      "line": "Your Personal AI Stylist: fashion recommendations and virtual try-on.",
       "art": true,
       "_artNote": "No photo yet: the card shows the product's schematic drawing (ProductScene) instead. Replace with an image once there is one.",
-      "_nameNote": "Official name, as on thedressup.co (Phase 18); the URL stays /ventures/dressup/."
+      "_nameNote": "Official name, as on thedressup.co (Phase 18); the URL stays /ventures/dressup/.",
+      "_lineNote": "Draft (Phase 18), from thedressup.co's own meta text; meta was \"Product Consultant · Marketplace\"."
     },
     {
       "id": "sonicengine-ai",
@@ -238,7 +239,7 @@
       "href": "/ventures/other/",
       "meta": "HOMS · Gameotivity · Mustahiq",
       "line": "Growth and product roles in hostel tech and web3, and the NGO Mustahiq.",
-      "_draft": "line is new wording (the old one also covered Dressup and Sonic AI Engine, which now have their own pages): for Raja to revise."
+      "_draft": "line is new wording (the old one also covered DressUp AI and Sonic AI Engine, which now have their own pages): for Raja to revise."
     }
   ],
   "stats": [
@@ -341,7 +342,7 @@
       }
     }
   ],
-  "_testimonialsHowTo": "Add objects like { \"quote\": \"...\", \"name\": \"...\", \"role\": \"...\", \"company\": \"...\" }. The homepage Testimonials section appears as soon as there is at least one.",
+  "_testimonialsHowTo": "Add objects like { \"quote\": \"...\", \"name\": \"...\", \"role\": \"...\", \"company\": \"...\", \"venture\": \"asaanbill\" }. The homepage Testimonials section appears as soon as there is at least one; with venture (a ventures id) the quote also shows in that case study's Testimonial section (hidden while there are none).",
   "testimonials": [],
   "_offersNote": "home: true = shown in the homepage \"How I can help\" (with its summary); all offers show on /work-with-me (for whom, what they get, proof).",
   "analytics": {

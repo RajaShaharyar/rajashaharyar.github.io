@@ -34,6 +34,11 @@ const results = z.object({ tiles: z.array(metric).min(1), definition: z.string()
 const pictures = z.array(z.string().endsWith('.webp')).default([]);
 /** Logo lockup under the H1 (images.json keys): the venture's logo, and its maker's after "by" */
 const logo = z.object({ image: z.string().endsWith('.webp'), by: z.string().endsWith('.webp').optional() }).optional();
+/**
+ * "What this enabled" (Phase 18): what the work unlocked, built only from facts already on the page and
+ * marked draft. Left out (the section is hidden) while no fact supports one.
+ */
+const enabled = z.object({ items: z.array(z.string()).min(1), draft: z.boolean().default(true) }).optional();
 
 /**
  * A case study (AsaanBill, Tapit, Ladenza), rendered by VentureLayout. Every
@@ -94,6 +99,7 @@ const caseStudy = z.object({
   press: z.array(link).default([]),
   pictures,
   logo,
+  enabled,
   next: link.optional(),
 });
 
@@ -109,8 +115,10 @@ const roleStory = z.object({
   kind: z.literal('role-story'),
   /** cv.json → experience id */
   experienceId: z.string(),
-  /** Product link, shown under "The product" once the href is real */
+  /** Product link, shown in the snapshot once the href is real */
   external: link.optional(),
+  /** The product, from its own site (shown under Challenge): a title line, the text and its source */
+  about: z.object({ title: z.string(), text: z.string(), source: link.optional(), draft: z.boolean().default(false) }).optional(),
   problem: z.object({ text: z.string(), draft: z.boolean().default(false) }).optional(),
   limitations,
   results,
@@ -119,6 +127,7 @@ const roleStory = z.object({
   evidenceIds: z.array(z.string()).default([]),
   pictures,
   logo,
+  enabled,
   next: link.optional(),
   cta: z.object({ heading: z.string(), link }),
 });

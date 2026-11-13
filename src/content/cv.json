@@ -110,7 +110,8 @@
         "company": "DressUp AI",
         "location": "TODO: location",
         "href": "/ventures/dressup/",
-        "product": "A hyper-personalised marketplace",
+        "product": "Your Personal AI Stylist",
+        "_productNote": "From thedressup.co's title (Phase 18). Raja's part (the summary and bullets) is unchanged.",
         "summary": "Explored the B2B side: personalised search for brands and Shopify integration readiness.",
         "roles": [
           {

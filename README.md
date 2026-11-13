@@ -153,29 +153,35 @@ A typo in an image path fails the build. Everything except the hero image is laz
 
 ## Venture pages
 
-Each venture is one file in `src/content/ventures/`: its frontmatter holds the whole case study (snapshot,
-problem, the three stages, approvals spotlight, journey, glossary, limitations, who did what, results, lessons,
-evidence ids, press, next), validated by the schema in `src/content.config.ts`. `src/layouts/VentureLayout.astro`
-renders every case study the same way and leaves out any block with no data, so adding a limitation or a lesson
-later is a data edit. Case-study facts live only there (the CV reads Tapit's pre-sales from `tapit.mdx`).
-A file marked `status: draft` shows a stub until it is published.
+Each venture is one file in `src/content/ventures/` (schema: `src/content.config.ts`), all rendered by
+`src/layouts/VentureLayout.astro` as one **case-study template** (Phase 18, from the new sitemap). Every venture
+page (AsaanBill, TapitCard, DressUp AI, Sonic AI Engine, Ladenza) runs in this order, and a section with no data
+is left out, with its entry in the sticky "On this page" list:
 
-Since Phase 17 each venture page's header shows the venture's **live deck card** (`DeckCard.astro`, the same
-animation as on the homepage, with its own pause button; `src/scripts/venture-card.ts` plays it, sharing
-`src/scripts/card-player.ts` with the deck): on the right from 1024 px, below the header text on narrower screens.
-It is the page's only autoplaying animation; reduced motion and no JavaScript show its final frame. A `logo`
-in the frontmatter adds a logo lockup under the H1 (AsaanBill · by Evamp & Saanga; TapitCard), and `pictures`
-adds an **In pictures** gallery after the first block (AsaanBill: the three portal screens; TapitCard: the
-card's two faces, the website's light hero and How it works, the K2prenuer premiere). A picture that is
-already in Evidence is never repeated. Ladenza, Sonic AI Engine and DressUp AI have no photos yet: their live
-card is the page's visual.
+1. **Snapshot** (`#snapshot`, the page header): the H1 name, the logo where there is one (frontmatter `logo`), one
+   line, role, dates (hidden while TODO), team, up to 3 key numbers, the stage reached and the product link. A 2px
+   top rule and the eyebrow in the venture's deck colour.
+2. **Visual** (`#visual`): the live venture card (`DeckCard`, the homepage deck's animation), large and centred at
+   `min(100%, 640px)` (the same sizes as on the deck, so every beat's rest keeps its text inside the edge fade), on a
+   soft glow in the venture's colour. It is the page's only autoplaying animation (`src/scripts/venture-card.ts`).
+3. **Challenge** (`#challenge`): the problem and the market (role stories: the product from its own site,
+   frontmatter `about`), then any limitations.
+4. **Contribution** (`#contribution`): what Raja did. Case studies: the Product-Idea Fit / Product-Market Fit / Scale
+   narrative (`#product-idea-fit`, `#product-market-fit`, `#scale`), Payments and approvals (`#approvals`), How a
+   merchant goes live (`#journey`), Terms used (`#terms`) and Who did what (`#team`). Role stories: What I did.
+5. **Result** (`#result`): the outcome line, the results grid and its definition (and lessons, once there are any).
+6. **Evidence** (`#evidence`): one gallery, the product screens first (frontmatter `pictures`), then the events and
+   MOUs (`evidenceIds`), never the same photo twice, then press links.
+7. **Testimonial** (`#testimonial`): `site.json → testimonials` with this venture's id in `venture`; hidden while
+   there are none.
+8. **What this enabled** (`#enabled`): frontmatter `enabled`, built only from facts already on the page and marked
+   draft (AsaanBill, TapitCard). Hidden for Ladenza, Sonic AI Engine and DressUp AI until a fact supports one.
 
-DressUp AI and Sonic AI Engine are role stories (`kind: role-story`): the header and the "The product" and "What I
-did" blocks come from their `cv.json → experience` entry. The problem, limitations, results, lessons, evidence
-photos and product link render only once filled in; their `todo` lists say what is missing. Other ventures
-(`other.mdx`, `kind: roles`) lists cv.json roles (`roles`) and other ventures (`otherVentures`, e.g. Mustahiq,
-linking to About → Beyond work, with its two photos from `cv.json → otherVentures[].images`). Next links (and every venture list) run AsaanBill → TapitCard → DressUp AI → Sonic AI Engine →
-Ladenza → Other ventures.
+Then the next case study and the closing CTA panel. Case-study facts live only in these files (the CV reads Tapit's
+pre-sales from `tapit.mdx`). A file marked `status: draft` is not built. DressUp AI and Sonic AI Engine are role
+stories (`kind: role-story`): role, dates and What I did come from their `cv.json → experience` entry. Other ventures
+(`other.mdx`, `kind: roles`) lists cv.json roles and other ventures (Mustahiq, with its two photos). Next links (and
+every venture list) run AsaanBill → TapitCard → DressUp AI → Sonic AI Engine → Ladenza → Other ventures.
 
 ## Recognition pages
 

@@ -7,8 +7,8 @@
  * come from site.json → recognitionMenu. Only the menu's own pages are tabs: an
  * anchor on another page ("Yours next?") or a page outside the section (the CV in
  * the About menu) is not.
- * Slots: "logos" (under the H1: a venture's logo lockup) and "aside" (a venture's live card: on
- * the right from 1024 px, below the header text on narrower screens).
+ * Slots: "logos" (under the H1: a venture's logo lockup), "after" (under the facts: a venture's key
+ * numbers) and "aside" (on the right from 1024 px, below the header text on narrower screens).
  * Near-black. By default with a violet-led aurora and grain; with accent (a colour token name: a
  * venture's deck colour; Phase 18) a 2px top rule and the eyebrow in that colour, and a soft glow in it
  * (12% at most) behind the live card. No full-bleed colour band (bright colour lives in cards).
@@ -17,6 +17,8 @@ import Aurora from './Aurora.astro';
 import { site, withSlash } from '../lib/site';
 
 interface Props {
+  /** Anchor id for the header (a venture page's #snapshot) */
+  id?: string;
   /** The menu's own href in site.json → nav, e.g. "/about/" */
   section: string;
   title: string;
@@ -30,7 +32,7 @@ interface Props {
   accent?: string;
 }
 
-const { section, title, intro, overviewLabel, facts = [], accent } = Astro.props;
+const { id, section, title, intro, overviewLabel, facts = [], accent } = Astro.props;
 const accentStyle = accent ? `--venture:var(--color-${accent})` : undefined;
 const menu = [...site.nav, site.recognitionMenu].find((item) => item.href === section);
 const children = (menu?.children ?? []).filter((c) => !c.href.includes('#') && withSlash(c.href).startsWith(withSlash(section)));
@@ -40,7 +42,7 @@ const path = withSlash(Astro.url.pathname);
 const hasAside = Astro.slots.has('aside');
 ---
 
-<header class:list={['page-header band', accent ? 'has-accent' : 'page-header-aurora', hasAside && 'has-aside']} style={accentStyle} data-accent={accent}>
+<header id={id} class:list={['page-header band', accent ? 'has-accent' : 'page-header-aurora', hasAside && 'has-aside']} style={accentStyle} data-accent={accent}>
   {!accent && <Aurora id="grain-header" />}
   <div class="wrap pt-8 pb-12 md:pt-12 md:pb-16">
     <nav aria-label={`${menu?.label ?? ''} pages`}>
@@ -74,6 +76,7 @@ const hasAside = Astro.slots.has('aside');
             </dl>
           )
         }
+        <slot name="after" />
       </div>
       {
         hasAside && (

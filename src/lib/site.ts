@@ -50,6 +50,8 @@ export interface Testimonial {
   name: string;
   role?: string;
   company?: string;
+  /** site.json → ventures id: the quote also shows in that venture's case study (Testimonial section) */
+  venture?: string;
 }
 
 export interface Site {

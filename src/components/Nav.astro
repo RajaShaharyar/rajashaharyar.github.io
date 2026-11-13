@@ -16,6 +16,8 @@ import { site, withSlash } from '../lib/site';
 const path = withSlash(Astro.url.pathname);
 const isCurrent = (href: string) => withSlash(href) === path;
 const inSection = (href: string) => href !== '/' && path.startsWith(withSlash(href));
+// A menu is "active" on its own pages and on any page it lists (the CV, in the About menu).
+const menuActive = (item: (typeof site.nav)[number]) => inSection(item.href) || Boolean(item.children?.some((c) => isCurrent(c.href)));
 const menuId = (label: string) => `menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 // A dropdown near the right end of the bar opens leftwards so it never runs off-screen.
 const alignEnd = (index: number) => index >= site.nav.length - 2;
@@ -49,7 +51,7 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
               <li
                 class="nav-item has-menu"
                 data-menu
-                data-section-active={inSection(item.href) || undefined}
+                data-section-active={menuActive(item) || undefined}
                 data-align-end={alignEnd(index) || undefined}
               >
                 <div class="nav-row">
@@ -516,8 +518,8 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
     });
   }
 
-  // A link to a section of the page you are on (About's items on /about/, "Yours next?" on
-  // /ventures/): close the dropdown or the mobile panel first, so the page can scroll (smoothly,
+  // A link to a section of the page you are on ("Yours next?" on /ventures/): close the dropdown
+  // or the mobile panel first, so the page can scroll (smoothly,
   // unless reduced motion is on) and the section lands below the header; then move keyboard
   // focus to the section.
   nav?.addEventListener('click', (e) => {

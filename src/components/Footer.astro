@@ -9,7 +9,13 @@ import { site } from '../lib/site';
 
 const { contact } = site;
 const year = new Date().getFullYear();
-const pages = [...site.nav.map(({ label, href }) => ({ label, href })), site.cta];
+// The top-level pages, with About expanded to its three pages (the CV, also in that menu, is not repeated here).
+const pages = [
+  ...site.nav.flatMap((item) =>
+    item.href === '/about/' ? (item.children ?? []).filter((c) => c.href.startsWith('/about/')).map(({ label, href }) => ({ label, href })) : [{ label: item.label, href: item.href }],
+  ),
+  site.cta,
+];
 const venturesMenu = site.nav.find((item) => item.href === '/ventures/');
 const recognition = site.recognitionMenu;
 ---

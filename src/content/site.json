@@ -34,7 +34,7 @@
     "_note": "The PDF is Raja's own 2-page Europass CV (_source/Raja Shaharyar PM.pdf), with date of birth, nationality, gender and the home address redacted (true redaction with PyMuPDF: the text is removed, not covered). Its only download link is on /cv/, saved as downloadName. The CV page itself is linked only from the About dropdown (consultation first, Phase 17). To replace it, redact the new original the same way and keep the file name."
   },
   "cta": { "label": "Let's talk", "href": "/contact/" },
-  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · then the cta button. The CV is linked only from the About dropdown (consultation first, Phase 17), never from the top bar, the hero or the footer. Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
+  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · then the cta button. The CV is linked only from the About dropdown (consultation first, Phase 17), never from the top bar, the hero or the footer. About has three pages (My story, Education, Beyond work; Phase 17). Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
   "nav": [
     { "label": "Home", "href": "/" },
     {
@@ -55,14 +55,9 @@
       "label": "About",
       "href": "/about/",
       "children": [
-        { "label": "My story", "href": "/about/#intro" },
-        { "label": "Career timeline", "href": "/about/#career" },
-        { "label": "Recognition", "href": "/about/#recognition" },
-        { "label": "Education", "href": "/about/#education" },
-        { "label": "Courses", "href": "/about/#courses" },
-        { "label": "Distinctions", "href": "/about/#distinctions" },
-        { "label": "Beyond work", "href": "/about/#beyond-work" },
-        { "label": "Invite me to speak", "href": "/about/#speaking" },
+        { "label": "My story", "href": "/about/", "description": "Story, career timeline and recognition" },
+        { "label": "Education", "href": "/about/education/", "description": "Degree, courses and distinctions" },
+        { "label": "Beyond work", "href": "/about/beyond-work/", "description": "Mustahiq, K2 and speaking" },
         { "label": "CV", "href": "/cv/", "description": "Full CV and PDF" }
       ]
     }

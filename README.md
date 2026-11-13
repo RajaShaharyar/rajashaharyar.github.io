@@ -35,22 +35,24 @@ The structure follows the sitemap in `_source/Consultation Website.pdf`.
 
 | Page | Sections (anchor) |
 | ---- | ----------------- |
-| Top bar | Home · Ventures ▾ · Work With Me · About ▾ · Let's talk (`site.json → nav`, `cta`). The CV is linked only from the About dropdown. |
+| Top bar | Home · Ventures ▾ · Work With Me · About ▾ · Let's talk (`site.json → nav`, `cta`). About ▾ = My story, Education, Beyond work and the CV (the only CV link outside `/cv/`). |
 | `/` | Hero · `#proof` · `#credibility` · `#products` · `#playbook` · `#help` · `#recognition` · `#testimonials` · closing CTA |
 | `/ventures/` | Cards in menu order (Other ventures last) · stage legend · `#yours-next` |
 | `/ventures/dressup/`, `/ventures/sonicengine-ai/` | Role stories: header (role, dates, location) · `#product` · `#what-i-did` · optional blocks · `#next` · CTA |
 | `/ventures/asaanbill/`, `/ventures/tapit/`, `/ventures/ladenza/` | Case studies (snapshot, problem, stages, approvals, journey… next) |
 | `/ventures/other/` | HOMS Inc. (featured), Gameotivity, Mustahiq · "Yours next?" |
 | `/work-with-me/` | `#services` · `#process` (steps, then How I work) · `#faq` · closing CTA |
-| `/about/` | "On this page" row · `#intro` · `#career` · `#recognition` · `#education` · `#courses` · `#distinctions` · `#beyond-work` · `#speaking` |
+| `/about/` (My story) | Tabs · the story (`#intro`) · `#career` · `#recognition` · `#along-the-way` (the 2024 photos) · "Let's talk" |
+| `/about/education/` | Tabs · `#degree` · `#courses` · `#distinctions` · "Let's talk" |
+| `/about/beyond-work/` | Tabs · `#mustahiq` · `#k2` · `#speaking` · "Invite me to speak" |
 | `/contact/` | What's this about? · Your details · Message · contact details |
 | `/recognition/` and its four pages | Unchanged; not in the top bar. Linked from About → Recognition, the homepage and the footer (`site.json → recognitionMenu`). |
 | `/cv/` | Unchanged. |
 
 **Redirects** (`astro.config.mjs → redirects`; static meta-refresh pages, noindex, left out of the sitemap, each
 pointing straight at the final address): `/ventures/consulting/` and `/ventures/earlier-roles/` → `/ventures/other/`;
-`/about/education/` → `/about/#education`; `/about/beyond-work/` → `/about/#beyond-work`; `/about/skills/` →
-`/cv/#skills`. `npm run check:links` fails if a redirect's page or anchor is missing or it points at another redirect.
+`/about/skills/` → `/cv/#skills`. (`/about/education/` and `/about/beyond-work/` are real pages again; a link to an
+old one-page anchor such as `/about/#speaking` is sent on to its new page by a small script on `/about/`.) `npm run check:links` fails if a redirect's page or anchor is missing or it points at another redirect.
 
 **Reorder the homepage products:** edit `home.json → products.cards` (the deck, one card per venture; ids are
 `site.json → ventures` ids, each with a `products.items` entry). The Ventures menu keeps its own order

@@ -1,44 +1,40 @@
 {
-  "_rules": "Copy for the About page (/about/, one page with eight sections), first person, as Raja would say it. CV facts (roles, the degree, programmes, honours, leadership) live in cv.json and are referenced here by id, so this page, the CV page and the PDF never disagree. Photos are keys of images.json; captions come from there unless an item gives its own. draft: true marks wording Raja should revise (it is published as is). Missing data is a TODO and is hidden on the site.",
+  "_rules": "Copy for the three About pages (Phase 17): My story (/about/: the story, career timeline, recognition and \"Along the way\"), Education (/about/education/: the degree, courses, distinctions) and Beyond work (/about/beyond-work/: Mustahiq, K2, speaking). First person, as Raja would say it. CV facts (roles, the degree, programmes, honours, leadership) live in cv.json and are referenced here by id, so these pages and the CV page never disagree. Photos are keys of images.json; captions come from there unless an item gives its own. draft: true marks wording Raja should revise (it is published as is). Missing data is a TODO and is hidden on the site.",
   "page": {
-    "title": "About",
-    "description": "How Raja Shaharyar Ali went from a game-development degree to co-founding TapitCard and driving product and growth for AsaanBill.",
-    "onThisPage": "On this page",
-    "sections": [
-      {
-        "id": "intro",
-        "label": "Intro"
-      },
-      {
-        "id": "career",
-        "label": "Career timeline"
-      },
-      {
-        "id": "recognition",
-        "label": "Recognition"
-      },
-      {
-        "id": "education",
-        "label": "Education"
-      },
-      {
-        "id": "courses",
-        "label": "Courses"
-      },
-      {
-        "id": "distinctions",
-        "label": "Distinctions"
-      },
-      {
-        "id": "beyond-work",
-        "label": "Beyond work"
-      },
-      {
-        "id": "speaking",
-        "label": "Speaking"
+    "_note": "One entry per About page: its H1 (title), meta description and closing call to action. Each title is also its About-dropdown label (site.json → nav).",
+    "story": {
+      "title": "My story",
+      "description": "How Raja Shaharyar Ali went from a game-development degree to co-founding TapitCard and driving product and growth for AsaanBill.",
+      "cta": {
+        "heading": "Have a product that needs its next 1,000 customers?",
+        "_headingFrom": "home.json → finalCta.heading",
+        "label": "Let's talk",
+        "href": "/contact/"
       }
-    ],
-    "_sectionsNote": "The \"On this page\" row, in page order. Labels follow the sitemap (Consultation Website.pdf)."
+    },
+    "education": {
+      "title": "Education",
+      "description": "Raja Shaharyar Ali's education: a BS in Computer Game Development from Air University, a 1st prize at PGDC 2023, courses and distinctions.",
+      "_descriptionDraft": "New meta description (Phase 17): a draft for Raja to revise.",
+      "cta": {
+        "heading": "Have a product that needs its next 1,000 customers?",
+        "_headingFrom": "home.json → finalCta.heading",
+        "label": "Let's talk",
+        "href": "/contact/"
+      }
+    },
+    "beyondWork": {
+      "title": "Beyond work",
+      "description": "Beyond work: Mustahiq, the NGO Raja Shaharyar Ali founded, the K2 trek with K2prenuer, and his talks at universities and on a podcast.",
+      "_descriptionDraft": "New meta description (Phase 17): a draft for Raja to revise.",
+      "cta": {
+        "heading": "Running an event for founders or students?",
+        "draft": true,
+        "_draftNote": "CTA heading is new wording (Phase 17) for Raja to revise. The button keeps the old \"Invite me to speak\" wording.",
+        "label": "Invite me to speak",
+        "href": "/contact/?reason=speaking"
+      }
+    }
   },
   "story": {
     "title": "My story",
@@ -140,10 +136,11 @@
       ],
       "_fromExperienceNote": "Each joins the timeline automatically, in date order, once its start date in cv.json → experience is filled in as YYYY-MM. Until then it is left off."
     },
-    "review": {
-      "heading": "2024 in review",
-      "label": "2024 in review photos",
-      "_note": "The 11 photos from 2024 Unwrapped (pages 2-12), in page order. Captions are in images.json.",
+    "alongTheWay": {
+      "heading": "Along the way",
+      "label": "Along the way photos",
+      "draft": true,
+      "_note": "Heading is a draft (Phase 17). Replaces \"2024 in review\": the 11 photos from 2024 Unwrapped (pages 2-12), in date order (the deck runs through the year; the months that are known agree: AirTech'24 Mar, the AUBIC office Apr, the degree Jun, AsaanBill Nov). None of them is a Recognition win card on this page. Captions are in images.json.",
       "images": [
         "about/2024-ntu-startupcup.webp",
         "about/2024-airtech.webp",
@@ -158,7 +155,7 @@
         "about/2024-k2prenuer-premiere.webp"
       ]
     },
-    "_note": "Intro section: heading = title. The career timeline ends with \"2024 in review\" (review)."
+    "_note": "My story: the paragraphs and the closing line open the page under the H1; then the career timeline, Recognition, Along the way."
   },
   "recognition": {
     "heading": "Recognition",
@@ -201,7 +198,7 @@
       "text": "Game development taught me to build things people come back to: the question behind every venture since.",
       "draft": true
     },
-    "_note": "Education section: the degree card, final-year project and degree photos. Courses section: programmes. The On campus photos moved: AirTech'24 and the Major Contributor Award are Distinctions; the TapitCard office photo is in 2024 in review; the VC photo is on Competitions & awards."
+    "_note": "Education page (/about/education/): the degree card (#degree: degree, final-year project, degree photos), then #courses (programmes) and #distinctions. The section heading is the degree itself (cv.json); the page H1 is page.education.title."
   },
   "distinctions": {
     "heading": "Distinctions",
@@ -249,14 +246,10 @@
       "speaking/talk-hitec-hibis-2025.webp",
       "speaking/podcast-asaanbill.webp"
     ],
-    "button": {
-      "label": "Invite me to speak",
-      "href": "/contact/?reason=speaking"
-    },
     "link": {
       "label": "Speaking & events",
       "href": "/recognition/speaking-events/"
     },
-    "_note": "Moved from the homepage (On stage). The line and the button keep their wording."
+    "_note": "On Beyond work (/about/beyond-work/#speaking). The page's closing call to action is \"Invite me to speak\" (page.beyondWork.cta)."
   }
 }

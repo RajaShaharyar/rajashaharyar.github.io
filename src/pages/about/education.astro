@@ -1,0 +1,157 @@
+---
+/**
+ * Education (/about/education/), one of the three About pages (Phase 17):
+ *   #degree (the degree, MetaBite and its PGDC 1st prize, the degree photos) · #courses · #distinctions ·
+ *   call to action
+ * Copy: about.json → education, distinctions, page.education · CV facts: cv.json · photos: images.json
+ */
+import Base from '../../layouts/Base.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Gallery from '../../components/Gallery.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import CTA from '../../components/CTA.astro';
+import { about } from '../../lib/about';
+import { cv, getEducation, getProgramme } from '../../lib/cv';
+import { formatMonth, formatRange, isIsoDate } from '../../lib/dates';
+import { getRecognition, photosOf } from '../../lib/recognition';
+import { filled } from '../../lib/site';
+
+const { education, distinctions } = about;
+const page = about.page.education;
+
+const degree = getEducation(education.degree.cvId);
+const programmes = education.programmes.cvIds
+  .map(getProgramme)
+  .filter((p) => isIsoDate(p.start))
+  .sort((a, b) => a.start.localeCompare(b.start) || (a.end ?? '9999').localeCompare(b.end ?? '9999'))
+  .map((p) => ({
+    ...p,
+    title: p.mode ? `${p.name}, ${p.mode}` : p.name,
+    dates: formatRange(p.start, isIsoDate(p.end) ? p.end : null),
+    covered: filled(p.covered),
+    certificate: filled(p.certificate),
+    image: filled(p.image),
+  }));
+
+// Distinctions: text from cv.json (honours or leadership), photo from recognition.json
+const distinctionItems = distinctions.recognitionIds.map((id) => {
+  const honour = cv.honours.items.find((h) => h.recognitionId === id);
+  const role = cv.leadership.items.find((l) => l.recognitionIds.includes(id));
+  const text = honour?.title ?? role?.text;
+  if (!text) throw new Error(`about.json → distinctions: "${id}" is not in cv.json honours or leadership.`);
+  const date = honour ? honour.date : role?.date;
+  const photo = photosOf(getRecognition(id))[0];
+  return { image: photo.file, caption: date ? `${text} (${date})` : text };
+});
+
+const sectionY = 'py-16 md:py-24';
+---
+
+<Base title={page.title} description={page.description} ogType="profile">
+  <SubPageHeader section="/about/" title={page.title} intro={education.intro} />
+
+  <!-- 1. The degree, the final-year project and the degree photos -->
+  <section id="degree" class="wrap pt-10 pb-16 md:pt-14 md:pb-24" aria-labelledby="degree-heading">
+    <article class="rounded-card border border-line bg-surface p-6 sm:p-8 md:p-10">
+      <h2 id="degree-heading" class="text-display-md">{degree.degree}</h2>
+      <p class="mt-3 text-lg text-fg-muted">
+        <span class="whitespace-nowrap">{degree.institution}, {degree.city}</span>{' '}
+        <span aria-hidden="true" class="px-1 text-fg-subtle">·</span>{' '}
+        <span class="whitespace-nowrap"
+          ><time datetime={degree.start}>{formatMonth(degree.start)}</time>{' – '}<time datetime={degree.end}>{formatMonth(degree.end)}</time></span
+        >
+      </p>
+      <div class="mt-8 max-w-prose border-t border-line pt-6">
+        <h3 class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{education.degree.fypLabel}</h3>
+        <p class="mt-3 text-lg leading-relaxed">{education.degree.fyp}</p>
+      </div>
+      <div class="mt-10">
+        <Gallery
+          label={education.degree.label}
+          items={education.degree.images.map((image) => ({ image }))}
+          columns="grid-cols-2 lg:grid-cols-4"
+          sizes="(min-width: 1024px) 260px, 45vw"
+        />
+      </div>
+    </article>
+    <p class="pull-line mt-12 max-w-3xl md:mt-16">{education.closing.text}</p>
+  </section>
+
+  <!-- 2. Courses and programmes -->
+  <section id="courses" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="courses-heading">
+    <SectionHeader id="courses-heading" heading={education.programmes.heading} />
+    <ol class="mt-10 flex flex-col gap-4 md:mt-12" data-reveal-stagger>
+      {
+        programmes.map((p) => (
+          <li class="programme rounded-card border border-line bg-surface p-6 sm:p-8">
+            <div class="flex flex-col gap-2">
+              <p class="programme-provider">{p.provider}</p>
+              <h3 class="text-2xl md:text-[1.75rem]">{p.title}</h3>
+              <p class="text-fg-muted">{p.dates}</p>
+              {p.covered && (
+                <p class="mt-2 max-w-prose">
+                  <span class="text-fg-subtle">{education.programmes.coveredLabel}: </span>
+                  {p.covered}
+                </p>
+              )}
+              {p.certificate && (
+                <ArrowLink href={p.certificate} srContext={p.title} class="mt-2 w-fit">
+                  {education.programmes.certificateLabel}
+                </ArrowLink>
+              )}
+            </div>
+            {p.image && (
+              <div class="programme-photo">
+                <Gallery label={`${p.provider} photo`} items={[{ image: p.image }]} columns="grid-cols-1" aspect="aspect-[4/5]" sizes="(min-width: 640px) 180px, 90vw" />
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- 3. Distinctions: individual honours and roles -->
+  <section id="distinctions" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="distinctions-heading">
+    <SectionHeader id="distinctions-heading" heading={distinctions.heading} />
+    <div class="mt-10 md:mt-12">
+      <Gallery
+        label={distinctions.label}
+        items={distinctionItems}
+        columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+        sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
+      />
+    </div>
+  </section>
+
+  <!-- 4. Call to action -->
+  <section class="wrap defer-render pt-4 pb-4 md:pt-8" aria-labelledby="cta-heading">
+    <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
+  </section>
+</Base>
+
+<style>
+  .programme {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .programme-provider {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  @media (width >= 40rem) {
+    .programme:has(.programme-photo) {
+      grid-template-columns: 1fr 10rem;
+      align-items: start;
+    }
+  }
+  @media (width >= 64rem) {
+    .programme:has(.programme-photo) {
+      grid-template-columns: 1fr 11rem;
+    }
+  }
+</style>

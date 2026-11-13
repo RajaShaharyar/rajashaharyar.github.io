@@ -1,0 +1,61 @@
+---
+/**
+ * Beyond work (/about/beyond-work/), one of the three About pages (Phase 17):
+ *   #mustahiq · #k2 · #speaking (the four photos, the line, Speaking & events) · "Invite me to speak"
+ * Copy: about.json → beyondWork, speaking, page.beyondWork · photos and captions: images.json
+ */
+import Base from '../../layouts/Base.astro';
+import SubPageHeader from '../../components/SubPageHeader.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Gallery from '../../components/Gallery.astro';
+import SpeakingStrip from '../../components/SpeakingStrip.astro';
+import ArrowLink from '../../components/ArrowLink.astro';
+import CTA from '../../components/CTA.astro';
+import { about } from '../../lib/about';
+
+const { beyondWork, speaking } = about;
+const page = about.page.beyondWork;
+
+const sectionY = 'py-16 md:py-24';
+---
+
+<Base title={page.title} description={page.description} ogType="profile">
+  <SubPageHeader section="/about/" title={page.title} />
+
+  <!-- 1-2. Mustahiq and K2 -->
+  {
+    beyondWork.sections.map((s, i) => (
+      <section
+        id={s.id}
+        class:list={['wrap', i === 0 ? 'pt-10 pb-16 md:pt-14 md:pb-24' : ['border-t border-line', sectionY, 'defer-render']]}
+        aria-labelledby={`${s.id}-heading`}
+      >
+        <div class="grid gap-8 lg:grid-cols-12 lg:gap-14">
+          <div class="lg:col-span-5">
+            <h2 id={`${s.id}-heading`} class="text-display-md">
+              {s.heading}
+            </h2>
+            <p class="lead mt-4 max-w-prose">{s.text}</p>
+          </div>
+          <div class="lg:col-span-7">
+            <Gallery label={s.label} items={s.images.map((image) => ({ image }))} columns="grid-cols-1 sm:grid-cols-2" sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw" />
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <!-- 3. Speaking -->
+  <section id="speaking" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="speaking-heading">
+    <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
+    <div class="mt-10 md:mt-12">
+      <SpeakingStrip images={speaking.images} />
+    </div>
+    <ArrowLink href={speaking.link.href} class="mt-8">{speaking.link.label}</ArrowLink>
+  </section>
+
+  <!-- 4. Call to action: invite me to speak -->
+  <section class="wrap defer-render pt-4 pb-4 md:pt-8" aria-labelledby="cta-heading">
+    <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
+  </section>
+</Base>

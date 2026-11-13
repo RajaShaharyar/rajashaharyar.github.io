@@ -1,11 +1,12 @@
 ---
 /**
- * Top of a page inside a menu (Ventures, Recognition): a row of tabs for the
- * pages in that menu (handy on phones, where the main menu is folded away),
+ * Top of a page inside a menu (Ventures, About, Recognition): a row of tabs for
+ * the pages in that menu (handy on phones, where the main menu is folded away),
  * the eyebrow, the H1, an optional intro line and optional facts (a venture's
  * role, dates and location). Recognition is no longer in the top bar; its tabs
- * come from site.json → recognitionMenu. Menu items that are anchors on another
- * page ("Yours next?") are not tabs.
+ * come from site.json → recognitionMenu. Only the menu's own pages are tabs: an
+ * anchor on another page ("Yours next?") or a page outside the section (the CV in
+ * the About menu) is not.
  */
 import { site, withSlash } from '../lib/site';
 
@@ -22,7 +23,7 @@ interface Props {
 
 const { section, title, intro, overviewLabel, facts = [] } = Astro.props;
 const menu = [...site.nav, site.recognitionMenu].find((item) => item.href === section);
-const children = (menu?.children ?? []).filter((c) => !c.href.includes('#'));
+const children = (menu?.children ?? []).filter((c) => !c.href.includes('#') && withSlash(c.href).startsWith(withSlash(section)));
 const shownFacts = facts.filter((f): f is { label: string; value: string } => Boolean(f.value));
 const pages = overviewLabel && !children.some((c) => withSlash(c.href) === withSlash(section)) ? [{ label: overviewLabel, href: section }, ...children] : children;
 const path = withSlash(Astro.url.pathname);

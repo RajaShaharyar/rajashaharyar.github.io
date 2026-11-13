@@ -67,7 +67,9 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
 let failed = false;
 for (const p of pages) {
-  const h1 = decode(p.html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '');
+  // An H1 with a screen-reader version (the homepage's rotating word) uses that text, not the animated copy.
+  const h1Html = p.html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '';
+  const h1 = decode(h1Html.match(/<span class="sr-only">([^<]*)<\/span>/)?.[1] ?? h1Html);
   // The CV's H1 is Raja's name, already on the card: use the page title ("CV") instead.
   const pageTitle = decode(p.html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '').split(' — ')[0];
   const title = h1 && h1 !== site.name ? h1 : pageTitle || site.name;

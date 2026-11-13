@@ -3,6 +3,9 @@
   "hero": {
     "eyebrow": "Product & Growth · Fintech · SaaS",
     "headline": "I turn early products into revenue.",
+    "headlineLead": "I turn early products into",
+    "rotatingWords": ["traction.", "businesses.", "revenue."],
+    "_rotatingWordsNote": "Draft (Phase 17): the hero's last word rotates through these once, in the same place, and stops on the last one; headline must equal headlineLead + the last word (screen readers hear only headline; the build checks). Reduced motion and no JavaScript show the last word only.",
     "subline": "5+ years across fintech and SaaS, from pre-selling a prototype to taking a regulated payments product from launch to scale.",
     "roleLine": "Manager, Product & Growth at Evamp & Saanga",
     "image": "about/2024-airtech.webp",

@@ -21,8 +21,8 @@ const recognition = site.recognitionMenu;
 ---
 
 <footer class="site-footer defer-render" style="--defer-size: 36rem">
-  <div class="wrap grid gap-12 py-14 sm:grid-cols-2 md:py-16 lg:grid-cols-[1.35fr_1.15fr_0.7fr_0.9fr_1fr] lg:gap-10">
-    <div>
+  <div class="footer-grid wrap py-14 md:py-16">
+    <div class="footer-wide">
       <p class="font-display text-2xl font-bold tracking-tight">
         {site.name}<span class="text-accent-2" aria-hidden="true">.</span>
       </p>
@@ -31,13 +31,13 @@ const recognition = site.recognitionMenu;
       <a href={site.cta.href} class="link mt-6 inline-block font-semibold">{site.cta.label} →</a>
     </div>
 
-    <div>
+    <div class="footer-wide">
       <h2 class="footer-heading">Get in touch</h2>
       <ul class="footer-list">
         <li>
           <a href={`mailto:${contact.email}`} class="footer-link">
             <span class="footer-key">Email</span>
-            <span class="break-all">{contact.email}</span>
+            <span class="footer-email">{contact.email}</span>
           </a>
         </li>
         <li>
@@ -116,6 +116,42 @@ const recognition = site.recognitionMenu;
 </footer>
 
 <style>
+  /* Phones: identity and contact across the width, the three link lists two to a row. From 768 px:
+     three columns; from 1280 px: all five in one row (at 1024 they were too narrow for the email). */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 1.5rem;
+  }
+  .footer-wide {
+    grid-column: 1 / -1;
+  }
+  @media (width >= 48rem) {
+    .footer-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 3rem 2rem;
+    }
+    .footer-wide {
+      grid-column: auto;
+    }
+    .footer-grid > :first-child {
+      grid-column: span 2;
+    }
+  }
+  @media (width >= 80rem) {
+    .footer-grid {
+      grid-template-columns: 1.35fr 1.15fr 0.7fr 0.9fr 1fr;
+      gap: 2.5rem;
+    }
+    .footer-grid > :first-child {
+      grid-column: auto;
+    }
+  }
+  /* The address breaks only at its @ or dots, never mid-word */
+  .footer-email {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
   /* Near-black, with a lime → violet hairline at the top */
   .site-footer {
     position: relative;

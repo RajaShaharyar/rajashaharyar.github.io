@@ -23,7 +23,7 @@ const counters = sections.map((s) => badgeCounter(s.badges[0]));
 
   <section class="band band-deep py-10 md:py-14" aria-label="Results in numbers">
     <div class="wrap">
-      <ul class="counters-deep grid grid-cols-3 gap-px overflow-hidden rounded-card border md:max-w-3xl" data-reveal-stagger="inner">
+      <ul class="counters-deep grid grid-cols-1 gap-px overflow-hidden rounded-card border min-[440px]:grid-cols-3 md:max-w-3xl" data-reveal-stagger="inner">
         {counters.map((c) => <Counter value={c.value} label={c.label} />)}
       </ul>
     </div>

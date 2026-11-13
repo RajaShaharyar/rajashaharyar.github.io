@@ -56,7 +56,11 @@
     "rajashaharyar",
     "thetapitcard",
     "subline",
-    "pakistantoday"
+    "pakistantoday",
+    "Rehman",
+    "Ayesha",
+    "Gulberg",
+    "lockup"
   ],
   "ignoreRegExpList": [
     "/\"source\":\\s*\"[^\"]*\"/g",

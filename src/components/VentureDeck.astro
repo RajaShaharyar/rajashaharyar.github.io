@@ -39,7 +39,7 @@ const cards = await Promise.all(copy.cards.map(card));
 const N = cards.length;
 ---
 
-<section id="products" class="deck-section defer-render" aria-labelledby="products-heading" style={`--defer-size: ${100 + N * 70}svh`}>
+<section id="products" class="deck-section defer-render" aria-labelledby="products-heading" style={`--defer-size: ${Math.round(100 + (N - 0.65) * 70)}svh`}>
   <a class="deck-skip" href="#playbook">{copy.skipLabel}</a>
   <div class="deck wrap" data-deck style={`--n: ${N}`}>
     <div class="deck-pin">
@@ -103,7 +103,7 @@ const N = cards.length;
     </div>
   </div>
   <div class="wrap">
-    <ArrowLink href={copy.otherLink.href} class="mt-6 md:mt-8">{copy.otherLink.label}</ArrowLink>
+    <ArrowLink href={copy.otherLink.href} class="mt-2">{copy.otherLink.label}</ArrowLink>
   </div>
 </section>
 
@@ -256,10 +256,12 @@ const N = cards.length;
   @media (prefers-reduced-motion: no-preference) and (width >= 64rem) and (height >= 37.5rem),
     (prefers-reduced-motion: no-preference) and (width < 64rem) and (height >= 40rem) {
     :global(html.js) .deck-section {
-      padding-block: 0 3rem;
+      padding-block: 0 1.5rem;
     }
     :global(html.js) .deck {
-      height: calc(100svh - var(--hh) + var(--n) * 70svh);
+      /* every card but the last gets 70svh of scroll; the last only a short hold (0.35 of a step), so the
+         pin releases soon after it lands instead of leaving a long empty stretch (deck.ts: TAIL) */
+      height: calc(100svh - var(--hh) + (var(--n) - 0.65) * 70svh);
     }
     :global(html.js) .deck-pin {
       position: sticky;
@@ -411,7 +413,7 @@ const N = cards.length;
   @media (prefers-reduced-motion: no-preference) and (width < 64rem) and (height >= 40rem) {
     /* the "Let's talk" dock covers the bottom 4.75rem on small screens */
     :global(html.js) .deck {
-      height: calc(100svh - var(--hh) - 4.75rem - env(safe-area-inset-bottom) + var(--n) * 70svh);
+      height: calc(100svh - var(--hh) - 4.75rem - env(safe-area-inset-bottom) + (var(--n) - 0.65) * 70svh);
     }
     :global(html.js) .deck-pin {
       height: calc(100svh - var(--hh) - 4.75rem - env(safe-area-inset-bottom));

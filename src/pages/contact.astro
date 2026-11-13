@@ -1,7 +1,7 @@
 ---
 /**
  * Let's talk (/contact/), in the sitemap's order: What's this about? (the
- * reason picker: Growth help / Speaking / Other) · Your details (name,
+ * reason picker: Growth / Consultation / Speaking / Others, Growth preselected) · Your details (name,
  * email, phone or WhatsApp, company) · Message and send · Contact details (the
  * direct channels: beside the form on wide screens, after it on phones).
  *
@@ -16,8 +16,9 @@
  *   email app with the message ready to send (mailto).
  * ─────────────────────────────────────────────────────────────────────────
  *
- * Pre-select a reason from a link: /contact/?reason=growth-help|speaking|other
- * (?reason=hiring, from older links, preselects Other). Wording: src/content/contact.json.
+ * Pre-select a reason from a link: /contact/?reason=growth|consultation|speaking|other
+ * (older links: growth-help → Growth, hiring → Others). Wording: src/content/contact.json.
+ * The phone/WhatsApp number is required (digits, spaces, + and -, at least 7 digits).
  */
 import Base from '../layouts/Base.astro';
 import { site, filled } from '../lib/site';
@@ -37,6 +38,7 @@ const thanksUrl = new URL('/contact/thanks/', site.url).href;
 const serviceName = mode === 'web3forms' ? 'Web3Forms' : 'Formspree';
 
 const reasons = copy.reasons.map((r) => ({ ...r, aliases: 'aliases' in r ? r.aliases?.join(' ') : undefined }));
+const phone = copy.phone;
 
 const title = "Let's talk";
 const description = copy.description;
@@ -70,7 +72,7 @@ const description = copy.description;
                 {
                   reasons.map((r, i) => (
                     <label class="reason">
-                      <input type="radio" name="reason" value={r.label} data-reason={r.value} data-aliases={r.aliases} required={i === 0} />
+                      <input type="radio" name="reason" value={r.label} data-reason={r.value} data-aliases={r.aliases} required={i === 0} checked={i === 0} />
                       <span class="flex flex-col">
                         <span class="font-semibold">{r.label}</span>
                         <span class="text-sm text-fg-muted">{r.hint}</span>
@@ -96,16 +98,21 @@ const description = copy.description;
                 <p class="field-error" id="cf-email-error" data-error-for="email" hidden></p>
               </div>
               <div data-field="phone">
-                <label for="cf-phone" class="field-label">Phone or WhatsApp <span class="field-optional">(optional)</span></label>
+                <label for="cf-phone" class="field-label">{phone.label}</label>
                 <input
                   id="cf-phone"
                   name="phone"
                   type="tel"
                   autocomplete="tel"
+                  inputmode="tel"
+                  required
                   class="field"
                   aria-describedby="cf-phone-hint"
+                  data-error-empty={phone.errorEmpty}
+                  data-error-invalid={phone.errorInvalid}
                 />
-                <p class="field-hint" id="cf-phone-hint">Optional, if you'd rather talk on WhatsApp</p>
+                <p class="field-hint" id="cf-phone-hint">{phone.hint}</p>
+                <p class="field-error" id="cf-phone-error" data-error-for="phone" hidden></p>
               </div>
               <div data-field="company">
                 <label for="cf-company" class="field-label">Company or organisation <span class="field-optional">(optional)</span></label>
@@ -414,7 +421,7 @@ const description = copy.description;
     const doneText = done.querySelector<HTMLElement>('[data-done-text]');
     const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null;
 
-    // Pre-select a reason from ?reason=growth-help|speaking|other (or an old alias: hiring → Other)
+    // Pre-select a reason from ?reason=growth|consultation|speaking|other (or an old alias: growth-help, hiring)
     const wanted = new URLSearchParams(window.location.search).get('reason');
     if (wanted) {
       const v = CSS.escape(wanted);
@@ -438,6 +445,15 @@ const description = copy.description;
         (v) =>
           !v.trim() ? 'Please enter your email, so Raja can reply.' : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Please enter a valid email address, like name@example.com.',
       ],
+      [
+        'phone',
+        (v) => {
+          const input = field('phone');
+          if (!v.trim()) return input?.dataset.errorEmpty ?? 'Please enter a phone or WhatsApp number.';
+          const ok = /^[\d\s+-]+$/.test(v.trim()) && (v.match(/\d/g) ?? []).length >= 7;
+          return ok ? '' : (input?.dataset.errorInvalid ?? 'Please enter a valid number.');
+        },
+      ],
       ['message', (v) => (v.trim() ? '' : 'Please write a message.')],
     ];
     const showError = (name: string, message: string) => {
@@ -449,12 +465,15 @@ const description = copy.description;
       }
       const targets = name === 'reason' ? Array.from(form.querySelectorAll<HTMLInputElement>('input[name="reason"]')) : input ? [input] : [];
       for (const t of targets) {
+        // The phone field keeps its hint described too
+        const hint = name === 'phone' ? 'cf-phone-hint' : '';
         if (message) {
           t.setAttribute('aria-invalid', 'true');
-          t.setAttribute('aria-describedby', `cf-${name}-error`);
+          t.setAttribute('aria-describedby', `${hint} cf-${name}-error`.trim());
         } else {
           t.removeAttribute('aria-invalid');
-          if (name !== 'phone') t.removeAttribute('aria-describedby');
+          if (hint) t.setAttribute('aria-describedby', hint);
+          else t.removeAttribute('aria-describedby');
         }
       }
     };

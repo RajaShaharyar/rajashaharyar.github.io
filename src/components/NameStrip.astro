@@ -1,33 +1,217 @@
 ---
-/** Homepage credibility strip: names as plain text (no logos until permission is clear), with violet separators. */
+/**
+ * Homepage credibility strip, "Built at, backed by and recognised by" (Phase 18): a running strip of names
+ * (home.json → proof.brands), text only, muted, with violet separators. No logos (files exist for only three).
+ * - Every brand maps to a recognition.json or cv.json id (ref), which says how it links to Raja; its name
+ *   links there. The build fails if a ref doesn't exist.
+ * - Motion (JavaScript on, reduced motion off): a seamless CSS marquee, translateX, linear, 40 s a loop,
+ *   started once the strip comes near the screen (never during page load). The
+ *   list is in the page once for screen readers; the second copy that closes the loop is aria-hidden and out
+ *   of the tab order. Hover or keyboard focus on a name pauses the strip and shows the name in its brand
+ *   colour (lightened where needed to keep 4.5:1). A visible pause/play button (WCAG 2.2.2: it moves for
+ *   more than 5 s; also the control on touch screens). Paused off-screen (src/scripts/strip.ts).
+ * - Reduced motion and no JavaScript: a static, wrapped list.
+ */
+import home from '../content/home.json';
+import cvJson from '../content/cv.json';
+import { getRecognition } from '../lib/recognition';
+import { pageFor } from '../lib/recognition-pages';
+
 interface Props {
   /** id of the heading, for the section's aria-labelledby */
   id?: string;
   title: string;
-  names: string[];
 }
 
-const { id, title, names } = Astro.props;
+const { id, title } = Astro.props;
+const { brands, stripPauseLabel, stripPlayLabel } = home.proof;
+
+/** Where a brand's name links: the page that tells how it links to Raja. */
+function hrefFor(ref: string): string {
+  const [kind, key] = ref.split(':');
+  if (kind === 'recognition') {
+    const item = getRecognition(key);
+    return item.badge ? `${pageFor(item.badge)}#${item.id}` : (item.venture?.href ?? '/recognition/');
+  }
+  const section = kind.split('.')[1] as 'experience' | 'otherVentures' | 'education' | 'programmes';
+  const list = (cvJson as unknown as Record<string, { items: { id: string; href?: string }[] }>)[section]?.items ?? [];
+  const item = list.find((i) => i.id === key);
+  if (!item) throw new Error(`home.json → proof.brands: "${ref}" is not in cv.json.`);
+  if (section === 'education') return '/about/education/#degree';
+  if (section === 'programmes') return '/about/education/#courses';
+  const href = item.href ?? '/ventures/';
+  return href === '/ventures/other/' ? `${href}#${item.id}` : href;
+}
+const items = brands.map((b) => ({ name: b.name, href: hrefFor(b.ref), colour: ('display' in b ? b.display : undefined) ?? b.colour }));
 ---
 
-<div>
+<div class="strip" data-strip>
   <h2 id={id} class="font-sans text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{title}</h2>
-  <ul class="names mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-    {names.map((name) => <li class="font-display text-lg font-semibold text-fg-muted sm:text-xl">{name}</li>)}
-  </ul>
+  <div class="strip-row mt-4">
+    <div class="strip-viewport" data-strip-viewport>
+      <div class="strip-track" data-strip-track>
+        <ul class="strip-list">
+          {
+            items.map((b) => (
+              <li>
+                <a href={b.href} class="strip-name" style={`--brand:${b.colour}`}>
+                  {b.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <ul class="strip-list strip-copy" aria-hidden="true">
+          {
+            items.map((b) => (
+              <li>
+                <a href={b.href} class="strip-name" style={`--brand:${b.colour}`} tabindex="-1">
+                  {b.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+    <button type="button" class="strip-toggle" data-strip-toggle aria-label={stripPauseLabel} data-pause={stripPauseLabel} data-play={stripPlayLabel} hidden>
+      <svg class="strip-icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"></path></svg>
+      <svg class="strip-icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.5 8z"></path></svg>
+    </button>
+  </div>
 </div>
 
+<script>
+  import { initStrip } from '../scripts/strip';
+  initStrip();
+</script>
+
 <style>
-  .names li {
-    display: inline-flex;
+  .strip-row {
+    display: flex;
     align-items: center;
     gap: 1rem;
   }
-  .names li + li::before {
+  .strip-viewport {
+    flex: 1;
+    min-width: 0;
+  }
+  /* Static (no JavaScript, reduced motion): one wrapped list */
+  .strip-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 0.5rem;
+  }
+  .strip-copy {
+    display: none;
+  }
+  .strip-list li {
+    display: inline-flex;
+    align-items: center;
+  }
+  /* a violet dot after every name (also after the last, so the loop's seam looks like every other gap) */
+  .strip-list li::after {
     content: '';
     width: 0.375rem;
     height: 0.375rem;
+    margin: 0 1rem;
     border-radius: 999px;
     background-color: var(--color-accent-2-strong);
+  }
+  .strip-name {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    transition: color 150ms;
+  }
+  @media (width >= 40rem) {
+    .strip-name {
+      font-size: 1.25rem;
+    }
+  }
+  .strip-name:hover,
+  .strip-name:focus-visible {
+    color: var(--brand);
+  }
+  .strip-toggle {
+    display: none;
+  }
+
+  /* Running (JavaScript on, reduced motion off) */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .strip-viewport {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+      mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    }
+    :global(html.js) .strip-track {
+      display: flex;
+      width: max-content;
+    }
+    /* The animation (and the wide layer it needs) only from when the strip comes near the screen, so it
+       costs nothing during page load (strip.ts sets data-run) */
+    :global(html.js) .strip[data-run] .strip-track {
+      animation: strip-run 40s linear infinite;
+    }
+    :global(html.js) .strip-list {
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    :global(html.js) .strip-copy {
+      display: flex;
+    }
+    /* hover or focus on the names (not on the pause button, so pressing play plays at once) */
+    :global(html.js) .strip-viewport:hover .strip-track,
+    :global(html.js) .strip-viewport:focus-within .strip-track,
+    :global(html.js) .strip[data-paused] .strip-track,
+    :global(html.js) .strip[data-offscreen] .strip-track {
+      animation-play-state: paused;
+    }
+    :global(html.js) .strip-toggle:not([hidden]) {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid var(--color-line-strong);
+      border-radius: 999px;
+      color: var(--color-fg);
+      cursor: pointer;
+    }
+    :global(html.js) .strip-toggle:hover {
+      color: var(--color-accent-2);
+      border-color: var(--color-accent-2-strong);
+    }
+  }
+  @keyframes strip-run {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .strip-toggle svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .strip-icon-play {
+    display: none;
+    fill: currentColor !important;
+    stroke-width: 1 !important;
+  }
+  .strip[data-paused] .strip-icon-pause {
+    display: none;
+  }
+  .strip[data-paused] .strip-icon-play {
+    display: block;
   }
 </style>

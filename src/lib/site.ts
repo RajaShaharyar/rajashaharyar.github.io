@@ -5,6 +5,8 @@ export interface NavLink {
   href: string;
   description?: string;
   children?: NavLink[];
+  /** The one highlighted item of a dropdown (About → "Invite me to speak") */
+  highlight?: boolean;
 }
 
 /** A venture card (/ventures, and the homepage product section). The page itself lives in src/content/ventures/<id>.mdx. */

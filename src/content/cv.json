@@ -1,5 +1,5 @@
 {
-  "_rules": "The CV, section by section (1-14), in the blueprint's order. One source for /cv, the About pages (Education and Skills & tools read it by id) and Consulting & product roles. The six key numbers come from site.json → stats and the contact details from site.json → contact, so they are never typed twice. Missing data is a string starting with TODO: it stays here and the field is hidden on the site. NEVER add a photo, date of birth, gender, nationality or home address. Dates are YYYY-MM, or YYYY-MM-DD where the day is known; end: null means current. The PDF download on /cv/ is NOT generated from this file: it is Raja's own Europass CV (public/Raja-Shaharyar-PM.pdf, see site.json → cv), with date of birth, nationality, gender and the home address redacted; it keeps his own wording and photo.",
+  "_rules": "The CV, section by section (1-14), in the blueprint's order. One source for /cv, the About pages (Education and Skills & tools read it by id) and Consulting & product roles. The six key numbers come from site.json → stats and the contact details from site.json → contact, so they are never typed twice. Missing data is a string starting with TODO: it stays here and the field is hidden on the site. NEVER add a photo, date of birth, gender, nationality or home address. Dates are YYYY-MM, or YYYY-MM-DD where the day is known; end: null means current. The PDF download on /cv/ is NOT generated from this file: it is Raja's own Europass CV, published unedited (public/Raja-Shaharyar-PM.pdf, see site.json → cv). That PDF alone may carry his date of birth, nationality, gender, home address and photo (Raja's decision, Phase 18); this file and every HTML page never do.",
 
   "header": {
     "section": 1,
@@ -107,7 +107,7 @@
       },
       {
         "id": "dressup",
-        "company": "Dressup",
+        "company": "DressUp AI",
         "location": "TODO: location",
         "href": "/ventures/dressup/",
         "product": "A hyper-personalised marketplace",

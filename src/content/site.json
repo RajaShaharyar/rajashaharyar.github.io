@@ -8,18 +8,34 @@
   "description": "Raja Shaharyar Ali is a product and growth lead in Islamabad who takes products from first customer to scale across fintech, SaaS and consumer.",
   "url": "https://rajashaharyar.github.io",
   "locale": "en-GB",
-  "location": { "display": "Islamabad, Pakistan", "city": "Islamabad", "countryCode": "PK" },
+  "location": {
+    "display": "Islamabad, Pakistan",
+    "city": "Islamabad",
+    "countryCode": "PK"
+  },
   "contact": {
     "email": "rajasali2002@gmail.com",
-    "phone": { "display": "+92 343 5958017", "href": "tel:+923435958017" },
-    "whatsapp": { "display": "+92 343 5958017", "href": "https://wa.me/923435958017" },
+    "phone": {
+      "display": "+92 343 5958017",
+      "href": "tel:+923435958017"
+    },
+    "whatsapp": {
+      "display": "+92 343 5958017",
+      "href": "https://wa.me/923435958017"
+    },
     "linkedin": {
       "display": "linkedin.com/in/raja-shaharyar-8418971b9",
       "href": "https://www.linkedin.com/in/raja-shaharyar-8418971b9",
       "toConfirm": "Which LinkedIn URL is current: the CV links /in/raja-shaharyar-8418971b9, search shows /in/rajashaharyar."
     },
-    "digitalCard": { "display": "thetapitcard.com/rajashaharyar", "href": "https://www.thetapitcard.com/rajashaharyar" },
-    "booking": { "href": "", "todo": "TODO: booking link (e.g. Calendly or Cal.com)" },
+    "digitalCard": {
+      "display": "thetapitcard.com/rajashaharyar",
+      "href": "https://www.thetapitcard.com/rajashaharyar"
+    },
+    "booking": {
+      "href": "",
+      "todo": "TODO: booking link (e.g. Calendly or Cal.com)"
+    },
     "form": {
       "_howTo": "Contact form provider. WEB3FORMS (recommended, free, no account): paste the access key from web3forms.com into web3formsKey, set provider to \"web3forms\", rebuild and push. FORMSPREE (alternative): paste the form ID (the part after formspree.io/f/) into formspreeId and set provider to \"formspree\". Empty provider = the form opens the visitor's email app (mailto).",
       "provider": "web3forms",
@@ -31,34 +47,92 @@
     "pageHref": "/cv/",
     "pdfHref": "/Raja-Shaharyar-PM.pdf",
     "downloadName": "Raja Shaharyar PM.pdf",
-    "_note": "The PDF is Raja's own 2-page Europass CV (_source/Raja Shaharyar PM.pdf), with date of birth, nationality, gender and the home address redacted (true redaction with PyMuPDF: the text is removed, not covered). Its only download link is on /cv/, saved as downloadName. The CV page itself is linked only from the About dropdown (consultation first, Phase 17). To replace it, redact the new original the same way and keep the file name."
+    "_note": "The PDF is Raja's own 2-page Europass CV, published byte-for-byte from _source/Raja Shaharyar PM.pdf with no edits (Phase 18, at Raja's request: the Phase 17 redaction was undone). It is the ONE place his date of birth, nationality, gender and home address appear: they stay off every HTML page (npm run check:links fails if one of those labels shows up in a page). Its only download link is on /cv/, saved as downloadName. The CV page itself is linked only from the About dropdown. To replace it, copy the new original over this file and keep the file name."
   },
-  "cta": { "label": "Let's talk", "href": "/contact/" },
-  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · then the cta button. The CV is linked only from the About dropdown (consultation first, Phase 17), never from the top bar, the hero or the footer. About has three pages (My story, Education, Beyond work; Phase 17). Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage.",
+  "cta": {
+    "label": "Let's talk",
+    "href": "/contact/"
+  },
+  "_navNote": "Top bar: Home · Ventures ▾ · Work With Me · About ▾ · then the cta button. The CV is linked only from the About dropdown (consultation first, Phase 17), never from the top bar, the hero or the footer. About has three pages (My story, Education, Beyond work; Phase 17). Recognition is not in the top bar; its pages are listed in recognitionMenu (their tabs and the footer use it) and linked from About and the homepage. Ventures ▾ follows the Phase 18 order: AsaanBill, TapitCard, DressUp AI, Sonic AI Engine, Ladenza, Other ventures, Yours next? About ▾ ends with \"Invite me to speak\" (highlight: true, the dropdown's one highlighted item; Phase 18), straight to the contact form with Speaking preselected.",
   "nav": [
-    { "label": "Home", "href": "/" },
+    {
+      "label": "Home",
+      "href": "/"
+    },
     {
       "label": "Ventures",
       "href": "/ventures/",
       "children": [
-        { "label": "Dressup", "href": "/ventures/dressup/", "description": "Product consultant: a hyper-personalised marketplace" },
-        { "label": "AsaanBill", "href": "/ventures/asaanbill/", "description": "Regulated fintech, from 0→1 to scale" },
-        { "label": "Sonic AI Engine", "href": "/ventures/sonicengine-ai/", "description": "Product owner: a text-to-game engine" },
-        { "label": "TapitCard", "href": "/ventures/tapit/", "description": "Co-founder story: from idea to 3,000+ customers" },
-        { "label": "Ladenza", "href": "/ventures/ladenza/", "description": "Consumer selling and acquisition" },
-        { "label": "Other ventures", "href": "/ventures/other/", "description": "HOMS, Gameotivity and Mustahiq" },
-        { "label": "Yours next?", "href": "/ventures/#yours-next", "description": "Your product could be the next story" }
+        {
+          "label": "AsaanBill",
+          "href": "/ventures/asaanbill/",
+          "description": "Regulated fintech, from 0→1 to scale"
+        },
+        {
+          "label": "TapitCard",
+          "href": "/ventures/tapit/",
+          "description": "Co-founder story: from idea to 3,000+ customers"
+        },
+        {
+          "label": "DressUp AI",
+          "href": "/ventures/dressup/",
+          "description": "Product consultant: a personal AI stylist"
+        },
+        {
+          "label": "Sonic AI Engine",
+          "href": "/ventures/sonicengine-ai/",
+          "description": "Product owner: a text-to-game engine"
+        },
+        {
+          "label": "Ladenza",
+          "href": "/ventures/ladenza/",
+          "description": "Consumer selling and acquisition"
+        },
+        {
+          "label": "Other ventures",
+          "href": "/ventures/other/",
+          "description": "HOMS, Gameotivity and Mustahiq"
+        },
+        {
+          "label": "Yours next?",
+          "href": "/ventures/#yours-next",
+          "description": "Your product could be the next story"
+        }
       ]
     },
-    { "label": "Work With Me", "href": "/work-with-me/" },
+    {
+      "label": "Work With Me",
+      "href": "/work-with-me/"
+    },
     {
       "label": "About",
       "href": "/about/",
       "children": [
-        { "label": "My story", "href": "/about/", "description": "Story, career timeline and recognition" },
-        { "label": "Education", "href": "/about/education/", "description": "Degree, courses and distinctions" },
-        { "label": "Beyond work", "href": "/about/beyond-work/", "description": "Mustahiq, K2 and speaking" },
-        { "label": "CV", "href": "/cv/", "description": "Full CV and PDF" }
+        {
+          "label": "My story",
+          "href": "/about/",
+          "description": "Story, career timeline and recognition"
+        },
+        {
+          "label": "Education",
+          "href": "/about/education/",
+          "description": "Degree, courses and distinctions"
+        },
+        {
+          "label": "Beyond work",
+          "href": "/about/beyond-work/",
+          "description": "Mustahiq, K2 and speaking"
+        },
+        {
+          "label": "CV",
+          "href": "/cv/",
+          "description": "Full CV and PDF"
+        },
+        {
+          "label": "Invite me to speak",
+          "href": "/contact/?reason=speaking",
+          "highlight": true
+        }
       ]
     }
   ],
@@ -88,18 +162,8 @@
       }
     ]
   },
-  "_venturesNote": "Venture cards, in menu order (the /ventures overview, and the homepage product section reads its line and metric from here). No badge or metric where none exists.",
+  "_venturesNote": "Venture cards, in menu order (the /ventures overview, and the homepage product section reads its line and metric from here). No badge or metric where none exists. Phase 18 order: AsaanBill, TapitCard, DressUp AI, Sonic AI Engine, Ladenza, Other ventures (Yours next? closes the menu).",
   "ventures": [
-    {
-      "id": "dressup",
-      "name": "Dressup",
-      "href": "/ventures/dressup/",
-      "meta": "Product Consultant · Marketplace",
-      "role": "Product Consultant",
-      "line": "A hyper-personalised marketplace",
-      "art": true,
-      "_artNote": "No photo yet: the card shows the product's schematic drawing (ProductScene) instead. Replace with an image once there is one."
-    },
     {
       "id": "asaanbill",
       "name": "AsaanBill",
@@ -107,9 +171,44 @@
       "meta": "Fintech · Evamp & Saanga · 2024–present",
       "role": "Product Owner (Growth), then Manager, Product & Growth",
       "badge": "Scale",
-      "metric": { "value": "$1.8M+", "label": "monthly volume" },
+      "metric": {
+        "value": "$1.8M+",
+        "label": "monthly volume"
+      },
       "line": "Invoicing and payment collection for Pakistani businesses, approved on 1Bill and Raast.",
-      "image": { "src": "recognition/mou-asaanbill-najoomi.webp", "fit": "contain" }
+      "image": {
+        "src": "recognition/mou-asaanbill-najoomi.webp",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "tapit",
+      "name": "TapitCard",
+      "href": "/ventures/tapit/",
+      "meta": "Co-Founder & Head of Growth · 2022–present",
+      "role": "Co-Founder & Head of Growth",
+      "badge": "Product-Market Fit",
+      "metric": {
+        "value": "3,000+",
+        "label": "customers"
+      },
+      "line": "A digital contact card, pre-sold on a prototype and sold mostly to corporates.",
+      "image": {
+        "src": "recognition/k2prenuer-youngest-startup.webp",
+        "fit": "cover",
+        "position": "50% 50%"
+      }
+    },
+    {
+      "id": "dressup",
+      "name": "DressUp AI",
+      "href": "/ventures/dressup/",
+      "meta": "Product Consultant · Marketplace",
+      "role": "Product Consultant",
+      "line": "A hyper-personalised marketplace",
+      "art": true,
+      "_artNote": "No photo yet: the card shows the product's schematic drawing (ProductScene) instead. Replace with an image once there is one.",
+      "_nameNote": "Official name, as on thedressup.co (Phase 18); the URL stays /ventures/dressup/."
     },
     {
       "id": "sonicengine-ai",
@@ -121,24 +220,16 @@
       "art": true
     },
     {
-      "id": "tapit",
-      "name": "TapitCard",
-      "href": "/ventures/tapit/",
-      "meta": "Co-Founder & Head of Growth · 2022–present",
-      "role": "Co-Founder & Head of Growth",
-      "badge": "Product-Market Fit",
-      "metric": { "value": "3,000+", "label": "customers" },
-      "line": "A digital contact card, pre-sold on a prototype and sold mostly to corporates.",
-      "image": { "src": "recognition/k2prenuer-youngest-startup.webp", "fit": "cover", "position": "50% 50%" }
-    },
-    {
       "id": "ladenza",
       "name": "Ladenza Clothing",
       "href": "/ventures/ladenza/",
       "meta": "Founder · Consumer",
       "role": "Founder",
       "badge": "Product-Market Fit",
-      "metric": { "value": "PKR 1 Cr", "label": "in sales" },
+      "metric": {
+        "value": "PKR 1 Cr",
+        "label": "in sales"
+      },
       "line": "An online thrift store for branded clothes, started during COVID and sold through hostel dorms."
     },
     {
@@ -165,9 +256,24 @@
       "source": "CV (Evamp & Saanga)",
       "note": "Cleared for publishing (Raja, 6 Nov 2026). Monthly transaction volume = value of payments processed per month."
     },
-    { "id": "tapit-customers", "value": "3,000+", "label": "TapitCard customers in 2 years", "source": "CV (TapitCard)" },
-    { "id": "erp-partnerships", "value": "15+", "label": "ERP partnerships", "source": "CV (Evamp & Saanga)" },
-    { "id": "team", "value": "25+", "label": "cross-functional team led", "source": "CV (Evamp & Saanga)" },
+    {
+      "id": "tapit-customers",
+      "value": "3,000+",
+      "label": "TapitCard customers in 2 years",
+      "source": "CV (TapitCard)"
+    },
+    {
+      "id": "erp-partnerships",
+      "value": "15+",
+      "label": "ERP partnerships",
+      "source": "CV (Evamp & Saanga)"
+    },
+    {
+      "id": "team",
+      "value": "25+",
+      "label": "cross-functional team led",
+      "source": "CV (Evamp & Saanga)"
+    },
     {
       "id": "competitions",
       "value": "5",
@@ -204,7 +310,10 @@
       "summary": "For products that sell, but not repeatably: funnel, CRM, outbound and a partnership channel.",
       "forWhom": "For products that sell, but not repeatably",
       "gets": "Funnel and CRM set-up (HubSpot, Salesforce, Apollo, LinkedIn Sales Navigator), outbound and a partnership channel.",
-      "proof": { "label": "15+ ERP partnerships; PKR 25 Cr+ in sales", "href": "/ventures/asaanbill/#scale" }
+      "proof": {
+        "label": "15+ ERP partnerships; PKR 25 Cr+ in sales",
+        "href": "/ventures/asaanbill/#scale"
+      }
     },
     {
       "id": "payments-fintech-launch",
@@ -214,7 +323,10 @@
       "summary": "For fintechs and businesses adding digital collections: 1Bill and Raast, payment journeys and merchant onboarding.",
       "forWhom": "For fintechs and businesses adding digital collections",
       "gets": "1Bill and Raast, payment journeys and merchant onboarding.",
-      "proof": { "label": "1Bill and Raast approvals at AsaanBill", "href": "/ventures/asaanbill/#approvals" }
+      "proof": {
+        "label": "1Bill and Raast approvals at AsaanBill",
+        "href": "/ventures/asaanbill/#approvals"
+      }
     },
     {
       "id": "talks-workshops",
@@ -223,7 +335,10 @@
       "summary": "For universities, incubators and events: sessions on pitching, go-to-market and early sales.",
       "forWhom": "For universities, incubators and events",
       "gets": "Sessions on pitching, go-to-market and early sales.",
-      "proof": { "label": "HITEC, NUML, Air University and NUST EME", "href": "/recognition/speaking-events/" }
+      "proof": {
+        "label": "HITEC, NUML, Air University and NUST EME",
+        "href": "/recognition/speaking-events/"
+      }
     }
   ],
   "_testimonialsHowTo": "Add objects like { \"quote\": \"...\", \"name\": \"...\", \"role\": \"...\", \"company\": \"...\" }. The homepage Testimonials section appears as soon as there is at least one.",

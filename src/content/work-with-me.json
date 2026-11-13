@@ -52,7 +52,7 @@
       },
       {
         "q": "How do we start?",
-        "a": "Send a message with what you're building and pick 'Growth help'. The first step is a short intro call."
+        "a": "Send a message with what you're building and pick 'Growth'. The first step is a short intro call."
       },
       {
         "q": "How can we work together?",
@@ -68,6 +68,6 @@
   "cta": {
     "_headingFrom": "home.json → finalCta.heading",
     "label": "Let's talk",
-    "href": "/contact/?reason=growth-help"
+    "href": "/contact/?reason=growth"
   }
 }

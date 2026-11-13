@@ -14,6 +14,9 @@
  */
 import { playerFor, prepareCards, type Player } from './card-player';
 
+/** The last card's hold, as a share of one card's 70svh step (VentureDeck.astro's height uses the same 0.35) */
+const TAIL = 0.35;
+
 export function initDeck() {
   const root = document.querySelector<HTMLElement>('[data-deck]');
   if (!root) return;
@@ -75,11 +78,13 @@ export function initDeck() {
   const indexFromScroll = () => {
     const { start, range } = geometry();
     const p = Math.min(1, Math.max(0, (scrollY - start) / range));
-    return Math.min(N - 1, Math.max(0, Math.floor(p * N)));
+    // Every card but the last gets one full step of scroll; the last a short TAIL of a step.
+    return Math.min(N - 1, Math.max(0, Math.floor(p * (N - 1 + TAIL))));
   };
   const scrollToCard = (i: number, behavior: ScrollBehavior) => {
     const { start, range } = geometry();
-    scrollTo({ top: start + ((i + 0.5) / N) * range, behavior });
+    const step = range / (N - 1 + TAIL);
+    scrollTo({ top: start + Math.min(i + 0.5, N - 1 + TAIL / 2) * step, behavior });
   };
 
   const setActive = (i: number) => {

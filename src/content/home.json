@@ -28,17 +28,161 @@
   "proof": {
     "heading": "Proof in numbers",
     "nameStripTitle": "Built at, backed by and recognised by",
-    "names": [
-      "Evamp & Saanga",
-      "TapitCard",
-      "NIC Peshawar",
-      "Zindigi Prize (JS Bank)",
-      "LMKT",
-      "AIESEC",
-      "K2prenuer",
-      "Founder Institute",
-      "NUST"
-    ]
+    "brands": [
+      {
+        "name": "Evamp & Saanga",
+        "ref": "cv.experience:evamp-saanga",
+        "colour": "#0082c6",
+        "colourSource": "https://evampsaanga.com/ (the logo's blue, also the site's link colour)"
+      },
+      {
+        "name": "AsaanBill",
+        "ref": "recognition:milestone-asaanbill-start",
+        "colour": "#1863dc",
+        "colourSource": "https://evampsaanga.com/asaan-bill/ (the page's button blue; the logo's blue agrees)",
+        "display": "#3879e1",
+        "_displayNote": "14% towards white, so the name keeps 4.5:1 on near-black (4.64:1)"
+      },
+      {
+        "name": "TapitCard",
+        "ref": "cv.experience:tapitcard",
+        "colour": "#0870b8",
+        "colourSource": "https://www.thetapitcard.com/ (the TapitCard logo's blue)",
+        "display": "#2681c1",
+        "_displayNote": "12% towards white, so the name keeps 4.5:1 on near-black (4.65:1)"
+      },
+      {
+        "name": "DressUp AI",
+        "ref": "cv.experience:dressup",
+        "colour": "#7f92ff",
+        "colourSource": "https://thedressup.co/ (the stylesheet's main accent)"
+      },
+      {
+        "name": "Sonic AI Engine",
+        "ref": "cv.experience:sonicengine-ai",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "HOMS Inc.",
+        "ref": "cv.experience:homs-inc",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "Gameotivity",
+        "ref": "cv.experience:gameotivity",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "Ladenza Clothing",
+        "ref": "cv.otherVentures:ladenza",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "Mustahiq",
+        "ref": "cv.otherVentures:mustahiq",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "Air University",
+        "ref": "cv.education:bs-computer-game-development",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "AUBIC",
+        "ref": "recognition:office-aubic",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "NIC Peshawar",
+        "ref": "recognition:programme-nic-peshawar",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "NIC Islamabad",
+        "ref": "recognition:mou-asaanbill-tuitionist",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "Founder Institute",
+        "ref": "recognition:programme-founder-institute-core",
+        "colour": "#357d45",
+        "colourSource": "https://fi.co/ (the site's dominant green)",
+        "display": "#478956",
+        "_displayNote": "9% towards white, so the name keeps 4.5:1 on near-black (4.63:1)"
+      },
+      {
+        "name": "NUST",
+        "ref": "cv.programmes:nust-sustainable-innovation",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "K2prenuer",
+        "ref": "recognition:programme-k2prenuer",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "Zindigi Prize (JS Bank)",
+        "ref": "recognition:win-zindigi-prize-2023",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "AIESEC",
+        "ref": "recognition:win-aiesec-sparkathon-2023",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "LMKT",
+        "ref": "recognition:top3-lmkt-startup-showdown-2023",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "PGDC",
+        "ref": "recognition:win-pgdc-2023-fyp",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "ICSTSI",
+        "ref": "recognition:win-icstsi",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "NUST EME",
+        "ref": "recognition:talk-nust-eme-2024",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "HITEC University",
+        "ref": "recognition:talk-hitec-hibis-2025",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      },
+      {
+        "name": "NUML",
+        "ref": "recognition:talk-numl-zindigi-2024",
+        "colour": "#c4b5fd",
+        "colourSource": "Not confirmed from an official site or logo: the site's violet."
+      }
+    ],
+    "_brandsNote": "The running credibility strip (Phase 18). Every brand maps to a recognition.json or cv.json id (ref: \"recognition:<id>\" or \"cv.<section>:<id>\"; the build fails on a typo) that links it to Raja as employer, venture, incubator, programme, prize, award or invitation; its name links there. Regulators and payment rails (State Bank, 1LINK) and MOU partners are left out, so nothing implies an endorsement. colour = the brand's main colour from its official site or logo (colourSource), or the site's violet when not confirmed; display = that colour lightened just enough for 4.5:1 on near-black, shown on hover and focus.",
+    "stripPauseLabel": "Pause the names",
+    "stripPlayLabel": "Play the names"
   },
   "products": {
     "heading": "The work",
@@ -48,9 +192,9 @@
     "cards": [
       "asaanbill",
       "tapit",
-      "ladenza",
+      "dressup",
       "sonicengine-ai",
-      "dressup"
+      "ladenza"
     ],
     "_cardsNote": "Card order in the deck (one card per venture). Name, line, metric and link come from site.json → ventures; the tagline (headline), watermark label and card colour from items below.",
     "railLabel": "Venture cards",
@@ -60,12 +204,12 @@
     "cardPauseLabel": "Pause the animation",
     "cardPlayLabel": "Play the animation",
     "_cardLabelsNote": "The pause button on a venture page's header card (one card, Phase 17).",
-    "storyLink": "Read the story",
+    "storyLink": "Read the case study",
     "otherLink": {
       "label": "Other ventures",
       "href": "/ventures/other/"
     },
-    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline = the tagline under the name on the homepage (a draft). color is a colour TOKEN name from global.css (accent, accent-2, fg, accent-strong, accent-2-soft), so a token change updates the cards; the order alternates lime / violet / warm off-white so neighbouring cards in the stack always differ. steps[] are no longer shown as text (Phase 17): their .at times drive the SVG scenes' beats (Ladenza, Sonic AI Engine, Dressup, and the /ventures cards) and .mine marks Raja's part in the drawing; AsaanBill's and TapitCard's cards are live UI with their own beats (src/scripts/asaanbill-board.ts, src/scripts/tapitcard-board.ts). _sources: the research behind each card, never rendered.",
+    "_itemsNote": "One entry per card. label = the faint watermark (the venture name); headline = the tagline under the name on the homepage (a draft). color is a colour TOKEN name from global.css (accent, accent-2, fg, accent-strong, accent-2-soft), so a token change updates the cards; the Phase 18 order (AsaanBill, TapitCard, DressUp AI, Sonic AI Engine, Ladenza) runs lime / violet / warm off-white / light lime / light violet so neighbouring cards in the stack always differ. steps[] are no longer shown as text (Phase 17): their .at times drive the SVG scenes' beats (Ladenza, Sonic AI Engine, Dressup, and the /ventures cards) and .mine marks Raja's part in the drawing; AsaanBill's and TapitCard's cards are live UI with their own beats (src/scripts/asaanbill-board.ts, src/scripts/tapitcard-board.ts). _sources: the research behind each card, never rendered.",
     "items": [
       {
         "id": "asaanbill",
@@ -141,38 +285,38 @@
         }
       },
       {
-        "id": "ladenza",
-        "label": "Ladenza",
-        "headline": "Thrift it. Deliver it.",
+        "id": "dressup",
+        "label": "DressUp AI",
+        "headline": "Search it. Find yours.",
         "color": "fg",
         "draft": true,
-        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-fg (warm off-white), from the site palette (Phase 16).",
-        "duration": 4200,
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-fg (warm off-white) since Phase 18 (was light violet), so neighbouring cards in the new order still differ.",
+        "duration": 3400,
         "steps": [
           {
-            "text": "Branded clothes at a fair price",
+            "text": "A shopper searches",
             "at": 0,
             "mine": false
           },
           {
-            "text": "Hygiene and convenience handled",
-            "at": 900,
+            "text": "Results personalised to them",
+            "at": 700,
             "mine": false
           },
           {
-            "text": "Sold online",
-            "at": 1700,
-            "mine": false
+            "text": "A search bar for brands",
+            "at": 2000,
+            "mine": true
           },
           {
-            "text": "Delivered through hostel dorms",
+            "text": "Ready for Shopify stores",
             "at": 2700,
             "mine": true
           }
         ],
         "_sources": {
-          "source": "No public page was found.",
-          "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales."
+          "source": "No matching public page was found.",
+          "rajasWords": "A hyper-personalised marketplace. As Product Consultant he explored the B2B side, a personalised search bar for brands, and got it ready for Shopify integration."
         }
       },
       {
@@ -212,38 +356,38 @@
         }
       },
       {
-        "id": "dressup",
-        "label": "Dressup",
-        "headline": "Search it. Find yours.",
+        "id": "ladenza",
+        "label": "Ladenza",
+        "headline": "Thrift it. Deliver it.",
         "color": "accent-2-soft",
         "draft": true,
-        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-accent-2-soft (light violet), from the site palette (Phase 16).",
-        "duration": 3400,
+        "_draftNote": "Tagline (headline) is a draft for Raja to revise. Card colour: --color-accent-2-soft (light violet) since Phase 18 (was warm off-white), so neighbouring cards in the new order still differ.",
+        "duration": 4200,
         "steps": [
           {
-            "text": "A shopper searches",
+            "text": "Branded clothes at a fair price",
             "at": 0,
             "mine": false
           },
           {
-            "text": "Results personalised to them",
-            "at": 700,
+            "text": "Hygiene and convenience handled",
+            "at": 900,
             "mine": false
           },
           {
-            "text": "A search bar for brands",
-            "at": 2000,
-            "mine": true
+            "text": "Sold online",
+            "at": 1700,
+            "mine": false
           },
           {
-            "text": "Ready for Shopify stores",
+            "text": "Delivered through hostel dorms",
             "at": 2700,
             "mine": true
           }
         ],
         "_sources": {
-          "source": "No matching public page was found.",
-          "rajasWords": "A hyper-personalised marketplace. As Product Consultant he explored the B2B side, a personalised search bar for brands, and got it ready for Shopify integration."
+          "source": "No public page was found.",
+          "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales."
         }
       }
     ]
@@ -316,9 +460,9 @@
   },
   "ventures": {
     "heading": "Ventures",
-    "intro": "Three markets, one method.",
-    "cardLink": "Read the journey",
-    "description": "Dressup, AsaanBill, Sonic AI Engine, TapitCard, Ladenza Clothing and other ventures by Raja Shaharyar Ali, with the stage each reached.",
+    "intro": "Fintech, SaaS, AI and consumer: five products, one method.",
+    "cardLink": "Read the case study",
+    "description": "AsaanBill, TapitCard, DressUp AI, Sonic AI Engine, Ladenza Clothing and other ventures by Raja Shaharyar Ali, with the stage each reached.",
     "_descriptionDraft": "The /ventures meta description is new wording (the list of ventures changed): for Raja to revise.",
     "yoursNext": {
       "heading": "Yours next?",
@@ -326,14 +470,15 @@
       "draft": true,
       "primary": {
         "label": "Let's talk",
-        "href": "/contact/?reason=growth-help"
+        "href": "/contact/?reason=growth"
       },
       "secondary": {
         "label": "How I work",
         "href": "/work-with-me/"
       },
       "_note": "Shown at /ventures/#yours-next and at the end of /ventures/other/. The line is draft wording for Raja to revise."
-    }
+    },
+    "_introDraft": "Draft (Phase 18): \"Three markets, one method.\" no longer fitted five products."
   },
   "recognition": {
     "heading": "Recognition",
@@ -365,7 +510,7 @@
     "heading": "How I can help",
     "cardButton": {
       "label": "Let's talk",
-      "href": "/contact/?reason=growth-help"
+      "href": "/contact/?reason=growth"
     },
     "cardButtonSpeaking": {
       "label": "Let's talk",

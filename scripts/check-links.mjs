@@ -12,7 +12,10 @@
  *   - a redirect stub (Astro's meta-refresh page for an old address) points at a page or
  *     #anchor that doesn't exist, or at another redirect (no chains),
  *   - consultation first (Phase 17): a link to the CV page or the CV PDF appears anywhere but the
- *     About dropdown and /cv/ itself, or the PDF link doesn't save as site.json → cv.downloadName.
+ *     About dropdown and /cv/ itself, or the PDF link doesn't save as site.json → cv.downloadName,
+ *   - personal details (Phase 18): Raja's original CV PDF carries his date of birth, nationality,
+ *     gender and home address, but no HTML page may: a page whose visible text has one of those
+ *     labels fails. (Only the labels are checked, so the values never appear in this public script.)
  * Then requests every external link once and lists the ones that fail. External
  * failures are reported but never fail the run: many sites answer bots with 403/429.
  * Pass --no-external to skip the network part.
@@ -44,6 +47,7 @@ const isRedirect = (key) => {
 };
 const forbidden = ['TODO', 'Coming soon', 'being written', 'undefined', 'NaN'];
 const cv = JSON.parse(readFileSync('src/content/site.json', 'utf8')).cv;
+const personal = [/Date of birth/i, /\bNationality\b/i, /\bGender\b/i, /\(Home\)/];
 
 for (const f of pages) {
   const html = readFileSync(f, 'utf8');
@@ -66,6 +70,7 @@ for (const f of pages) {
     .replace(/<style[\s\S]*?<\/style>/g, ' ')
     .replace(/<[^>]+>/g, ' ');
   for (const bad of forbidden) if (new RegExp(`\\b${bad}\\b`).test(text)) problems.push(`${page}: visible text contains "${bad}"`);
+  for (const label of personal) if (label.test(text)) problems.push(`${page}: personal detail on the page (${label.source}): only the CV PDF may carry it`);
 
   // The CV: only in the About dropdown (#menu-about) and on /cv/ itself; its PDF saves under one name.
   const outsideMenu = html.replace(/<div id="menu-about"[\s\S]*?<\/ul>\s*<\/div>\s*<\/div>/, '');

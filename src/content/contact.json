@@ -3,16 +3,37 @@
   "description": "Growth help, a talk or workshop, or a partnership: tell Raja Shaharyar Ali what you're building, by form, email, WhatsApp or LinkedIn.",
   "_descriptionDraft": "Meta description rewritten consultation-first (Phase 17): a draft for Raja to revise. It used to start with \"Hiring\".",
   "reasons": [
-    { "value": "growth-help", "label": "Growth help", "hint": "Project, advisory or fractional" },
+    {
+      "value": "growth",
+      "label": "Growth",
+      "hint": "Project, advisory or fractional",
+      "aliases": ["growth-help"],
+      "_note": "Preselected by default (Phase 18). Was \"Growth help\" (?reason=growth-help still works)."
+    },
+    {
+      "value": "consultation",
+      "label": "Consultation",
+      "hint": "A focused session on one question",
+      "draft": true,
+      "_note": "New in Phase 18; the hint is a draft."
+    },
     { "value": "speaking", "label": "Speaking", "hint": "Talks, panels or workshops" },
     {
       "value": "other",
-      "label": "Other",
+      "label": "Others",
       "hint": "Hiring, partnerships or anything else",
       "draft": true,
       "aliases": ["hiring"],
       "_note": "The hint is a draft (Phase 17). aliases: old ?reason= values that now preselect this reason (\"Hiring\" was a reason of its own until Phase 17)."
     }
   ],
-  "_reasonsNote": "Consultation first (Phase 17): Growth help, Speaking and Other. A link can preselect one with /contact/?reason=<value> (or one of its aliases)."
+  "_reasonsNote": "Phase 18 order: Growth (preselected), Consultation, Speaking, Others. A link can preselect one with /contact/?reason=<value> (or one of its aliases): growth, consultation, speaking, other; growth-help and hiring still work.",
+  "phone": {
+    "label": "Phone or WhatsApp",
+    "hint": "So Raja can call or WhatsApp you back",
+    "draft": true,
+    "errorEmpty": "Please enter a phone or WhatsApp number.",
+    "errorInvalid": "Please enter a number with at least 7 digits, using only digits, spaces, + and -.",
+    "_note": "Required since Phase 18 (the hint is a draft). Allowed: digits, spaces, + and -, with at least 7 digits. The value is sent with the message."
+  }
 }

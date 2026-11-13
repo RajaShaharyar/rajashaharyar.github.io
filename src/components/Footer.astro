@@ -110,9 +110,16 @@ const recognition = site.recognitionMenu;
   </div>
   <!-- The name, set large in an outline: decoration (the name is already read out above). SVG text, so it
        scales to the width exactly (viewBox = its measured size at 100 px: 728 × 100). -->
-  <svg class="footer-name" viewBox="-4 -86 736 112" aria-hidden="true" focusable="false">
-    <text x="0" y="0" textLength="728" lengthAdjust="spacingAndGlyphs">{site.name}</text>
-  </svg>
+  <!-- ...and "Entrepreneur" under it, the same size (its measured 536 px at 100 px against the name's 728),
+       offset to the right on desktop -->
+  <div class="footer-words" aria-hidden="true">
+    <svg class="footer-name" viewBox="-4 -86 736 112" focusable="false">
+      <text x="0" y="0" textLength="728" lengthAdjust="spacingAndGlyphs">{site.name}</text>
+    </svg>
+    <svg class="footer-name footer-word" viewBox="-4 -86 544 112" focusable="false">
+      <text x="0" y="0" textLength="536" lengthAdjust="spacingAndGlyphs">Entrepreneur</text>
+    </svg>
+  </div>
 </footer>
 
 <style>
@@ -170,13 +177,27 @@ const recognition = site.recognitionMenu;
     height: 1px;
     background-image: var(--gradient-brand);
   }
-  .footer-name {
-    display: block;
+  .footer-words {
     width: min(100% - 2rem, var(--container-page) - 4rem);
     margin: 0 auto 0.75rem;
+  }
+  .footer-name {
+    display: block;
+    width: 100%;
     overflow: visible;
     opacity: 0.6;
     user-select: none;
+  }
+  /* The same type size as the name: its width is the word's share of the name's (544 / 736) */
+  .footer-word {
+    width: calc(100% * 544 / 736);
+    margin-top: -3.5%; /* the two lines sit like one block of type */
+  }
+  @media (width >= 64rem) {
+    .footer-word {
+      margin-left: auto; /* offset to the right */
+      margin-right: 6%;
+    }
   }
   .footer-name text {
     font-family: var(--font-display);

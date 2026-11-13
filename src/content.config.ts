@@ -98,7 +98,7 @@ const caseStudy = z.object({
 });
 
 /**
- * A lighter venture page (Dressup, Sonic AI Engine), rendered by VentureLayout
+ * A lighter venture page (DressUp AI, Sonic AI Engine), rendered by VentureLayout
  * in the same look as a case study. Company, product, summary, Raja's role,
  * dates, location and "What I did" all come from one cv.json experience entry.
  * The optional blocks render only once they are filled in (not "TODO: …").

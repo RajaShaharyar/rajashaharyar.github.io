@@ -115,7 +115,7 @@ tools/3d/              Blender scripts for the 3D scenes and the frame encoder (
   `src/lib/site.ts`). Blocks and fields with no data are left out entirely: no empty headings or placeholders.
 - `toConfirm` fields list facts to settle before a page relies on them. Raja's answers of 6 Nov 2026 are applied.
 - Contact details live only in `site.json`; the CV and footer read them from there.
-- No date of birth, gender, nationality or home address anywhere in the site or the CV PDF.
+- No date of birth, gender, nationality or home address on any page of the site; only Raja's own CV PDF carries them.
 
 ## Images
 
@@ -139,7 +139,7 @@ A typo in an image path fails the build. Everything except the hero image is laz
 - Three pages (Phase 17), each with one H1, its own title, description, share image and closing call to action
   (`about.json → page`): **My story** (`/about/`), **Education** (`/about/education/`) and **Beyond work**
   (`/about/beyond-work/`). Tabs link the three; the About dropdown adds the CV.
-- **Career timeline**: entries in `about.json → story.timeline.items`, oldest first. Dressup and Gameotivity
+- **Career timeline**: entries in `about.json → story.timeline.items`, oldest first. DressUp AI and Gameotivity
   join it automatically, in date order, once their start dates in `cv.json → experience` are filled in (`YYYY-MM`).
 - **Along the way** (My story): the 2024 photos in date order (`about.json → story.alongTheWay`), with the lightbox.
 - **Recognition**: the /recognition counters, then up to 6 wins (Winner or Top 3) that have a photo, in the
@@ -167,15 +167,15 @@ It is the page's only autoplaying animation; reduced motion and no JavaScript sh
 in the frontmatter adds a logo lockup under the H1 (AsaanBill · by Evamp & Saanga; TapitCard), and `pictures`
 adds an **In pictures** gallery after the first block (AsaanBill: the three portal screens; TapitCard: the
 card's two faces, the website's light hero and How it works, the K2prenuer premiere). A picture that is
-already in Evidence is never repeated. Ladenza, Sonic AI Engine and Dressup have no photos yet: their live
+already in Evidence is never repeated. Ladenza, Sonic AI Engine and DressUp AI have no photos yet: their live
 card is the page's visual.
 
-Dressup and Sonic AI Engine are role stories (`kind: role-story`): the header and the "The product" and "What I
+DressUp AI and Sonic AI Engine are role stories (`kind: role-story`): the header and the "The product" and "What I
 did" blocks come from their `cv.json → experience` entry. The problem, limitations, results, lessons, evidence
 photos and product link render only once filled in; their `todo` lists say what is missing. Other ventures
 (`other.mdx`, `kind: roles`) lists cv.json roles (`roles`) and other ventures (`otherVentures`, e.g. Mustahiq,
-linking to About → Beyond work, with its two photos from `cv.json → otherVentures[].images`). Next links run Dressup → AsaanBill → Sonic AI Engine → TapitCard → Ladenza →
-Other ventures.
+linking to About → Beyond work, with its two photos from `cv.json → otherVentures[].images`). Next links (and every venture list) run AsaanBill → TapitCard → DressUp AI → Sonic AI Engine →
+Ladenza → Other ventures.
 
 ## Recognition pages
 
@@ -190,13 +190,11 @@ hidden. Every photo opens in the same accessible lightbox as the About pages.
 `site.json → contact`). Consultation first: the CV page is linked only from the About dropdown, never from the
 top bar, the hero or the footer.
 
-The PDF is **Raja's own 2-page Europass CV**, not generated from cv.json: `public/Raja-Shaharyar-PM.pdf`, made from
-`_source/Raja Shaharyar PM.pdf` with date of birth, nationality, gender and the home address (with its map-pin
-icon) removed by true redaction (PyMuPDF redaction annotations, applied, so the text is gone from the file, not
-covered), author "Raja Shaharyar Ali", title "Raja Shaharyar PM", no XMP. Everything else is his original wording
-and layout. Its one download link is the "Download PDF" button on `/cv/`, saved as `Raja Shaharyar PM.pdf`
-(`site.json → cv`). To replace it, redact the new original the same way, check with a text extraction that the
-four details are gone, and keep the file name.
+The PDF is **Raja's own 2-page Europass CV**, published byte-for-byte from `_source/Raja Shaharyar PM.pdf` (no edits;
+since Phase 18, at Raja's request, the earlier redaction is undone). It is the one place his date of birth, nationality,
+gender and home address appear: they stay off every HTML page, and `npm run check:links` fails if one of those labels
+shows up in a page. Its one download link is the "Download PDF" button on `/cv/`, saved as `Raja Shaharyar PM.pdf`
+(`site.json → cv`). To replace it, copy the new original over `public/Raja-Shaharyar-PM.pdf`.
 
 ## Contact form
 
@@ -209,8 +207,10 @@ Messages arrive at the address the key belongs to, with Reply-To set to the send
 form sends in the page and shows a confirmation (or an error with email-app and WhatsApp fallbacks); without it,
 the form posts normally and Web3Forms redirects to `/contact/thanks/`. Formspree also works: put the form ID in
 `contact.form.formspreeId` and set `provider` to `"formspree"`.
-Links can preselect a reason, e.g. `/contact/?reason=speaking` (`growth-help`, `speaking`, `other`; the old
-`hiring` preselects Other). The reasons and their hints are in `src/content/contact.json`.
+Links can preselect a reason, e.g. `/contact/?reason=speaking` (`growth`, `consultation`, `speaking`, `other`; the
+old `growth-help` and `hiring` still work). Growth is preselected by default. The reasons, their hints and the phone
+field's wording are in `src/content/contact.json`. The phone/WhatsApp number is required: digits, spaces, `+` and `-`,
+with at least 7 digits.
 
 ## Colour and bands
 
@@ -229,10 +229,11 @@ Near-black with warm off-white text, and two colours with fixed roles (tokens an
 - **Bands** (`.band` + `.band-violet`, `.band-lime`, `.band-deep`, `.band-brand`, or `.band-fill` with
   `--band-bg`/`--ink`/`--ink-muted`): full-bleed sections. Never two colour blocks next to each other.
   Homepage: hero (near-black, drifting aurora and grain) · proof (violet, ink numbers) · credibility
-  (near-black, violet separators) · the work (near-black, a soft violet glow behind the deck) · playbook (deep
+  (near-black: a running strip of 24 names, each mapped to a recognition.json or cv.json id, paused on hover,
+  focus or its pause button, brand colour on hover and focus, static with reduced motion; `NameStrip.astro`, `strip.ts`) · the work (near-black, a soft violet glow behind the deck) · playbook (deep
   violet; nodes violet until reached) · help (lime, near-black cards with lime buttons) · recognition
   (near-black) · closing CTA (the brand gradient, violet to lime, display-xl ink) · footer (near-black, a
-  lime→violet hairline, the name large in outline).
+  lime→violet hairline, the name and "Entrepreneur" large in outline).
 - **Inner pages**: every page header has a violet-led aurora with grain (`Aurora.astro`; static there, drifting
   only in the hero); a venture page's header is a band in that venture's deck colour with ink text and its live
   card. Work With Me: Services on violet, the process on near-black with violet step numbers, the FAQ, the
@@ -271,7 +272,7 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
     two-tone focus ring, near-black inside and off-white outside, so it shows on every card colour).
   - *Card colours:* palette tokens, named in `home.json → products.items[].color` (so a token change updates
     the cards): AsaanBill `accent` (lime), TapitCard `accent-2` (violet), Ladenza `fg` (warm off-white),
-    Sonic AI Engine `accent-strong` (light lime), Dressup `accent-2-soft` (light violet). Two hues and one warm
+    Sonic AI Engine `accent-strong` (light lime), DressUp AI `accent-2-soft` (light violet). Two hues and one warm
     neutral, alternating, so neighbouring cards in the stack always differ. The watermark is the card colour
     80% of the way to `#0b0c0e`.
   - *Edge fade:* every inner panel's content (`.deck-view`) fades out over 20-26 px on all four sides, so

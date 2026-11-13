@@ -82,7 +82,7 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
                       <li>
                         <a
                           href={child.href}
-                          class="submenu-link"
+                          class:list={['submenu-link', child.highlight && 'is-highlight']}
                           aria-current={isCurrent(child.href) ? 'page' : undefined}
                         >
                           <span class="submenu-label">{child.label}</span>
@@ -318,6 +318,20 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
     font-size: 0.875rem;
     line-height: 1.4;
     color: var(--color-fg-muted);
+  }
+  /* The dropdown's one highlighted item ("Invite me to speak"): a violet left bar and violet text. The lime focus
+     ring still shows around it (violet 10.6:1 and the ring 15:1 on the dark menu). */
+  .submenu-link.is-highlight {
+    margin-top: 0.25rem;
+    border-left: 3px solid var(--color-accent-2);
+    border-radius: 0 var(--radius-control) var(--radius-control) 0;
+    background-color: color-mix(in srgb, var(--color-accent-2) 8%, transparent);
+  }
+  .submenu-link.is-highlight .submenu-label {
+    color: var(--color-accent-2);
+  }
+  .submenu-link.is-highlight:hover {
+    background-color: color-mix(in srgb, var(--color-accent-2) 16%, transparent);
   }
 
   /* On phones "Let's talk" docks to the bottom instead (Base.astro). */

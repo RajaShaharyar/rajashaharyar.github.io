@@ -1,11 +1,11 @@
 ---
 /**
- * The closing call to action (homepage, Work With Me, the About pages): a full-bleed block in the
- * brand gradient, violet to lime, with display-xl ink type and a near-black button (lime text).
- * It renders its own section; place it straight in the page, not inside .wrap. The button defaults
- * to site.json → cta; pass href (e.g. with ?reason=…) to preselect a reason on the contact form.
- * Contrast: ink on the gradient is 10.6:1 at its worst point (the violet end).
+ * The closing call to action (homepage, Work With Me, the About pages, the venture pages): a contained,
+ * rounded panel inside the page width (Phase 18: bright colour lives in cards, not page bands). Solid
+ * violet with ink text (10.1:1), a faint grain, and a near-black button with lime text. The button
+ * defaults to site.json → cta; pass href (e.g. with ?reason=…) to preselect a reason on the contact form.
  */
+import Aurora from './Aurora.astro';
 import { site } from '../lib/site';
 
 interface Props {
@@ -19,19 +19,36 @@ interface Props {
 const { heading, href = site.cta.href, label = site.cta.label, headingId = 'cta-heading' } = Astro.props;
 ---
 
-<section class="cta band band-brand defer-render" aria-labelledby={headingId}>
-  <div class="wrap py-20 md:py-28 lg:py-32">
-    <h2 id={headingId} class="max-w-4xl text-display-xl">{heading}</h2>
-    <a href={href} class="btn btn-dark mt-10">{label} <span aria-hidden="true">→</span></a>
+<section class="cta wrap defer-render pt-8 md:pt-12" aria-labelledby={headingId}>
+  <div class="cta-panel band-violet">
+    <Aurora variant="grain" id={`grain-${headingId}`} />
+    <h2 id={headingId} class="max-w-3xl text-display-lg">{heading}</h2>
+    <a href={href} class="btn btn-dark mt-8">{label} <span aria-hidden="true">→</span></a>
   </div>
 </section>
 
 <style>
   .cta {
-    --defer-size: 30rem;
+    --defer-size: 26rem;
   }
-  /* Violet on the left to lime on the right: the brand gradient, mirrored */
-  .cta::before {
-    transform: scaleX(-1);
+  .cta-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 3.5rem 1.5rem;
+    border-radius: 1.5rem;
+  }
+  @media (width >= 40rem) {
+    .cta-panel {
+      padding: 4rem 2.5rem;
+    }
+  }
+  @media (width >= 64rem) {
+    .cta-panel {
+      padding: 5rem 4rem;
+    }
+  }
+  .cta-panel h2 {
+    color: var(--color-accent-2-ink);
   }
 </style>

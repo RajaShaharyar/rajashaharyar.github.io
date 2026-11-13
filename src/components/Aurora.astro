@@ -6,12 +6,13 @@
  *   42-56 s cycles. Transform only; paused off-screen and in a hidden tab (src/scripts/ambient.ts);
  *   static with reduced motion.
  * - variant="static" (inner page headers, Let's talk, 404): the --gradient-aurora token, violet-led.
+ * - variant="grain": the grain only (the violet CTA panel).
  * The grain is one small inline SVG (feTurbulence): CSS and SVG only, no image files.
  * Strength: the shapes peak at 12% violet and 7% lime, so even where two overlap, fg-subtle text
  * keeps 4.5:1 (the numbers are in global.css).
  */
 interface Props {
-  variant?: 'drift' | 'static';
+  variant?: 'drift' | 'static' | 'grain';
   /** Unique per page: the grain's SVG filter id */
   id?: string;
 }
@@ -45,6 +46,7 @@ const { variant = 'static', id = 'grain' } = Astro.props;
     width: 62%;
     aspect-ratio: 1;
     background-image: radial-gradient(circle, rgb(167 139 250 / 0.12), rgb(167 139 250 / 0) 70%);
+    background-image: radial-gradient(circle in oklch, rgb(167 139 250 / 0.12), rgb(167 139 250 / 0) 70%);
   }
   .aurora-2 {
     right: -10%;
@@ -52,6 +54,7 @@ const { variant = 'static', id = 'grain' } = Astro.props;
     width: 46%;
     aspect-ratio: 1;
     background-image: radial-gradient(circle, rgb(190 242 100 / 0.07), rgb(190 242 100 / 0) 70%);
+    background-image: radial-gradient(circle in oklch, rgb(190 242 100 / 0.07), rgb(190 242 100 / 0) 70%);
   }
   .aurora-3 {
     left: 30%;
@@ -59,6 +62,7 @@ const { variant = 'static', id = 'grain' } = Astro.props;
     width: 55%;
     aspect-ratio: 1;
     background-image: radial-gradient(circle, rgb(167 139 250 / 0.1), rgb(167 139 250 / 0) 70%);
+    background-image: radial-gradient(circle in oklch, rgb(167 139 250 / 0.1), rgb(167 139 250 / 0) 70%);
   }
   @media (prefers-reduced-motion: no-preference) {
     .aurora-1 {

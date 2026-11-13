@@ -3,9 +3,8 @@
  * One offer. variant="summary" (homepage "How I can help"): title and its
  * one-line summary. variant="full" (Work With Me): for whom, what they get,
  * and a proof line linking to the venture section that backs it.
- * Phase 17: a near-black card (on-dark, so it reads on the homepage lime band and the Work With Me
- * violet band), a violet index number, the spotlight and gradient border, and an optional lime
- * button (button prop: the homepage cards).
+ * Phase 18: a raised dark card on near-black, with a lime index number and a lime top edge, the
+ * spotlight and gradient border, and an optional lime button (button prop: the homepage cards).
  */
 import ArrowLink from './ArrowLink.astro';
 import type { Offer } from '../lib/site';
@@ -21,8 +20,8 @@ interface Props {
 const { offer, index, variant = 'summary', button } = Astro.props;
 ---
 
-<article class="on-dark flex h-full flex-col gap-4 rounded-card border border-line bg-bg p-6 md:p-8" data-spotlight>
-  <span class="font-mono text-sm font-bold text-accent-2" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+<article class="offer flex h-full flex-col gap-4 rounded-card border border-line bg-surface p-6 md:p-8" data-spotlight>
+  <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
   <h3 class="text-2xl md:text-[1.75rem]">{offer.title}</h3>
   {
     variant === 'summary' ? (
@@ -49,3 +48,10 @@ const { offer, index, variant = 'summary', button } = Astro.props;
     )
   }
 </article>
+
+<style>
+  /* A lime top edge: the card's own 2 px border, so the radius carries it */
+  .offer {
+    border-top: 2px solid var(--color-accent);
+  }
+</style>

@@ -6,8 +6,9 @@
  * then How I work, moved from the old Skills page) · FAQ (#faq: the last
  * answer lists the engagement models) · the closing call to action,
  * which preselects "Growth".
- * Phase 17: an aurora header; Services on a violet band (near-black cards); the working process on
- * near-black with violet step numbers; the FAQ; a brand-gradient closing block.
+ * Phase 18: an aurora header; Services on near-black with a soft violet glow (raised cards with lime
+ * numbers and top edges); the working process on near-black with violet step numbers; the FAQ; a
+ * contained violet closing panel.
  * Copy: src/content/work-with-me.json · CTA heading: home.json → finalCta
  */
 import Base from '../layouts/Base.astro';
@@ -31,8 +32,8 @@ const sectionY = 'py-16 md:py-20';
     </div>
   </header>
 
-  <!-- 1. Services, on a violet band -->
-  <section id="services" class="band band-violet py-16 md:py-20" aria-labelledby="services-heading">
+  <!-- 1. Services, on near-black with a soft violet glow behind -->
+  <section id="services" class="glow-violet py-16 md:py-20" aria-labelledby="services-heading">
     <div class="wrap">
       <SectionHeader id="services-heading" heading={copy.offersHeading} />
       <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>

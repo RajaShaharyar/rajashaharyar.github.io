@@ -53,6 +53,13 @@
      section bands.
    Lime sits at hue 82 and violet at about 252, almost opposite on the colour
    wheel, so they set each other off and both stand out on near-black.
+   WHERE BRIGHT COLOUR GOES (Phase 18, "bright colour lives in cards, not in page bands"):
+   - Lime, violet and gradient FILLS appear only inside rounded cards and panels: deck cards, the live
+     venture cards, the closing CTA panel, chips and buttons.
+   - The ONE full-bleed bright band on the whole site is the homepage Quick-proof band (violet).
+   - Deep-violet bands (accent-2-deep) and subtle aurora glows are allowed: they read as dark.
+   - Every gradient interpolates in OKLCH (linear-gradient(in oklch, ...)), so its middle stays vivid,
+     never grey (sRGB fallbacks for browsers without it).
    Text on a lime or violet fill always uses the ink tokens; focus rings are lime
    on dark and near-black on lime and violet fills (--focus-ring, set by the bands).
    Contrast (WCAG 2.2, computed): on bg, fg 17.2, fg-muted 8.8, fg-subtle 6.2,
@@ -88,14 +95,14 @@
   --color-accent-2-ink: #150f26; /* text on violet fills (10.1:1) */
   --color-accent-2-ink-muted: #4b3f72; /* muted text on violet fills (5.05:1) */
 
-  /* Gradients. brand: lime → violet (a block can mirror it: the closing CTA runs violet → lime);
-     aurora: layered radial gradients of violet and lime at low alpha (the static form of the hero's
-     drifting aurora, used behind inner page headers). */
+  /* Gradients (sRGB here; the OKLCH versions follow in an @supports block below the theme).
+     brand: lime → violet; aurora: layered radial gradients of violet and lime at low alpha (the static
+     form of the hero's drifting aurora, used behind inner page headers). */
   --gradient-brand: linear-gradient(100deg, var(--color-accent), var(--color-accent-2));
   --gradient-aurora:
-    radial-gradient(42% 70% at 12% 18%, rgb(167 139 250 / 0.12), transparent 70%),
-    radial-gradient(34% 60% at 88% 10%, rgb(167 139 250 / 0.09), transparent 70%),
-    radial-gradient(30% 55% at 70% 95%, rgb(190 242 100 / 0.06), transparent 70%);
+    radial-gradient(42% 70% at 12% 18%, rgb(167 139 250 / 0.12), rgb(167 139 250 / 0) 70%),
+    radial-gradient(34% 60% at 88% 10%, rgb(167 139 250 / 0.09), rgb(167 139 250 / 0) 70%),
+    radial-gradient(30% 55% at 70% 95%, rgb(190 242 100 / 0.06), rgb(190 242 100 / 0) 70%);
 
   /* Type: clean sans for body, stronger display face for headings */
   --font-sans: "Inter Variable", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -128,6 +135,17 @@
   /* Motion */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-reveal: cubic-bezier(0.2, 0.7, 0.2, 1); /* scroll reveal, hero intro */
+}
+
+/* Every gradient in OKLCH where the browser can: the middle of lime → violet stays vivid instead of grey. */
+@supports (background-image: linear-gradient(in oklch, red, blue)) {
+  :root {
+    --gradient-brand: linear-gradient(in oklch 100deg, var(--color-accent), var(--color-accent-2));
+    --gradient-aurora:
+      radial-gradient(42% 70% at 12% 18% in oklch, rgb(167 139 250 / 0.12), rgb(167 139 250 / 0) 70%),
+      radial-gradient(34% 60% at 88% 10% in oklch, rgb(167 139 250 / 0.09), rgb(167 139 250 / 0) 70%),
+      radial-gradient(30% 55% at 70% 95% in oklch, rgb(190 242 100 / 0.06), rgb(190 242 100 / 0) 70%);
+  }
 }
 
 /* Page container: 16px side gutter on phones, wider from tablet up */
@@ -265,7 +283,7 @@
     border-color: var(--color-fg);
     background-color: var(--color-raised);
   }
-  /* On a lime, violet or gradient band: near-black with lime text */
+  /* On a violet panel or the proof band: near-black with lime text */
   .btn-dark {
     background-color: var(--color-accent-ink);
     color: var(--color-accent);
@@ -470,8 +488,9 @@
   }
 
   /* ------------------------------------------------------------------------
-     BANDS (Phase 17): full-bleed sections. Never two colour blocks next to each
-     other. Each sets its text and the focus-ring colour for what is inside.
+     BANDS AND PANELS. Full-bleed: the homepage proof band (violet, the only bright one) and deep-violet
+     bands. A violet PANEL (the closing CTA) uses the same class inside the page width. Each sets its
+     text and the focus-ring colour for what is inside.
      ------------------------------------------------------------------------ */
   .band {
     position: relative;
@@ -484,26 +503,14 @@
     background-color: var(--color-accent-2);
     color: var(--ink);
   }
-  .band-lime {
-    --focus-ring: var(--color-accent-ink);
-    --ink: var(--color-accent-ink);
-    --ink-muted: var(--color-accent-ink-muted);
-    background-color: var(--color-accent);
-    color: var(--ink);
+  .band-violet .lead,
+  .band-violet .eyebrow {
+    color: var(--ink-muted);
   }
-  .band-brand {
-    --focus-ring: var(--color-accent-ink);
-    --ink: var(--color-accent-ink);
-    --ink-muted: var(--color-accent-ink-muted);
+  .band-violet .arrow-link,
+  .band-violet .arrow-link .arrow {
     color: var(--ink);
-  }
-  /* The gradient is drawn on its own layer, so a band can mirror it (scaleX(-1)) */
-  .band-brand::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image: var(--gradient-brand);
+    text-decoration-color: var(--ink);
   }
   .band-deep {
     background-color: var(--color-accent-2-deep);
@@ -514,68 +521,19 @@
     border-color: rgb(167 139 250 / 0.28);
     background-color: rgb(167 139 250 / 0.28);
   }
-  /* Any fill colour (a venture's header band): set --band-bg, --ink and --ink-muted */
-  .band-fill {
-    --focus-ring: var(--color-accent-ink);
-    background-color: var(--band-bg);
-    color: var(--ink);
+  /* A soft violet glow behind a near-black section (Work With Me → Services), 12% at most */
+  .glow-violet {
+    position: relative;
+    isolation: isolate;
   }
-  /* Dark cards inside a lime or violet band go back to lime rings */
-  .band-violet .on-dark,
-  .band-lime .on-dark,
-  .band-brand .on-dark,
-  .band-fill .on-dark {
-    --focus-ring: var(--color-accent);
-    color: var(--color-fg);
-  }
-  /* ...and their links, eyebrows and leads are the dark-surface ones again */
-  .band-violet .on-dark .arrow-link,
-  .band-lime .on-dark .arrow-link,
-  .band-brand .on-dark .arrow-link,
-  .band-fill .on-dark .arrow-link {
-    color: var(--color-fg);
-    text-decoration-color: var(--color-accent-2-strong);
-  }
-  .band-violet .on-dark .arrow-link .arrow,
-  .band-lime .on-dark .arrow-link .arrow,
-  .band-brand .on-dark .arrow-link .arrow,
-  .band-fill .on-dark .arrow-link .arrow {
-    color: var(--color-accent-2);
-  }
-  .band-violet .on-dark .lead,
-  .band-lime .on-dark .lead,
-  .band-brand .on-dark .lead,
-  .band-fill .on-dark .lead {
-    color: var(--color-fg-muted);
-  }
-  .band-violet .on-dark .eyebrow,
-  .band-lime .on-dark .eyebrow,
-  .band-brand .on-dark .eyebrow,
-  .band-fill .on-dark .eyebrow {
-    color: var(--color-accent-2);
-  }
-  .band-violet .lead,
-  .band-lime .lead,
-  .band-brand .lead,
-  .band-fill .lead {
-    color: var(--ink-muted);
-  }
-  .band-violet .eyebrow,
-  .band-lime .eyebrow,
-  .band-brand .eyebrow,
-  .band-fill .eyebrow {
-    color: var(--ink-muted);
-  }
-  .band-violet .arrow-link,
-  .band-lime .arrow-link,
-  .band-brand .arrow-link,
-  .band-fill .arrow-link,
-  .band-violet .arrow-link .arrow,
-  .band-lime .arrow-link .arrow,
-  .band-brand .arrow-link .arrow,
-  .band-fill .arrow-link .arrow {
-    color: var(--ink);
-    text-decoration-color: var(--ink);
+  .glow-violet::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(60% 70% at 50% 45%, rgb(167 139 250 / 0.1), rgb(167 139 250 / 0) 72%);
+    background-image: radial-gradient(60% 70% at 50% 45% in oklch, rgb(167 139 250 / 0.1), rgb(167 139 250 / 0) 72%);
+    pointer-events: none;
   }
 
   /* Aurora: 2-3 soft violet and lime shapes behind a band's content (Aurora.astro). The hero's
@@ -655,6 +613,7 @@
     margin: -11rem 0 0 -11rem;
     border-radius: 50%;
     background-image: radial-gradient(circle, rgb(167 139 250 / 0.16), rgb(167 139 250 / 0) 65%);
+    background-image: radial-gradient(circle in oklch, rgb(167 139 250 / 0.16), rgb(167 139 250 / 0) 65%);
     transform: translate(var(--sx, -50rem), var(--sy, -50rem));
     will-change: transform;
   }

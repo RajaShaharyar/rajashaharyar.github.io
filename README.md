@@ -226,20 +226,24 @@ Near-black with warm off-white text, and two colours with fixed roles (tokens an
   `accent-2-ink-muted`, all at least 4.5:1 on their fills). Buttons on a band are near-black with lime text
   (`.btn-dark`). Focus rings are lime on dark and near-black on fills: a band sets `--focus-ring`, and a dark
   card inside a band (`.on-dark`) sets it back.
-- **Bands** (`.band` + `.band-violet`, `.band-lime`, `.band-deep`, `.band-brand`, or `.band-fill` with
-  `--band-bg`/`--ink`/`--ink-muted`): full-bleed sections. Never two colour blocks next to each other.
-  Homepage: hero (near-black, drifting aurora and grain) · proof (violet, ink numbers) · credibility
+- **Where bright colour goes** (Phase 18, also in the `global.css` token comment): lime, violet and gradient fills
+  appear only inside rounded cards and panels (deck cards, live venture cards, the closing CTA panel, chips,
+  buttons). The one full-bleed bright band on the site is the homepage Quick-proof band (violet). Deep-violet
+  bands (`.band-deep`) and subtle aurora glows are allowed, because they read as dark. Every gradient
+  interpolates in OKLCH (`linear-gradient(in oklch, …)`), with an sRGB fallback, so lime → violet stays vivid.
+  Homepage: hero (near-black, drifting aurora and grain) · proof (the violet band, ink numbers) · credibility
   (near-black: a running strip of 24 names, each mapped to a recognition.json or cv.json id, paused on hover,
-  focus or its pause button, brand colour on hover and focus, static with reduced motion; `NameStrip.astro`, `strip.ts`) · the work (near-black, a soft violet glow behind the deck) · playbook (deep
-  violet; nodes violet until reached) · help (lime, near-black cards with lime buttons) · recognition
-  (near-black) · closing CTA (the brand gradient, violet to lime, display-xl ink) · footer (near-black, a
-  lime→violet hairline, the name and "Entrepreneur" large in outline).
-- **Inner pages**: every page header has a violet-led aurora with grain (`Aurora.astro`; static there, drifting
-  only in the hero); a venture page's header is a band in that venture's deck colour with ink text and its live
-  card. Work With Me: Services on violet, the process on near-black with violet step numbers, the FAQ, the
-  gradient CTA. About: a violet timeline with a lime "current" marker, Recognition on deep violet, Along the way
-  on near-black. Recognition pages: violet badges, counters on deep violet. Let's talk: aurora, the selected
-  reason violet with ink, the submit button lime.
+  focus or its pause button, brand colour on hover and focus, static with reduced motion; `NameStrip.astro`,
+  `strip.ts`) · the work (near-black, a soft violet glow behind the deck) · playbook (deep violet; nodes violet
+  until reached) · help (near-black: raised dark cards with lime numbers, a lime top edge and lime buttons) ·
+  recognition (near-black) · closing CTA (a contained violet panel with grain, ink type, a near-black button) ·
+  footer (near-black, a lime→violet hairline, the name and "Entrepreneur" large in outline).
+- **Inner pages**: every page header is near-black with a violet-led aurora and grain (`Aurora.astro`); a venture
+  page's header has a 2px top rule and eyebrow in that venture's deck colour and a soft glow in it (12% at most)
+  behind its live card. Work With Me: Services on near-black with a soft violet glow (`.glow-violet`) and the
+  raised cards, the process with violet step numbers, the FAQ, the CTA panel. About: a violet timeline with a lime
+  "current" marker, Recognition on deep violet. Recognition pages: violet badges, counters on deep violet. Let's
+  talk: aurora, the selected reason violet with ink, the submit button lime.
 - **Signature details**: cards marked `data-spotlight` (service, venture, recognition, stage) get a lime→violet
   gradient border on hover and keyboard focus, and on fine pointers a soft violet glow that follows the pointer
   (`src/scripts/ambient.ts`, transform only, off with reduced motion). Headings use `text-wrap: balance`,

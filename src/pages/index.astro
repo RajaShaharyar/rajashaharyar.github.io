@@ -4,9 +4,10 @@
  * hero · quick proof (#proof) · credibility strip (#credibility) · products
  * (#products) · methodologies (#playbook) · how I can help (#help) ·
  * recognition (#recognition) · testimonials (#testimonials) · closing CTA.
- * Rhythm (Phase 17): full-bleed bands, never two colour blocks next to each other: hero (near-black,
- * aurora) · proof (violet) · credibility (near-black) · the work (near-black, violet glow) · playbook
- * (deep violet) · help (lime) · recognition (near-black) · closing CTA (brand gradient) · footer.
+ * Rhythm (Phase 18: bright colour lives in cards): hero (near-black, aurora) · proof (violet, the
+ * site's one bright full-bleed band) · credibility (near-black, a running strip) · the work (near-black,
+ * violet glow) · playbook (deep violet) · help (near-black, raised cards) · recognition (near-black) ·
+ * closing CTA (a contained violet panel) · footer.
  * Copy: src/content/home.json · numbers, ventures, offers, testimonials: site.json
  * Photos and alt text: images.json · Recognition carousel: recognition.json
  */
@@ -61,8 +62,8 @@ const sectionY = 'py-16 md:py-24';
     </div>
   </section>
 
-  <!-- 6. How I can help: the four offers, near-black cards on a lime band -->
-  <section id="help" class:list={['band band-lime', sectionY, 'defer-render']} aria-labelledby="help-heading">
+  <!-- 6. How I can help: the four offers, raised dark cards (lime numbers and top edges) on near-black -->
+  <section id="help" class:list={[sectionY, 'defer-render']} aria-labelledby="help-heading">
     <div class="wrap">
       <SectionHeader id="help-heading" heading={help.heading} />
       <ul class="mt-10 grid gap-4 md:mt-12 md:grid-cols-2 lg:gap-6 xl:grid-cols-4" data-reveal-stagger>
@@ -76,7 +77,7 @@ const sectionY = 'py-16 md:py-24';
             ))
         }
       </ul>
-      <a href={help.link.href} class="btn btn-dark mt-8">{help.link.label} <span aria-hidden="true">→</span></a>
+      <ArrowLink href={help.link.href} class="mt-8">{help.link.label}</ArrowLink>
     </div>
   </section>
 
@@ -107,6 +108,6 @@ const sectionY = 'py-16 md:py-24';
     )
   }
 
-  <!-- 9. Closing call to action: a full-bleed brand-gradient block (the footer follows) -->
+  <!-- 9. Closing call to action: a contained violet panel (the footer follows) -->
   <CTA heading={finalCta.heading} />
 </Base>

@@ -434,5 +434,137 @@
     "alt": "Group photo with the US delegation, representing Pakistani startups",
     "caption": "With the US delegation, representing Pakistani startups",
     "source": "Represented Startups of Pakistan to US Delegation.jpeg"
+  },
+  "ventures/asaanbill-create-invoice.webp": {
+    "width": 1116,
+    "height": 913,
+    "widths": [
+      480,
+      960,
+      1116
+    ],
+    "alt": "AsaanBill's merchant portal, Create an invoice: the PSID, Dynamic QR, Static QR and Request to Pay options, the invoice form and a live preview with how to pay",
+    "caption": "AsaanBill portal: creating an invoice",
+    "source": "asaanbill-ui-01-create-invoice.png",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise.",
+    "note": "Merchant account \"Rehman Enterprises\": Raja approved publishing these screens (Phase 16/17)."
+  },
+  "ventures/asaanbill-dashboard.webp": {
+    "width": 1662,
+    "height": 901,
+    "widths": [
+      480,
+      960,
+      1662
+    ],
+    "alt": "AsaanBill's merchant portal dashboard: invoices, revenue and disbursement cards, the cashflow chart and payment analytics",
+    "caption": "AsaanBill portal: the dashboard",
+    "source": "asaanbill-ui-03-dashboard.png",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise."
+  },
+  "ventures/asaanbill-logo.webp": {
+    "width": 480,
+    "height": 148,
+    "widths": [
+      480
+    ],
+    "alt": "AsaanBill",
+    "caption": "AsaanBill logo",
+    "source": "asaanbill-logo.png",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise."
+  },
+  "ventures/asaanbill-reports.webp": {
+    "width": 1632,
+    "height": 912,
+    "widths": [
+      480,
+      960,
+      1632
+    ],
+    "alt": "AsaanBill's merchant portal, Reports: each payment followed from receivable to settlement to payout, four totals and the invoice table",
+    "caption": "AsaanBill portal: Reports, following each payment",
+    "source": "asaanbill-ui-02-reports.png",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise."
+  },
+  "ventures/evamp-saanga-logo.webp": {
+    "width": 308,
+    "height": 46,
+    "widths": [
+      308
+    ],
+    "alt": "Evamp & Saanga",
+    "caption": "Evamp & Saanga logo",
+    "source": "evamp-saanga-logo.png",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise."
+  },
+  "ventures/tapitcard-card-back.webp": {
+    "width": 1400,
+    "height": 928,
+    "widths": [
+      700,
+      1400
+    ],
+    "urls": {
+      "700": "/media/tapitcard/tapitcard-back-700.webp",
+      "1400": "/media/tapitcard/tapitcard-back-1400.webp"
+    },
+    "alt": "The TapitCard card, back: a QR code and www.thetapitcard.com",
+    "caption": "The TapitCard card: back, with its QR code",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise.",
+    "source": "tapitcard-card-back.png (exported in Phase 16 to public/media/tapitcard/, reused here)"
+  },
+  "ventures/tapitcard-card-front.webp": {
+    "width": 1400,
+    "height": 908,
+    "widths": [
+      700,
+      1400
+    ],
+    "urls": {
+      "700": "/media/tapitcard/tapitcard-front-700.webp",
+      "1400": "/media/tapitcard/tapitcard-front-1400.webp"
+    },
+    "alt": "The TapitCard card, front: \"Digital contact card\", the TapitCard logo and its T-and-waves mark",
+    "caption": "The TapitCard card: front",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise.",
+    "source": "tapitcard-card-front.png (exported in Phase 16 to public/media/tapitcard/, reused here)"
+  },
+  "ventures/tapitcard-logo.webp": {
+    "width": 423,
+    "height": 132,
+    "widths": [
+      423
+    ],
+    "alt": "TapitCard",
+    "caption": "TapitCard logo",
+    "source": "tapitcard-logo.png",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise."
+  },
+  "ventures/tapitcard-website-hero.webp": {
+    "width": 1600,
+    "height": 899,
+    "widths": [
+      480,
+      960,
+      1600
+    ],
+    "alt": "TapitCard's website: \"Revolutionizing Contact Sharing with JUST A TAP!\", with Sign up now and How it works buttons beside an illustration of people sharing contacts by QR",
+    "caption": "TapitCard's website",
+    "source": "tapitcard-website-hero.jpg",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise.",
+    "note": "The light hero (not the dark one, whose cards carry Apple and Mastercard logos). Its illustration shows small social-network icons, as on the live site."
+  },
+  "ventures/tapitcard-website-how-it-works.webp": {
+    "width": 1600,
+    "height": 899,
+    "widths": [
+      480,
+      960,
+      1600
+    ],
+    "alt": "TapitCard's website, How it works: Add Social Links, Customize Design, Business Hours and Unlimited Changes, and \"Create, Login, Add up your Social Links and Start NETWORKING!\"",
+    "caption": "TapitCard's website: How it works",
+    "source": "tapitcard-website-how-it-works.jpg",
+    "_draft": "Alt text and caption are new wording (Phase 17): drafts for Raja to revise."
   }
 }

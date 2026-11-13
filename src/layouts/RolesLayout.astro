@@ -5,7 +5,8 @@
  * come from src/content/cv.json → experience (company, role, dates, what they
  * built, what Raja did), so the CV and this page never disagree. The first role
  * is the wide featured card. Cards for cv.json → otherVentures (Mustahiq)
- * follow, each linking to where it is told. Dates that are still a TODO are
+ * follow, each linking to where it is told, with its photos (cv.json → images).
+ * No HOMS or Gameotivity photos exist yet. Dates that are still a TODO are
  * hidden; an outcome shows only where one exists. The page ends with the
  * shared "Yours next?" block (yoursNext: true) or its own call to action.
  */
@@ -14,6 +15,7 @@ import SubPageHeader from '../components/SubPageHeader.astro';
 import ArrowLink from '../components/ArrowLink.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import YoursNext from '../components/YoursNext.astro';
+import Gallery from '../components/Gallery.astro';
 import { bulletText, cv, getExperience, roleDates } from '../lib/cv';
 import { filled } from '../lib/site';
 import type { RolesPage } from '../lib/ventures';
@@ -41,7 +43,7 @@ const others = data.otherVentures.map((id) => {
   return { ...item, meta: [item.role, filled(item.dates)].filter(Boolean).join(' · ') };
 });
 // The page an "other venture" is told on (Mustahiq: About → Beyond work)
-const linkLabel = (href: string) => (href.includes('#beyond-work') ? 'Beyond work' : 'Read more');
+const linkLabel = (href: string) => (href.startsWith('/about/beyond-work/') ? 'Beyond work' : 'Read more');
 ---
 
 <Base title={data.title} description={data.summary}>
@@ -75,6 +77,9 @@ const linkLabel = (href: string) => (href.includes('#beyond-work') ? 'Beyond wor
               <h2 class="role-company">{o.name}</h2>
               <p class="role-meta">{o.meta}</p>
             </div>
+            {o.images && o.images.length > 0 && (
+              <Gallery label={`${o.name} photos`} items={o.images.map((image) => ({ image }))} layout="strip" sizes="(min-width: 768px) 360px, 100vw" />
+            )}
             <div class="role-body">
               <p class="role-text">{o.text}</p>
               <ArrowLink href={o.href} srContext={o.name} class="mt-3">

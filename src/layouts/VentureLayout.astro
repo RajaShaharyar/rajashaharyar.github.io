@@ -10,6 +10,10 @@
  *   experience entry: the header carries Raja's role, dates and location; then
  *   product · what-i-did · problem · limitations · results · lessons ·
  *   evidence · next, and a closing call to action. No stage badge, no metric.
+ * Both kinds add "In pictures" (frontmatter pictures, a gallery) after the first block, and
+ * the header shows the venture's logo lockup (frontmatter logo) and its live deck card
+ * (DeckCard, the same animation as on the homepage, playing on its own: src/scripts/
+ * venture-card.ts) on the right; on phones the card sits below the header text.
  * Each block has an anchor id and renders only when it has data.
  * A value that is still "TODO: …" counts as missing, so its block or field is
  * simply left out: no empty headings, no placeholders.
@@ -24,7 +28,9 @@ import Counter from '../components/Counter.astro';
 import Gallery from '../components/Gallery.astro';
 import ArrowLink from '../components/ArrowLink.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
+import DeckCard from '../components/DeckCard.astro';
 import home from '../content/home.json';
+import { getImage } from '../lib/images';
 import { site, filled } from '../lib/site';
 import { bulletText, getExperience, roleDates } from '../lib/cv';
 import { getRecognition, photosOf } from '../lib/recognition';
@@ -78,12 +84,20 @@ const glossary = cs?.glossary ?? [];
 const contributions = cs?.contributions ?? [];
 const press = cs?.press ?? [];
 const evidence = data.evidenceIds.map(getRecognition).flatMap((item) => photosOf(item).map((p) => ({ image: p.file, caption: p.caption })));
+// "In pictures": never a photo that is already in Evidence on this page
+const evidenceFiles = new Set(evidence.map((e) => e.image));
+const pictures = data.pictures.filter((key) => !evidenceFiles.has(key)).map((image) => ({ image }));
+// The header: the logo lockup and the live card (every venture with a homepage deck card has one)
+const logo = data.logo ? { main: getImage(data.logo.image), by: data.logo.by ? getImage(data.logo.by) : undefined } : undefined;
+const hasCard = home.products.items.some((item) => item.id === id);
+const copy = home.products;
 const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
 
 const blocks = [
   { id: 'snapshot', label: 'Snapshot', show: Boolean(cs) },
   { id: 'product', label: 'The product', show: Boolean(rs) },
   { id: 'what-i-did', label: 'What I did', show: Boolean(role) },
+  { id: 'pictures', label: 'In pictures', show: pictures.length > 0 },
   { id: 'problem', label: 'The problem', show: Boolean(problemText) },
   ...stageBlocks.map((b) => ({ id: b.id, label: b.name, show: Boolean(filled(b.text)) })),
   { id: 'approvals', label: 'Approvals', show: Boolean(spotlight) },
@@ -107,7 +121,37 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
     title={experience?.company ?? data.title}
     intro={rs ? experience?.product : card?.line}
     facts={headerFacts}
-  />
+  >
+    {
+      logo && (
+        <p class="venture-logos" slot="logos">
+          <img src={logo.main.src} alt={logo.main.alt} width={logo.main.width} height={logo.main.height} class="venture-logo" />
+          {logo.by && (
+            <>
+              <span class="venture-logos-by">by</span>
+              <img src={logo.by.src} alt={logo.by.alt} width={logo.by.width} height={logo.by.height} class="venture-logo venture-logo-by" />
+            </>
+          )}
+        </p>
+      )
+    }
+    {
+      hasCard && (
+        <div class="venture-card" data-live-card slot="aside">
+          <DeckCard id={id}>
+            <button type="button" class="deck-toggle" data-card-toggle aria-label={copy.cardPauseLabel} data-pause={copy.cardPauseLabel} data-play={copy.cardPlayLabel} hidden>
+              <svg class="deck-icon-pause" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M5.5 3.5v9M10.5 3.5v9" />
+              </svg>
+              <svg class="deck-icon-play" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M5 3.2v9.6L12.5 8z" />
+              </svg>
+            </button>
+          </DeckCard>
+        </div>
+      )
+    }
+  </SubPageHeader>
 
   <div class="wrap venture">
     <nav class="toc" aria-label="On this page" data-toc>
@@ -205,6 +249,26 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
                 <li>{bulletText(bullet)}</li>
               ))}
             </ul>
+          </section>
+        )
+      }
+
+      <!-- In pictures -->
+      {
+        pictures.length > 0 && (
+          <section id="pictures" class="block" aria-labelledby="pictures-heading" data-block data-reveal>
+            <h2 id="pictures-heading" class="block-title">
+              In pictures
+            </h2>
+            <div class="mt-8">
+              <Gallery
+                label={`${data.title} in pictures`}
+                items={pictures}
+                columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                aspect="aspect-[16/10]"
+                sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+              />
+            </div>
           </section>
         )
       }
@@ -500,6 +564,29 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 </Base>
 
 <style>
+  /* The header's logo lockup: "AsaanBill · by Evamp & Saanga" on a light plate, so the logos' own
+     colours always read */
+  .venture-logos {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-top: 1.25rem;
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-control);
+    background-color: #fff;
+    color: #3d4450;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .venture-logo {
+    display: block;
+    width: auto;
+    height: 1.75rem;
+  }
+  .venture-logo-by {
+    height: 1.125rem;
+  }
   .venture {
     padding-top: 2.5rem;
     padding-bottom: 1rem;
@@ -872,6 +959,9 @@ const shown = new Set(blocks.filter((b) => b.show).map((b) => b.id));
 </style>
 
 <script>
+  import { initVentureCard } from '../scripts/venture-card';
+  initVentureCard();
+
   // "On this page": mark the block being read (the first one while at the top of the page).
   const links = new Map(
     Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')).map((a) => [a.dataset.tocLink, a]),

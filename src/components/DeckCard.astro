@@ -1,0 +1,159 @@
+---
+/**
+ * One venture card: the venture's coloured card with its faint watermark label and a dark inner panel
+ * holding the live animation (AsaanBill: the rebuilt portal, AsaanBillBoard; TapitCard: the 3D card,
+ * TapitCardBoard; the others: their SVG scene, ProductScene). Used by the homepage deck (VentureDeck,
+ * which stacks and switches the cards) and by each venture page's header (VentureLayout, one card that
+ * plays on its own). The colour is a token name from home.json → products.items[].color.
+ * Its styles are global so either parent can place it; the pause button (.deck-toggle) shares them.
+ * Behaviour: src/scripts/card-player.ts (with deck.ts or venture-card.ts).
+ */
+import ProductScene from './ProductScene.astro';
+import AsaanBillBoard from './AsaanBillBoard.astro';
+import TapitCardBoard from './TapitCardBoard.astro';
+import home from '../content/home.json';
+
+interface Props {
+  id: string;
+  /** Deck position (data-pos) for the homepage stack */
+  pos?: 'active' | 'past' | 'future';
+  /** Extra inline style (the deck's grid rows and stacking order) */
+  style?: string;
+  class?: string;
+}
+
+const { id, pos, style = '', class: className } = Astro.props;
+const story = home.products.items.find((s) => s.id === id);
+if (!story) throw new Error(`DeckCard: no home.json → products.items entry for "${id}".`);
+---
+
+<div class:list={['deck-card', className]} data-card={id} data-duration={story.duration} data-pos={pos} style={`--card-bg:var(--color-${story.color});${style}`}>
+  <span class="deck-label" aria-hidden="true" data-label={story.label}></span>
+  <div class="deck-panel">
+    <div class="deck-view">{id === 'asaanbill' ? <AsaanBillBoard /> : id === 'tapit' ? <TapitCardBoard /> : <ProductScene id={id} />}</div>
+  </div>
+  <slot />
+</div>
+
+<style is:global>
+  .deck-card {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 1;
+    border-radius: 40px;
+    background: var(--card-bg);
+    overflow: hidden;
+  }
+  .deck-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* The watermark is pure decoration (drawn from data-label, outside the accessibility tree): the
+     card colour, a fifth of the way to the page's near-black */
+  .deck-label::before {
+    content: attr(data-label);
+  }
+  .deck-label {
+    position: absolute;
+    left: 6%;
+    top: 3.5%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 10.5cqw;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+    color: color-mix(in oklab, var(--card-bg) 80%, #0b0c0e);
+    user-select: none;
+  }
+  .deck-panel {
+    position: absolute;
+    left: 5.5%;
+    right: 5.5%;
+    top: 19%;
+    bottom: 5.5%;
+    border-radius: min(28px, 4.5cqw);
+    background-color: #0f1114;
+    overflow: hidden;
+  }
+  /* The edge fade: 20-26 px on every side, so neighbouring pieces fade out at the panel's edge */
+  .deck-view {
+    --fade: clamp(20px, 4cqw, 26px);
+    --fade-x: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+    --fade-y: linear-gradient(to bottom, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    -webkit-mask-image: var(--fade-x), var(--fade-y);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--fade-x), var(--fade-y);
+    mask-composite: intersect;
+  }
+  .deck-panel .scene {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 6%;
+  }
+  .deck-panel .scene svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The pause/play button (one per deck, or one per venture-page card) */
+  .deck-toggle {
+    position: absolute;
+    right: 2.2%;
+    bottom: 2.2%;
+    z-index: 30;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background-color: rgb(11 12 14 / 0.82);
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-fg);
+    cursor: pointer;
+  }
+  .deck-toggle[hidden] {
+    display: none;
+  }
+  .deck-toggle:hover {
+    color: var(--color-accent);
+  }
+  /* A two-tone ring (near-black inside, off-white outside) that shows on every card colour */
+  .deck-toggle:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow:
+      0 0 0 3px var(--color-bg),
+      0 0 0 5px var(--color-fg);
+  }
+  .deck-toggle svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .deck-icon-play {
+    display: none;
+    fill: currentColor !important;
+    stroke-width: 1 !important;
+  }
+  .deck-toggle[data-paused] .deck-icon-pause {
+    display: none;
+  }
+  .deck-toggle[data-paused] .deck-icon-play {
+    display: block;
+  }
+</style>

@@ -10,9 +10,14 @@ export interface ImageInfo {
   /** Photographer's credit, shown with the caption wherever the photo appears */
   credit?: string;
   source: string;
+  /**
+   * Files that live outside public/images, by width (the TapitCard card faces reuse the deck's
+   * public/media/tapitcard/ files): when set, these URLs are used instead of /images/<key>.
+   */
+  urls?: Record<string, string>;
 }
 
-/** Keys are paths under public/images, e.g. "speaking/talk-numl-session.webp". */
+/** Keys are paths under public/images, e.g. "speaking/talk-numl-session.webp" (or a name for an entry with urls). */
 const images: Record<string, ImageInfo> = manifest;
 
 /** True once `npm run images` has produced the file. */
@@ -21,7 +26,8 @@ export function hasImage(key: string | null | undefined): key is string {
 }
 
 /** URL of the copy that is `width` px wide ("…-480.webp"); the largest keeps the plain name. */
-function urlFor(key: string, width: number, largest: number): string {
+function urlFor(key: string, width: number, largest: number, urls?: Record<string, string>): string {
+  if (urls) return urls[String(width)];
   return `/images/${width === largest ? key : key.replace(/\.webp$/, `-${width}.webp`)}`;
 }
 
@@ -32,8 +38,8 @@ export function getImage(key: string): ImageInfo & { src: string; srcset: string
     throw new Error(`Image "${key}" is not in src/content/images.json. Add it to scripts/images.mjs and run npm run images.`);
   }
   const widths = info.widths?.length ? info.widths : [info.width];
-  const srcset = widths.map((w) => `${urlFor(key, w, info.width)} ${w}w`).join(', ');
-  return { ...info, widths, src: `/images/${key}`, srcset };
+  const srcset = widths.map((w) => `${urlFor(key, w, info.width, info.urls)} ${w}w`).join(', ');
+  return { ...info, widths, src: urlFor(key, info.width, info.width, info.urls), srcset };
 }
 
 /** Caption with the photographer's credit appended, for places that show one line of text. */

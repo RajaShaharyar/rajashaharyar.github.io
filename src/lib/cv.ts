@@ -106,7 +106,7 @@ export interface Cv {
   keyNumbers: Section;
   experience: Section & { linkLabel: string; items: ExperienceItem[] };
   otherVentures: Section & {
-    items: { id: string; name: string; role: string; when?: string; dates?: string; text: string; href: string }[];
+    items: { id: string; name: string; role: string; when?: string; dates?: string; text: string; href: string; images?: string[] }[];
   };
   education: Section & { items: EducationItem[] };
   programmes: Section & { items: Programme[] };

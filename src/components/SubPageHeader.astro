@@ -7,6 +7,8 @@
  * come from site.json → recognitionMenu. Only the menu's own pages are tabs: an
  * anchor on another page ("Yours next?") or a page outside the section (the CV in
  * the About menu) is not.
+ * Slots: "logos" (under the H1: a venture's logo lockup) and "aside" (a venture's live card: on
+ * the right from 1024 px, below the header text on narrower screens).
  */
 import { site, withSlash } from '../lib/site';
 
@@ -27,40 +29,72 @@ const children = (menu?.children ?? []).filter((c) => !c.href.includes('#') && w
 const shownFacts = facts.filter((f): f is { label: string; value: string } => Boolean(f.value));
 const pages = overviewLabel && !children.some((c) => withSlash(c.href) === withSlash(section)) ? [{ label: overviewLabel, href: section }, ...children] : children;
 const path = withSlash(Astro.url.pathname);
+const hasAside = Astro.slots.has('aside');
 ---
 
-<header class="wrap pt-8 md:pt-12">
-  <nav aria-label={`${menu?.label ?? ''} pages`}>
-    <ul class="flex flex-wrap gap-2">
+<header class:list={['page-header', hasAside && 'has-aside']}>
+  <div class="wrap pt-8 md:pt-12">
+    <nav aria-label={`${menu?.label ?? ''} pages`}>
+      <ul class="flex flex-wrap gap-2">
+        {
+          pages.map((page) => (
+            <li>
+              <a href={page.href} class="sub-tab" aria-current={withSlash(page.href) === path ? 'page' : undefined}>
+                {page.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="page-header-grid">
+      <div class="page-header-text">
+        <p class="eyebrow mt-10 md:mt-14">{menu?.label}</p>
+        <h1 class="mt-4 max-w-4xl text-display-lg">{title}</h1>
+        <slot name="logos" />
+        {intro && <p class="lead mt-6 max-w-prose">{intro}</p>}
+        {
+          shownFacts.length > 0 && (
+            <dl class="header-facts">
+              {shownFacts.map((f) => (
+                <div>
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+      </div>
       {
-        pages.map((page) => (
-          <li>
-            <a href={page.href} class="sub-tab" aria-current={withSlash(page.href) === path ? 'page' : undefined}>
-              {page.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-  <p class="eyebrow mt-10 md:mt-14">{menu?.label}</p>
-  <h1 class="mt-4 max-w-4xl text-display-lg">{title}</h1>
-  {intro && <p class="lead mt-6 max-w-prose">{intro}</p>}
-  {
-    shownFacts.length > 0 && (
-      <dl class="header-facts">
-        {shownFacts.map((f) => (
-          <div>
-            <dt>{f.label}</dt>
-            <dd>{f.value}</dd>
+        hasAside && (
+          <div class="page-header-aside">
+            <slot name="aside" />
           </div>
-        ))}
-      </dl>
-    )
-  }
+        )
+      }
+    </div>
+  </div>
 </header>
 
 <style>
+  /* With a live card: text on the left, the card on the right from 1024 px; below the text before that */
+  .page-header-aside {
+    margin-top: 2.5rem;
+    width: min(100%, 26rem);
+  }
+  @media (width >= 64rem) {
+    .has-aside .page-header-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
+      column-gap: 4rem;
+      align-items: end;
+    }
+    .page-header-aside {
+      width: 100%;
+      margin-top: 2.5rem;
+    }
+  }
   .header-facts {
     display: flex;
     flex-wrap: wrap;

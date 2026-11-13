@@ -57,6 +57,9 @@
     "skipLabel": "Skip the ventures",
     "pauseLabel": "Pause animations",
     "playLabel": "Play animations",
+    "cardPauseLabel": "Pause the animation",
+    "cardPlayLabel": "Play the animation",
+    "_cardLabelsNote": "The pause button on a venture page's header card (one card, Phase 17).",
     "storyLink": "Read the story",
     "otherLink": {
       "label": "Other ventures",

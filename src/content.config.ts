@@ -30,6 +30,10 @@ const limitations = z
   .array(z.object({ constraint: z.string(), whyItMattered: z.string(), tried: z.string(), worked: z.string(), result: z.string() }))
   .default([]);
 const results = z.object({ tiles: z.array(metric).min(1), definition: z.string().optional() }).optional();
+/** "In pictures" (Phase 17): images.json keys, a gallery after the first section. Evidence photos stay in Evidence. */
+const pictures = z.array(z.string().endsWith('.webp')).default([]);
+/** Logo lockup under the H1 (images.json keys): the venture's logo, and its maker's after "by" */
+const logo = z.object({ image: z.string().endsWith('.webp'), by: z.string().endsWith('.webp').optional() }).optional();
 
 /**
  * A case study (AsaanBill, Tapit, Ladenza), rendered by VentureLayout. Every
@@ -88,6 +92,8 @@ const caseStudy = z.object({
   /** recognition.json ids whose photos make the evidence gallery */
   evidenceIds: z.array(z.string()).default([]),
   press: z.array(link).default([]),
+  pictures,
+  logo,
   next: link.optional(),
 });
 
@@ -111,6 +117,8 @@ const roleStory = z.object({
   lessons: z.array(z.string()).default([]),
   /** recognition.json ids whose photos make the evidence gallery */
   evidenceIds: z.array(z.string()).default([]),
+  pictures,
+  logo,
   next: link.optional(),
   cta: z.object({ heading: z.string(), link }),
 });

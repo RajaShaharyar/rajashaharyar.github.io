@@ -9,91 +9,16 @@
  * List (narrow and short): each card plays while it is in view.
  * Reduced motion or no JavaScript: CSS shows a plain list in final frames; nothing here runs
  * except loading what the static cards need (fonts, the TapitCard images, AsaanBill's pieces).
+ * The cards themselves (DeckCard.astro) and their players are shared with the venture pages
+ * (card-player.ts).
  */
-import { createBoard } from './asaanbill-board';
-import { createTapit } from './tapitcard-board';
-import type { Board } from './board-camera';
-
-interface Player {
-  cycle: number;
-  first(): void;
-  start(): void;
-  pause(): void;
-  resume(): void;
-  tick(t: number): void;
-  ready?(): boolean; // false holds the clock at 0 (the AsaanBill board while it is still being laid out)
-}
-
-const HOLD = 1500;
-
-function svgPlayer(scene: HTMLElement, duration: number): Player {
-  const arm = (play: boolean) => {
-    if (scene.hasAttribute('data-armed')) {
-      scene.removeAttribute('data-playing');
-      scene.removeAttribute('data-armed');
-      void scene.offsetWidth; // restart the CSS animations from their first frame
-    }
-    scene.setAttribute('data-armed', '');
-    if (play) scene.setAttribute('data-playing', '');
-  };
-  return {
-    cycle: duration + HOLD,
-    first: () => arm(false),
-    start: () => arm(true),
-    pause: () => scene.removeAttribute('data-playing'),
-    resume: () => scene.setAttribute('data-playing', ''),
-    tick() {},
-  };
-}
-
-/** A live board (AsaanBill, TapitCard): render(t) is pure, so the clock is all there is. */
-function boardPlayer(b: Board, ready?: () => boolean): Player {
-  return { cycle: b.cycle, first: () => b.render(0), start: () => b.render(0), pause() {}, resume() {}, tick: (t) => b.render(t), ready };
-}
-
-/** TapitCard's card images: 700w when the panel is at most 800 device px wide, else 1400w. */
-function loadCardImages(root: HTMLElement) {
-  const imgs = Array.from(root.querySelectorAll<HTMLImageElement>('img[data-tc-src]'));
-  if (!imgs.length || imgs[0].src) return;
-  const panel = imgs[0].closest<HTMLElement>('.deck-panel') ?? root;
-  const w = panel.clientWidth * devicePixelRatio <= 800 ? 700 : 1400;
-  for (const im of imgs) im.src = `/media/tapitcard/tapitcard-${im.dataset.tcSrc}-${w}.webp`;
-}
+import { playerFor, prepareCards, type Player } from './card-player';
 
 export function initDeck() {
   const root = document.querySelector<HTMLElement>('[data-deck]');
   if (!root) return;
-  // Near, in every mode: apply the AsaanBill card's display font (so it only downloads now), then lay
-  // out the board's pieces one per frame, in story order (see AsaanBillBoard.astro).
-  new IntersectionObserver(
-    (entries, io) => {
-      if (!entries[0].isIntersecting) return;
-      io.disconnect();
-      root.setAttribute('data-near', '');
-      const pieces = Array.from(root.querySelectorAll<HTMLElement>('[data-ab-board] > *'));
-      const frame = (fn: () => void) => requestAnimationFrame(() => setTimeout(fn)); // one piece per frame
-      const next = () => {
-        pieces.shift()?.setAttribute('data-shown', '');
-        if (pieces.length) frame(next);
-      };
-      const font = document.fonts?.load('800 16px "Plus Jakarta Sans AB"') ?? Promise.resolve();
-      Promise.race([font, new Promise((r) => setTimeout(r, 1500))]).then(() => frame(next), () => frame(next));
-    },
-    { rootMargin: '50% 0px' },
-  ).observe(root);
-  // The card images: once the deck is within one viewport, but never on first paint (so only after
-  // the visitor scrolls), or as soon as it is actually on screen.
-  const images = (margin: string) =>
-    new IntersectionObserver(
-      (entries, io) => {
-        if (!entries[0].isIntersecting) return;
-        io.disconnect();
-        loadCardImages(root);
-      },
-      { rootMargin: margin },
-    ).observe(root);
-  images('0px');
-  addEventListener('scroll', () => images('100% 0px'), { once: true, passive: true });
+  // Near, in every mode: fonts, the AsaanBill board's pieces and the TapitCard images (card-player.ts).
+  prepareCards(root);
   if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
   const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-card]'));
   const texts = Array.from(root.querySelectorAll<HTMLElement>('[data-card-text]'));
@@ -189,16 +114,7 @@ export function initDeck() {
 
   // ---------------------------------------------------------------- set up when the deck is near
   const setup = () => {
-    players = cards.map((c) => {
-      const ab = c.querySelector<HTMLElement>('[data-ab]');
-      if (ab) {
-        let filled = false;
-        return boardPlayer(createBoard(ab), () => (filled ||= !ab.querySelector('[data-ab-board] > :not([data-shown])')));
-      }
-      const tc = c.querySelector<HTMLElement>('[data-tc]');
-      if (tc) return boardPlayer(createTapit(tc));
-      return svgPlayer(c.querySelector<HTMLElement>('.scene')!, Number(c.dataset.duration));
-    });
+    players = cards.map(playerFor);
     // Cards still to come are off-screen; each is armed when it becomes active (or passed). In the
     // list, every card shows its first frame until it plays.
     if (!pinned.matches) players.forEach((p) => p.first());

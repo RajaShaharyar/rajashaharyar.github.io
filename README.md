@@ -122,20 +122,26 @@ tools/3d/              Blender scripts for the 3D scenes and the frame encoder (
 Photos are never copied by hand. Add the original file name and its clean output path to the list in
 `scripts/images.mjs`, run `npm run images`, then fill in `alt` and `caption` for the new entry in
 `src/content/images.json`. The script finds the file by exact name under `_source/`, applies EXIF rotation,
-resizes to max 1600px wide, writes WebP, strips all metadata (EXIF, GPS, ICC, XMP) and verifies it.
+resizes to max 1600px wide (never upscaling), writes WebP, strips all metadata (EXIF, GPS, ICC, XMP) and verifies
+it. Per-entry options: `native` keeps a UI screenshot at its own width (the AsaanBill portal screens), `quality`
+keeps text crisp (88-90 for screenshots and logos), `trim` crops a logo's empty transparent margin.
 It also writes 480 and 960 px copies (`name-480.webp`, `name-960.webp`) that `Media` serves through
 `srcset`/`sizes`; the plain file name stays the largest version.
 iPhone HEIC files are decoded with `heic-convert` first (sharp can't read HEVC), and a PDF page source
 (`{ pdf, page }`) extracts that page's one embedded JPEG byte-for-byte with `pdf-lib`; that's how the
-"2024 in review" photos come out of *2024 Unwrapped.pdf* without the slide's text and stickers.
+"Along the way" photos come out of *2024 Unwrapped.pdf* without the slide's text and stickers. An entry in
+`images.json` can also point at files outside `public/images` with `urls` (by width): the TapitCard card faces
+on its venture page reuse the deck's `public/media/tapitcard/` files that way.
 A typo in an image path fails the build. Everything except the hero image is lazy-loaded.
 
-## About page
+## About pages
 
-- One page, eight sections, with an "On this page" row (`about.json → page.sections`).
+- Three pages (Phase 17), each with one H1, its own title, description, share image and closing call to action
+  (`about.json → page`): **My story** (`/about/`), **Education** (`/about/education/`) and **Beyond work**
+  (`/about/beyond-work/`). Tabs link the three; the About dropdown adds the CV.
 - **Career timeline**: entries in `about.json → story.timeline.items`, oldest first. Dressup and Gameotivity
   join it automatically, in date order, once their start dates in `cv.json → experience` are filled in (`YYYY-MM`).
-  "2024 in review" closes the section.
+- **Along the way** (My story): the 2024 photos in date order (`about.json → story.alongTheWay`), with the lightbox.
 - **Recognition**: the /recognition counters, then up to 6 wins (Winner or Top 3) that have a photo, in the
   homepage carousel order, then links to the four Recognition pages.
 - **Education** and **Courses** read the degree and programmes from `cv.json`; a programme's "what it covered" and
@@ -154,11 +160,21 @@ renders every case study the same way and leaves out any block with no data, so 
 later is a data edit. Case-study facts live only there (the CV reads Tapit's pre-sales from `tapit.mdx`).
 A file marked `status: draft` shows a stub until it is published.
 
+Since Phase 17 each venture page's header shows the venture's **live deck card** (`DeckCard.astro`, the same
+animation as on the homepage, with its own pause button; `src/scripts/venture-card.ts` plays it, sharing
+`src/scripts/card-player.ts` with the deck): on the right from 1024 px, below the header text on narrower screens.
+It is the page's only autoplaying animation; reduced motion and no JavaScript show its final frame. A `logo`
+in the frontmatter adds a logo lockup under the H1 (AsaanBill · by Evamp & Saanga; TapitCard), and `pictures`
+adds an **In pictures** gallery after the first block (AsaanBill: the three portal screens; TapitCard: the
+card's two faces, the website's light hero and How it works, the K2prenuer premiere). A picture that is
+already in Evidence is never repeated. Ladenza, Sonic AI Engine and Dressup have no photos yet: their live
+card is the page's visual.
+
 Dressup and Sonic AI Engine are role stories (`kind: role-story`): the header and the "The product" and "What I
 did" blocks come from their `cv.json → experience` entry. The problem, limitations, results, lessons, evidence
 photos and product link render only once filled in; their `todo` lists say what is missing. Other ventures
 (`other.mdx`, `kind: roles`) lists cv.json roles (`roles`) and other ventures (`otherVentures`, e.g. Mustahiq,
-linking to About → Beyond work). Next links run Dressup → AsaanBill → Sonic AI Engine → TapitCard → Ladenza →
+linking to About → Beyond work, with its two photos from `cv.json → otherVentures[].images`). Next links run Dressup → AsaanBill → Sonic AI Engine → TapitCard → Ladenza →
 Other ventures.
 
 ## Recognition pages

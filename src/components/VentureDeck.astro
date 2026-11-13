@@ -16,16 +16,12 @@
  * - Reduced motion and no JavaScript: a plain list of cards in their final state.
  * - Every text block stays in the DOM and the accessibility tree (inactive ones are only visually
  *   hidden); the animations are aria-hidden. Behaviour: src/scripts/deck.ts.
- * - AsaanBill's card is its real portal UI rebuilt as live HTML (AsaanBillBoard); TapitCard's is
- *   its real card artwork in CSS 3D with its rebuilt "How it works" cards (TapitCardBoard); the
- *   other three reuse their SVG scenes (ProductScene) until their real-material phases.
- * - Every inner panel fades out at its edges (.deck-view), so context around a focus area fades
- *   instead of being cut mid-word.
+ * - Each card is a DeckCard (also used in each venture page's header): AsaanBill's is its real
+ *   portal UI rebuilt as live HTML, TapitCard's its real card artwork in CSS 3D, the other three
+ *   their SVG scenes. Every inner panel fades out at its edges.
  */
 import { getEntry } from 'astro:content';
-import ProductScene from './ProductScene.astro';
-import AsaanBillBoard from './AsaanBillBoard.astro';
-import TapitCardBoard from './TapitCardBoard.astro';
+import DeckCard from './DeckCard.astro';
 import ArrowLink from './ArrowLink.astro';
 import home from '../content/home.json';
 import { site } from '../lib/site';
@@ -37,7 +33,7 @@ async function card(id: string, i: number) {
   const story = copy.items.find((s) => s.id === id);
   const entry = await getEntry('ventures', id);
   if (!venture || !story || !entry) throw new Error(`home.json → products: "${id}" needs a site.json venture, a products.items entry and a venture file.`);
-  return { ...venture, i, label: story.label, tagline: story.headline, duration: story.duration, bg: `var(--color-${story.color})` };
+  return { ...venture, i, label: story.label, tagline: story.headline };
 }
 const cards = await Promise.all(copy.cards.map(card));
 const N = cards.length;
@@ -96,18 +92,7 @@ const N = cards.length;
       <div class="deck-stack">
         {
           cards.map((c, i) => (
-            <div
-              class="deck-card"
-              data-card={c.id}
-              data-duration={c.duration}
-              data-pos={i === 0 ? 'active' : 'future'}
-              style={`--card-bg:${c.bg};--row-mc:${2 * i + 3};--row-d:${i + 2};z-index:${i + 1}`}
-            >
-              <span class="deck-label" aria-hidden="true" data-label={c.label} />
-              <div class="deck-panel">
-                <div class="deck-view">{c.id === 'asaanbill' ? <AsaanBillBoard /> : c.id === 'tapit' ? <TapitCardBoard /> : <ProductScene id={c.id} />}</div>
-              </div>
-            </div>
+            <DeckCard id={c.id} pos={i === 0 ? 'active' : 'future'} style={`--row-mc:${2 * i + 3};--row-d:${i + 2};z-index:${i + 1}`} />
           ))
         }
         <button type="button" class="deck-toggle" data-deck-toggle aria-label={copy.pauseLabel} data-pause={copy.pauseLabel} data-play={copy.playLabel} hidden>
@@ -217,126 +202,6 @@ const N = cards.length;
     margin-top: 0.5rem;
   }
 
-  /* ------------------------------------------------------------ cards */
-  .deck-card {
-    position: relative;
-    container-type: inline-size;
-    aspect-ratio: 1;
-    border-radius: 40px;
-    background: var(--card-bg);
-    overflow: hidden;
-  }
-  .deck-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: #000;
-    opacity: 0;
-    pointer-events: none;
-  }
-  /* The watermark is pure decoration (drawn from data-label, outside the accessibility tree): the
-     card colour, a fifth of the way to the page's near-black */
-  .deck-label::before {
-    content: attr(data-label);
-  }
-  .deck-label {
-    position: absolute;
-    left: 6%;
-    top: 3.5%;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 10.5cqw;
-    line-height: 1;
-    letter-spacing: -0.035em;
-    white-space: nowrap;
-    color: color-mix(in oklab, var(--card-bg) 80%, #0b0c0e);
-    user-select: none;
-  }
-  .deck-panel {
-    position: absolute;
-    left: 5.5%;
-    right: 5.5%;
-    top: 19%;
-    bottom: 5.5%;
-    border-radius: min(28px, 4.5cqw);
-    background-color: #0f1114;
-    overflow: hidden;
-  }
-  /* The edge fade: 20-26 px on every side, so neighbouring pieces fade out at the panel's edge */
-  .deck-view {
-    --fade: clamp(20px, 4cqw, 26px);
-    --fade-x: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
-    --fade-y: linear-gradient(to bottom, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    -webkit-mask-image: var(--fade-x), var(--fade-y);
-    -webkit-mask-composite: source-in;
-    mask-image: var(--fade-x), var(--fade-y);
-    mask-composite: intersect;
-  }
-  .deck-panel :global(.scene) {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    place-items: center;
-    padding: 6%;
-  }
-  .deck-panel :global(.scene svg) {
-    width: 100%;
-    height: 100%;
-  }
-  .deck-toggle {
-    position: absolute;
-    right: 2.2%;
-    bottom: 2.2%;
-    z-index: 30;
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
-    display: grid;
-    place-items: center;
-    background-color: rgb(11 12 14 / 0.82);
-    border: 1px solid var(--color-line-strong);
-    color: var(--color-fg);
-    cursor: pointer;
-  }
-  .deck-toggle[hidden] {
-    display: none;
-  }
-  .deck-toggle:hover {
-    color: var(--color-accent);
-  }
-  /* A two-tone ring (near-black inside, off-white outside) that shows on every card colour */
-  .deck-toggle:focus-visible {
-    outline: 2px solid transparent;
-    box-shadow:
-      0 0 0 3px var(--color-bg),
-      0 0 0 5px var(--color-fg);
-  }
-  .deck-toggle svg {
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .deck-icon-play {
-    display: none;
-    fill: currentColor !important;
-    stroke-width: 1 !important;
-  }
-  .deck-toggle[data-paused] .deck-icon-pause {
-    display: none;
-  }
-  .deck-toggle[data-paused] .deck-icon-play {
-    display: block;
-  }
-
   /* ------------------------------------------------------------ plain list (default) */
   .deck-pin {
     display: grid;
@@ -358,12 +223,12 @@ const N = cards.length;
   .deck-text {
     grid-row: var(--row-m);
   }
-  .deck-card {
+  .deck :global(.deck-card) {
     grid-row: var(--row-mc);
     width: min(100%, 36rem);
     margin-bottom: 1.75rem;
   }
-  .deck-toggle {
+  .deck :global(.deck-toggle) {
     display: none;
   }
   @media (width >= 64rem) {
@@ -376,7 +241,7 @@ const N = cards.length;
       grid-row: var(--row-d);
       align-self: center;
     }
-    .deck-card {
+    .deck :global(.deck-card) {
       grid-column: 2;
       grid-row: var(--row-d);
       width: min(100%, 34rem);
@@ -425,36 +290,36 @@ const N = cards.length;
       position: relative;
       aspect-ratio: 1;
     }
-    :global(html.js) .deck-card {
+    :global(html.js) .deck :global(.deck-card) {
       position: absolute;
       inset: 0;
       width: auto;
       margin: 0;
       transition: transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    :global(html.js) .deck-card::after {
+    :global(html.js) .deck :global(.deck-card::after) {
       transition: opacity 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     /* below the viewport: at least a full pinned height down (110% alone can peek on tall screens) */
-    :global(html.js) .deck-card[data-pos='future'] {
+    :global(html.js) .deck :global(.deck-card[data-pos='future']) {
       transform: translateY(max(110%, calc(100svh - var(--hh) + 3rem))) rotate(8deg);
       pointer-events: none;
     }
-    :global(html.js) .deck-card[data-pos='past'] {
+    :global(html.js) .deck :global(.deck-card[data-pos='past']) {
       transform: translateY(calc(var(--depth) * -14px)) rotate(-4deg) scale(0.97);
       pointer-events: none;
     }
-    :global(html.js) .deck-card[data-pos='past']::after {
+    :global(html.js) .deck :global(.deck-card[data-pos='past']::after) {
       opacity: 0.3;
     }
-    :global(html.js) .deck-card[data-pos='past'][data-depth='2'],
-    :global(html.js) .deck-card[data-pos='past'][data-depth='4'] {
+    :global(html.js) .deck :global(.deck-card[data-pos='past'][data-depth='2']),
+    :global(html.js) .deck :global(.deck-card[data-pos='past'][data-depth='4']) {
       transform: translateY(calc(var(--depth) * -14px)) rotate(5deg) scale(0.97);
     }
-    :global(html.js) .deck-toggle {
+    :global(html.js) .deck :global(.deck-toggle) {
       display: grid;
     }
-    :global(html.js) .deck-toggle[hidden] {
+    :global(html.js) .deck :global(.deck-toggle[hidden]) {
       display: none;
     }
   }
@@ -586,14 +451,14 @@ const N = cards.length;
       aspect-ratio: auto;
       container-type: size;
     }
-    :global(html.js) .deck-card {
+    :global(html.js) .deck :global(.deck-card) {
       inset: auto;
       top: 0;
       left: calc((100cqw - min(100cqw, 100cqh)) / 2);
       width: min(100cqw, 100cqh);
       height: min(100cqw, 100cqh);
     }
-    :global(html.js) .deck-toggle {
+    :global(html.js) .deck :global(.deck-toggle) {
       right: calc((100cqw - min(100cqw, 100cqh)) / 2 + 8px);
       bottom: calc(100cqh - min(100cqw, 100cqh) + 8px);
     }

@@ -11,8 +11,12 @@
  *                  decode: heic-convert decodes them to a lossless PNG first
  *     PDF page     { pdf, page }: the ONE embedded JPEG on that page is
  *                  extracted byte-for-byte (never a screenshot of the slide)
- * - Applies EXIF orientation, resizes to max 1600px wide, encodes WebP and
- *   strips ALL metadata (EXIF, GPS, ICC, XMP). Each output is re-read to prove it.
+ * - Applies EXIF orientation, resizes to max 1600px wide (never upscales), encodes
+ *   WebP and strips ALL metadata (EXIF, GPS, ICC, XMP). Each output is re-read to
+ *   prove it. An entry can pass options as a 4th item: { native: true } keeps a UI
+ *   screenshot at its own width even above 1600 px, { quality } sets the WebP
+ *   quality (text in screenshots and logos stays crisp at 88-90), { trim: true }
+ *   crops a logo's empty transparent margin, and logos keep their transparency.
  * - Also writes 480 and 960 px wide copies (<name>-480.webp, <name>-960.webp) for
  *   srcset, so small slots never download the full file. The unsuffixed file stays
  *   the largest version (max 1600 px), so existing references keep working.
@@ -39,7 +43,7 @@ const WEBP = { quality: 78, effort: 6 };
 const UNWRAPPED = '2024 Unwrapped.pdf';
 
 /**
- * [source, output path under public/images (no extension), caption for a new entry]
+ * [source, output path under public/images (no extension), caption for a new entry, options]
  * source is an exact file name, or { pdf: exact file name, page: 1-based page number }.
  */
 const IMAGES = [
@@ -88,6 +92,18 @@ const IMAGES = [
   ['NIC Peshawar recognizing our win.jpeg', 'recognition/zindigi-win-nic-post', "NIC Peshawar's post on TapitCard's Zindigi Prize win"],
   ['Represented Startups of Pakistan to US Delegation.jpeg', 'speaking/us-delegation', 'With the US delegation, representing Pakistani startups'],
   ['Secured Incubation in NIC Peshawar.jpeg', 'recognition/nic-peshawar-cohort-11', 'TapitCard joins NIC Peshawar Cohort-11'],
+
+  // Phase 17: venture pages ("In pictures" and the header logos), from _source/animation-assets/.
+  // The AsaanBill portal screens come from the merchant account "Rehman Enterprises", approved by Raja.
+  // Never tapitcard-website-hero-dark.png: its cards carry Apple and Mastercard logos.
+  ['asaanbill-ui-01-create-invoice.png', 'ventures/asaanbill-create-invoice', 'AsaanBill portal: creating an invoice', { native: true, quality: 88 }],
+  ['asaanbill-ui-02-reports.png', 'ventures/asaanbill-reports', 'AsaanBill portal: Reports, following each payment', { native: true, quality: 88 }],
+  ['asaanbill-ui-03-dashboard.png', 'ventures/asaanbill-dashboard', 'AsaanBill portal: the dashboard', { native: true, quality: 88 }],
+  ['asaanbill-logo.png', 'ventures/asaanbill-logo', 'AsaanBill logo', { native: true, quality: 90, trim: true }],
+  ['evamp-saanga-logo.png', 'ventures/evamp-saanga-logo', 'Evamp & Saanga logo', { native: true, quality: 90, trim: true }],
+  ['tapitcard-logo.png', 'ventures/tapitcard-logo', 'TapitCard logo', { native: true, quality: 90, trim: true }],
+  ['tapitcard-website-hero.jpg', 'ventures/tapitcard-website-hero', "TapitCard's website", { quality: 85 }],
+  ['tapitcard-website-how-it-works.jpg', 'ventures/tapitcard-website-how-it-works', "TapitCard's website: How it works", { quality: 85 }],
 ];
 
 function walk(dir) {
@@ -133,11 +149,12 @@ function pageImages(doc, resources, seen = new Set()) {
 }
 
 /** One WebP at the given max width. sharp writes no metadata unless asked to. */
-async function encode(input, width, outPath) {
-  await sharp(input, { failOn: 'none' })
-    .rotate() // bake in EXIF orientation before the metadata is dropped (no-op when there is none)
+async function encode(input, width, outPath, quality = WEBP.quality, trim = false) {
+  let img = sharp(input, { failOn: 'none' }).rotate(); // bake in EXIF orientation before the metadata is dropped
+  if (trim) img = sharp(await img.trim({ threshold: 1 }).toBuffer());
+  await img
     .resize({ width, withoutEnlargement: true })
-    .webp(WEBP)
+    .webp({ ...WEBP, quality })
     .toFile(outPath);
 }
 
@@ -167,7 +184,7 @@ async function extractPdfJpeg(path, page) {
   return Buffer.from(jpegs[0].contents); // DCTDecode streams are complete JPEG files
 }
 
-for (const [source, outBase, newCaption] of IMAGES) {
+for (const [source, outBase, newCaption, options = {}] of IMAGES) {
   const isPdf = typeof source === 'object';
   const sourceName = isPdf ? source.pdf : source;
   const sourceLabel = isPdf ? `${source.pdf}, page ${source.page}` : source;
@@ -190,12 +207,13 @@ for (const [source, outBase, newCaption] of IMAGES) {
     }
 
     // Largest version first (keeps the plain file name), then the smaller srcset copies.
-    await encode(input, MAX_WIDTH, outPath);
+    const maxWidth = options.native ? (await sharp(input).metadata()).width : MAX_WIDTH;
+    await encode(input, maxWidth, outPath, options.quality, options.trim);
     meta = await verify(outPath, key);
     widths = [meta.width];
     for (const w of VARIANT_WIDTHS.filter((w) => w < meta.width)) {
       const variant = join(OUT_DIR, `${outBase}-${w}.webp`);
-      await encode(input, w, variant);
+      await encode(input, w, variant, options.quality, options.trim);
       await verify(variant, `${outBase}-${w}.webp`);
       widths.unshift(w);
     }

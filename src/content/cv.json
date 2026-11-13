@@ -195,7 +195,9 @@
         "role": "Founder & Operations Head",
         "dates": "TODO: founding date",
         "text": "First project in F-8 Islamabad provides a livelihood; MOU with Human Care Foundation.",
-        "href": "/about/beyond-work/#mustahiq"
+        "href": "/about/beyond-work/#mustahiq",
+        "images": ["about/2024-mustahiq-first-project.webp", "recognition/mou-humancare-mustahiq.webp"],
+        "_imagesNote": "Photos on its card on /ventures/other/ (Phase 17); not on the CV page."
       }
     ]
   },

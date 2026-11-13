@@ -16,7 +16,7 @@ Built with Astro 7, Tailwind CSS 4 and MDX. The output is fully static, and ever
 | `npm run images`  | Convert listed photos from `_source/` into `public/images/` (see below) |
 | `npm run icons`   | Make `apple-touch-icon.png` and `favicon.ico` from `public/favicon.svg` |
 | `npm run og`      | Build and render the 1200×630 share images into `public/og/` |
-| `npm run check:links` | After a build: internal links, anchors, alt text, JSON-LD, then external links |
+| `npm run check:links` | After a build: internal links, anchors, alt text, JSON-LD, the CV only in the About dropdown and `/cv/` (its PDF saved as `Raja Shaharyar PM.pdf`), then external links |
 | `npm run check:a11y`  | After a build: axe on every page at 390px and 1280px (zero violations) |
 | `npx cspell "src/content/**/*"` | Spell-check the content (en-GB, project words in `cspell.json`) |
 
@@ -291,7 +291,8 @@ Motion is subtle, uses only opacity and transform (CLS stays 0) and switches off
     plain list of cards in their final state.
 - **The AsaanBill card** (`AsaanBillBoard.astro`, `src/scripts/asaanbill-board.ts`): AsaanBill's real portal UI
   rebuilt as live HTML/CSS from Raja's AsaanBill screenshots (kept in `_source/`, never committed): same wording,
-  values, colours and radii; Inter for text, Plus Jakarta Sans for headings and figures. Every value appears in those
+  values, colours and radii (the four smallest greys 5-8% darker, so their tiny text keeps 4.5:1 now that the card
+  opens the venture page); Inter for text, Plus Jakarta Sans for headings and figures. Every value appears in those
   screenshots; the story follows one real Reports row (Maintenance Charges – Oct, Ayesha Khan, Rs 166,800).
   - *Board and camera:* the pieces (collection tiles, invoice with How to pay, the Reports row, the stepper, the
     Disbursement card, the donut) sit on one board in screenshot pixels; the panel is a camera that pans and

@@ -10,7 +10,9 @@
  *   - visible text contains "TODO", "Coming soon", "being written", "undefined" or "NaN",
  *   - a JSON-LD block doesn't parse,
  *   - a redirect stub (Astro's meta-refresh page for an old address) points at a page or
- *     #anchor that doesn't exist, or at another redirect (no chains).
+ *     #anchor that doesn't exist, or at another redirect (no chains),
+ *   - consultation first (Phase 17): a link to the CV page or the CV PDF appears anywhere but the
+ *     About dropdown and /cv/ itself, or the PDF link doesn't save as site.json → cv.downloadName.
  * Then requests every external link once and lists the ones that fail. External
  * failures are reported but never fail the run: many sites answer bots with 403/429.
  * Pass --no-external to skip the network part.
@@ -41,6 +43,7 @@ const isRedirect = (key) => {
   return existsSync(file) && /http-equiv="refresh"/.test(readFileSync(file, 'utf8'));
 };
 const forbidden = ['TODO', 'Coming soon', 'being written', 'undefined', 'NaN'];
+const cv = JSON.parse(readFileSync('src/content/site.json', 'utf8')).cv;
 
 for (const f of pages) {
   const html = readFileSync(f, 'utf8');
@@ -63,6 +66,16 @@ for (const f of pages) {
     .replace(/<style[\s\S]*?<\/style>/g, ' ')
     .replace(/<[^>]+>/g, ' ');
   for (const bad of forbidden) if (new RegExp(`\\b${bad}\\b`).test(text)) problems.push(`${page}: visible text contains "${bad}"`);
+
+  // The CV: only in the About dropdown (#menu-about) and on /cv/ itself; its PDF saves under one name.
+  const outsideMenu = html.replace(/<div id="menu-about"[\s\S]*?<\/ul>\s*<\/div>\s*<\/div>/, '');
+  for (const m of outsideMenu.matchAll(/<a\b[^>]*\shref="([^"]+)"[^>]*>/g)) {
+    const href = m[1].replace(SITE, '');
+    if (href === cv.pdfHref) {
+      if (page !== cv.pageHref) problems.push(`${page}: CV PDF linked outside ${cv.pageHref}`);
+      if (!m[0].includes(`download="${cv.downloadName}"`)) problems.push(`${page}: CV PDF link doesn't save as "${cv.downloadName}"`);
+    } else if (href.split(/[?#]/)[0] === cv.pageHref && page !== cv.pageHref) problems.push(`${page}: CV page linked outside the About dropdown`);
+  }
 
   for (const m of html.matchAll(/<img\b[^>]*>/g)) {
     images++;

@@ -105,6 +105,7 @@ public/images/         ventures/, recognition/, speaking/, about/, education/
 public/fonts/          Plus Jakarta Sans (Latin, 500-800) for the AsaanBill card; Jost (Latin, 400 and 700) for the
                        TapitCard card; both OFL, licences alongside
 public/media/tapitcard/  the TapitCard card artwork, front and back, WebP at 1400w and 700w (metadata stripped)
+public/media/portraits/  Raja's portraits, cut out and black and white (tools/portraits/process.py; see Portraits)
 tools/3d/              Blender scripts for the 3D scenes and the frame encoder (see tools/3d/README.md)
 ```
 
@@ -116,6 +117,30 @@ tools/3d/              Blender scripts for the 3D scenes and the frame encoder (
 - `toConfirm` fields list facts to settle before a page relies on them. Raja's answers of 6 Nov 2026 are applied.
 - Contact details live only in `site.json`; the CV and footer read them from there.
 - No date of birth, gender, nationality or home address on any page of the site; only Raja's own CV PDF carries them.
+
+## Portraits
+
+Raja's portraits (`_source/1.jpeg` … `5.jpeg`) are cut out and made black and white by `tools/portraits/process.py`
+(`pip install "rembg[cpu]" pymatting truststore`, then `python tools/portraits/process.py --qa`). It writes
+`public/media/portraits/` and a QA sheet per portrait (each cutout on lime, violet, near-black and white, plus 200%
+crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. Look at the sheets before shipping.
+
+- **Cutout:** rembg's `birefnet-portrait` model (MIT; about 1 GB, 8-13 GB of RAM at peak here; `birefnet-general-lite`
+  is the fallback). Other people are removed with rembg's `sam` model (positive points on Raja, negative points on
+  them, intersected with the BiRefNet matte), then only Raja's connected component is kept. See-through patches
+  inside the silhouette are filled, and pymatting's foreground estimation plus a defringe keep the edges free of a
+  grey or coloured halo. 1 and 2 end in a straight line at the desk's top edge; the photos' own straight edges stay
+  on the canvas edge (fully opaque), so a shape can hide them or an edge can carry them.
+- **Black and white:** a channel mix (R .40, G .45, B .15), a gentle S-curve that keeps 0 and 1, local contrast
+  (unsharp radius 2 px at 1200w, 40%) and fine monochrome grain (sigma 4/255). Never upscaled, never mirrored.
+- **Hand-made cutouts win:** a transparent `_source/portraits/N.png` is used as it is for that number. **5 needs
+  one:** the automatic cutout failed the quality gate (the woman behind him overlaps his pointing hand and the
+  microphone), so it is not exported or placed until `_source/portraits/5.png` exists.
+- **Files:** `portrait-N-<width>.webp` (1: 1200/800/480; 2: 1600/1200/800/480; 3: 867/640/400 and 4: 960/640/400,
+  each never wider than its cutout), `portrait-3-colour-<width>.webp` (the colour lens), `portrait-3-avatar.webp`
+  (192 px) and `portrait-4-outline.webp` (the silhouette dilated by 10 px at 1200w, white on alpha, coloured by CSS
+  through `mask-image`). Alt text and sizes are in `images.json` (`portraits/…` keys, with `urls`).
+- **Budgets:** the hero (2) at most 150 KB at 1200w and 80 KB at 800w; any other image at 800w or less at most 80 KB.
 
 ## Images
 

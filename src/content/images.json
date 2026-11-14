@@ -144,6 +144,112 @@
       1600
     ]
   },
+  "portraits/portrait-1.webp": {
+    "width": 1200,
+    "height": 1334,
+    "widths": [
+      480,
+      800,
+      1200
+    ],
+    "urls": {
+      "480": "/media/portraits/portrait-1-480.webp",
+      "800": "/media/portraits/portrait-1-800.webp",
+      "1200": "/media/portraits/portrait-1-1200.webp"
+    },
+    "alt": "Raja Shaharyar Ali, smiling, hands clasped on a desk",
+    "caption": "Portrait: smiling at a desk",
+    "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
+    "source": "1.jpeg (cut out and made black and white by tools/portraits/process.py)"
+  },
+  "portraits/portrait-2.webp": {
+    "width": 1600,
+    "height": 1777,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ],
+    "urls": {
+      "480": "/media/portraits/portrait-2-480.webp",
+      "800": "/media/portraits/portrait-2-800.webp",
+      "1200": "/media/portraits/portrait-2-1200.webp",
+      "1600": "/media/portraits/portrait-2-1600.webp"
+    },
+    "alt": "Raja Shaharyar Ali, smiling and looking to the side",
+    "caption": "Portrait: smiling, looking to the side",
+    "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
+    "source": "2.jpeg (cut out and made black and white by tools/portraits/process.py)"
+  },
+  "portraits/portrait-3-avatar.webp": {
+    "width": 192,
+    "height": 192,
+    "widths": [
+      192
+    ],
+    "urls": {
+      "192": "/media/portraits/portrait-3-avatar.webp"
+    },
+    "alt": "Raja Shaharyar Ali",
+    "caption": "Avatar: head and shoulders",
+    "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
+    "source": "3.jpeg, a square head-and-shoulders crop of the black and white cutout"
+  },
+  "portraits/portrait-3-colour.webp": {
+    "width": 867,
+    "height": 1169,
+    "widths": [
+      400,
+      640,
+      867
+    ],
+    "urls": {
+      "400": "/media/portraits/portrait-3-colour-400.webp",
+      "640": "/media/portraits/portrait-3-colour-640.webp",
+      "867": "/media/portraits/portrait-3-colour-867.webp"
+    },
+    "alt": "Raja Shaharyar Ali, smiling",
+    "caption": "Portrait in colour (the colour lens)",
+    "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
+    "source": "3.jpeg, the matching colour cutout for the colour lens on My story"
+  },
+  "portraits/portrait-3.webp": {
+    "width": 867,
+    "height": 1169,
+    "widths": [
+      400,
+      640,
+      867
+    ],
+    "urls": {
+      "400": "/media/portraits/portrait-3-400.webp",
+      "640": "/media/portraits/portrait-3-640.webp",
+      "867": "/media/portraits/portrait-3-867.webp"
+    },
+    "alt": "Raja Shaharyar Ali, smiling",
+    "caption": "Portrait: smiling, in an olive shirt",
+    "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
+    "source": "3.jpeg (cut out and made black and white by tools/portraits/process.py)"
+  },
+  "portraits/portrait-4.webp": {
+    "width": 960,
+    "height": 1121,
+    "widths": [
+      400,
+      640,
+      960
+    ],
+    "urls": {
+      "400": "/media/portraits/portrait-4-400.webp",
+      "640": "/media/portraits/portrait-4-640.webp",
+      "960": "/media/portraits/portrait-4-960.webp"
+    },
+    "alt": "Raja Shaharyar Ali in a dark suit with a feather lapel pin",
+    "caption": "Portrait: dark suit and a feather lapel pin",
+    "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
+    "source": "4.jpeg (cut out and made black and white by tools/portraits/process.py)"
+  },
   "recognition/aiesec-sparkathon-2023.webp": {
     "width": 1280,
     "height": 1706,

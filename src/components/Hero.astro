@@ -10,11 +10,17 @@
  * The portrait (Phase 19): Raja's black and white cutout (portrait 2, the LCP element: preloaded by
  * index.astro, eager, fetchpriority high, srcset and sizes, width and height). From 1024 px it stands in the
  * left column on the hero's bottom edge, its flat desk line flush with it, about 85% of the hero's height,
- * looking towards the headline on the right. Behind him: a violet disc behind his head and the giant outlined
- * word (home.json → hero.giantWord, aria-hidden) across the lower part of the hero, below the H1. Phones: the
- * text first, then the portrait at full width on the hero's bottom edge, the word smaller behind it.
- * Scroll (scrubbed, reversible; src/scripts/hero-scroll.ts): the word drifts left by up to 20vw, the portrait
- * sinks by up to 40px (rising slower than the page), the disc scales up to 1.06. Static with reduced motion.
+ * looking towards the headline on the right. Behind him: a violet disc behind his head.
+ * The giant word (Phase 19.1; home.json → hero.giantWord, aria-hidden): a band along the hero's bottom edge, the
+ * letters standing on it (nothing clipped), cap height 9vw (at least 72px; 18vw on phones), outline paths in the
+ * H1's typeface (700, -0.02em) with a 1.25px non-scaling #a78bfa stroke at 50%. One word at 9vw is only about
+ * 93vw wide, so the band repeats it and always runs off both sides, even when it has drifted. From 1024 px the
+ * text column keeps its bottom padding at the band's height + 28px, so the letters' tops stay at least 24px
+ * below the role line at every width (the hero grows rather than the letters touching anything). Phones: the
+ * text first, then the portrait at full width on the hero's bottom edge, in front of the band.
+ * Scroll (scrubbed, reversible; src/scripts/hero-scroll.ts): the word drifts left (sideways only) by up to 15vw,
+ * the portrait sinks by up to 40px (rising slower than the page), the disc scales up to 1.06. Static with
+ * reduced motion.
  * The band: near-black with a slow aurora and a fine grain (Aurora.astro); the rotating word uses the brand
  * gradient.
  */
@@ -32,13 +38,27 @@ if (`${hero.headlineLead} ${words.at(-1)}` !== hero.headline) {
 }
 const portrait = heroPortrait(hero.portrait);
 if (giant.word !== hero.giantWord) throw new Error('home.json → hero.giantWord changed: run python tools/portraits/giant_word.py <word>.');
-const giantBox = `-4 ${-(giant.capHeight + 4)} ${giant.width + 8} ${giant.capHeight + 8}`;
+// The band: COPIES of the word, GAP font units apart, its viewBox exactly the glyphs' height (top of the capitals
+// to the lowest point, just under the baseline), so the band's bottom is where the letters stand.
+const COPIES = 3;
+const GAP = 40;
+const [, yMin, , yMax] = giant.box;
+const bandW = COPIES * giant.width + (COPIES - 1) * GAP;
+const bandH = yMax - yMin;
+const giantBox = `0 ${yMin} ${bandW.toFixed(2)} ${bandH.toFixed(2)}`;
+const giantVars = [
+  `--band-ratio:${(bandW / bandH).toFixed(4)}`,
+  `--band-h:${(bandH / giant.capHeight).toFixed(4)}`,
+  `--word-w:${(giant.width / giant.capHeight).toFixed(4)}`,
+  `--gap-w:${(GAP / giant.capHeight).toFixed(4)}`,
+].join(';');
 ---
 
-<section class="hero band" aria-labelledby="hero-heading" data-hero>
+<section class="hero band" aria-labelledby="hero-heading" data-hero style={giantVars}>
   <Aurora variant="drift" id="grain-hero" />
   <svg class="hero-giant" viewBox={giantBox} aria-hidden="true" focusable="false" data-hero-giant>
-    <path d={giant.d}></path>
+    <defs><path id="hero-giant-word" d={giant.d} fill="none" vector-effect="non-scaling-stroke"></path></defs>
+    {Array.from({ length: COPIES }, (_, i) => <use href="#hero-giant-word" x={(i * (giant.width + GAP)).toFixed(2)} />)}
   </svg>
   <div class="wrap hero-grid">
     <div class="hero-intro">
@@ -89,6 +109,11 @@ const giantBox = `-4 ${-(giant.capHeight + 4)} ${giant.width + 8} ${giant.capHei
 <style>
   .hero {
     --portrait-ratio: 1600 / 1777;
+    /* the giant word's cap height (18vw on phones, 9vw and at least 72px from 1024 px) and the band's height */
+    --cap: 18vw;
+    --band: calc(var(--cap) * var(--band-h));
+    --word: calc(var(--cap) * var(--word-w));
+    --gap: calc(var(--cap) * var(--gap-w));
     overflow: clip; /* the drifting word and the sinking portrait never widen or lengthen the page */
   }
   .hero-grid {
@@ -133,32 +158,26 @@ const giantBox = `-4 ${-(giant.capHeight + 4)} ${giant.width + 8} ${giant.capHei
     background-color: var(--color-accent-2);
     translate: -50% -50%;
   }
-  /* The giant outlined word, low across the hero, behind the portrait (never behind the H1) */
+  /* The giant outlined word: a band standing on the hero's bottom edge (1px up, so the stroke is never
+     clipped), behind the portrait, running off both sides. Phones: one word centred (it is about 186vw wide);
+     from 1024 px the second copy starts at the middle, so the word reads from its start under the text. */
   .hero-giant {
     position: absolute;
-    left: -2vw;
-    bottom: 3%;
+    left: var(--giant-x, calc(50% - var(--word) / 2));
+    bottom: 1px;
     z-index: 0;
-    width: 135vw;
-    height: auto;
+    height: var(--band);
+    width: calc(var(--band) * var(--band-ratio));
     overflow: visible;
+    stroke: var(--color-accent-2-strong); /* #a78bfa */
+    stroke-width: 1.25px;
+    stroke-opacity: 0.5;
     pointer-events: none;
     user-select: none;
-  }
-  .hero-giant path {
-    fill: none;
-    stroke: var(--color-accent-2-strong);
-    stroke-width: 1px;
-    vector-effect: non-scaling-stroke;
-    opacity: 0.32;
   }
   @media (width < 64rem) {
     .hero-intro {
       padding-bottom: 0.5rem;
-    }
-    .hero-giant {
-      width: 110vw;
-      bottom: 4%;
     }
   }
 
@@ -166,7 +185,9 @@ const giantBox = `-4 ${-(giant.capHeight + 4)} ${giant.width + 8} ${giant.capHei
      the portrait 85% of it, standing on the bottom edge */
   @media (width >= 64rem) {
     .hero {
+      --cap: max(72px, 9vw);
       --hero-h: clamp(34rem, calc(100svh - 7.5rem), 46rem);
+      --giant-x: calc(50% - var(--word) - var(--gap));
       min-height: var(--hero-h);
       display: grid;
     }
@@ -180,7 +201,9 @@ const giantBox = `-4 ${-(giant.capHeight + 4)} ${giant.width + 8} ${giant.capHei
       grid-column: 2;
       grid-row: 1;
       align-self: center;
-      padding-bottom: 3rem;
+      /* room for the band: its top stays at least 24px (here 26px: 28px less its 1px offset and stroke) below
+         the role line, whatever the width */
+      padding-bottom: calc(var(--band) + 28px);
     }
     .hero-title {
       font-size: clamp(2.75rem, 4.7vw, 4.75rem);
@@ -193,10 +216,6 @@ const giantBox = `-4 ${-(giant.capHeight + 4)} ${giant.width + 8} ${giant.capHei
       aspect-ratio: auto;
       justify-self: stretch;
       align-self: end;
-    }
-    .hero-giant {
-      width: 130vw;
-      bottom: 4%;
     }
   }
 

@@ -1,6 +1,6 @@
 /**
  * The homepage hero's scroll effects (Hero.astro), scrubbed and reversible: with p = how far the hero has
- * scrolled out of view (0 at the top, 1 once it is gone), the giant word drifts left by up to 20vw, the
+ * scrolled out of view (0 at the top, 1 once it is gone), the giant word drifts left (sideways only) by up to 15vw, the
  * portrait sinks by up to 40px (so it rises slower than the page) and the violet disc scales up to 1.06.
  * Transform only, one write per element per frame, and only while the hero is near the screen.
  * Reduced motion: nothing runs; everything stays static.
@@ -19,7 +19,7 @@ export function initHeroScroll() {
     const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height)));
     if (Math.abs(p - last) < 0.001) return;
     last = p;
-    if (word) word.style.transform = `translateX(${(-20 * p).toFixed(3)}vw)`;
+    if (word) word.style.transform = `translateX(${(-15 * p).toFixed(3)}vw)`;
     if (portrait) portrait.style.transform = `translateY(${(40 * p).toFixed(2)}px)`;
     if (disc) disc.style.transform = `scale(${(1 + 0.06 * p).toFixed(4)})`;
   };

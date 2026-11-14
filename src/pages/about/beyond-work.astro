@@ -1,7 +1,8 @@
 ---
 /**
  * Beyond work (/about/beyond-work/), one of the three About pages (Phase 17):
- *   #mustahiq · #k2 · #speaking (the four photos, the line, Speaking & events) · "Invite me to speak"
+ *   #mustahiq · #k2 · #speaking (the line, "Invite me to speak" next to Raja's portrait 5 on a violet speech bubble
+ *   with a lime sticker outline, Speaking & events, the four photos) · "Invite me to speak"
  * Copy: about.json → beyondWork, speaking, page.beyondWork · photos and captions: images.json
  */
 import Base from '../../layouts/Base.astro';
@@ -11,12 +12,15 @@ import Gallery from '../../components/Gallery.astro';
 import SpeakingStrip from '../../components/SpeakingStrip.astro';
 import ArrowLink from '../../components/ArrowLink.astro';
 import CTA from '../../components/CTA.astro';
+import { getImage } from '../../lib/images';
 import { about } from '../../lib/about';
 
 const { beyondWork, speaking } = about;
 const page = about.page.beyondWork;
 
 const sectionY = 'py-16 md:py-24';
+// Portrait 5: his flat bottom edge on the speech bubble's edge, never wider than 420 px (its source is small)
+const speaker = getImage('portraits/portrait-5.webp');
 ---
 
 <Base title={page.title} description={page.description} ogType="profile">
@@ -47,13 +51,95 @@ const sectionY = 'py-16 md:py-24';
 
   <!-- 3. Speaking -->
   <section id="speaking" class:list={['wrap border-t border-line', sectionY, 'defer-render']} aria-labelledby="speaking-heading">
-    <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
-    <div class="mt-10 md:mt-12">
+    <div class="speak-grid">
+      <div>
+        <SectionHeader id="speaking-heading" heading={speaking.heading} intro={speaking.line} />
+        <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <a href={page.cta.href} class="btn btn-primary">{page.cta.label}</a>
+          <ArrowLink href={speaking.link.href}>{speaking.link.label}</ArrowLink>
+        </div>
+      </div>
+      <figure class="speak-figure" style={`--ratio:${speaker.width} / ${speaker.height}`}>
+        <span class="speak-bubble" aria-hidden="true"></span>
+        <span class="speak-outline" aria-hidden="true"></span>
+        <img
+          src={speaker.src}
+          srcset={speaker.srcset}
+          sizes="(min-width: 1024px) 420px, min(420px, 100vw - 2rem)"
+          width={speaker.width}
+          height={speaker.height}
+          alt={speaker.alt}
+          loading="lazy"
+          decoding="async"
+          class="speak-img"
+        />
+      </figure>
+    </div>
+    <div class="mt-12 md:mt-16">
       <SpeakingStrip images={speaking.images} />
     </div>
-    <ArrowLink href={speaking.link.href} class="mt-8">{speaking.link.label}</ArrowLink>
   </section>
 
   <!-- 4. Call to action: invite me to speak -->
   <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
 </Base>
+
+<style>
+  /* Speaking: the text and "Invite me to speak", with Raja's portrait 5 next to it (below it on phones) */
+  .speak-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: end;
+  }
+  @media (width >= 64rem) {
+    .speak-grid {
+      grid-template-columns: minmax(0, 1fr) 420px;
+      column-gap: 4rem;
+    }
+  }
+  /* A free cutout with a lime sticker outline, standing with its flat bottom edge on a violet speech bubble's
+     bottom edge (the bubble's tail hangs below it); his head and pointing hand break out of the bubble */
+  .speak-figure {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 420px);
+    aspect-ratio: var(--ratio);
+    margin: 0 0 1.25rem;
+  }
+  .speak-bubble {
+    position: absolute;
+    left: 6%;
+    right: 0;
+    top: 30%;
+    bottom: 0;
+    z-index: 0;
+    /* square where he stands (bottom right), so his flat bottom edge never overhangs a rounded corner */
+    border-radius: 1.75rem 1.75rem 0.25rem 1.75rem;
+    background-color: var(--color-accent-2);
+  }
+  .speak-bubble::after {
+    content: '';
+    position: absolute;
+    right: 18%;
+    bottom: -1.2rem;
+    width: 2.25rem;
+    height: 1.25rem;
+    background-color: inherit;
+    clip-path: polygon(0 0, 100% 0, 85% 100%);
+  }
+  .speak-outline {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-color: var(--color-accent);
+    -webkit-mask: url(/media/portraits/portrait-5-outline.webp) center / 100% 100% no-repeat;
+    mask: url(/media/portraits/portrait-5-outline.webp) center / 100% 100% no-repeat;
+  }
+  .speak-img {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+  }
+</style>

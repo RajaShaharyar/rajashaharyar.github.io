@@ -133,12 +133,14 @@ crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. 
   on the canvas edge (fully opaque), so a shape can hide them or an edge can carry them.
 - **Black and white:** a channel mix (R .40, G .45, B .15), a gentle S-curve that keeps 0 and 1, local contrast
   (unsharp radius 2 px at 1200w, 40%) and fine monochrome grain (sigma 4/255). Never upscaled, never mirrored.
-- **Hand-made cutouts win:** a transparent `_source/portraits/N.png` is used as it is for that number. **5 needs
-  one:** the automatic cutout failed the quality gate (the woman behind him overlaps his pointing hand and the
-  microphone), so it is not exported or placed until `_source/portraits/5.png` exists.
-- **Files:** `portrait-N-<width>.webp` (1: 1200/800/480; 2: 1600/1200/800/480; 3: 867/640/400 and 4: 960/640/400,
-  each never wider than its cutout), `portrait-3-colour-<width>.webp` (the colour lens), `portrait-3-avatar.webp`
-  (192 px) and `portrait-4-outline.webp` (the silhouette dilated by 10 px at 1200w, white on alpha, coloured by CSS
+- **Hand-made cutouts win:** a transparent `_source/portraits/N.png` or `_source/N.png` is used as it is for that
+  number (never re-matted; only a straight crop applies, then black and white). **5 comes from Raja's hand-made
+  cutout** (`_source/5.png`): the automatic one failed the quality gate (the woman behind him overlaps his pointing
+  hand and the microphone). It is cut straight just below his hands (`CUT_BOTTOM`, y 1040 of 1280), which drops the
+  ragged lower-left edge and gives him a flat bottom edge to stand on.
+- **Files:** `portrait-N-<width>.webp` (1: 1200/800/480; 2: 1600/1200/800/480; 3: 867/640/400; 4: 960/640/400;
+  5: 750/520/360, each never wider than its cutout), `portrait-3-colour-<width>.webp` (the colour lens),
+  `portrait-3-avatar.webp` (192 px) and `portrait-4-outline.webp` / `portrait-5-outline.webp` (the silhouette dilated by 10 px at 1200w, white on alpha, coloured by CSS
   through `mask-image`). Alt text and sizes are in `images.json` (`portraits/…` keys, with `urls`).
 - **Budgets:** the hero (2) at most 150 KB at 1200w and 80 KB at 800w; any other image at 800w or less at most 80 KB.
 - **Where they go** (bright colour stays inside the shapes; every portrait has alt text, every shape, outline and
@@ -146,10 +148,15 @@ crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. 
   - *Homepage hero* (`Hero.astro`): portrait 2, the LCP element (preloaded from `index.astro` with
     `fetchpriority="high"`, eager, srcset and sizes from `src/lib/portraits.ts`). From 1024 px he stands in the left
     column on the hero's bottom edge, 85% of its height, looking at the headline on the right; a violet disc behind
-    his head and the giant outlined word "ENTREPRENEUR" low behind him (outline **paths** from
-    `tools/portraits/giant_word.py`, not SVG text: text that big would become the LCP element). Phones: the text,
-    then the portrait at full width on the bottom edge. Scroll (`src/scripts/hero-scroll.ts`, scrubbed and
-    reversible): the word drifts left by up to 20vw, the portrait sinks by up to 40px, the disc scales to 1.06.
+    his head. The giant word "ENTREPRENEUR" is a band standing on the hero's bottom edge, behind the portrait:
+    outline **paths** from `tools/portraits/giant_word.py` (the H1's typeface, 700, -0.02em; not SVG text, which
+    would become the LCP element), cap height 9vw (at least 72px; 18vw on phones), a 1.25px non-scaling #a78bfa
+    stroke at 50%. One word at 9vw is about 93vw wide, so the band repeats it (3 copies) and always runs off both
+    sides. From 1024 px the text column's bottom padding is the band's height + 28px, so the letters stay at least
+    24px below the role line at every width (the hero grows rather than the letters touching text). Phones: the
+    text, then the portrait at full width on the bottom edge, in front of the band. Scroll
+    (`src/scripts/hero-scroll.ts`, scrubbed and reversible): the word drifts left (sideways only) by up to 15vw,
+    the portrait sinks by up to 40px, the disc scales to 1.06.
   - *Closing CTA card* (`CTA.astro`, every page): portrait 1 standing on the card's bottom edge at its left side,
     his head breaking out above the card; phones: smaller, inside the card, above the text. Lazy-loaded.
   - *My story header*: portrait 3 in a tall lime arch, head above it (`ShapedPortrait.astro`, shape `arch`), with
@@ -160,7 +167,9 @@ crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. 
   - *Let's talk*: the 96 px avatar in a lime ring above "Or reach me directly".
   - *Share image*: `public/og/home.png` (also the default) is the hero cutout with his name on near-black and a
     violet disc (`npm run og`).
-  - *Beyond work → Speaking* (portrait 5) waits for its hand-made cutout.
+  - *Beyond work → Speaking*: portrait 5, a free cutout with a lime sticker outline (its outline mask), standing
+    with his flat bottom edge on a violet speech bubble's bottom edge, next to "Invite me to speak"; never wider
+    than 420 px (its source is small). Lazy-loaded.
 
 ## Images
 

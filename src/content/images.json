@@ -250,6 +250,24 @@
     "_draft": "Alt text and caption are new wording (Phase 19): drafts for Raja to revise.",
     "source": "4.jpeg (cut out and made black and white by tools/portraits/process.py)"
   },
+  "portraits/portrait-5.webp": {
+    "width": 750,
+    "height": 733,
+    "widths": [
+      360,
+      520,
+      750
+    ],
+    "urls": {
+      "360": "/media/portraits/portrait-5-360.webp",
+      "520": "/media/portraits/portrait-5-520.webp",
+      "750": "/media/portraits/portrait-5-750.webp"
+    },
+    "alt": "Raja Shaharyar Ali speaking into a microphone, pointing, with his notes in hand",
+    "caption": "Portrait: speaking, microphone and notes in hand",
+    "_draft": "Alt text and caption are new wording (Phase 19.1): drafts for Raja to revise.",
+    "source": "5.jpeg via Raja's hand-made cutout (cropped straight just below his hands, then black and white by tools/portraits/process.py)"
+  },
   "recognition/aiesec-sparkathon-2023.webp": {
     "width": 1280,
     "height": 1706,

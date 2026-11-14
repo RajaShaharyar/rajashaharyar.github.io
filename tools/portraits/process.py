@@ -9,8 +9,9 @@ Needs: pip install "rembg[cpu]" pymatting truststore. Models: birefnet-portrait 
 of RAM; birefnet-general-lite is the fallback if it runs out of memory) and sam (vit_b), both downloaded by
 rembg into ~/.rembg/models on first use.
 
-Reads  _source/1.jpeg … 5.jpeg (never committed). A hand-made transparent cutout in _source/portraits/N.png
-       (from a dedicated tool) is used as it is for that number: no matting, straight to black and white.
+Reads  _source/1.jpeg … 5.jpeg (never committed). A hand-made transparent cutout in _source/portraits/N.png or
+       _source/N.png (from a dedicated tool) is used as it is for that number: no matting, its matte untouched; only
+       the straight crop (CUT_BOTTOM) applies, then black and white.
 Caches the raw mattes in %LOCALAPPDATA%\\raja-portraits\\ (derived from _source, so never in the repo).
 Writes public/media/portraits/:
        portrait-N-<w>.webp     black and white cutout, every width in WIDTHS[N]
@@ -72,11 +73,11 @@ SAM_PROMPTS = {
     ],
 }
 DESK = {1, 2}  # end in a straight line at the desk's top edge
-# End in a straight line at this source row (5: just above another person's head at the bottom of the photo)
-CUT_BOTTOM = {5: 1030}
-# Failed the quality gate after one round of fixes (Phase 19): not exported until a hand-made cutout exists in
-# _source/portraits/N.png. 5: the woman behind him overlaps his pointing hand and microphone, and SAM's masks
-# either kept parts of her or cut holes through his face and shirt.
+# End in a straight line at this source row. 5: just below his hands (Phase 19.1), which drops the ragged lower-left
+# edge of the hand-made cutout and gives him a flat bottom edge to stand on.
+CUT_BOTTOM = {5: 1040}
+# Failed the automatic quality gate (Phase 19): exported only from a hand-made cutout. 5: the woman behind him
+# overlaps his pointing hand and microphone, and SAM's masks either kept parts of her or cut holes through him.
 NEEDS_HAND_CUTOUT = {5}
 OUTLINE = {4, 5}
 QUALITY, ALPHA_QUALITY = 82, 90
@@ -405,17 +406,25 @@ def main():
     summary = {}
     for n in [int(x) for x in args.only.split(",")]:
         t0 = time.time()
-        src = next(os.path.join(SRC, f) for f in os.listdir(SRC) if os.path.splitext(f)[0] == str(n) and f.lower().endswith((".jpg", ".jpeg", ".png", ".heic", ".webp")))
+        # the photo (never a .png: that name is kept for a hand-made cutout)
+        src = next(os.path.join(SRC, f) for f in sorted(os.listdir(SRC)) if os.path.splitext(f)[0] == str(n) and f.lower().endswith((".jpg", ".jpeg", ".heic", ".webp")))
         im = Image.open(src).convert("RGB")  # the photos carry no EXIF rotation; nothing is mirrored
         rgb = np.asarray(im)
-        hand = os.path.join(HAND, f"{n}.png")
-        if n in NEEDS_HAND_CUTOUT and not os.path.exists(hand):
-            log(f"{n}: skipped: needs a hand-made cutout in _source/portraits/{n}.png (it failed the quality gate)")
+        hand = next((p for p in (os.path.join(HAND, f"{n}.png"), os.path.join(SRC, f"{n}.png")) if os.path.exists(p)), None)
+        if n in NEEDS_HAND_CUTOUT and not hand:
+            log(f"{n}: skipped: needs a hand-made cutout in _source/portraits/{n}.png or _source/{n}.png (it failed the quality gate)")
             continue
-        if os.path.exists(hand):
+        if hand:
             cut = np.asarray(Image.open(hand).convert("RGBA"), np.float32) / 255
-            fg, alpha, desk, fixed, how = cut[..., :3], cut[..., 3], None, 0, "hand-made cutout"
-            box, _ = canvas(alpha, None, 0)
+            alpha, fixed, how = cut[..., 3].copy(), 0, f"hand-made cutout ({os.path.relpath(hand, ROOT)})"
+            desk = CUT_BOTTOM.get(n)
+            if desk is not None:
+                alpha[desk:] = 0  # the straight crop; the matte itself is untouched
+            margin = round(16 * im.width / 1200)
+            box, straight = canvas(alpha, desk, margin)
+            x0, y0, x1, y1 = box
+            alpha = solidify(alpha[y0:y1, x0:x1].copy(), straight, 3 * (x1 - x0) / 1200)
+            fg = cut[y0:y1, x0:x1, :3]
         else:
             alpha = birefnet(n, im)
             sam_mask = sam(n, im) if n in SAM_PROMPTS else None

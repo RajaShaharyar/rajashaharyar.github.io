@@ -6,13 +6,14 @@ not text: an SVG <text> that big becomes the page's Largest Contentful Paint ele
 
 Reads the site's own Bricolage Grotesque (node_modules/@fontsource-variable/bricolage-grotesque, the latin file the
 site loads), sets it like .hero-giant (weight 700, the optical size at 100 px, letter-spacing -0.02em, with the
-font's kerning) and writes src/lib/giant-word.json: { "d": path data, "width", "height", "baseline" } in units of a
-100 px font size.
+font's kerning) and writes src/lib/giant-word.json: { "d": path data, "width" (advance), "capHeight", "box": the
+glyphs' exact bounds [xMin, yMin, xMax, yMax], baseline at y = 0 } in units of a 100 px font size.
 """
 import json
 import os
 import sys
 
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
@@ -71,21 +72,23 @@ def main(word):
     hmtx = font["hmtx"]
     kern = kerning(font)
     pen = SVGPathPen(glyphs)
+    bounds = BoundsPen(glyphs)
     x = 0.0
     names = [cmap[ord(c)] for c in word]
     for i, name in enumerate(names):
         # font units → px, y flipped (SVG y grows down), baseline at y = 0
         glyphs[name].draw(TransformPen(pen, (scale, 0, 0, -scale, x, 0)))
+        glyphs[name].draw(TransformPen(bounds, (scale, 0, 0, -scale, x, 0)))
         x += hmtx[name][0] * scale + TRACKING * SIZE
         if i + 1 < len(names):
             x += kern(name, names[i + 1]) * scale
     width = x - TRACKING * SIZE  # no tracking after the last letter
     ascent = font["OS/2"].sCapHeight * scale if hasattr(font["OS/2"], "sCapHeight") else 0.72 * SIZE
-    data = {"word": word, "d": pen.getCommands(), "width": round(width, 2), "capHeight": round(ascent, 2), "font": f"Bricolage Grotesque {loc}"}
+    data = {"word": word, "d": pen.getCommands(), "width": round(width, 2), "capHeight": round(ascent, 2), "box": [round(v, 2) for v in bounds.bounds], "font": f"Bricolage Grotesque {loc}"}
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f)
         f.write("\n")
-    print(f"{word}: width {width:.1f}, cap height {ascent:.1f} at {SIZE:.0f}px, {len(data['d'])} chars of path data, {loc}")
+    print(f"{word}: width {width:.1f}, cap height {ascent:.1f}, box {[round(v, 2) for v in bounds.bounds]} at {SIZE:.0f}px, {len(data['d'])} chars of path data, {loc}")
 
 
 if __name__ == "__main__":

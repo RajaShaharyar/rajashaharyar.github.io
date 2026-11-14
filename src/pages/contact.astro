@@ -42,6 +42,8 @@ const phone = copy.phone;
 
 const title = "Let's talk";
 const description = copy.description;
+import { getImage } from '../lib/images';
+const avatar = getImage('portraits/portrait-3-avatar.webp');
 ---
 
 <Base title="Contact" description={description} hideDock>
@@ -184,7 +186,8 @@ const description = copy.description;
 
         <!-- Direct channels -->
         <aside aria-labelledby="direct-heading">
-          <h2 id="direct-heading" class="text-display-md">Or reach me directly</h2>
+          <img src={avatar.src} width="96" height="96" alt={avatar.alt} class="contact-avatar" loading="lazy" decoding="async" />
+          <h2 id="direct-heading" class="mt-5 text-display-md">Or reach me directly</h2>
           <ul class="mt-6 flex flex-col gap-3">
             <li>
               <a href={`mailto:${contact.email}`} class="channel">
@@ -380,6 +383,15 @@ const description = copy.description;
     outline-offset: 3px;
   }
 
+  /* Raja, head and shoulders, black and white, in a lime ring (Phase 19) */
+  .contact-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background-color: var(--color-raised);
+    box-shadow: 0 0 0 3px var(--color-accent);
+    object-fit: cover;
+  }
   .channel {
     display: flex;
     flex-direction: column;

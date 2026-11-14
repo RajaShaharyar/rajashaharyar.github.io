@@ -4,9 +4,13 @@
  * rounded panel inside the page width (Phase 18: bright colour lives in cards, not page bands). Solid
  * violet with ink text (10.1:1), a faint grain, and a near-black button with lime text. The button
  * defaults to site.json → cta; pass href (e.g. with ?reason=…) to preselect a reason on the contact form.
+ * Phase 19: Raja's portrait (cutout 1) stands on the card's bottom edge at its left side, his head breaking
+ * out above the card's top edge, the text on the right. Phones: smaller, inside the card, above the text,
+ * standing on a thin line. Lazy-loaded.
  */
 import Aurora from './Aurora.astro';
 import { site } from '../lib/site';
+import { getImage } from '../lib/images';
 
 interface Props {
   heading: string;
@@ -17,38 +21,102 @@ interface Props {
 }
 
 const { heading, href = site.cta.href, label = site.cta.label, headingId = 'cta-heading' } = Astro.props;
+const portrait = getImage('portraits/portrait-1.webp');
 ---
 
-<section class="cta wrap defer-render pt-8 md:pt-12" aria-labelledby={headingId}>
+<section class="cta wrap defer-render" aria-labelledby={headingId}>
   <div class="cta-panel band-violet">
     <Aurora variant="grain" id={`grain-${headingId}`} />
-    <h2 id={headingId} class="max-w-3xl text-display-lg">{heading}</h2>
-    <a href={href} class="btn btn-dark mt-8">{label} <span aria-hidden="true">→</span></a>
+    <div class="cta-figure">
+      <img
+        src={portrait.src}
+        srcset={portrait.srcset}
+        sizes="(min-width: 1024px) 440px, min(15rem, 62vw)"
+        width={portrait.width}
+        height={portrait.height}
+        alt={portrait.alt}
+        loading="lazy"
+        decoding="async"
+        data-cta-portrait
+      />
+    </div>
+    <div class="cta-text">
+      <h2 id={headingId} class="cta-title">{heading}</h2>
+      <a href={href} class="btn btn-dark mt-8">{label} <span aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 
 <style>
   .cta {
-    --defer-size: 26rem;
+    --defer-size: 34rem;
+    padding-top: 2rem;
   }
   .cta-panel {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
-    padding: 3.5rem 1.5rem;
+    padding: 2.5rem 1.5rem 3.5rem;
     border-radius: 1.5rem;
+  }
+  /* The grain stays inside the rounded card; the portrait does not (overflow visible) */
+  .cta-panel :global(.aurora) {
+    border-radius: inherit;
+  }
+  .cta-title {
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+    color: var(--color-accent-2-ink);
+  }
+  /* Phones and tablets: smaller, inside the card, above the text, standing on a thin ink line */
+  .cta-figure {
+    width: min(62%, 15rem);
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid rgb(21 15 38 / 0.35);
+  }
+  .cta-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   @media (width >= 40rem) {
     .cta-panel {
-      padding: 4rem 2.5rem;
+      padding: 3rem 2.5rem 4rem;
     }
   }
+  /* From 1024 px: the portrait at the card's left side, standing on its bottom edge, his head breaking out
+     above the top edge (up to 7rem); the text on the right */
   @media (width >= 64rem) {
-    .cta-panel {
-      padding: 5rem 4rem;
+    .cta {
+      padding-top: 8rem;
     }
-  }
-  .cta-panel h2 {
-    color: var(--color-accent-2-ink);
+    .cta-panel {
+      min-height: 20rem;
+      padding: 4.5rem 4rem 4.5rem 0;
+      display: grid;
+      grid-template-columns: 44% minmax(0, 1fr);
+      align-items: center;
+    }
+    .cta-figure {
+      position: absolute;
+      left: 3%;
+      bottom: 0;
+      top: -7rem;
+      width: 39%;
+      margin: 0;
+      border: 0;
+    }
+    .cta-figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: 50% 100%;
+    }
+    .cta-text {
+      grid-column: 2;
+    }
+    .cta-title {
+      font-size: clamp(2.25rem, 1rem + 2.4vw, 3.25rem);
+    }
   }
 </style>

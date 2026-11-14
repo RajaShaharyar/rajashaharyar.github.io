@@ -62,6 +62,29 @@ ${line ? `<p class="line">${escape(line)}</p>` : ''}
   <p class="domain">${escape(new URL(site.url).host)}</p>
 </div></div></body></html>`;
 
+// The home card (also the default share image): Raja's hero cutout standing on the bottom edge, a violet disc
+// behind his head, his name and title on near-black (Phase 19).
+const portrait = `data:image/webp;base64,${readFileSync('public/media/portraits/portrait-2-800.webp').toString('base64')}`;
+const homeCard = ({ line }) => `<!doctype html><html><head><style>
+@font-face { font-family: Inter; src: url(${inter}) format('woff2'); font-weight: 100 900; }
+@font-face { font-family: Bricolage; src: url(${bricolage}) format('woff2'); font-weight: 200 800; }
+* { margin: 0; box-sizing: border-box; }
+body { width: 1200px; height: 630px; background: #0b0c0e; color: #f2f0ea; font-family: Inter, sans-serif; overflow: hidden; }
+.frame { position: relative; height: 100%; }
+.bar { position: absolute; left: 0; top: 0; width: 100%; height: 8px; background: #bef264; }
+.disc { position: absolute; left: 762px; top: 70px; width: 340px; height: 340px; border-radius: 50%; background: #c4b5fd; }
+.portrait { position: absolute; right: 26px; bottom: 0; height: 590px; }
+.text { position: absolute; left: 72px; top: 0; bottom: 0; width: 640px; display: flex; flex-direction: column; justify-content: center; }
+.kicker { font-size: 24px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #c4b5fd; }
+.name { margin-top: 22px; font-family: Bricolage, sans-serif; font-weight: 650; font-size: 92px; line-height: 0.98; letter-spacing: -0.03em; }
+.line { margin-top: 26px; font-size: 28px; line-height: 1.4; color: #a9aeb5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.domain { position: absolute; left: 72px; bottom: 48px; font-size: 24px; color: #8c929b; }
+</style></head><body><div class="frame"><div class="bar"></div><div class="disc"></div>
+<img class="portrait" src="${portrait}" alt="">
+<div class="text"><p class="kicker">${escape(site.title)}</p><h1 class="name">${escape(site.name)}</h1>${line ? `<p class="line">${escape(line)}</p>` : ''}</div>
+<p class="domain">${escape(new URL(site.url).host)}</p>
+</div></body></html>`;
+
 mkdirSync('public/og', { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
@@ -69,13 +92,13 @@ let failed = false;
 for (const p of pages) {
   // An H1 with a screen-reader version (the homepage's rotating word) uses that text, not the animated copy.
   const h1Html = p.html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? '';
-  const h1 = decode(h1Html.match(/<span class="sr-only">([^<]*)<\/span>/)?.[1] ?? h1Html);
+  const h1 = decode(h1Html.match(/<span class="sr-only"[^>]*>([^<]*)<\/span>/)?.[1] ?? h1Html);
   // The CV's H1 is Raja's name, already on the card: use the page title ("CV") instead.
   const pageTitle = decode(p.html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '').split(' — ')[0];
   const title = h1 && h1 !== site.name ? h1 : pageTitle || site.name;
   const line = decode(p.html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '');
   const venture = site.ventures.find((v) => v.href === p.path);
-  await page.setContent(card({ title, line, metric: venture?.metric }), { waitUntil: 'load' });
+  await page.setContent(p.path === '/' ? homeCard({ line: site.tagline }) : card({ title, line, metric: venture?.metric }), { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
   const png = await page.screenshot({ type: 'png' });
   const out = join('public', 'og', `${slugFor(p.path)}.png`);

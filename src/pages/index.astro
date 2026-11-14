@@ -25,12 +25,13 @@ import CTA from '../components/CTA.astro';
 import ArrowLink from '../components/ArrowLink.astro';
 import home from '../content/home.json';
 import { site } from '../lib/site';
+import { heroPortrait } from '../lib/portraits';
 
 const { proof, playbook, recognition, help, testimonials, finalCta } = home;
 const sectionY = 'py-16 md:py-24';
 ---
 
-<Base>
+<Base preloadImage={heroPortrait(home.hero.portrait)}>
   <!-- 1. Hero -->
   <Hero />
 

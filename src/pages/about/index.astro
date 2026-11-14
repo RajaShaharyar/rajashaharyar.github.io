@@ -10,6 +10,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import SubPageHeader from '../../components/SubPageHeader.astro';
+import ShapedPortrait from '../../components/ShapedPortrait.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Timeline from '../../components/Timeline.astro';
 import Gallery from '../../components/Gallery.astro';
@@ -40,7 +41,18 @@ const sectionY = 'py-16 md:py-24';
 ---
 
 <Base title={page.title} description={page.description} ogType="profile">
-  <SubPageHeader section="/about/" title={page.title} />
+  <SubPageHeader section="/about/" title={page.title}>
+    <ShapedPortrait
+      slot="aside"
+      image="portraits/portrait-3.webp"
+      lens="portraits/portrait-3-colour.webp"
+      shape="arch"
+      id="clip-story"
+      sizes="(min-width: 1024px) 384px, min(22rem, 100vw - 2rem)"
+      eager
+      class="story-portrait"
+    />
+  </SubPageHeader>
 
   <!-- 1. The story -->
   <section id="intro" class="wrap pt-10 pb-16 md:pt-14 md:pb-24" aria-label={page.title}>
@@ -122,6 +134,20 @@ const sectionY = 'py-16 md:py-24';
   <!-- 5. Call to action -->
   <CTA heading={page.cta.heading} label={page.cta.label} href={page.cta.href} />
 </Base>
+
+<style>
+  /* The arch portrait in the header: a little narrower than the aside on desktop, on the right */
+  :global(.story-portrait) {
+    width: min(100%, 22rem);
+    margin-inline: auto;
+  }
+  @media (width >= 64rem) {
+    :global(.story-portrait) {
+      width: 24rem;
+      margin-right: 0;
+    }
+  }
+</style>
 
 <script is:inline>
   // Links to the old one-page About (e.g. /about/#education) land on the section's new page.

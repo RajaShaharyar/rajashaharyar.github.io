@@ -16,6 +16,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 import OfferCard from '../components/OfferCard.astro';
 import CTA from '../components/CTA.astro';
 import Aurora from '../components/Aurora.astro';
+import ShapedPortrait from '../components/ShapedPortrait.astro';
 import copy from '../content/work-with-me.json';
 import home from '../content/home.json';
 import { site } from '../lib/site';
@@ -26,9 +27,20 @@ const sectionY = 'py-16 md:py-20';
 <Base title={copy.title} description={copy.description}>
   <header class="band">
     <Aurora id="grain-wwm" />
-    <div class="wrap pt-12 pb-14 md:pt-20 md:pb-20">
-      <h1 class="max-w-4xl text-display-lg">{copy.title}</h1>
-      <p class="lead mt-6 max-w-prose">{copy.intro}</p>
+    <div class="wrap wwm-head pt-12 pb-14 md:pt-16 md:pb-16">
+      <div class="wwm-text">
+        <h1 class="max-w-4xl text-display-lg">{copy.title}</h1>
+        <p class="lead mt-6 max-w-prose">{copy.intro}</p>
+      </div>
+      <ShapedPortrait
+        image="portraits/portrait-4.webp"
+        outline="/media/portraits/portrait-4-outline.webp"
+        shape="circle"
+        id="clip-wwm"
+        sizes="(min-width: 1024px) 420px, min(22rem, 100vw - 2rem)"
+        eager
+        class="wwm-portrait"
+      />
     </div>
   </header>
 
@@ -115,6 +127,24 @@ const sectionY = 'py-16 md:py-20';
 </Base>
 
 <style>
+  /* The header: text, then the portrait (in its violet circle) below on phones, on the right from 1024 px */
+  .wwm-head {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .wwm-head :global(.wwm-portrait) {
+    width: min(100%, 22rem);
+  }
+  @media (width >= 64rem) {
+    .wwm-head {
+      grid-template-columns: minmax(0, 1fr) 26.25rem;
+      align-items: center;
+      column-gap: 4rem;
+    }
+    .wwm-head :global(.wwm-portrait) {
+      width: 100%;
+    }
+  }
   .steps {
     display: grid;
     gap: 0.75rem;

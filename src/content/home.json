@@ -12,8 +12,9 @@
     "_rotatingWordsNote": "Draft (Phase 17): the hero's last word rotates through these once, in the same place, and stops on the last one; headline must equal headlineLead + the last word (screen readers hear only headline; the build checks). Reduced motion and no JavaScript show the last word only.",
     "subline": "5+ years across fintech and SaaS, from pre-selling a prototype to taking a regulated payments product from launch to scale.",
     "roleLine": "Manager, Product & Growth at Evamp & Saanga",
-    "image": "about/2024-airtech.webp",
-    "imagePosition": "22% 35%",
+    "portrait": "portraits/portrait-2.webp",
+    "giantWord": "ENTREPRENEUR",
+    "_portraitNote": "Phase 19: the hero is Raja's black and white cutout (portrait 2), standing on the hero's bottom edge, with a violet disc behind his head and the outlined giant word behind him (decorative, aria-hidden). The AirTech podium photo left the hero; it stays in the About galleries.",
     "primary": {
       "label": "Let's talk",
       "href": "/contact/"
@@ -22,7 +23,6 @@
       "label": "See the work",
       "href": "#products"
     },
-    "_imageNote": "Interim until a headshot exists: Raja at the podium, AirTech'24 closing ceremony (no watermark). The NUML photo carries the photographer's credit, so it isn't used here.",
     "_sublineDraft": "Draft (Phase 13): the numbers moved out of the subline because the stat bar sits directly underneath. For Raja to revise."
   },
   "proof": {

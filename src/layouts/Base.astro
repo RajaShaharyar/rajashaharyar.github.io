@@ -24,6 +24,8 @@ interface Props {
   hideDock?: boolean;
   /** For the 404 page: no canonical, not indexed. */
   noindex?: boolean;
+  /** The page's LCP image, preloaded with high priority (the homepage hero portrait) */
+  preloadImage?: { src: string; srcset: string; sizes: string };
 }
 
 const {
@@ -32,6 +34,7 @@ const {
   ogType = 'website',
   hideDock = false,
   noindex = false,
+  preloadImage,
 } = Astro.props;
 
 // Title template
@@ -89,6 +92,7 @@ const analytics = site.analytics;
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage.src} imagesrcset={preloadImage.srcset} imagesizes={preloadImage.sizes} fetchpriority="high" />}
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>

@@ -1,0 +1,154 @@
+---
+/**
+ * A portrait cutout inside a bright shape, its head breaking out above it (Phase 19; colour rule: the bright
+ * colour stays inside the shape).
+ * - shape "arch" (My story, portrait 3): a tall lime arch, a rounded-top rectangle. Optional colour lens: on a
+ *   desktop with a fine pointer (and not with reduced motion) a 160 px circle follows the cursor and shows the
+ *   colour version underneath; the colour file loads on the first pointer-enter (src/scripts/portrait-lens.ts).
+ * - shape "circle" (Work With Me, portrait 4): a violet circle, with a thin lime outline behind the silhouette
+ *   (the outline mask, coloured lime through mask-image, offset 6 px).
+ * How the head breaks out: the photo is clipped to (the shape) ∪ (everything above `cut`, where only his head
+ * is), so the shape hides the photo's straight side and bottom edges and the head shows above it. The clip is
+ * an SVG clipPath in objectBoundingBox units, so it scales with the image. Geometry is in fractions of the
+ * image box, measured from each cutout's silhouette (tools/portraits/process.py).
+ * Shapes and outlines are aria-hidden; the portrait has real alt text. In a page header it is the Largest
+ * Contentful Paint element, so pass eager there (loaded at once, with high priority); otherwise lazy.
+ */
+import { getImage } from '../lib/images';
+
+interface Props {
+  image: string;
+  shape: 'arch' | 'circle';
+  /** images.json key of the colour version, for the lens (arch only) */
+  lens?: string;
+  /** URL of the white-on-alpha outline mask, drawn in lime behind the silhouette */
+  outline?: string;
+  /** The slot's rendered width, for srcset */
+  sizes: string;
+  /** Unique on the page: the clipPath id */
+  id: string;
+  /** Load at once with high priority (a page header's portrait, the LCP element) */
+  eager?: boolean;
+  class?: string;
+}
+
+const { image, shape, lens, outline, sizes, id, eager = false, class: className } = Astro.props;
+const img = getImage(image);
+const colour = lens ? getImage(lens) : undefined;
+const ratio = img.width / img.height;
+
+// Geometry, as fractions of the image box (x of its width, y of its height)
+const g =
+  shape === 'arch'
+    ? // portrait 3: the head spans y 0.03-0.47; the shoulders start at about y 0.48
+      { left: 0.14, right: 0.96, top: 0.24, cut: 0.46 }
+    : // portrait 4: the head spans y 0.03-0.52, the shoulders start at about y 0.55
+      { cx: 0.48, cy: 0.62, r: 0.44, cut: 0.52 };
+let clip: string;
+let shapeStyle: string;
+if (shape === 'arch') {
+  const rx = (g.right! - g.left!) / 2;
+  const ry = rx * ratio; // a circular top in pixels: the y radius in fractions of the height
+  clip = `M0,0 H1 V${g.cut} H0 Z M${g.left},1 V${g.top! + ry} A${rx},${ry} 0 0 1 ${g.right},${g.top! + ry} V1 Z`;
+  shapeStyle = `left:${g.left! * 100}%;right:${(1 - g.right!) * 100}%;top:${g.top! * 100}%;bottom:0`;
+} else {
+  const rx = g.r!;
+  const ry = rx * ratio;
+  const x0 = g.cx! - rx;
+  const x1 = g.cx! + rx;
+  // both parts clockwise, so where they overlap they add up (nonzero) instead of cancelling out
+  clip = `M0,0 H1 V${g.cut} H0 Z M${x0},${g.cy} A${rx},${ry} 0 1 1 ${x1},${g.cy} A${rx},${ry} 0 1 1 ${x0},${g.cy} Z`;
+  shapeStyle = `left:${x0 * 100}%;width:${2 * rx * 100}%;top:${(g.cy! - ry) * 100}%`;
+}
+---
+
+<figure class:list={['shaped', `shaped-${shape}`, className]} style={`--ratio:${img.width} / ${img.height}`} data-shaped={shape} data-lens={lens ? '' : undefined}>
+  <svg class="shaped-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <clipPath id={id} clipPathUnits="objectBoundingBox"><path d={clip}></path></clipPath>
+  </svg>
+  <span class="shaped-shape" aria-hidden="true" style={shapeStyle}></span>
+  <div class="shaped-clip" style={`clip-path: url(#${id})`}>
+    {outline && <span class="shaped-outline" aria-hidden="true" style={`--outline: url(${outline})`}></span>}
+    <img class="shaped-img" src={img.src} srcset={img.srcset} sizes={sizes} width={img.width} height={img.height} alt={img.alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" />
+    {
+      colour && (
+        <img
+          class="shaped-lens"
+          data-lens-img
+          data-srcset={colour.srcset}
+          data-src={colour.src}
+          sizes={sizes}
+          width={colour.width}
+          height={colour.height}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+        />
+      )
+    }
+  </div>
+</figure>
+
+<script>
+  // The colour lens (does nothing on a page without one)
+  import { initPortraitLens } from '../scripts/portrait-lens';
+  initPortraitLens();
+</script>
+
+<style>
+  .shaped {
+    position: relative;
+    isolation: isolate;
+    aspect-ratio: var(--ratio);
+    margin: 0;
+  }
+  .shaped-defs {
+    position: absolute;
+  }
+  .shaped-shape {
+    position: absolute;
+    z-index: 0;
+  }
+  .shaped-arch .shaped-shape {
+    background-color: var(--color-accent);
+    border-radius: 999px 999px 0 0;
+    margin: 0 1px 1px; /* 1 px inside the clip, so no lime hairline shows along the photo's clipped edge */
+  }
+  .shaped-circle .shaped-shape {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: var(--color-accent-2);
+  }
+  .shaped-clip {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .shaped-img,
+  .shaped-lens {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* The thin lime outline: the dilated silhouette, offset 6 px, behind the portrait */
+  .shaped-outline {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-accent);
+    -webkit-mask: var(--outline) center / 100% 100% no-repeat;
+    mask: var(--outline) center / 100% 100% no-repeat;
+    translate: 6px 6px;
+  }
+  /* The colour lens: a 160 px circle at the pointer (portrait-lens.ts sets --lx, --ly and data-on) */
+  .shaped-lens {
+    opacity: 0;
+    -webkit-mask: radial-gradient(circle 80px at var(--lx, -200px) var(--ly, -200px), #000 98%, transparent 100%);
+    mask: radial-gradient(circle 80px at var(--lx, -200px) var(--ly, -200px), #000 98%, transparent 100%);
+    transition: opacity 200ms var(--ease-out-quart);
+    pointer-events: none;
+  }
+  .shaped[data-lens-on] .shaped-lens {
+    opacity: 1;
+  }
+</style>

@@ -141,6 +141,26 @@ crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. 
   (192 px) and `portrait-4-outline.webp` (the silhouette dilated by 10 px at 1200w, white on alpha, coloured by CSS
   through `mask-image`). Alt text and sizes are in `images.json` (`portraits/…` keys, with `urls`).
 - **Budgets:** the hero (2) at most 150 KB at 1200w and 80 KB at 800w; any other image at 800w or less at most 80 KB.
+- **Where they go** (bright colour stays inside the shapes; every portrait has alt text, every shape, outline and
+  giant word is aria-hidden; reduced motion makes everything static; every image has width and height, CLS 0):
+  - *Homepage hero* (`Hero.astro`): portrait 2, the LCP element (preloaded from `index.astro` with
+    `fetchpriority="high"`, eager, srcset and sizes from `src/lib/portraits.ts`). From 1024 px he stands in the left
+    column on the hero's bottom edge, 85% of its height, looking at the headline on the right; a violet disc behind
+    his head and the giant outlined word "ENTREPRENEUR" low behind him (outline **paths** from
+    `tools/portraits/giant_word.py`, not SVG text: text that big would become the LCP element). Phones: the text,
+    then the portrait at full width on the bottom edge. Scroll (`src/scripts/hero-scroll.ts`, scrubbed and
+    reversible): the word drifts left by up to 20vw, the portrait sinks by up to 40px, the disc scales to 1.06.
+  - *Closing CTA card* (`CTA.astro`, every page): portrait 1 standing on the card's bottom edge at its left side,
+    his head breaking out above the card; phones: smaller, inside the card, above the text. Lazy-loaded.
+  - *My story header*: portrait 3 in a tall lime arch, head above it (`ShapedPortrait.astro`, shape `arch`), with
+    the colour lens: on a fine pointer, a 160 px circle follows the cursor and shows the colour version, which
+    loads on the first pointer-enter (`src/scripts/portrait-lens.ts`).
+  - *Work With Me header*: portrait 4 in a violet circle, head above it, a thin lime outline behind (the outline
+    mask, offset 6 px; shape `circle`).
+  - *Let's talk*: the 96 px avatar in a lime ring above "Or reach me directly".
+  - *Share image*: `public/og/home.png` (also the default) is the hero cutout with his name on near-black and a
+    violet disc (`npm run og`).
+  - *Beyond work → Speaking* (portrait 5) waits for its hand-made cutout.
 
 ## Images
 

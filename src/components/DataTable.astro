@@ -95,7 +95,7 @@ const text = (v: Value) => (typeof v === 'string' ? v : (v?.label ?? ''));
     display: none;
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
   }
   .dt-table th,
   .dt-table td {
@@ -106,9 +106,9 @@ const text = (v: Value) => (typeof v === 'string' ? v : (v?.label ?? ''));
   }
   .dt-table thead th {
     padding-top: 0;
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-fg-subtle);
   }
@@ -122,7 +122,7 @@ const text = (v: Value) => (typeof v === 'string' ? v : (v?.label ?? ''));
   }
   .dt-cards {
     display: grid;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
   .dt-card {
     padding: 1.125rem 1.25rem;
@@ -136,13 +136,13 @@ const text = (v: Value) => (typeof v === 'string' ? v : (v?.label ?? ''));
   }
   .dt-card dl {
     display: grid;
-    gap: 0.625rem;
+    gap: var(--space-2);
     margin-top: 0.75rem;
   }
   .dt-card dt {
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-fg-subtle);
   }

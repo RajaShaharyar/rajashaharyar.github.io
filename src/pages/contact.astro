@@ -49,14 +49,14 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
 <Base title="Contact" description={description} hideDock>
   <section class="band">
     <Aurora id="grain-contact" />
-    <div class="wrap py-16 md:py-24">
+    <div class="wrap py-section">
       <p class="eyebrow">Contact</p>
       <h1 class="mt-4 text-display-lg">{title}</h1>
       <p class="lead mt-6 max-w-2xl">
         Tell me what you're working on. Pick a reason so your message reaches the right conversation.
       </p>
 
-      <div class="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-20">
+      <div class="mt-14 grid gap-16 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-16">
         <div>
           <!-- Form -->
           <form
@@ -229,7 +229,7 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
 <style>
   .field-label {
     display: block;
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     color: var(--color-fg);
   }
@@ -263,12 +263,12 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
   }
   .field-hint {
     margin-top: 0.375rem;
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     color: var(--color-fg-muted);
   }
   .field-error {
     margin-top: 0.5rem;
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     color: #ffb4b4;
   }
@@ -279,7 +279,7 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
   .reason {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: var(--space-3);
     padding: 0.875rem 1rem;
     border: 1px solid var(--color-line-strong);
     border-radius: var(--radius-control);
@@ -311,14 +311,14 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
     height: 1.125rem;
     margin-top: 0.25rem;
     border: 1.5px solid var(--color-line-strong);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     cursor: pointer;
   }
   .reason input::before {
     content: '';
     width: 0.5rem;
     height: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background-color: var(--color-accent-ink);
     transform: scale(0);
     transition: transform 0.12s var(--ease-out-quart);
@@ -395,7 +395,7 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
   .channel {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: var(--space-1);
     padding: 1rem 1.125rem;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
@@ -407,9 +407,9 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
     border-color: var(--color-accent-2-strong);
   }
   .channel-key {
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-fg-subtle);
   }

@@ -57,14 +57,14 @@ const { label, steps, goesLiveWith = [], caption } = Astro.props;
 <style>
   .journey-steps {
     display: grid;
-    gap: 1.75rem;
+    gap: var(--space-6);
     counter-reset: none;
   }
   .journey-step {
     position: relative;
     display: grid;
     grid-template-columns: 2.5rem 1fr;
-    column-gap: 1rem;
+    column-gap: var(--space-4);
     align-items: baseline;
     padding: 1rem 1.125rem;
     border: 1px solid var(--color-line);
@@ -84,20 +84,20 @@ const { label, steps, goesLiveWith = [], caption } = Astro.props;
   .journey-num {
     grid-row: 1 / span 2;
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     font-weight: 700;
     color: var(--color-fg-subtle);
   }
   .journey-label {
     font-family: var(--font-display);
-    font-size: 1.125rem;
+    font-size: var(--text-lg);
     font-weight: 600;
-    line-height: 1.25;
+    line-height: var(--leading-tight);
     color: var(--color-fg);
   }
   .journey-owner {
     margin-top: 0.25rem;
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     color: var(--color-fg-muted);
   }
   .journey-step[data-accent] {
@@ -115,12 +115,12 @@ const { label, steps, goesLiveWith = [], caption } = Astro.props;
     .journey-steps {
       grid-auto-flow: column;
       grid-auto-columns: minmax(0, 1fr);
-      gap: 2rem;
+      gap: var(--space-8);
     }
     .journey-step {
       grid-template-columns: 1fr;
       align-content: start;
-      row-gap: 0.5rem;
+      row-gap: var(--space-2);
       padding: 1.125rem;
     }
     .journey-num {
@@ -137,8 +137,8 @@ const { label, steps, goesLiveWith = [], caption } = Astro.props;
       transform: translateY(-50%);
       background: none;
       color: var(--color-line-strong);
-      font-size: 1.125rem;
-      line-height: 1;
+      font-size: var(--text-lg);
+      line-height: var(--leading-none);
     }
   }
 
@@ -146,11 +146,11 @@ const { label, steps, goesLiveWith = [], caption } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem 1rem;
+    gap: var(--space-3) var(--space-4);
     margin-top: 1.75rem;
   }
   .journey-live-label {
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;

@@ -162,7 +162,7 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
     place-items: center;
     width: 2rem;
     height: 2rem;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background-color: rgb(11 12 14 / 0.72);
     color: var(--color-fg);
     opacity: 0;
@@ -228,7 +228,7 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
   .lightbox-panel {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    gap: 0.75rem;
+    gap: var(--space-3);
     height: 100%;
     padding: 0.75rem 1rem 1rem;
   }
@@ -241,11 +241,11 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: var(--space-4);
   }
   .lightbox-count {
     margin-right: auto;
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     color: var(--color-fg-muted);
     font-variant-numeric: tabular-nums;
   }
@@ -255,7 +255,7 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.875rem;
+    gap: var(--space-3);
   }
   .lightbox-img {
     display: block;
@@ -265,19 +265,19 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
     max-height: calc(100dvh - 12rem);
     min-height: 0;
     object-fit: contain;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-control);
     background-color: var(--color-surface);
   }
   .lightbox-caption {
     max-width: 42rem;
     text-align: center;
     color: var(--color-fg);
-    line-height: 1.45;
+    line-height: var(--leading-snug);
   }
   .photo-credit {
     display: block;
     margin-top: 0.25rem;
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
     color: var(--color-fg-subtle);
   }
   .photo-credit[hidden] {
@@ -286,7 +286,7 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
   .lightbox-nav {
     display: flex;
     justify-content: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
   .lightbox-nav[hidden],
   .lightbox-count[hidden] {
@@ -295,14 +295,14 @@ const listClass = strip ? 'grid grid-cols-3 gap-2' : ['grid gap-x-4 gap-y-6 md:g
   .lb-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     min-height: 2.75rem;
     padding: 0 1.125rem;
     border: 1px solid var(--color-line-strong);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     color: var(--color-fg);
     font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     cursor: pointer;
     transition:
       border-color 0.15s,

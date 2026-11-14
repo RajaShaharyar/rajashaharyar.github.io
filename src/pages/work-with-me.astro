@@ -21,7 +21,7 @@ import copy from '../content/work-with-me.json';
 import home from '../content/home.json';
 import { site } from '../lib/site';
 
-const sectionY = 'py-16 md:py-20';
+const sectionY = 'py-section';
 ---
 
 <Base title={copy.title} description={copy.description}>
@@ -45,7 +45,7 @@ const sectionY = 'py-16 md:py-20';
   </header>
 
   <!-- 1. Services, on near-black with a soft violet glow behind -->
-  <section id="services" class="glow-violet py-16 md:py-20" aria-labelledby="services-heading">
+  <section id="services" class="glow-violet py-section" aria-labelledby="services-heading">
     <div class="wrap">
       <SectionHeader id="services-heading" heading={copy.offersHeading} />
       <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
@@ -86,7 +86,7 @@ const sectionY = 'py-16 md:py-20';
             </span>
             <h4 class="mt-4 font-display text-2xl leading-tight font-semibold tracking-tight md:text-[1.75rem]">{item.principle}</h4>
             <div class="mt-6 border-t border-line pt-5">
-              <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{copy.howIWork.proofLabel}</p>
+              <p class="eyebrow">{copy.howIWork.proofLabel}</p>
               <p class="mt-2 text-fg-muted">{item.proof}</p>
             </div>
           </li>
@@ -130,7 +130,7 @@ const sectionY = 'py-16 md:py-20';
   /* The header: text, then the portrait (in its violet circle) below on phones, on the right from 1024 px */
   .wwm-head {
     display: grid;
-    gap: 2.5rem;
+    gap: var(--space-10);
   }
   .wwm-head :global(.wwm-portrait) {
     width: min(100%, 22rem);
@@ -139,7 +139,7 @@ const sectionY = 'py-16 md:py-20';
     .wwm-head {
       grid-template-columns: minmax(0, 1fr) 26.25rem;
       align-items: center;
-      column-gap: 4rem;
+      column-gap: var(--space-16);
     }
     .wwm-head :global(.wwm-portrait) {
       width: 100%;
@@ -147,18 +147,18 @@ const sectionY = 'py-16 md:py-20';
   }
   .steps {
     display: grid;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
   @media (width >= 48rem) {
     .steps {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
+      gap: var(--space-4);
     }
   }
   .step {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-3);
     padding: 1.25rem 1.375rem;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
@@ -166,15 +166,15 @@ const sectionY = 'py-16 md:py-20';
   }
   .step-num {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     font-weight: 700;
     color: var(--color-accent-2);
   }
   .step-label {
     font-family: var(--font-display);
-    font-size: 1.25rem;
+    font-size: var(--text-lg);
     font-weight: 600;
-    line-height: 1.25;
+    line-height: var(--leading-tight);
     color: var(--color-fg);
   }
 
@@ -189,10 +189,10 @@ const sectionY = 'py-16 md:py-20';
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: var(--space-4);
     min-height: 3.5rem;
     padding: 0.875rem 0;
-    font-size: 1.125rem;
+    font-size: var(--text-lg);
     font-weight: 600;
     color: var(--color-fg);
     cursor: pointer;
@@ -221,6 +221,6 @@ const sectionY = 'py-16 md:py-20';
   .faq-models {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
 </style>

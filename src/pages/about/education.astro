@@ -45,14 +45,14 @@ const distinctionItems = distinctions.recognitionIds.map((id) => {
   return { image: photo.file, caption: date ? `${text} (${date})` : text };
 });
 
-const sectionY = 'py-16 md:py-24';
+const sectionY = 'py-section';
 ---
 
 <Base title={page.title} description={page.description} ogType="profile">
   <SubPageHeader section="/about/" title={page.title} intro={education.intro} />
 
   <!-- 1. The degree, the final-year project and the degree photos -->
-  <section id="degree" class="wrap pt-10 pb-16 md:pt-14 md:pb-24" aria-labelledby="degree-heading">
+  <section id="degree" class="wrap pt-section-sm pb-section" aria-labelledby="degree-heading">
     <article class="rounded-card border border-line bg-surface p-6 sm:p-8 md:p-10">
       <h2 id="degree-heading" class="text-display-md">{degree.degree}</h2>
       <p class="mt-3 text-lg text-fg-muted">
@@ -63,7 +63,7 @@ const sectionY = 'py-16 md:py-24';
         >
       </p>
       <div class="mt-8 max-w-prose border-t border-line pt-6">
-        <h3 class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">{education.degree.fypLabel}</h3>
+        <h3 class="eyebrow">{education.degree.fypLabel}</h3>
         <p class="mt-3 text-lg leading-relaxed">{education.degree.fyp}</p>
       </div>
       <div class="mt-10">
@@ -86,8 +86,8 @@ const sectionY = 'py-16 md:py-24';
         programmes.map((p) => (
           <li class="programme rounded-card border border-line bg-surface p-6 sm:p-8">
             <div class="flex flex-col gap-2">
-              <p class="programme-provider">{p.provider}</p>
-              <h3 class="text-2xl md:text-[1.75rem]">{p.title}</h3>
+              <p class="programme-provider eyebrow">{p.provider}</p>
+              <h3 class="text-xl md:text-2xl">{p.title}</h3>
               <p class="text-fg-muted">{p.dates}</p>
               {p.covered && (
                 <p class="mt-2 max-w-prose">
@@ -132,14 +132,7 @@ const sectionY = 'py-16 md:py-24';
 <style>
   .programme {
     display: grid;
-    gap: 1.5rem;
-  }
-  .programme-provider {
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-accent-2);
+    gap: var(--space-6);
   }
   @media (width >= 40rem) {
     .programme:has(.programme-photo) {

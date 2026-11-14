@@ -18,7 +18,7 @@ import { about } from '../../lib/about';
 const { beyondWork, speaking } = about;
 const page = about.page.beyondWork;
 
-const sectionY = 'py-16 md:py-24';
+const sectionY = 'py-section';
 // Portrait 5: his flat bottom edge on the speech bubble's edge, never wider than 420 px (its source is small)
 const speaker = getImage('portraits/portrait-5.webp');
 ---
@@ -31,10 +31,10 @@ const speaker = getImage('portraits/portrait-5.webp');
     beyondWork.sections.map((s, i) => (
       <section
         id={s.id}
-        class:list={['wrap', i === 0 ? 'pt-10 pb-16 md:pt-14 md:pb-24' : ['border-t border-line', sectionY, 'defer-render']]}
+        class:list={['wrap', i === 0 ? 'pt-section-sm pb-section' : ['border-t border-line', sectionY, 'defer-render']]}
         aria-labelledby={`${s.id}-heading`}
       >
-        <div class="grid gap-8 lg:grid-cols-12 lg:gap-14">
+        <div class="grid gap-8 lg:grid-cols-12 lg:gap-16">
           <div class="lg:col-span-5">
             <h2 id={`${s.id}-heading`} class="text-display-md">
               {s.heading}
@@ -88,13 +88,13 @@ const speaker = getImage('portraits/portrait-5.webp');
   /* Speaking: the text and "Invite me to speak", with Raja's portrait 5 next to it (below it on phones) */
   .speak-grid {
     display: grid;
-    gap: 2.5rem;
+    gap: var(--space-10);
     align-items: end;
   }
   @media (width >= 64rem) {
     .speak-grid {
       grid-template-columns: minmax(0, 1fr) 420px;
-      column-gap: 4rem;
+      column-gap: var(--space-16);
     }
   }
   /* A free cutout with a lime sticker outline, standing with its flat bottom edge on a violet speech bubble's
@@ -114,7 +114,7 @@ const speaker = getImage('portraits/portrait-5.webp');
     bottom: 0;
     z-index: 0;
     /* square where he stands (bottom right), so his flat bottom edge never overhangs a rounded corner */
-    border-radius: 1.75rem 1.75rem 0.25rem 1.75rem;
+    border-radius: var(--radius-panel) var(--radius-panel) var(--radius-control) var(--radius-panel);
     background-color: var(--color-accent-2);
   }
   .speak-bubble::after {

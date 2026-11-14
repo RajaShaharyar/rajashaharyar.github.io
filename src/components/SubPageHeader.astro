@@ -10,7 +10,7 @@
  * Slots: "logos" (under the H1: a venture's logo lockup), "after" (under the facts: a venture's key
  * numbers) and "aside" (on the right from 1024 px, below the header text on narrower screens).
  * Near-black. By default with a violet-led aurora and grain; with accent (a colour token name: a
- * venture's deck colour; Phase 18) a 2px top rule and the eyebrow in that colour, and a soft glow in it
+ * venture's deck colour; Phase 18) a 2px top rule in that colour, and a soft glow in it
  * (12% at most) behind the live card. No full-bleed colour band (bright colour lives in cards).
  */
 import Aurora from './Aurora.astro';
@@ -99,7 +99,7 @@ const hasAside = Astro.slots.has('aside');
     .has-aside .page-header-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
-      column-gap: 4rem;
+      column-gap: var(--space-16);
       align-items: center;
     }
     .page-header-aside {
@@ -122,7 +122,7 @@ const hasAside = Astro.slots.has('aside');
     left: 1rem;
     right: 1rem;
     height: 2px;
-    border-radius: 2px;
+    border-radius: var(--radius-full);
     background-color: var(--venture);
   }
   @media (width >= 40rem) {
@@ -136,9 +136,6 @@ const hasAside = Astro.slots.has('aside');
       left: 2rem;
       right: 2rem;
     }
-  }
-  .has-accent .eyebrow {
-    color: var(--venture);
   }
   .page-header-aside {
     position: relative;
@@ -156,11 +153,11 @@ const hasAside = Astro.slots.has('aside');
   .header-facts {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem 2.5rem;
+    gap: var(--space-4) var(--space-10);
     margin-top: 1.75rem;
   }
   .header-facts dt {
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -168,7 +165,7 @@ const hasAside = Astro.slots.has('aside');
   }
   .header-facts dd {
     margin-top: 0.25rem;
-    font-size: 1.0625rem;
+    font-size: var(--text-base);
     color: var(--color-fg);
   }
   .sub-tab {
@@ -177,8 +174,8 @@ const hasAside = Astro.slots.has('aside');
     min-height: 2.75rem;
     padding: 0 1rem;
     border: 1px solid var(--color-line);
-    border-radius: 999px;
-    font-size: 0.9375rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-fg-muted);
     text-decoration: none;

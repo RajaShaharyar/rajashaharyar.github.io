@@ -37,7 +37,7 @@ const wins = home.recognition.slides
   .map((item) => ({ ...item, photo: photosOf(item)[0], href: `${pageFor(item.badge)}#${item.id}`, badge: badgeText(item) }));
 const recognitionPages = site.recognitionMenu.children;
 
-const sectionY = 'py-16 md:py-24';
+const sectionY = 'py-section';
 ---
 
 <Base title={page.title} description={page.description} ogType="profile">
@@ -55,8 +55,8 @@ const sectionY = 'py-16 md:py-24';
   </SubPageHeader>
 
   <!-- 1. The story -->
-  <section id="intro" class="wrap pt-10 pb-16 md:pt-14 md:pb-24" aria-label={page.title}>
-    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+  <section id="intro" class="wrap pt-section-sm pb-section" aria-label={page.title}>
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-16">
       <div class="story flex flex-col gap-6 lg:col-span-7">
         {story.paragraphs.map((text) => <p>{text}</p>)}
       </div>
@@ -171,7 +171,7 @@ const sectionY = 'py-16 md:py-24';
   .story p {
     max-width: var(--container-prose);
     font-size: var(--text-lead);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     color: var(--color-fg-muted);
   }
   .story p:first-child {
@@ -203,7 +203,7 @@ const sectionY = 'py-16 md:py-24';
   }
   .recognition-pages {
     display: grid;
-    gap: 1rem 2rem;
+    gap: var(--space-4) var(--space-8);
   }
   @media (width >= 48rem) {
     .recognition-pages {

@@ -16,14 +16,14 @@ const { overview } = recognitionCopy;
 const counters = overview.counters.map((c) => badgeCounter(c.badge));
 const cards = highlights().map((item) => ({ ...item, photo: photosOf(item)[0], href: `${pageFor(item.badge)}#${item.id}` }));
 const pages = overview.pages.map((p) => ({ ...recognitionMenuEntry(p.href), image: p.image }));
-const sectionY = 'py-16 md:py-20';
+const sectionY = 'py-section';
 ---
 
 <Base title={overview.title} description={overview.description}>
   <SubPageHeader section="/recognition/" overviewLabel="Overview" title={overview.title} intro={overview.intro} />
 
   <!-- Counters -->
-  <section class="band band-deep py-10 md:py-14" aria-label={overview.countersLabel}>
+  <section class="band band-deep py-section-sm" aria-label={overview.countersLabel}>
     <div class="wrap">
       <ul class="counter-grid counters-deep grid grid-cols-2 gap-px overflow-hidden rounded-card border md:grid-cols-3 lg:grid-cols-6" data-reveal-stagger="inner">
         {counters.map((c) => <Counter value={c.value} label={c.label} />)}
@@ -55,7 +55,7 @@ const sectionY = 'py-16 md:py-20';
   </section>
 
   <!-- The four sub-pages -->
-  <section class="wrap border-t border-line pt-16 pb-4 md:pt-20" aria-labelledby="pages-heading">
+  <section class="wrap border-t border-line pt-section pb-section-sm" aria-labelledby="pages-heading">
     <SectionHeader id="pages-heading" heading={overview.pagesHeading} />
     <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {

@@ -375,7 +375,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     margin-top: 1.25rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
+    gap: var(--space-2) var(--space-6);
     color: var(--color-fg-muted);
   }
   .cv-contact a {
@@ -390,27 +390,24 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
   .cv-key {
     margin-right: 0.25rem;
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-fg-subtle);
   }
   .cv-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: var(--space-3);
     margin-top: 1.75rem;
   }
 
-  .cv-layout {
-    padding-bottom: 1rem;
-  }
   @media (width >= 64rem) {
     .cv-layout {
       display: grid;
       grid-template-columns: 13rem minmax(0, 1fr);
-      gap: 3.5rem;
+      gap: var(--space-16);
       align-items: start;
     }
   }
@@ -439,7 +436,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
   .cv-menu-list {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--space-2);
     width: max-content;
   }
   .cv-menu-link {
@@ -448,8 +445,8 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     min-height: 2.5rem;
     padding: 0 0.875rem;
     border: 1px solid var(--color-line);
-    border-radius: 999px;
-    font-size: 0.875rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
     font-weight: 500;
     white-space: nowrap;
     color: var(--color-fg-muted);
@@ -482,7 +479,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     }
     .cv-menu-list {
       flex-direction: column;
-      gap: 0.125rem;
+      gap: var(--space-1);
       width: auto;
       border-left: 1px solid var(--color-line);
     }
@@ -502,28 +499,30 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
 
   .cv-section {
-    padding-top: 2.75rem;
+    padding-top: var(--section-sm);
   }
   @media (width >= 64rem) {
     .cv-section:first-child {
-      padding-top: 0.5rem;
+      padding-top: 0;
     }
   }
   .cv-h2 {
     padding-bottom: 0.75rem;
     margin-bottom: 1.25rem;
     border-bottom: 1px solid var(--color-line);
-    font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
-    letter-spacing: -0.015em;
+    /* the one exception to the section heading style: the CV is a document (global.css → SCALES) */
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
   }
   .cv-h3 {
-    font-size: 1rem;
+    font-size: var(--text-base);
     font-weight: 600;
   }
   .cv-summary {
     max-width: var(--container-prose);
     font-size: var(--text-lead);
-    line-height: 1.55;
+    line-height: var(--leading-normal);
   }
   .cv-text {
     max-width: var(--container-prose);
@@ -552,7 +551,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .cv-numbers {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem 1.5rem;
+    gap: var(--space-6) var(--space-6);
   }
   @media (width >= 48rem) {
     .cv-numbers {
@@ -562,19 +561,24 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .cv-numbers li {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--space-1);
   }
   .cv-number {
     font-family: var(--font-display);
-    font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
+    font-size: var(--text-2xl);
     font-weight: 650;
-    line-height: 1;
+    line-height: var(--leading-none);
     letter-spacing: -0.02em;
     color: var(--color-accent);
     font-variant-numeric: tabular-nums;
   }
+  @media (width >= 48rem) {
+    .cv-number {
+      font-size: var(--text-3xl);
+    }
+  }
   .cv-number-label {
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     color: var(--color-fg-muted);
   }
 
@@ -582,7 +586,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .xp-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
   .xp {
     border: 1px solid var(--color-line);
@@ -591,12 +595,12 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
   .xp-heading {
     font-family: var(--font-sans);
-    font-size: 1rem;
+    font-size: var(--text-base);
   }
   .xp-toggle {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: 1rem;
+    column-gap: var(--space-4);
     align-items: center;
     width: 100%;
     padding: 1rem 1.25rem;
@@ -612,7 +616,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .xp-title {
     grid-column: 1;
     font-family: var(--font-display);
-    font-size: 1.1875rem;
+    font-size: var(--text-lg);
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--color-fg);
@@ -620,7 +624,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .xp-meta {
     grid-column: 1;
     margin-top: 0.125rem;
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     font-weight: 400;
     color: var(--color-fg-muted);
   }
@@ -659,7 +663,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .cv-bullets {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
     max-width: 46rem;
     padding-left: 1.125rem;
     list-style: disc;
@@ -683,7 +687,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
     flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.125rem 1.5rem;
+    gap: var(--space-1) var(--space-6);
     padding: 0.625rem 0;
     border-bottom: 1px solid var(--color-line);
   }
@@ -705,13 +709,13 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
   .cv-row-date {
     flex: none;
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     color: var(--color-fg-subtle);
     font-variant-numeric: tabular-nums;
   }
   .cv-skills {
     display: grid;
-    gap: 1.5rem;
+    gap: var(--space-6);
   }
   @media (width >= 48rem) {
     .cv-skills {
@@ -721,7 +725,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   .cv-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--space-2);
     margin-top: 0.75rem;
   }
 </style>

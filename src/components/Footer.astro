@@ -21,14 +21,14 @@ const recognition = site.recognitionMenu;
 ---
 
 <footer class="site-footer defer-render" style="--defer-size: 36rem">
-  <div class="footer-grid wrap py-14 md:py-16">
+  <div class="footer-grid wrap py-section-sm">
     <div class="footer-wide">
       <p class="font-display text-2xl font-bold tracking-tight">
         {site.name}<span class="text-accent-2" aria-hidden="true">.</span>
       </p>
       <p class="mt-2 text-fg-muted">{site.title}, {site.company}</p>
       <p class="text-fg-muted">{site.location.display}</p>
-      <a href={site.cta.href} class="link mt-6 inline-block font-semibold">{site.cta.label} →</a>
+      <a href={site.cta.href} class="arrow-link mt-6">{site.cta.label}<span class="arrow" aria-hidden="true">→</span></a>
     </div>
 
     <div class="footer-wide">
@@ -128,7 +128,7 @@ const recognition = site.recognitionMenu;
   .footer-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.5rem 1.5rem;
+    gap: var(--space-10) var(--space-6);
   }
   .footer-wide {
     grid-column: 1 / -1;
@@ -136,7 +136,7 @@ const recognition = site.recognitionMenu;
   @media (width >= 48rem) {
     .footer-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 3rem 2rem;
+      gap: var(--space-10) var(--space-8);
     }
     .footer-wide {
       grid-column: auto;
@@ -148,7 +148,7 @@ const recognition = site.recognitionMenu;
   @media (width >= 80rem) {
     .footer-grid {
       grid-template-columns: 1.35fr 1.15fr 0.7fr 0.9fr 1fr;
-      gap: 2.5rem;
+      gap: var(--space-10);
     }
     .footer-grid > :first-child {
       grid-column: auto;
@@ -205,13 +205,15 @@ const recognition = site.recognitionMenu;
     stroke-width: 1.2px;
     vector-effect: non-scaling-stroke;
   }
+  /* the eyebrow style (global.css → .eyebrow) */
   .footer-heading {
     font-family: var(--font-sans);
-    font-size: 0.8125rem;
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-fg-subtle);
+    color: var(--color-accent-2);
   }
   .footer-heading-link {
     display: inline-block;
@@ -229,13 +231,13 @@ const recognition = site.recognitionMenu;
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--space-1);
   }
   .footer-link {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    column-gap: 0.75rem;
+    column-gap: var(--space-3);
     min-height: 2.75rem;
     padding: 0.5rem 0;
     text-decoration: none;
@@ -247,7 +249,7 @@ const recognition = site.recognitionMenu;
   }
   .footer-key {
     flex-basis: 100%; /* label above its value, in every row */
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     color: var(--color-fg-muted);
   }
 </style>

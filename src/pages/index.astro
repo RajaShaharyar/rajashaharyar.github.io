@@ -28,7 +28,7 @@ import { site } from '../lib/site';
 import { heroPortrait } from '../lib/portraits';
 
 const { proof, playbook, recognition, help, testimonials, finalCta } = home;
-const sectionY = 'py-16 md:py-24';
+const sectionY = 'py-section';
 ---
 
 <Base preloadImage={heroPortrait(home.hero.portrait)}>
@@ -36,7 +36,7 @@ const sectionY = 'py-16 md:py-24';
   <Hero />
 
   <!-- 2. Quick proof: the numbers, huge, in ink on a violet band -->
-  <section id="proof" class="band band-violet py-10 md:py-14" aria-labelledby="proof-heading">
+  <section id="proof" class="band band-violet py-section-sm" aria-labelledby="proof-heading">
     <div class="wrap">
       <SectionHeader id="proof-heading" heading={proof.heading} hidden />
       <StatBar tone="violet" />
@@ -44,7 +44,7 @@ const sectionY = 'py-16 md:py-24';
   </section>
 
   <!-- 3. Credibility strip: near-black, violet separators -->
-  <section id="credibility" class="credibility py-10 md:py-12" aria-labelledby="credibility-heading">
+  <section id="credibility" class="credibility py-section-sm" aria-labelledby="credibility-heading">
     <div class="wrap" data-reveal>
       <NameStrip id="credibility-heading" title={proof.nameStripTitle} />
     </div>

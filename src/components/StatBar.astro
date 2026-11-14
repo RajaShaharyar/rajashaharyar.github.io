@@ -65,15 +65,16 @@ const stats = site.stats.map((stat) => {
   .stat-value {
     font-family: var(--font-display);
     font-weight: 650;
-    font-size: clamp(1.75rem, 1.05rem + 4vw, 4.25rem);
-    line-height: 1;
+    font-size: var(--text-number);
+    line-height: var(--leading-none);
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     color: var(--color-fg);
   }
   .stat-prefix {
-    font-size: 0.42em;
+    /* on the scale at every width: about 0.42 of the figure beside it */
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.02em;
     vertical-align: 0.95em;
@@ -90,7 +91,7 @@ const stats = site.stats.map((stat) => {
     background-color: var(--color-accent-2);
   }
   .stats-violet .stat-value {
-    font-size: clamp(2.125rem, 0.9rem + 5.4vw, 5.5rem);
+    font-size: var(--text-stat);
     color: var(--color-accent-2-ink);
   }
   .stats-violet .stat-prefix {

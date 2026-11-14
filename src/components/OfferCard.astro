@@ -22,7 +22,7 @@ const { offer, index, variant = 'summary', button } = Astro.props;
 
 <article class="offer flex h-full flex-col gap-4 rounded-card border border-line bg-surface p-6 md:p-8" data-spotlight>
   <span class="font-mono text-sm font-bold text-accent" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-  <h3 class="text-2xl md:text-[1.75rem]">{offer.title}</h3>
+  <h3 class="text-xl md:text-2xl">{offer.title}</h3>
   {
     variant === 'summary' ? (
       <>
@@ -39,7 +39,7 @@ const { offer, index, variant = 'summary', button } = Astro.props;
         <p class="font-semibold text-fg">{offer.forWhom}</p>
         <p class="text-fg-muted">{offer.gets}</p>
         <div class="mt-auto border-t border-line pt-5">
-          <p class="text-xs font-semibold tracking-[0.14em] text-fg-subtle uppercase">Proof</p>
+          <p class="eyebrow">Proof</p>
           <ArrowLink href={offer.proof.href} class="mt-2">
             {offer.proof.label}
           </ArrowLink>

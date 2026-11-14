@@ -50,22 +50,22 @@ const portrait = getImage('portraits/portrait-1.webp');
 <style>
   .cta {
     --defer-size: 34rem;
-    padding-top: 2rem;
+    padding-top: var(--section-sm);
   }
   .cta-panel {
     position: relative;
     isolation: isolate;
     padding: 2.5rem 1.5rem 3.5rem;
-    border-radius: 1.5rem;
+    border-radius: var(--radius-panel);
   }
   /* The grain stays inside the rounded card; the portrait does not (overflow visible) */
   .cta-panel :global(.aurora) {
     border-radius: inherit;
   }
   .cta-title {
-    font-size: var(--text-display-lg);
-    line-height: var(--text-display-lg--line-height);
-    letter-spacing: var(--text-display-lg--letter-spacing);
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    letter-spacing: var(--text-display-md--letter-spacing);
     color: var(--color-accent-2-ink);
   }
   /* Phones and tablets: smaller, inside the card, above the text, standing on a thin ink line */
@@ -88,7 +88,7 @@ const portrait = getImage('portraits/portrait-1.webp');
      above the top edge (up to 7rem); the text on the right */
   @media (width >= 64rem) {
     .cta {
-      padding-top: 8rem;
+      padding-top: var(--section-lg); /* the head breaks out into it, up to 6rem */
     }
     .cta-panel {
       min-height: 20rem;
@@ -101,7 +101,7 @@ const portrait = getImage('portraits/portrait-1.webp');
       position: absolute;
       left: 3%;
       bottom: 0;
-      top: -7rem;
+      top: -6rem;
       width: 39%;
       margin: 0;
       border: 0;
@@ -114,9 +114,6 @@ const portrait = getImage('portraits/portrait-1.webp');
     }
     .cta-text {
       grid-column: 2;
-    }
-    .cta-title {
-      font-size: clamp(2.25rem, 1rem + 2.4vw, 3.25rem);
     }
   }
 </style>

@@ -26,7 +26,7 @@ const counters = [...counts, { value: String(mouCount), label: mouCount === 1 ? 
 <Base title={page.label} description={copy.description}>
   <SubPageHeader section="/recognition/" overviewLabel="Overview" title={page.label} intro={`${page.description}.`} />
 
-  <section class="band band-deep py-10 md:py-14" aria-label={copy.countersLabel}>
+  <section class="band band-deep py-section-sm" aria-label={copy.countersLabel}>
     <div class="wrap">
       <ul class="counters-deep grid gap-px overflow-hidden rounded-card border sm:grid-cols-3" data-reveal-stagger="inner">
         {counters.map((c) => <Counter value={c.value} label={c.label} />)}
@@ -34,7 +34,7 @@ const counters = [...counts, { value: String(mouCount), label: mouCount === 1 ? 
     </div>
   </section>
 
-  <section class="wrap pt-14 pb-4 md:pt-20" aria-labelledby="mous-heading">
+  <section class="wrap pt-section pb-section-sm" aria-labelledby="mous-heading">
     <SectionHeader id="mous-heading" heading={copy.heading} />
     <ul class="mt-8 grid gap-4 md:mt-10 md:grid-cols-2 md:gap-6" data-reveal-stagger>
       {

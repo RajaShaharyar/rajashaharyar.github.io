@@ -119,12 +119,14 @@ const stats = site.stats.map((stat) => {
   const bar = document.querySelector<HTMLElement>('[data-countup-bar]');
   const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
   if (bar && motionOk && 'IntersectionObserver' in window) {
-    const format = (el: HTMLElement, n: number) =>
-      n.toLocaleString('en-GB', {
-        minimumFractionDigits: Number(el.dataset.decimals),
-        maximumFractionDigits: Number(el.dataset.decimals),
-        useGrouping: el.dataset.grouping === 'true',
-      });
+    // en-GB digits by hand (fixed decimals, comma thousands): toLocaleString with options builds a new Intl
+    // number formatter on every call, and the loop below calls it for every figure on every frame (Phase 19.1:
+    // that alone cost about a second of main thread at 4x CPU). The final frame matches the built text.
+    const format = (el: HTMLElement, n: number) => {
+      const [whole, frac] = n.toFixed(Number(el.dataset.decimals)).split('.');
+      const grouped = el.dataset.grouping === 'true' ? whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : whole;
+      return frac === undefined ? grouped : `${grouped}.${frac}`;
+    };
     // If any figure is already fully on screen at load, the bar keeps its final values and never
     // counts. Otherwise every figure is set to zero (while off screen) and counts up once when the
     // bar scrolls into view. Positions come from an IntersectionObserver: no forced layout.

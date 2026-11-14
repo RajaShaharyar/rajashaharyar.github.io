@@ -3,11 +3,20 @@
  * scrolled out of view (0 at the top, 1 once it is gone), the giant word drifts left (sideways only) by up to 15vw, the
  * portrait sinks by up to 40px (so it rises slower than the page) and the violet disc scales up to 1.06.
  * Transform only, one write per element per frame, and only while the hero is near the screen.
+ * It starts after the page has loaded and painted, when the main thread is idle (Phase 19.1, speed): at the
+ * top of the page everything is already at rest, so nothing is measured until the visitor scrolls.
  * Reduced motion: nothing runs; everything stays static.
  */
 export function initHeroScroll() {
+  if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+  const idle = (fn: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200));
+  if (document.readyState === 'complete') idle(start);
+  else addEventListener('load', () => idle(start), { once: true });
+}
+
+function start() {
   const hero = document.querySelector<HTMLElement>('[data-hero]');
-  if (!hero || !matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+  if (!hero) return;
   const word = hero.querySelector<SVGElement>('[data-hero-giant]');
   const portrait = hero.querySelector<HTMLElement>('[data-hero-portrait]');
   const disc = hero.querySelector<HTMLElement>('[data-hero-disc]');
@@ -29,7 +38,7 @@ export function initHeroScroll() {
   new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+      if (scrollY > 0) onScroll(); // at the top everything is at rest already
     } else {
       removeEventListener('scroll', onScroll);
       onScroll(); // settle on the end state once it has left

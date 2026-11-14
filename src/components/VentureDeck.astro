@@ -113,6 +113,13 @@ const N = cards.length;
 </script>
 
 <style>
+  /* Speed (Phase 19.1): the cards' live views (decorative, aria-hidden, nothing focusable) are not laid out until
+     the deck is within half a screen (card-player.ts → prepareCards sets data-near, before any player starts or
+     measures). Chrome renders a content-visibility: auto section well before it is near, which put these boards'
+     layout in the page's load. The texts, links and rail stay in the page for find, keyboard and screen readers. */
+  :global(html.js) .deck:not([data-near]) :global(.deck-view) {
+    content-visibility: hidden;
+  }
   .deck-section {
     --hh: calc(4rem + 1px);
     position: relative;

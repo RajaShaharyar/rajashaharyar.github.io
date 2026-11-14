@@ -270,21 +270,30 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
   }
 
   /* Mobile accordion: the height animates smoothly (grid rows 0fr → 1fr). Closed
-     links are visibility: hidden, so they stay out of the Tab order. */
+     links are visibility: hidden, so they stay out of the Tab order. A closed menu is also
+     content-visibility: hidden, so its links are not laid out with the page (Phase 19.1, speed: the
+     menus were about a third of the homepage's load-time layout); it switches with visibility,
+     after the close has finished (a discrete transition). */
   :global(html.js) .submenu {
     display: grid;
     grid-template-rows: 0fr;
     visibility: hidden;
+    content-visibility: hidden;
     transition:
       grid-template-rows 220ms var(--ease-out-quart),
-      visibility 0s linear 220ms;
+      visibility 0s linear 220ms,
+      content-visibility 0s linear 220ms;
+    transition-behavior: allow-discrete;
   }
   :global(html.js) .has-menu[data-open] .submenu {
     grid-template-rows: 1fr;
     visibility: visible;
+    content-visibility: visible;
     transition:
       grid-template-rows 220ms var(--ease-out-quart),
-      visibility 0s;
+      visibility 0s,
+      content-visibility 0s;
+    transition-behavior: allow-discrete;
   }
   .submenu-inner {
     min-height: 0;
@@ -427,6 +436,16 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
         transform 0.16s var(--ease-out-quart),
         visibility 0s linear 0.16s;
     }
+    /* closed: not laid out either (see the accordion above); the switch waits for the fade-out */
+    :global(html.js) .submenu {
+      content-visibility: hidden;
+      transition:
+        opacity 0.16s var(--ease-out-quart),
+        transform 0.16s var(--ease-out-quart),
+        visibility 0s linear 0.16s,
+        content-visibility 0s linear 0.16s;
+      transition-behavior: allow-discrete;
+    }
     .has-menu[data-align-end] .submenu {
       left: auto;
       right: -0.5rem;
@@ -441,10 +460,13 @@ const alignEnd = (index: number) => index >= site.nav.length - 2;
       opacity: 1;
       visibility: visible;
       transform: none;
+      content-visibility: visible;
       transition:
         opacity 0.16s var(--ease-out-quart),
         transform 0.16s var(--ease-out-quart),
-        visibility 0s;
+        visibility 0s,
+        content-visibility 0s;
+      transition-behavior: allow-discrete;
     }
     .submenu-list {
       padding: 0.5rem;

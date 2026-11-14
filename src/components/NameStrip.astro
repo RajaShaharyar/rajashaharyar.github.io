@@ -164,7 +164,9 @@ const items = brands.map((b) => ({ name: b.name, href: hrefFor(b.ref), colour: (
       flex-wrap: nowrap;
       flex-shrink: 0;
     }
-    :global(html.js) .strip-copy {
+    /* the second copy (for the seamless loop) only once it runs: before that it is off-screen to the right,
+       and laying it out doubled the strip's share of the page-load layout (Phase 19.1, speed) */
+    :global(html.js) .strip[data-run] .strip-copy {
       display: flex;
     }
     /* hover or focus on the names (not on the pause button, so pressing play plays at once) */

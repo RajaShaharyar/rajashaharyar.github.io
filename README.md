@@ -136,8 +136,9 @@ crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. 
 - **Hand-made cutouts win:** a transparent `_source/portraits/N.png` or `_source/N.png` is used as it is for that
   number (never re-matted; only a straight crop applies, then black and white). **5 comes from Raja's hand-made
   cutout** (`_source/5.png`): the automatic one failed the quality gate (the woman behind him overlaps his pointing
-  hand and the microphone). It is cut straight just below his hands (`CUT_BOTTOM`, y 1040 of 1280), which drops the
-  ragged lower-left edge and gives him a flat bottom edge to stand on.
+  hand and the microphone). It is cut straight just below the hand holding the notes and the watch (`CUT_BOTTOM`,
+  y 960 of 1280; Phase 20), which drops the ragged notch at the lower left of the jacket and gives him a flat bottom
+  edge to stand on; his outline mask ends at the same line, so the lime outline never runs along the cut.
 - **Files:** `portrait-N-<width>.webp` (1: 1200/800/480; 2: 1600/1200/800/480; 3: 867/640/400; 4: 960/640/400;
   5: 750/520/360, each never wider than its cutout), `portrait-3-colour-<width>.webp` (the colour lens),
   `portrait-3-avatar.webp` (192 px) and `portrait-4-outline.webp` / `portrait-5-outline.webp` (the silhouette dilated by 10 px at 1200w, white on alpha, coloured by CSS
@@ -168,8 +169,9 @@ crops of the hair, glasses, hands and edges) to the temp folder `raja-qa\p19\`. 
   - *Share image*: `public/og/home.png` (also the default) is the hero cutout with his name on near-black and a
     violet disc (`npm run og`).
   - *Beyond work → Speaking*: portrait 5, a free cutout with a lime sticker outline (its outline mask), standing
-    with his flat bottom edge on a violet speech bubble's bottom edge, next to "Invite me to speak"; never wider
-    than 420 px (its source is small). Lazy-loaded.
+    with his flat bottom edge exactly on a violet speech bubble's bottom edge (nothing shows below it; the tail hangs
+    from the bubble's bottom-left corner), next to "Invite me to speak"; never wider than 420 px (its source is
+    small). Lazy-loaded. The closing CTA on that page has no portrait (`<CTA portrait={false}>`).
 
 ## Images
 
@@ -214,12 +216,15 @@ is left out, with its entry in the sticky "On this page" list:
 
 1. **Snapshot** (`#snapshot`, the page header): the H1 name, the logo where there is one (frontmatter `logo`), one
    line, role, dates (hidden while TODO), team, up to 3 key numbers, the stage reached and the product link. A 2px
-   top rule and the eyebrow in the venture's deck colour.
-2. **Visual** (`#visual`): the live venture card (`DeckCard`, the homepage deck's animation), large and centred at
-   `min(100%, 640px)` (the same sizes as on the deck, so every beat's rest keeps its text inside the edge fade), on a
-   soft glow in the venture's colour. It is the page's only autoplaying animation (`src/scripts/venture-card.ts`).
+   top rule in the venture's deck colour (the eyebrow is violet, like every eyebrow).
+2. **Visual** (`#visual`): the live venture card (`DeckCard`, the homepage deck's animation), on a soft glow in the
+   venture's colour. Phones: large and centred under the snapshot at `min(100%, 640px)`. From 1024 px (Phase 20) it
+   sits beside the snapshot, in the header's right-hand column (22rem, 28rem from 1280 px), so it shows on arrival;
+   the snapshot still comes first in the reading order. It is the page's only autoplaying animation
+   (`src/scripts/venture-card.ts`).
 3. **Challenge** (`#challenge`): the problem and the market (role stories: the product from its own site,
-   frontmatter `about`), then any limitations.
+   frontmatter `about`), then any limitations. A block that only describes the product is titled **The product**
+   (DressUp AI, until Raja supplies the challenge).
 4. **Contribution** (`#contribution`): what Raja did. Case studies: the Product-Idea Fit / Product-Market Fit / Scale
    narrative (`#product-idea-fit`, `#product-market-fit`, `#scale`), Payments and approvals (`#approvals`), How a
    merchant goes live (`#journey`), Terms used (`#terms`) and Who did what (`#team`). Role stories: What I did.
@@ -230,6 +235,13 @@ is left out, with its entry in the sticky "On this page" list:
    there are none.
 8. **What this enabled** (`#enabled`): frontmatter `enabled`, built only from facts already on the page and marked
    draft (AsaanBill, TapitCard). Hidden for Ladenza, Sonic AI Engine and DressUp AI until a fact supports one.
+
+Below the snapshot, the text keeps its reading width and the wide pieces (stages, tables, the journey, the results
+grid, the gallery: marked `data-wide`) span the full content width beside the sticky "On this page" list. From
+1280 px a sticky **At a glance** card (role, dates, up to 3 key numbers and Let's talk, all from the page's data;
+heading in `home.json → products.glanceHeading`, draft) sits to the right of the text (38rem there): it appears once
+the snapshot has scrolled away, steps aside while a wide piece passes under it, and hides once the closing CTA comes
+into view (`src/scripts/venture-glance.ts`; inert while hidden).
 
 Then the next case study and the closing CTA panel. Case-study facts live only in these files (the CV reads Tapit's
 pre-sales from `tapit.mdx`). A file marked `status: draft` is not built. DressUp AI and Sonic AI Engine are role
@@ -268,9 +280,35 @@ form sends in the page and shows a confirmation (or an error with email-app and 
 the form posts normally and Web3Forms redirects to `/contact/thanks/`. Formspree also works: put the form ID in
 `contact.form.formspreeId` and set `provider` to `"formspree"`.
 Links can preselect a reason, e.g. `/contact/?reason=speaking` (`growth`, `consultation`, `speaking`, `other`; the
-old `growth-help` and `hiring` still work). Growth is preselected by default. The reasons, their hints and the phone
+old `growth-help` and `hiring` still work). A service from the homepage's "How I can help" buttons (Phase 20; labels
+in `home.json → help.cardButtons`, drafts) adds `&service=<offer id>` (`site.json → offers`): the message starts with
+"About: <service name>" (only while it is empty) and the service is sent as a hidden `service` field. Growth is preselected by default. The reasons, their hints and the phone
 field's wording are in `src/content/contact.json`. The phone/WhatsApp number is required: digits, spaces, `+` and `-`,
 with at least 7 digits.
+
+## Design system (Phase 20)
+
+One scale per property, as tokens at the top of `src/styles/global.css` (SCALES); nothing else is used:
+
+- **Type:** 13 / 15 / 17 / 19 / 22 / 28 / 36 px (`--text-xs` … `--text-3xl`, Tailwind's `text-*`), plus the fluid
+  lead, title (22 → 28), display md / lg / xl, number and stat steps. **Line height:** 1, 1.1, 1.25, 1.4, 1.55, 1.65.
+- **Radius:** control 10, card 16, panel 24, full. **Gaps:** `--space-1` … `--space-16` (4, 8, 12, 16, 24, 32, 40,
+  64 px). **Section padding:** two sizes, `py-section-sm` (40 → 56) and `py-section` (64 → 96), and their `pt-`/`pb-`
+  forms.
+- **One style each:** section headings (`.section-title`, display-md; the CV keeps the smaller title step because it
+  is a document), eyebrows (`.eyebrow`, violet tracked caps), data labels (`.label`, grey tracked caps), "→" links
+  (`.arrow-link`).
+- Left out on purpose, with their own illustration scales: the hero, the deck and the live cards' insides, the "How I
+  grow products" slope, the timeline and stage lines, the footer's outlined words.
+- **The giant word** on inner page headers (`PageWord.astro`): the hero's signature, one outlined word per page
+  (`site.json → pageWords`, drafts; paths from `python tools/portraits/giant_word.py --pages`), in the right-hand
+  column from 1024 px only, never behind text; it drifts left by up to 6vw with scroll (`src/scripts/page-word.ts`).
+  Pages with a portrait or a live card have none.
+- **The /ventures cards** share one style: a small static version of each deck card (`VentureThumb.astro`: deck
+  colour, product visual, final frame); event photos stay on the venture pages.
+- **Card morphs:** a venture's card (homepage deck, /ventures card, its page's live card) carries
+  `view-transition-name: venture-<id>`, so it morphs between pages (CSS cross-document view transitions; off with
+  reduced motion; other browsers just navigate).
 
 ## Colour and bands
 

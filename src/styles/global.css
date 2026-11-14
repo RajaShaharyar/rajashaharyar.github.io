@@ -786,3 +786,16 @@
 ::view-transition-new(root) {
   animation-duration: 200ms;
 }
+/* Phase 20: a venture's card (homepage deck, /ventures overview, its page's live card) morphs between pages:
+   one view-transition-name per venture (DeckCard.astro sets --vt: venture-<id>). Only without reduced motion;
+   browsers without cross-document view transitions just navigate. */
+@media (prefers-reduced-motion: no-preference) {
+  .deck-card {
+    view-transition-name: var(--vt, none);
+    view-transition-class: venture-card;
+  }
+  ::view-transition-group(*.venture-card) {
+    animation-duration: 380ms;
+    animation-timing-function: var(--ease-out-quart);
+  }
+}

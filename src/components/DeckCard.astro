@@ -7,6 +7,9 @@
  * plays on its own). The colour is a token name from home.json → products.items[].color.
  * Its styles are global so either parent can place it; the pause button (.deck-toggle) shares them.
  * Behaviour: src/scripts/card-player.ts (with deck.ts or venture-card.ts).
+ * View transitions (Phase 20): every copy of a venture's card (the homepage deck, the /ventures overview card, the
+ * venture page's live card) carries the same view-transition-name (venture-<id>), so the card morphs into the
+ * venture page's live card and back. CSS only (global.css → PAGE TRANSITIONS), off with reduced motion.
  */
 import ProductScene from './ProductScene.astro';
 import AsaanBillBoard from './AsaanBillBoard.astro';
@@ -27,7 +30,7 @@ const story = home.products.items.find((s) => s.id === id);
 if (!story) throw new Error(`DeckCard: no home.json → products.items entry for "${id}".`);
 ---
 
-<div class:list={['deck-card', className]} data-card={id} data-duration={story.duration} data-pos={pos} style={`--card-bg:var(--color-${story.color});${style}`}>
+<div class:list={['deck-card', className]} data-card={id} data-duration={story.duration} data-pos={pos} style={`--card-bg:var(--color-${story.color});--vt:venture-${id};${style}`}>
   <span class="deck-label" aria-hidden="true" data-label={story.label}></span>
   <div class="deck-panel">
     <div class="deck-view">{id === 'asaanbill' ? <AsaanBillBoard /> : id === 'tapit' ? <TapitCardBoard /> : <ProductScene id={id} />}</div>

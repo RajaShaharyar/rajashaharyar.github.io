@@ -28,7 +28,7 @@ const { offer, index, variant = 'summary', button } = Astro.props;
       <>
         <p class="text-fg-muted">{offer.summary ?? `${offer.forWhom}: ${offer.gets}`}</p>
         {button && (
-          <a href={button.href} class="btn btn-primary mt-auto self-start">
+          <a href={button.href} class="btn btn-primary offer-btn mt-auto">
             {button.label}
             <span class="sr-only">: {offer.title}</span>
           </a>
@@ -50,6 +50,12 @@ const { offer, index, variant = 'summary', button } = Astro.props;
 </article>
 
 <style>
+  /* The card's own button (homepage): full width, one line in the narrow four-column cards */
+  .offer-btn {
+    width: 100%;
+    padding-inline: var(--space-4);
+    white-space: nowrap;
+  }
   /* A lime top edge: the card's own 2 px border, so the radius carries it */
   .offer {
     border-top: 2px solid var(--color-accent);

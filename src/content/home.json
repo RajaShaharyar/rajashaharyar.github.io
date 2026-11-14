@@ -390,7 +390,9 @@
           "rajasWords": "An online thrift store started during COVID. People wanted branded clothes at a good price, but hygiene and convenience held them back, and \"we bridge that\". Sold through hostel dorms. PKR 1 Cr in sales."
         }
       }
-    ]
+    ],
+    "glanceHeading": "At a glance",
+    "_glanceNote": "Phase 20 (draft): the sticky card on venture pages from 1280 px, after the snapshot scrolls away (role, dates, up to 3 key numbers and the Let's talk button, all from the page's own data)."
   },
   "playbook": {
     "heading": "How I grow products",
@@ -508,15 +510,25 @@
   },
   "help": {
     "heading": "How I can help",
-    "cardButton": {
-      "label": "Let's talk",
-      "href": "/contact/?reason=growth"
+    "cardButtons": {
+      "fit-sprint": {
+        "label": "Book a Fit Sprint",
+        "reason": "growth"
+      },
+      "sales-gtm-engine": {
+        "label": "Build my sales engine",
+        "reason": "growth"
+      },
+      "payments-fintech-launch": {
+        "label": "Plan my fintech launch",
+        "reason": "growth"
+      },
+      "talks-workshops": {
+        "label": "Invite me to speak",
+        "reason": "speaking"
+      }
     },
-    "cardButtonSpeaking": {
-      "label": "Let's talk",
-      "href": "/contact/?reason=speaking"
-    },
-    "_cardButtonNote": "Phase 17: each offer card on the homepage lime band has a lime button (the site's \"Let's talk\" wording); Talks & workshops preselects Speaking, the others Growth help.",
+    "_cardButtonNote": "Phase 20: each offer card has its own button (labels are drafts for Raja to revise). Each links to /contact/?reason=<reason>&service=<offer id>: the form preselects the reason, starts the message with \"About: <service name>\" and sends the service as a hidden field.",
     "link": {
       "label": "Work with me",
       "href": "/work-with-me/"

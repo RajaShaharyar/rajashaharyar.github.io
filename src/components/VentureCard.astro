@@ -2,11 +2,10 @@
 /**
  * One venture card (/ventures). The whole card is clickable through its
  * single "Read the journey →" link (no duplicate links for screen readers).
- * Ventures without a photo but with art: true show their schematic drawing
- * (ProductScene, final frame, decorative) in the photo slot.
+ * One visual style for every card (Phase 20): a small static version of the venture's deck card on a dark
+ * panel (VentureThumb: deck colour, product visual, final frame). Event photos stay on the venture pages.
  */
-import Media from './Media.astro';
-import ProductScene from './ProductScene.astro';
+import VentureThumb from './VentureThumb.astro';
 import type { Venture } from '../lib/site';
 
 interface Props {
@@ -18,34 +17,21 @@ const { venture: v, linkLabel } = Astro.props;
 ---
 
 <article class="venture-card lift-card flex h-full flex-col rounded-card border border-line bg-surface" data-spotlight>
-  {
-    v.image && (
-      <Media
-        image={v.image.src}
-        fit={v.image.fit}
-        position={v.image.position}
-        sizes="(min-width: 768px) 600px, 100vw"
-        class="card-media-top aspect-video border-b border-line"
-      />
-    )
-  }
-  {
-    !v.image && v.art && (
-      <div class="card-media-top venture-art aspect-video border-b border-line" aria-hidden="true">
-        <ProductScene id={v.id} />
-      </div>
-    )
-  }
+  <div class="card-media-top venture-art border-b border-line">
+    <VentureThumb id={v.id} name={v.name} meta={v.meta} />
+  </div>
   <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">
     <!-- Meta and badge on separate rows so headings line up across cards -->
     <div class="flex flex-col items-start gap-2">
       <p class="text-sm text-fg-muted">{v.meta}</p>
       {
-        v.badge && (
+        v.badge ? (
           <p class="badge">
             <span class="sr-only">Stage reached: </span>
             {v.badge}
           </p>
+        ) : (
+          <p class="badge invisible" aria-hidden="true">&nbsp;</p>
         )
       }
     </div>
@@ -70,20 +56,14 @@ const { venture: v, linkLabel } = Astro.props;
 </article>
 
 <style>
+  /* The thumbnail's panel: a 16:10 dark frame, the square deck card centred at 84% of its height */
   .venture-art {
     display: grid;
     place-items: center;
-    padding: 1rem 1.5rem;
+    aspect-ratio: 16 / 10;
+    padding-block: 8%;
     overflow: hidden;
     background-color: var(--color-raised);
-  }
-  .venture-art :global(.scene) {
-    height: 100%;
-  }
-  .venture-art :global(.scene svg) {
-    width: auto;
-    height: 100%;
-    max-width: 100%;
   }
   /* Hover and focus lift: .lift-card in global.css. Stretch the link over the whole card */
   .card-link::after {

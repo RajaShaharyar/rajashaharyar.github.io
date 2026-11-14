@@ -38,7 +38,7 @@ function start() {
   new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       addEventListener('scroll', onScroll, { passive: true });
-      if (scrollY > 0) onScroll(); // at the top everything is at rest already
+      if (scrollY > 0 || last > 0) onScroll(); // at the top and untouched, everything is at rest already
     } else {
       removeEventListener('scroll', onScroll);
       onScroll(); // settle on the end state once it has left

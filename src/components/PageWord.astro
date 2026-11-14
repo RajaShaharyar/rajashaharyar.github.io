@@ -1,0 +1,84 @@
+---
+/**
+ * The hero's signature on inner page headers (Phase 20): one giant outlined word (site.json → pageWords, keyed
+ * by the page's path; drafts), in the hero word's font, stroke and colour (outline paths in Bricolage 700,
+ * -0.02em, from tools/portraits/giant_word.py --pages; a 1.25px non-scaling #a78bfa stroke at 50%). Decorative:
+ * aria-hidden.
+ * Placement: only from 1024 px (no word on phones), in the right-hand column of a .with-page-word grid, so it
+ * never sits behind text; it starts 6vw into that column and bleeds off the right edge (the band clips it:
+ * .page-word-band). Scroll: it drifts left by up to 6vw as its band scrolls away (src/scripts/page-word.ts;
+ * scrubbed and reversible), reaching the column's start at most. Static with reduced motion.
+ * Pages with a portrait header (My story, Work With Me) and the venture pages (their live card) have none.
+ */
+import words from '../lib/page-words.json';
+import { site, withSlash } from '../lib/site';
+
+interface Props {
+  /** The page's path; defaults to the current page */
+  path?: string;
+}
+
+const path = withSlash(Astro.props.path ?? Astro.url.pathname);
+const map = (site as unknown as { pageWords: Record<string, string> }).pageWords;
+const word = map[path];
+const outline = word ? (words as Record<string, { d: string; box: number[] }>)[word] : undefined;
+if (word && !outline) throw new Error(`PageWord: no outline for "${word}". Run python tools/portraits/giant_word.py --pages.`);
+const [x0, y0, x1, y1] = outline?.box ?? [0, 0, 1, 1];
+const pad = 1; // keeps the stroke inside the box
+const viewBox = `${(x0 - pad).toFixed(2)} ${(y0 - pad).toFixed(2)} ${(x1 - x0 + 2 * pad).toFixed(2)} ${(y1 - y0 + 2 * pad).toFixed(2)}`;
+const ratio = ((x1 - x0 + 2 * pad) / (y1 - y0 + 2 * pad)).toFixed(4);
+---
+
+{
+  outline && (
+    <div class="page-word" aria-hidden="true">
+      <svg class="page-word-svg" viewBox={viewBox} style={`--ratio:${ratio}`} focusable="false" data-page-word>
+        <path d={outline.d} fill="none" vector-effect="non-scaling-stroke" />
+      </svg>
+    </div>
+  )
+}
+
+<script>
+  import { initPageWord } from '../scripts/page-word';
+  initPageWord();
+</script>
+
+<style is:global>
+  /* The band holding the word clips it sideways (it bleeds off the right edge) */
+  .page-word-band {
+    overflow-x: clip;
+  }
+  .page-word {
+    display: none;
+  }
+  @media (width >= 64rem) {
+    /* text on the left, the word's column on the right (40%) */
+    .with-page-word {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 40%);
+      column-gap: var(--space-8);
+    }
+    .page-word {
+      --word-h: max(4.5rem, 7vw); /* the capitals' height, like the hero word's (smaller) */
+      display: block;
+      position: relative;
+      align-self: center;
+      height: var(--word-h);
+      min-width: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+    .page-word-svg {
+      position: absolute;
+      top: 0;
+      left: 6vw; /* the drift's room: at most it reaches the column's start, never the text */
+      height: 100%;
+      width: calc(var(--word-h) * var(--ratio));
+      overflow: visible;
+      stroke: var(--color-accent-2-strong); /* #a78bfa */
+      stroke-width: 1.25px;
+      stroke-opacity: 0.5;
+    }
+  }
+</style>

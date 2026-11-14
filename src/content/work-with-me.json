@@ -37,6 +37,8 @@
   },
   "faq": {
     "heading": "FAQ",
+    "intro": "Short answers to what founders usually ask before a first call.",
+    "_introDraft": "Phase 20: new wording, a draft for Raja to revise.",
     "items": [
       {
         "q": "Which sectors?",

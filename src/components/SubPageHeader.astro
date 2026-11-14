@@ -12,8 +12,11 @@
  * Near-black. By default with a violet-led aurora and grain; with accent (a colour token name: a
  * venture's deck colour; Phase 18) a 2px top rule in that colour, and a soft glow in it
  * (12% at most) behind the live card. No full-bleed colour band (bright colour lives in cards).
+ * Without an aside, a page listed in site.json → pageWords gets the giant outlined word in the right-hand column
+ * from 1024 px (PageWord.astro, Phase 20).
  */
 import Aurora from './Aurora.astro';
+import PageWord from './PageWord.astro';
 import { site, withSlash } from '../lib/site';
 
 interface Props {
@@ -27,22 +30,27 @@ interface Props {
   overviewLabel?: string;
   /** Label/value pairs shown under the intro (empty values are left out) */
   facts?: { label: string; value: string | null | undefined }[];
+  /** Keep the right-hand column free from 1024 px for something placed beside the header (a venture page's
+   *  live card, which follows the header in the reading order) */
+  reserveAside?: boolean;
   /** A colour token name (accent, accent-2, fg, accent-strong, accent-2-soft): the venture's colour, used
    *  for the top rule, the eyebrow and the glow behind the live card (all of them >= 10:1 on near-black) */
   accent?: string;
 }
 
-const { id, section, title, intro, overviewLabel, facts = [], accent } = Astro.props;
+const { id, section, title, intro, overviewLabel, facts = [], accent, reserveAside = false } = Astro.props;
 const accentStyle = accent ? `--venture:var(--color-${accent})` : undefined;
 const menu = [...site.nav, site.recognitionMenu].find((item) => item.href === section);
 const children = (menu?.children ?? []).filter((c) => !c.href.includes('#') && withSlash(c.href).startsWith(withSlash(section)));
 const shownFacts = facts.filter((f): f is { label: string; value: string } => Boolean(f.value));
 const pages = overviewLabel && !children.some((c) => withSlash(c.href) === withSlash(section)) ? [{ label: overviewLabel, href: section }, ...children] : children;
 const path = withSlash(Astro.url.pathname);
-const hasAside = Astro.slots.has('aside');
+const hasAside = Astro.slots.has('aside') || reserveAside;
+const pageWords = (site as unknown as { pageWords: Record<string, string> }).pageWords;
+const hasWord = !hasAside && Boolean(pageWords[path]);
 ---
 
-<header id={id} class:list={['page-header band', accent ? 'has-accent' : 'page-header-aurora', hasAside && 'has-aside']} style={accentStyle} data-accent={accent}>
+<header id={id} class:list={['page-header band', accent ? 'has-accent' : 'page-header-aurora', hasAside && 'has-aside', hasWord && 'page-word-band']} style={accentStyle} data-accent={accent}>
   {!accent && <Aurora id="grain-header" />}
   <div class="wrap pt-8 pb-12 md:pt-12 md:pb-16">
     <nav aria-label={`${menu?.label ?? ''} pages`}>
@@ -58,7 +66,7 @@ const hasAside = Astro.slots.has('aside');
         }
       </ul>
     </nav>
-    <div class="page-header-grid">
+    <div class:list={['page-header-grid', hasWord && 'with-page-word']}>
       <div class="page-header-text">
         <p class="eyebrow mt-10 md:mt-14">{menu?.label}</p>
         <h1 class="mt-4 max-w-4xl text-display-lg">{title}</h1>
@@ -78,8 +86,9 @@ const hasAside = Astro.slots.has('aside');
         }
         <slot name="after" />
       </div>
+      {hasWord && <PageWord />}
       {
-        hasAside && (
+        Astro.slots.has('aside') && (
           <div class="page-header-aside">
             <slot name="aside" />
           </div>
@@ -98,7 +107,7 @@ const hasAside = Astro.slots.has('aside');
   @media (width >= 64rem) {
     .has-aside .page-header-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
+      grid-template-columns: minmax(0, 1fr) minmax(0, var(--aside-w, 28rem));
       column-gap: var(--space-16);
       align-items: center;
     }

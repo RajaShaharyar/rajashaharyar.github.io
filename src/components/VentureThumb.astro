@@ -1,0 +1,72 @@
+---
+/**
+ * A small static version of a venture's deck card for the /ventures overview cards (Phase 20): the deck colour,
+ * the product visual and its final frame, never animated. AsaanBill shows its rebuilt portal (every piece in
+ * place, the camera at rest), TapitCard its card art, the others their scene's final frame (ProductScene). Other
+ * ventures (no deck card) gets the same card shape in a neutral grey, with its ventures' names from site.json.
+ * Fonts, AsaanBill's pieces and TapitCard's images load once the card comes near (card-player.ts →
+ * prepareCards), never on first paint. Decorative: aria-hidden (the card's text says it all).
+ */
+import DeckCard from './DeckCard.astro';
+import home from '../content/home.json';
+
+interface Props {
+  id: string;
+  name: string;
+  /** "HOMS · Gameotivity · Mustahiq" (site.json → ventures[].meta), for the card without a deck card */
+  meta?: string;
+}
+
+const { id, name, meta = '' } = Astro.props;
+const hasDeckCard = home.products.items.some((item) => item.id === id);
+const names = meta.split('·').map((n) => n.trim()).filter(Boolean);
+---
+
+<div class="venture-thumb" aria-hidden="true" data-static-card data-thumb={id}>
+  {
+    hasDeckCard ? (
+      <DeckCard id={id} />
+    ) : (
+      <div class="deck-card thumb-plain" style="--card-bg:var(--color-line-strong)">
+        <span class="deck-label" data-label={name} />
+        <div class="deck-panel">
+          <ul class="thumb-names">
+            {names.map((n) => (
+              <li>{n}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  import { prepareCards } from '../scripts/card-player';
+  for (const card of document.querySelectorAll<HTMLElement>('[data-static-card]')) prepareCards(card);
+</script>
+
+<style>
+  .venture-thumb {
+    height: 100%;
+    aspect-ratio: 1;
+  }
+  .venture-thumb :global(.deck-card) {
+    width: 100%;
+    height: 100%;
+  }
+  .thumb-names {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    gap: 6cqw;
+    padding: 8cqw;
+    font-family: var(--font-display);
+    font-size: 8cqw;
+    font-weight: 650;
+    line-height: var(--leading-heading);
+    letter-spacing: -0.02em;
+    color: var(--color-fg);
+  }
+</style>

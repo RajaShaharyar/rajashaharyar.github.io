@@ -162,6 +162,21 @@
       }
     ]
   },
+  "_pageWordsNote": "Phase 20 (draft): the giant outlined word in the right half of each inner page header, from 1024 px (decorative, aria-hidden). Keyed by page path; the first word of the page's title. After changing a word, run python tools/portraits/giant_word.py --pages. Pages with a portrait or a live card have none.",
+  "pageWords": {
+    "/ventures/": "VENTURES",
+    "/ventures/other/": "OTHER",
+    "/recognition/": "RECOGNITION",
+    "/recognition/competitions-awards/": "COMPETITIONS",
+    "/recognition/programmes/": "PROGRAMMES",
+    "/recognition/partnerships/": "PARTNERSHIPS",
+    "/recognition/speaking-events/": "SPEAKING",
+    "/about/education/": "EDUCATION",
+    "/about/beyond-work/": "BEYOND",
+    "/contact/": "LET’S TALK",
+    "/cv/": "CV",
+    "/404/": "404"
+  },
   "_venturesNote": "Venture cards, in menu order (the /ventures overview, and the homepage product section reads its line and metric from here). No badge or metric where none exists. Phase 18 order: AsaanBill, TapitCard, DressUp AI, Sonic AI Engine, Ladenza, Other ventures (Yours next? closes the menu).",
   "ventures": [
     {

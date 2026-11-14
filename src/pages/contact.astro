@@ -17,6 +17,8 @@
  * ─────────────────────────────────────────────────────────────────────────
  *
  * Pre-select a reason from a link: /contact/?reason=growth|consultation|speaking|other
+ * A service from the homepage's "How I can help" cards: ?service=<offer id> (site.json → offers) starts the message
+ * with "About: <service name>" and sends the service as a hidden field (Phase 20).
  * (older links: growth-help → Growth, hiring → Others). Wording: src/content/contact.json.
  * The phone/WhatsApp number is required (digits, spaces, + and -, at least 7 digits).
  */
@@ -44,17 +46,23 @@ const title = "Let's talk";
 const description = copy.description;
 import { getImage } from '../lib/images';
 const avatar = getImage('portraits/portrait-3-avatar.webp');
+import PageWord from '../components/PageWord.astro';
 ---
 
 <Base title="Contact" description={description} hideDock>
-  <section class="band">
+  <section class="band page-word-band">
     <Aurora id="grain-contact" />
     <div class="wrap py-section">
-      <p class="eyebrow">Contact</p>
-      <h1 class="mt-4 text-display-lg">{title}</h1>
-      <p class="lead mt-6 max-w-2xl">
-        Tell me what you're working on. Pick a reason so your message reaches the right conversation.
-      </p>
+      <div class="with-page-word">
+        <div>
+          <p class="eyebrow">Contact</p>
+          <h1 class="mt-4 text-display-lg">{title}</h1>
+          <p class="lead mt-6 max-w-2xl">
+            Tell me what you're working on. Pick a reason so your message reaches the right conversation.
+          </p>
+        </div>
+        <PageWord />
+      </div>
 
       <div class="mt-14 grid gap-16 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-16">
         <div>
@@ -67,7 +75,9 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
             data-mode={mode}
             data-email={contact.email}
             data-whatsapp={contact.whatsapp.href}
+            data-services={JSON.stringify(Object.fromEntries(site.offers.map((o) => [o.id, o.title])))}
           >
+            <input type="hidden" name="service" value="" data-service />
             <fieldset data-field="reason">
               <legend class="field-label">What's this about?</legend>
               <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -439,6 +449,16 @@ const avatar = getImage('portraits/portrait-3-avatar.webp');
       const v = CSS.escape(wanted);
       const radio = form.querySelector<HTMLInputElement>(`input[data-reason="${v}"], input[data-aliases~="${v}"]`);
       if (radio) radio.checked = true;
+    }
+    // A service from ?service=<offer id>: the hidden field, and the message's first line (only if still empty)
+    const serviceId = new URLSearchParams(window.location.search).get('service');
+    const services = JSON.parse(form.dataset.services ?? '{}') as Record<string, string>;
+    const serviceName = serviceId && Object.hasOwn(services, serviceId) ? services[serviceId] : undefined;
+    if (serviceName) {
+      const hidden = form.querySelector<HTMLInputElement>('[data-service]');
+      if (hidden) hidden.value = serviceName;
+      const message = field('message');
+      if (message && !message.value.trim()) message.value = `About: ${serviceName}\n\n`;
     }
     // Email-app mode ships the button disabled (it needs this script); switch it on.
     if (mode === 'mailto' && submit) submit.disabled = false;

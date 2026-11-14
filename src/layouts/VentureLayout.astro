@@ -6,8 +6,10 @@
  * Engine, built from one cv.json experience entry). Eight sections, in order:
  *   1 #snapshot     H1 name, logo where there is one, one line, role, dates (hidden while TODO), team, up
  *                   to 3 key numbers, the stage reached and the product link
- *   2 #visual       the live venture card, large and centred (DeckCard; the page's only autoplay:
- *                   src/scripts/venture-card.ts), on a soft glow in the venture's colour
+ *   2 #visual       the live venture card (DeckCard; the page's only autoplay: src/scripts/venture-card.ts), on
+ *                   a soft glow in the venture's colour: large and centred under the snapshot on phones; from
+ *                   1024 px beside it, in the header's right-hand column, so it shows on arrival (Phase 20; the
+ *                   snapshot still comes first in the reading order)
  *   3 #challenge    the problem and the market (role stories: the product, from its own site), then any
  *                   limitations
  *   4 #contribution what Raja did: the Product-Idea Fit / Product-Market Fit / Scale narrative (anchors
@@ -20,7 +22,11 @@
  *   7 #testimonial  site.json → testimonials whose venture is this one (hidden while there are none)
  *   8 #enabled      What this enabled (frontmatter enabled, a draft built only from facts on the page;
  *                   hidden while missing)
- * Then the next case study and the closing CTA panel. A section with no data is left out, and so is its
+ * Below: the sticky "On this page" list (from 1024 px) and the text at its reading width, with the wide pieces
+ * (stages, tables, journey, results grid, gallery) across the full content width; from 1280 px a sticky "At a
+ * glance" card (role, dates, key numbers, Let's talk) to the right of the text, shown once the snapshot has
+ * scrolled away, hidden while a wide piece passes under it and once the closing CTA comes into view
+ * (src/scripts/venture-glance.ts). Then the next case study and the closing CTA panel. A section with no data is left out, and so is its
  * entry in the sticky "On this page" list (desktop). A value that is still "TODO: …" counts as missing.
  */
 import Base from './Base.astro';
@@ -80,6 +86,9 @@ const copy = home.products;
 const problemText = filled(data.problem?.text);
 const pain = filled(cs?.problem.pain);
 const about = rs?.about;
+// A Challenge block that only describes the product (role stories, until Raja supplies the challenge) is titled
+// "The product" (Phase 20); the text is unchanged
+const challengeTitle = about && !problemText && !pain && !data.limitations.length ? 'The product' : 'Challenge';
 
 // 4. Contribution: the stages (case studies), with the homepage playbook's question for each
 const preSales = preSalesText(cs?.preSales);
@@ -118,7 +127,7 @@ const hostname = (href: string) => new URL(href).hostname.replace(/^www\./, '');
 const sections = [
   { id: 'snapshot', label: 'Snapshot', show: true },
   { id: 'visual', label: 'Visual', show: Boolean(deckItem) },
-  { id: 'challenge', label: 'Challenge', show: Boolean(problemText || about || data.limitations.length) },
+  { id: 'challenge', label: challengeTitle, show: Boolean(problemText || about || data.limitations.length) },
   { id: 'contribution', label: 'Contribution', show: Boolean(stageBlocks.length || spotlight || journey || glossary.length || contributions.length || role) },
   { id: 'result', label: 'Result', show: Boolean(data.results || cs?.snapshot.outcome || data.lessons.length) },
   { id: 'evidence', label: 'Evidence', show: gallery.length > 0 || press.length > 0 },
@@ -133,8 +142,10 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
 <Base title={data.title} description={data.summary}>
   <ReadingProgress />
 
+  <div class="venture-top">
   <!-- 1. Snapshot -->
   <SubPageHeader
+    reserveAside={Boolean(deckItem)}
     id="snapshot"
     section="/ventures/"
     overviewLabel="Overview"
@@ -205,6 +216,8 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
     )
   }
 
+  </div>
+
   <div class="wrap venture">
     <nav class="toc" aria-label="On this page" data-toc>
       <p class="toc-title eyebrow">On this page</p>
@@ -229,7 +242,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
         shown.has('challenge') && (
           <section id="challenge" class="block" aria-labelledby="challenge-heading" data-block data-reveal>
             <h2 id="challenge-heading" class="block-title">
-              Challenge
+              {challengeTitle}
             </h2>
             {about && (
               <>
@@ -258,7 +271,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
             {data.limitations.length > 0 && (
               <div id="limitations" class="sub">
                 <h3 class="sub-title">Limitations and solutions</h3>
-                <div class="mt-6">
+                <div class="mt-6" data-wide>
                   <DataTable
                     caption="Limitations and solutions"
                     columns={[
@@ -328,7 +341,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
                       </p>
                     )}
                     {b.id === 'scale' && cs.verticals.length > 0 && (
-                      <ul class="verticals" aria-label="Verticals entered">
+                      <ul class="verticals" aria-label="Verticals entered" data-wide>
                         {cs.verticals.map((v) => (
                           <li class="vertical">
                             <p class="vertical-name">{v.name}</p>
@@ -357,7 +370,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
                   {spotlight.heading}
                 </h3>
                 <p class="block-text">{spotlight.intro}</p>
-                <div class="mt-6">
+                <div class="mt-6" data-wide>
                   <DataTable
                     caption={spotlight.heading}
                     columns={[
@@ -382,7 +395,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
                 <h3 id="journey-heading" class="sub-title">
                   {journey.heading}
                 </h3>
-                <div class="mt-6">
+                <div class="mt-6" data-wide>
                   <JourneyFlow label={journey.heading} steps={journey.steps} goesLiveWith={journey.goesLiveWith} caption={journey.caption} />
                 </div>
               </section>
@@ -408,7 +421,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
                 <h3 id="team-heading" class="sub-title">
                   Who did what
                 </h3>
-                <div class="mt-6">
+                <div class="mt-6" data-wide>
                   <DataTable
                     caption="Who did what"
                     columns={[
@@ -432,10 +445,10 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
             <h2 id="result-heading" class="block-title">
               Result
             </h2>
-            {cs?.snapshot.outcome && <p class="result-outcome">{cs.snapshot.outcome}</p>}
+            {cs?.snapshot.outcome && <p class="result-outcome" data-wide>{cs.snapshot.outcome}</p>}
             {data.results && (
               <>
-                <ul class="results-grid mt-8" data-count={data.results.tiles.length}>
+                <ul class="results-grid mt-8" data-wide data-count={data.results.tiles.length}>
                   {data.results.tiles.map((t) => (
                     <Counter value={t.value} label={t.label} />
                   ))}
@@ -465,7 +478,7 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
               Evidence
             </h2>
             {gallery.length > 0 && (
-              <div class="mt-8">
+              <div class="mt-8" data-wide>
                 <Gallery
                   label={`${data.title}: product, events and MOUs`}
                   items={gallery}
@@ -541,6 +554,35 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
         </div>
       </section>
     </div>
+
+    <!-- At a glance (from 1280 px; src/scripts/venture-glance.ts) -->
+    <aside class="glance" aria-labelledby="glance-heading" data-glance inert>
+      <p id="glance-heading" class="eyebrow">{copy.glanceHeading}</p>
+      <dl class="glance-facts">
+        {
+          snapshotFacts
+            .filter((f) => f.label !== 'Team' && f.value)
+            .map((f) => (
+              <div>
+                <dt class="label">{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))
+        }
+      </dl>
+      {
+        keyNumbers.length > 0 && (
+          <ul class="glance-numbers" aria-label="Key numbers">
+            {keyNumbers.map((m) => (
+              <li>
+                <span class="glance-value">{m.value}</span> <span class="glance-label">{m.label}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <a href={cta.href} class="btn btn-primary glance-cta">{site.cta.label}</a>
+    </aside>
   </div>
 
   <!-- Closing call to action -->
@@ -581,6 +623,135 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
   }
   .venture-body {
     min-width: 0;
+  }
+  @media (width >= 64rem) {
+    .venture > .toc {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .venture-body {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+
+  /* Snapshot and live card side by side from 1024 px (the card follows the header in the reading order; both
+     share one grid cell, the header keeping its right-hand column free). The card starts at the eyebrow's line,
+     below the tabs (9.25rem: the header's top padding, the tabs and the eyebrow's margin). Phones: unchanged. */
+  @media (width >= 64rem) {
+    .venture-top {
+      --aside-w: 22rem;
+      --tabs-offset: 9.25rem;
+      display: grid;
+      overflow-x: clip; /* the card's glow never widens the page */
+    }
+    .venture-top > :global(#snapshot),
+    .venture-top > .visual {
+      grid-area: 1 / 1;
+    }
+    .venture-top > .visual {
+      z-index: 1;
+      align-self: start;
+      justify-items: end;
+      padding-top: var(--tabs-offset);
+      padding-bottom: var(--space-8);
+      pointer-events: none; /* the header underneath stays usable; the card itself takes the pointer */
+    }
+    .venture-top .venture-card {
+      width: var(--aside-w);
+      pointer-events: auto;
+    }
+    .venture-top > .visual::before {
+      left: auto;
+      right: calc(2rem + var(--aside-w) / 2);
+      top: calc(var(--tabs-offset) + var(--aside-w) / 2);
+      width: calc(var(--aside-w) * 1.8);
+      transform: translate(50%, -50%);
+    }
+  }
+  @media (width >= 80rem) {
+    .venture-top {
+      --aside-w: 28rem;
+    }
+  }
+
+  /* At a glance: from 1280 px, sticky to the right of the text; the text keeps a reading width (38rem there,
+     so it never comes near the card) */
+  .glance {
+    display: none;
+  }
+  @media (width >= 80rem) {
+    :global(html.js) .venture-body {
+      --container-prose: 38rem;
+    }
+  }
+  @media (width >= 80rem) {
+    :global(html.js) .glance {
+      display: grid;
+      gap: var(--space-4);
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      align-self: start;
+      position: sticky;
+      top: 7rem;
+      z-index: 2;
+      width: 13rem;
+      margin-top: var(--section-sm);
+      padding: var(--space-6);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      background-color: var(--color-surface);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition:
+        opacity 200ms var(--ease-out-quart),
+        transform 200ms var(--ease-out-quart),
+        visibility 0s linear 200ms;
+    }
+    :global(html.js) .glance[data-shown] {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 200ms var(--ease-out-quart),
+        transform 200ms var(--ease-out-quart),
+        visibility 0s;
+    }
+  }
+  .glance-facts {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .glance-facts dd {
+    margin-top: var(--space-1);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    color: var(--color-fg);
+  }
+  .glance-numbers {
+    display: grid;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+  .glance-numbers li {
+    display: grid;
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    color: var(--color-fg-muted);
+  }
+  .glance-value {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+    font-weight: 650;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .glance-cta {
+    width: 100%;
   }
 
   /* On this page: desktop only */
@@ -929,6 +1100,11 @@ const cta = rs ? { heading: rs.cta.heading, label: rs.cta.link.label, href: rs.c
     gap: var(--space-4) var(--space-8);
   }
 </style>
+
+<script>
+  import { initVentureGlance } from '../scripts/venture-glance';
+  initVentureGlance();
+</script>
 
 <script>
   import { initVentureCard } from '../scripts/venture-card';

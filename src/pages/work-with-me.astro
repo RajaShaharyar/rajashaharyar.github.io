@@ -97,8 +97,9 @@ const sectionY = 'py-section';
 
   <!-- 3. FAQ -->
   <section id="faq" class:list={['wrap border-t border-line', sectionY]} aria-labelledby="faq-heading">
-    <SectionHeader id="faq-heading" heading={copy.faq.heading} />
-    <div class="faq mt-8 md:mt-10">
+    <div class="faq-grid">
+    <SectionHeader id="faq-heading" heading={copy.faq.heading} intro={copy.faq.intro} />
+    <div class="faq mt-8 md:mt-10 lg:mt-0">
       {
         copy.faq.items.map((item) => (
           <details class="faq-item">
@@ -120,6 +121,7 @@ const sectionY = 'py-section';
         ))
       }
     </div>
+    </div>
   </section>
 
   <!-- 4. Closing call to action: preselects "Growth" on the contact form -->
@@ -127,6 +129,15 @@ const sectionY = 'py-section';
 </Base>
 
 <style>
+  /* FAQ: the heading and its intro on the left, the questions on the right, from 1024 px */
+  @media (width >= 64rem) {
+    .faq-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: var(--space-16);
+      align-items: start;
+    }
+  }
   /* The header: text, then the portrait (in its violet circle) below on phones, on the right from 1024 px */
   .wwm-head {
     display: grid;

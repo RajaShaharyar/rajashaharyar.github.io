@@ -73,9 +73,10 @@ SAM_PROMPTS = {
     ],
 }
 DESK = {1, 2}  # end in a straight line at the desk's top edge
-# End in a straight line at this source row. 5: just below his hands (Phase 19.1), which drops the ragged lower-left
+# End in a straight line at this source row. 5: just below the hand holding the notes and the watch (Phase 20; it was 1040
+# in Phase 19.1, which left a ragged notch at the lower left of the jacket). This drops the ragged lower-left
 # edge of the hand-made cutout and gives him a flat bottom edge to stand on.
-CUT_BOTTOM = {5: 1040}
+CUT_BOTTOM = {5: 960}
 # Failed the automatic quality gate (Phase 19): exported only from a hand-made cutout. 5: the woman behind him
 # overlaps his pointing hand and microphone, and SAM's masks either kept parts of her or cut holes through him.
 NEEDS_HAND_CUTOUT = {5}

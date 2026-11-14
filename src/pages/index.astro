@@ -29,6 +29,11 @@ import { heroPortrait } from '../lib/portraits';
 
 const { proof, playbook, recognition, help, testimonials, finalCta } = home;
 const sectionY = 'py-section';
+// "How I can help": each card's own button, to the contact form with its reason and service (Phase 20)
+const serviceButton = (id: string) => {
+  const b = (help.cardButtons as Record<string, { label: string; reason: string }>)[id];
+  return b ? { label: b.label, href: `/contact/?reason=${b.reason}&service=${id}` } : undefined;
+};
 ---
 
 <Base preloadImage={heroPortrait(home.hero.portrait)}>
@@ -73,7 +78,7 @@ const sectionY = 'py-section';
             .filter((offer) => offer.home)
             .map((offer, i) => (
               <li>
-                <OfferCard offer={offer} index={i} button={offer.id === 'talks-workshops' ? help.cardButtonSpeaking : help.cardButton} />
+                <OfferCard offer={offer} index={i} button={serviceButton(offer.id)} />
               </li>
             ))
         }

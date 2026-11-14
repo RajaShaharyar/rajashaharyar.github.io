@@ -63,13 +63,15 @@ const sections = [
 ];
 
 const description = `${header.name}'s CV: ${header.headline}. Experience, key numbers, education, honours and skills, with a PDF download.`;
+import PageWord from '../components/PageWord.astro';
 ---
 
 <Base title="CV" description={description} ogType="profile">
   <!-- 1. Header -->
-  <div class="band">
+  <div class="band page-word-band">
     <Aurora id="grain-cv" />
-    <header id="header" class="cv-header wrap" aria-labelledby="cv-name" data-cv-section>
+    <header id="header" class="cv-header wrap with-page-word" aria-labelledby="cv-name" data-cv-section>
+      <div>
       <p class="eyebrow cv-tagline">{header.tagline}</p>
       <h1 id="cv-name" class="cv-name">{header.name}</h1>
       <p class="cv-headline">{header.headline}</p>
@@ -103,6 +105,8 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
         <!-- Contact call to action: preselects "Other" on the contact form -->
         <a href={header.contactCta.href} class="btn btn-secondary cv-contact-cta">{header.contactCta.label}</a>
       </div>
+      </div>
+      <PageWord />
     </header>
   </div>
 
@@ -351,14 +355,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
   }
 
   .cv-header {
-    padding-top: 2.5rem;
-    padding-bottom: 2.5rem;
-  }
-  @media (width >= 48rem) {
-    .cv-header {
-      padding-top: 4rem;
-      padding-bottom: 3.5rem;
-    }
+    padding-block: var(--section-sm);
   }
   .cv-name {
     margin-top: 1rem;
@@ -405,6 +402,7 @@ const description = `${header.name}'s CV: ${header.headline}. Experience, key nu
 
   @media (width >= 64rem) {
     .cv-layout {
+      padding-top: var(--section-sm); /* air under the header band, for the menu and the first heading alike */
       display: grid;
       grid-template-columns: 13rem minmax(0, 1fr);
       gap: var(--space-16);

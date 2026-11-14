@@ -2,7 +2,8 @@
 The hero's giant outlined word as SVG paths (Phase 19), so it renders exactly like the site's display type but is
 not text: an SVG <text> that big becomes the page's Largest Contentful Paint element, and the hero portrait must be.
 
-    python tools/portraits/giant_word.py ENTREPRENEUR
+    python tools/portraits/giant_word.py ENTREPRENEUR   # the homepage hero → src/lib/giant-word.json
+    python tools/portraits/giant_word.py --pages        # site.json → pageWords → src/lib/page-words.json
 
 Reads the site's own Bricolage Grotesque (node_modules/@fontsource-variable/bricolage-grotesque, the latin file the
 site loads), sets it like .hero-giant (weight 700, the optical size at 100 px, letter-spacing -0.02em, with the
@@ -56,7 +57,7 @@ def kerning(font):
     return lambda a, b: pairs.get((a, b), 0)
 
 
-def main(word):
+def outline(word):
     font = TTFont(FONT)
     axes = {a.axisTag: (a.minValue, a.maxValue) for a in font["fvar"].axes}
     loc = {}
@@ -85,11 +86,30 @@ def main(word):
     width = x - TRACKING * SIZE  # no tracking after the last letter
     ascent = font["OS/2"].sCapHeight * scale if hasattr(font["OS/2"], "sCapHeight") else 0.72 * SIZE
     data = {"word": word, "d": pen.getCommands(), "width": round(width, 2), "capHeight": round(ascent, 2), "box": [round(v, 2) for v in bounds.bounds], "font": f"Bricolage Grotesque {loc}"}
+    print(f"{word}: width {width:.1f}, cap height {ascent:.1f}, box {[round(v, 2) for v in bounds.bounds]} at {SIZE:.0f}px, {len(data['d'])} chars of path data, {loc}")
+    return data
+
+
+def main(word):
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(outline(word), f)
+        f.write("\n")
+
+
+def pages():
+    """The inner pages' giant words (site.json → pageWords: path → word), keyed by word (Phase 20)."""
+    with open(os.path.join(ROOT, "src", "content", "site.json"), encoding="utf-8") as f:
+        words = sorted({w for k, w in json.load(f)["pageWords"].items() if not k.startswith("_")})
+    data = {w: {k: v for k, v in outline(w).items() if k != "word"} for w in words}
+    with open(os.path.join(ROOT, "src", "lib", "page-words.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f)
         f.write("\n")
-    print(f"{word}: width {width:.1f}, cap height {ascent:.1f}, box {[round(v, 2) for v in bounds.bounds]} at {SIZE:.0f}px, {len(data['d'])} chars of path data, {loc}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "ENTREPRENEUR")
+    if len(sys.argv) > 1 and sys.argv[1] == "--pages":
+        pages()
+    elif len(sys.argv) > 1 and sys.argv[1].startswith("-"):
+        raise SystemExit(f"unknown option {sys.argv[1]}")
+    else:
+        main(sys.argv[1] if len(sys.argv) > 1 else "ENTREPRENEUR")
